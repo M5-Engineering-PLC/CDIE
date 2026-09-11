@@ -1,4 +1,6 @@
 // Lucid: Programmes > IvE > MDI, the flagship graduate track.
+// Decision R3, 2026-09-11: cohorts live here, not on About Us. A cohort is
+// evidence of the programme and reads as evidence beside the curriculum.
 // Copy: PROGRAMMES > Medical Device Innovation.
 // The three confirmed structure facts publish; intake, criteria, fees and the
 // application form are unconfirmed and render as enquiries, never as claims.
@@ -9,7 +11,7 @@ import { Button } from "@/components/primitives/Button";
 import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
-import { mdi } from "@/content/programmes";
+import { mdi, mdiCohorts, mdiCohortsCopy } from "@/content/programmes";
 
 export const metadata: Metadata = {
   title: "Medical Device Innovation",
@@ -100,14 +102,27 @@ export default function MdiPage() {
         </div>
       </Section>
 
-      <Section eyebrow="Fees and funding" title={mdi.fees.headline}>
+      <Section
+        id="cohorts"
+        eyebrow="Cohorts"
+        title={mdiCohortsCopy.headline}
+        standfirst={mdiCohortsCopy.body}
+      >
+        {mdiCohorts.length === 0 ? (
+          <div className="border border-dashed border-line bg-surface p-8">
+            <p className="max-w-[54ch] text-lead text-ink-2">{mdiCohortsCopy.empty}</p>
+          </div>
+        ) : null}
+      </Section>
+
+      <Section tone="surface" eyebrow="Fees and funding" title={mdi.fees.headline}>
         <div className="max-w-[62ch]">
           <Pending items={mdi.fees.pending} />
         </div>
         <p className="mt-5 max-w-[62ch] text-body text-ink-2">{mdi.fees.guidance}</p>
-        <p className="mt-3 max-w-[62ch] text-fine text-ink-3">
-          No scholarship or teaching-assistant role is promised here. The existing pages
-          disagree on that point, so it is left to the team to answer directly.
+        <p className="mt-3 max-w-[62ch] text-body text-ink-2">
+          Ask the admissions team about scholarships, funding and any teaching or research
+          role attached to the programme.
         </p>
       </Section>
     </>

@@ -120,6 +120,12 @@ export type MediaItem = {
   date?: string;
   /** newsletters open the published issue in a new tab, with no intermediate click */
   external?: string;
+  /*
+    Decision R5, 2026-09-11: "cards such as newsletter 1 with an image, then
+    link to pdf in a new tab when tapped". The cover is the card; tapping it
+    opens the issue. A card without a cover still renders, as type alone.
+  */
+  cover?: Figure;
   body?: string[];
 };
 

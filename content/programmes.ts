@@ -3,7 +3,7 @@
 // Lucid moved Events and Masterclasses out of Design Studio and into Programmes.
 // Programmes owns every event record; Home and Media render views of them.
 
-import type { CalendarEvent, Faq, LearningStage, Opportunity } from "./types";
+import type { CalendarEvent, Cohort, Faq, LearningStage, Opportunity } from "./types";
 
 export const programmesLanding = {
   headline: "Learn by working on problems that matter.",
@@ -260,6 +260,23 @@ export const training = {
   standfirst:
     "Explore focused sessions in design, making and medical device innovation. Each listing makes it easy to understand what you will practise and whether the session is right for you.",
   action: { label: "Ask about upcoming training", href: "/contact?topic=events", live: true },
+} as const;
+
+/*
+  Decision R3, 2026-09-11. Moved here from content/about.ts. A cohort is
+  evidence of the programme, so it sits with the curriculum and the projects.
+
+  Still empty: no cohort record has been verified. Work in progress is
+  distinguished from completed work, and a destination or an outcome publishes
+  only once it is confirmed.
+*/
+export const mdiCohorts: Cohort[] = [];
+
+export const mdiCohortsCopy = {
+  headline: "Our cohorts",
+  standfirst: "Meet the people taking their ideas forward.",
+  body: "Discover current and past cohorts, the projects they explored and the paths they have taken since.",
+  empty: "Cohort profiles are published once each record is confirmed. Ask the team about a particular cohort or project.",
 } as const;
 
 export function getOpportunity(id: string): Opportunity | undefined {

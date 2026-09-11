@@ -15,11 +15,17 @@ export const mediaLanding = {
   ],
 } as const;
 
+/*
+  Decision R5, 2026-09-11: newsletters stay inside Media rather than taking a
+  page of their own, and each issue is a card carrying an image that opens the
+  PDF in a new tab when tapped. The blueprint asked for a separate archive page;
+  this keeps Lucid's placement and takes the blueprint's card treatment.
+*/
 export const newslettersCopy = {
   headline: "The stories behind the work.",
   standfirst:
     "Read programme news, project highlights and reflections from the CDIE community in our newsletter archive.",
-  linkNote: "Opens the published issue in a new tab.",
+  linkNote: "Opens the issue in a new tab.",
   empty:
     "The newsletter archive is not published here yet. Contact the team for the latest issue.",
 } as const;

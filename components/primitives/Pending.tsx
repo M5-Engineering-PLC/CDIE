@@ -1,35 +1,45 @@
 /*
-  Primitive. Renders the facts a source marks [TBD] as an honest gap.
+  Primitive. Stands where a fact the source has not confirmed would otherwise go.
 
-  This is the component that keeps Gate 6 passable. Nothing here reads as a
-  claim: it names what is not yet confirmed and points at the enquiry, which is
-  what the Actual Copy tab asks for wherever a fact is missing.
+  Decision PEND, 2026-09-11. The rule is unchanged and Gate 6 still checks it:
+  an unconfirmed fact never publishes as a claim. What changed is the voice. The
+  earlier version listed each gap behind a monospace "pending" marker, which
+  read as build-log language on a public page. It now reads as an invitation,
+  names the subjects in one plain sentence, and points at the enquiry.
 */
+
+import Link from "next/link";
 
 export type PendingProps = {
   items: readonly string[];
-  /** what the reader should do instead; defaults to the general enquiry line */
+  /** overrides the default sentence where a page needs its own wording */
   lead?: string;
+  /** where the reader is sent to ask */
+  href?: string;
+  label?: string;
 };
 
-export function Pending({ items, lead }: PendingProps) {
+function sentence(items: readonly string[]) {
+  const parts = items.map((item) => item.charAt(0).toLowerCase() + item.slice(1));
+  if (parts.length === 1) return parts[0];
+  return `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+}
+
+export function Pending({
+  items,
+  lead,
+  href = "/contact?topic=general",
+  label = "Contact us for current details",
+}: PendingProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="border-l-2 border-flag/60 bg-flag-wash/50 py-3 pl-4">
-      <p className="text-fine text-ink-2">
-        {lead ?? "Not confirmed yet, so it is not published here. Ask the team and they will tell you where this stands:"}
-      </p>
-      <ul className="mt-2 flex flex-col gap-1">
-        {items.map((item) => (
-          <li key={item} className="text-fine text-ink-2">
-            <span className="mr-2 font-mono text-[0.625rem] uppercase tracking-widest text-flag-ink">
-              pending
-            </span>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <p className="border-l-2 border-brand-lift bg-surface py-3 pl-4 text-body text-ink-2">
+      {lead ?? `For ${sentence(items)}, please ask the team directly.`}{" "}
+      <Link href={href} className="font-medium text-brand">
+        {label}
+      </Link>
+      <span aria-hidden="true"> →</span>
+    </p>
   );
 }

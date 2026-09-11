@@ -148,6 +148,83 @@ action over a full-bleed photograph, which is also the selected cinematic
 reference. The Lucid programme carousel becomes the three static cards, and the
 Lucid strip of latest media becomes the lower carousel.
 
+### 3.3 Review feedback of 11 September, and where it collides with Lucid
+
+Three review documents arrived on 11 September: a UX and structure revision
+blueprint, homepage comments from Mololu (`v1_comments.txt`, Drive
+`1DocG_kO1k9GftMb8fY39EiQSDthuZIo8`), and a sampled palette file. None of the
+three is a source authority under section 2. They are review of the v1 build,
+which makes them valuable and makes them not binding. Where one contradicts
+Lucid or the Actual Copy tab, it is recorded here and answered by a person, not
+by an agent.
+
+The blueprint is missing its section 2. Whatever it covered has not been read.
+
+All twelve were answered by Munene on 11 September and are built. Where an
+answer overrules Lucid, the Lucid document is the thing to change; a note asking
+for that sits in the CEO workspace.
+
+| Ref | Answer | Overrules Lucid |
+|---|---|---|
+| R1 | Home leads with the three programmes. The five-destination carousel is gone | yes |
+| TYPE | Sans only: Archivo display, IBM Plex Sans body. Newsreader dropped | no |
+| R2 | Studio login joins the navigation bar and keeps its footer link | yes |
+| C-01 | The form is wired to ive@ku.ac.ke through a route handler | no |
+| R8 | A carousel holds cards that carry a short description and a link | no |
+| R4 | All five programme child routes stay | no |
+| R5 | Newsletters stay in Media, as cards with a cover that opens the issue | no |
+| FAQ | FAQs stay split by topic. This closes D2 | yes, as already recorded |
+| R3 | Cohorts move from About Us to the MDI page | yes |
+| R6 | Students stays. No terminology change | no |
+| R7 | Design Studio keeps its name | no |
+| PEND | Unconfirmed facts keep the rule and change voice | no |
+
+Conflicts as they were raised:
+
+R1. The Home destination carousel. The confirmed structure and the Actual Copy
+tab put a five-destination carousel at the top of Home. The blueprint calls that
+duplicate navigation, since the same six labels sit in the navigation bar, and
+Mololu's comments replace it with a carousel of the three programmes. Two
+independent reviewers arrived at the same objection separately, which is the
+strongest signal in the whole set.
+
+R2. Login. Lucid keeps `app.cdie.co.ke` as a footer utility and fork fk6 records
+that nobody has described what it does. The blueprint and Mololu both want it in
+the navigation bar. The reviewers agree against Lucid.
+
+R3. Cohorts. Lucid puts Profiles Cohorts under About Us and the confirmed
+structure keeps them there. The blueprint moves them into MDI as programme
+evidence.
+
+R4. Programme child pages. Lucid gives Programmes five children. The blueprint
+argues that Design Challenge, Catalyst Grants and Training are thin pages and
+should be sections inside IvE until there is enough content to justify a route.
+The catalyst grants page currently publishes no figure and little else, so the
+observation is accurate.
+
+R5. Newsletters. Lucid puts newsletters inside Media, opening the published
+issue directly. The blueprint wants a dedicated chronological archive page. The
+stakeholder comments of 5 September independently propose newsletters as their
+own destination.
+
+R6. Terminology. The blueprint asks for "students" to become "innovators" where
+academic status is not the subject. Words are the Actual Copy tab's authority.
+This cannot be applied in code; it is a change to the copy document first.
+
+R7. The Design Studio name. Mololu asks whether it should be called Working
+Space. Lucid and the Actual Copy tab both say Design Studio.
+
+R8. Carousels. The blueprint says essential information must not sit behind a
+carousel. Mololu's homepage is three carousels. The two review documents
+contradict each other, and R1 cannot be answered without answering this.
+
+Not a conflict, and adopted without a decision: the sampled palette, the logo as
+the home link, clickable cards, visible hover and focus states, one dominant
+call to action per section, and the rewriting of pending copy into public voice.
+The last of these is section 13 of the blueprint and it is correct: the rule
+that an unconfirmed fact never publishes stays exactly as it is, but the reader
+should see an invitation to ask, not an internal gap marker.
+
 ## 4. Target architecture
 
 Stack:

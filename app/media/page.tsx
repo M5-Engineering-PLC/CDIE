@@ -2,6 +2,7 @@
 // Copy: MEDIA. Newsletters open the published issue in a new tab.
 
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import { Button } from "@/components/primitives/Button";
 import { LinkedInCarousel } from "@/components/sections/LinkedInCarousel";
@@ -63,22 +64,41 @@ export default async function MediaPage() {
             </div>
           </div>
         ) : (
-          <ul className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {newsletters.map((item) => (
-              <li key={item.id} className="flex flex-col gap-3 bg-surface p-6">
-                {item.date ? (
-                  <p className="font-mono text-fine tabular-nums text-ink-3">{item.date}</p>
+              <li key={item.id} className="card-hit flex flex-col border border-line bg-surface">
+                {item.cover ? (
+                  <Image
+                    src={item.cover.src}
+                    alt={item.cover.alt}
+                    width={item.cover.width}
+                    height={item.cover.height}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
                 ) : null}
-                <h3 className="display text-sub leading-snug">{item.title}</h3>
-                <p className="text-body leading-relaxed text-ink-2">{item.summary}</p>
-                {item.external ? (
-                  <div className="mt-auto pt-2">
-                    <Button href={item.external} tone="quiet" external>
-                      Read this issue
-                    </Button>
-                    <p className="mt-1 text-fine text-ink-3">{newslettersCopy.linkNote}</p>
-                  </div>
-                ) : null}
+                <div className="flex flex-1 flex-col gap-3 p-6">
+                  {item.date ? (
+                    <p className="font-mono text-fine tabular-nums text-ink-3">{item.date}</p>
+                  ) : null}
+                  <h3 className="display text-sub leading-snug">{item.title}</h3>
+                  <p className="text-body leading-relaxed text-ink-2">{item.summary}</p>
+                  {item.external ? (
+                    <p className="mt-auto pt-3 text-body font-medium text-brand">
+                      <a
+                        href={item.external}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="stretch no-underline"
+                      >
+                        Read this issue
+                      </a>
+                      <span aria-hidden="true"> ↗</span>
+                      <span className="mt-1 block text-fine font-normal text-ink-3">
+                        {newslettersCopy.linkNote}
+                      </span>
+                    </p>
+                  ) : null}
+                </div>
               </li>
             ))}
           </ul>

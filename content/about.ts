@@ -3,7 +3,7 @@
 // Lucid: a profile needs picture, name and designation. Nothing else required.
 // Person and cohort selections expand within this page; no child routes.
 
-import type { Card, Cohort, Person } from "./types";
+import type { Card, Person } from "./types";
 
 export const aboutIntro = {
   headline: "Practical learning, with people at the centre.",
@@ -133,13 +133,19 @@ export const peopleCopy = {
   empty: "The current team roster is being verified before publication.",
 } as const;
 
-export const cohorts: Cohort[] = [];
+/*
+  Cohorts used to live here. Decision R3, 2026-09-11 moved them onto the MDI
+  page, where the blueprint argues they belong: a cohort is evidence of the
+  programme, and it reads as evidence next to the curriculum rather than next to
+  the staff. This overrules Lucid, which draws Profiles Cohorts under About Us.
 
-export const cohortsCopy = {
-  headline: "Our cohorts",
-  standfirst: "Meet the people taking their ideas forward.",
-  body: "Discover current and past cohorts, the projects they explored and the paths they have taken since.",
-  empty: "Cohort records are being verified before publication.",
+  About Us stays institutional: what the centre is, why it is here, who runs it.
+  See mdiCohorts in content/programmes.ts.
+*/
+export const cohortsPointer = {
+  headline: "Looking for a cohort?",
+  body: "Cohort profiles and the projects they took forward sit with the programme itself.",
+  action: { label: "See MDI cohorts", href: "/programmes/mdi#cohorts", live: true },
 } as const;
 
 export const collaborate = {

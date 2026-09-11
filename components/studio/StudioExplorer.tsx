@@ -120,23 +120,19 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
           <p className="text-body leading-relaxed text-ink-2">{selected.body}</p>
 
           {selected.modelGroup === null ? (
-            <p className="border-l-2 border-flag/60 bg-flag-wash/50 px-4 py-3 text-fine text-ink-2">
-              Held at the ATC. Its position is not documented, so nothing lights up in the
-              plan and nothing is guessed. Photographs and the service text carry this one.
+            <p className="border-l-2 border-brand-lift bg-raise px-4 py-3 text-body text-ink-2">
+              This one is held at the ATC, beyond the room shown in the plan, so nothing
+              is highlighted here.
             </p>
           ) : null}
 
           {selected.pending.length > 0 ? (
-            <ul className="flex flex-col gap-1.5 border-t border-line pt-4">
-              {selected.pending.map((item) => (
-                <li key={item} className="text-fine text-ink-2">
-                  <span className="mr-2 font-mono text-[0.625rem] uppercase tracking-widest text-flag-ink">
-                    pending
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <p className="border-t border-line pt-4 text-body text-ink-2">
+              {`For ${selected.pending
+                .map((item) => item.charAt(0).toLowerCase() + item.slice(1))
+                .join(", ")
+                .replace(/, ([^,]*)$/, " and $1")}, ask the team.`}
+            </p>
           ) : null}
 
           <a href={selected.enquiryHref} className="text-body font-medium text-brand">

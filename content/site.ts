@@ -8,6 +8,16 @@ export const site = {
   longName: "Centre for Design, Innovation & Engineering",
   institution: "Kenyatta University",
   tagline: "A place to learn, design and build for better healthcare.",
+  /*
+    The logo is the home link. Decision, 2026-09-11: the wordmark no longer sits
+    beside it, because the logo already carries the name.
+  */
+  logo: {
+    src: "/brand/cdie-logo.webp",
+    alt: "CDIE, Centre for Design, Innovation & Engineering",
+    width: 332,
+    height: 195,
+  },
 } as const;
 
 export const nav: NavItem[] = [
@@ -40,8 +50,10 @@ export const contact = {
 } as const;
 
 /*
-  Lucid keeps app.cdie.co.ke as a utility only, out of the main navigation.
-  Open fork fk6: nobody has described what it does, so it gets one footer link.
+  Decision R2, 2026-09-11: the studio login is the last item in the navigation
+  bar and keeps its footer link as well. This overrules Lucid, which kept
+  app.cdie.co.ke out of the main navigation as a footer utility. Lucid's own
+  fork fk6 still records that nobody has described what the application does.
 */
 export const utilityLinks: NavItem[] = [
   { label: "Studio login", href: "https://app.cdie.co.ke" },

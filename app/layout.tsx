@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, IBM_Plex_Mono, Newsreader } from "next/font/google";
+import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 
 import { SiteFooter } from "@/components/chrome/SiteFooter";
 import { SiteNav } from "@/components/chrome/SiteNav";
@@ -10,14 +10,15 @@ import "./globals.css";
 
 const archivo = Archivo({
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
   variable: "--font-archivo",
   display: "swap",
 });
 
-const newsreader = Newsreader({
+const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-newsreader",
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-sans",
   display: "swap",
 });
 
@@ -41,15 +42,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${newsreader.variable} ${plexMono.variable}`}
+      className={`${archivo.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
       <body>
         <SkipLink />
         <SiteNav
           items={[...nav]}
+          utility={[...utilityLinks]}
           name={site.name}
           longName={site.longName}
           institution={site.institution}
+          logo={site.logo}
         />
         <main id="main">{children}</main>
         <SiteFooter

@@ -1,7 +1,23 @@
 // Lucid: Home. Copy: HOME.
-// Order is fixed: five-destination carousel, three cards, second carousel, footer.
+/*
+  Decision R1, 2026-09-11. The homepage no longer opens with a carousel
+  previewing the five other pages. Two reviewers objected to it separately: the
+  UX blueprint called it duplicate navigation, since the same labels sit in the
+  navigation bar, and Mololu's comments replaced it with the programmes.
 
-import type { Card, CarouselSlide } from "./types";
+  Order now: a short hero, the three programmes as a carousel of cards, what
+  CDIE is, the studio capabilities as a second carousel, then the latest posts.
+
+  Decision R8: a carousel holds cards that link somewhere. It never holds the
+  only copy of something a reader needs, so nothing here is unreachable to
+  someone who ignores the controls.
+
+  There is no partners strip. Mololu's comments ask for one and no source names
+  a single partner organisation, so it is not built until somebody supplies the
+  list.
+*/
+
+import type { Card } from "./types";
 
 export const homeHero = {
   headline: "A place to learn, design and build for better healthcare.",
@@ -11,51 +27,8 @@ export const homeHero = {
 } as const;
 
 /*
-  Copy, HOME > Hero: "Carousel that shows the 5 pages available on the site as
-  a preview." Lucid asks for minimal above the fold, one clear line and one
-  action; each slide carries exactly that.
-*/
-export const destinationSlides: CarouselSlide[] = [
-  {
-    id: "programmes",
-    eyebrow: "Programmes",
-    title: "Learn by working on problems that matter.",
-    line: "Understand the learning model, then find the opportunity that fits you.",
-    action: { label: "Explore learning pathways", href: "/programmes", live: true },
-  },
-  {
-    id: "design-studio",
-    eyebrow: "Design Studio",
-    title: "See where ideas take shape.",
-    line: "Explore the spaces, tools and workbenches that support design and prototyping at CDIE.",
-    action: { label: "Step inside the studio", href: "/design-studio", live: true },
-  },
-  {
-    id: "media",
-    eyebrow: "Media",
-    title: "A closer look at life at CDIE.",
-    line: "Updates from the studio, programme highlights and conversations with the people taking part.",
-    action: { label: "Explore stories and newsletters", href: "/media", live: true },
-  },
-  {
-    id: "about",
-    eyebrow: "About Us",
-    title: "Practical learning, with people at the centre.",
-    line: "Who we are, why we are here and the people doing the work.",
-    action: { label: "Meet CDIE", href: "/about", live: true },
-  },
-  {
-    id: "contact",
-    eyebrow: "Contact",
-    title: "Let’s talk about your next step.",
-    line: "Tell us a little about what you need so we can direct your enquiry.",
-    action: { label: "Find the right contact", href: "/contact", live: true },
-  },
-];
-
-/*
-  The three static cards. Lucid: "Programme carousel: IvE and MDI as cards."
-  The confirmed structure adds Design Studio and makes the row static.
+  Section one. Copy, HOME: the three ways in. Lucid draws IvE and MDI as
+  programme cards; the confirmed structure adds the Design Studio alongside them.
 */
 export const programmeCards: Card[] = [
   {
@@ -80,7 +53,7 @@ export const programmeCards: Card[] = [
   },
   {
     id: "studio",
-    eyebrow: "A closer look at the studio",
+    eyebrow: "Design Studio",
     title: "See where ideas take shape.",
     summary:
       "Explore the spaces, tools and workbenches that support design and prototyping at CDIE.",
@@ -89,33 +62,41 @@ export const programmeCards: Card[] = [
 ];
 
 /*
-  The lower carousel. Lucid: "Strip of latest media (events + newsletter), not
-  PDF links." The confirmed structure adds the people panel.
-  Each panel is a view of records owned elsewhere; none holds a date of its own.
+  Section two. Mololu's comments: "define CDIE". The words are the Actual Copy
+  tab's, carried from ABOUT US so the two pages cannot drift apart.
 */
-export const featurePanels: Card[] = [
-  {
-    id: "people",
-    eyebrow: "Meet the People",
-    title: "The people behind the work.",
-    summary:
-      "Meet the people supporting the learning and work at CDIE, and the cohorts taking their ideas forward.",
-    action: { label: "Open About Us at People", href: "/about#people", live: true },
-  },
-  {
-    id: "events",
-    eyebrow: "Event Calendar",
-    title: "Meet, learn and exchange ideas.",
-    summary:
-      "Conversations, workshops and programme activities that bring students, educators and industry together.",
-    action: { label: "Open the event calendar", href: "/programmes#events", live: true },
-  },
-  {
-    id: "media",
-    eyebrow: "Media",
-    title: "The stories behind the work.",
-    summary:
-      "Programme news, project highlights and reflections from the CDIE community.",
-    action: { label: "Explore Media", href: "/media", live: true },
-  },
-];
+export const defineCdie = {
+  eyebrow: "What CDIE is",
+  headline: "Practical learning, with people at the centre.",
+  body: "The Centre for Design, Innovation & Engineering at Kenyatta University supports the design, engineering and prototyping of medical devices. As part of Invention Education, we bring together hands-on learning, research and collaboration around healthcare needs.",
+  triad: [
+    {
+      id: "innovate",
+      title: "Innovate",
+      body: "Explore healthcare needs with curiosity and careful thinking.",
+    },
+    {
+      id: "convene",
+      title: "Convene",
+      body: "Bring students, healthcare professionals and industry perspectives into the conversation.",
+    },
+    {
+      id: "create",
+      title: "Create",
+      body: "Use design and prototyping to make ideas tangible.",
+    },
+  ],
+  action: { label: "Meet CDIE", href: "/about", live: true },
+} as const;
+
+export const servicesCopy = {
+  eyebrow: "In the studio",
+  headline: "What you can use, and what it is for.",
+  standfirst:
+    "Each capability opens the studio at that service, with its own information and photographs.",
+} as const;
+
+export const latestCopy = {
+  eyebrow: "Our latest",
+  headline: "What has been happening at the centre.",
+} as const;

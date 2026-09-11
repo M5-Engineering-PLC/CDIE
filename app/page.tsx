@@ -1,93 +1,116 @@
 // Lucid: Home. Copy: HOME.
-// Fixed order: five-destination carousel, three cards, second carousel, footer.
-// Nothing else. The three cards and the lower carousel already carry the jobs a
-// studio teaser, a programme strip and a newsletter strip would duplicate.
+/*
+  Decision R1, 2026-09-11: a short hero, the three programmes, what CDIE is, the
+  studio capabilities, then the latest posts. The old five-destination carousel
+  is gone; it restated the navigation bar and both reviewers said so.
 
-import { CardGrid } from "@/components/blocks/Card";
+  The latest section renders only when there is something in it. No partners
+  strip exists, because no source names a partner.
+*/
+
+import type { Metadata } from "next";
+
+import { Card } from "@/components/blocks/Card";
 import { Button } from "@/components/primitives/Button";
-import { Carousel } from "@/components/sections/Carousel";
+import { CardRail } from "@/components/sections/CardRail";
+import { LinkedInCarousel } from "@/components/sections/LinkedInCarousel";
 import { Section } from "@/components/sections/Section";
-import { destinationSlides, featurePanels, homeHero, programmeCards } from "@/content/home";
-import type { CarouselSlide } from "@/content/types";
+import { defineCdie, homeHero, latestCopy, programmeCards, servicesCopy } from "@/content/home";
+import { capabilities } from "@/content/studio";
+import type { Card as CardRecord } from "@/content/types";
+import { getLinkedInFeed, isStale, linkedInCopy } from "@/lib/linkedin";
 
-function DestinationSlide({ slide }: { slide: CarouselSlide }) {
-  return (
-    <article className="flex min-h-[22rem] flex-col justify-end gap-4 border border-line bg-slate p-8 text-paper md:min-h-[26rem] md:p-12">
-      <p className="font-mono text-fine uppercase tracking-[0.13em] text-paper/70">
-        {slide.eyebrow}
-      </p>
-      <h3 className="display max-w-[16ch] text-head text-paper md:text-hero">{slide.title}</h3>
-      <p className="max-w-[52ch] text-lead leading-relaxed text-paper/85">{slide.line}</p>
-      <div className="mt-2">
-        <Button
-          href={slide.action.href}
-          className="border-paper/30 bg-paper text-ink hover:border-paper hover:bg-surface"
-        >
-          {slide.action.label}
-        </Button>
-      </div>
-    </article>
-  );
-}
+export const metadata: Metadata = {
+  description: homeHero.standfirst,
+};
 
-export default function HomePage() {
+// Keeps the latest section in step with the Media page's read of the same feed.
+export const revalidate = 600;
+
+const serviceCards: CardRecord[] = capabilities.map((capability) => ({
+  id: capability.id,
+  eyebrow: capability.name,
+  title: capability.headline,
+  summary: capability.body,
+  action: {
+    label: `Open ${capability.name}`,
+    href: `/design-studio?service=${capability.id}`,
+    live: true,
+  },
+}));
+
+export default async function HomePage() {
+  const feed = await getLinkedInFeed();
+  const hasLatest = feed.posts.length > 0 && !isStale(feed.lastSyncedAt);
+
   return (
     <>
       <section className="border-b border-line bg-surface">
         <div className="shell py-12 md:py-16">
-          <h1 className="display max-w-[20ch] text-head md:text-hero">{homeHero.headline}</h1>
-          <p className="mt-5 max-w-[58ch] text-lead leading-relaxed text-ink-2">
+          <h1 className="display max-w-[18ch] text-head md:text-hero">{homeHero.headline}</h1>
+          <p className="mt-5 max-w-[54ch] text-lead leading-relaxed text-ink-2">
             {homeHero.standfirst}
           </p>
           <div className="mt-7">
             <Button href={homeHero.primary.href}>{homeHero.primary.label}</Button>
           </div>
-
-          <div className="mt-12">
-            <Carousel
-              label="site sections"
-              slideLabels={destinationSlides.map((slide) => slide.eyebrow)}
-              slides={destinationSlides.map((slide) => (
-                <DestinationSlide key={slide.id} slide={slide} />
-              ))}
-            />
-          </div>
         </div>
       </section>
 
-      <Section
-        eyebrow="Start here"
-        title="Three ways in."
-        standfirst="The learning model, the graduate pathway, and the room where the work happens."
-      >
-        <CardGrid cards={programmeCards} />
+      <Section eyebrow="Start here" title="Three ways in.">
+        <CardRail label="programmes">
+          {programmeCards.map((card) => (
+            <li key={card.id} className="flex">
+              <Card card={card} />
+            </li>
+          ))}
+        </CardRail>
+      </Section>
+
+      <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
+        <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{defineCdie.body}</p>
+
+        <ul className="mt-10 grid gap-px bg-line md:grid-cols-3">
+          {defineCdie.triad.map((item) => (
+            <li key={item.id} className="flex flex-col gap-2 bg-raise p-6">
+              <h3 className="display text-sub text-brand">{item.title}</h3>
+              <p className="text-body leading-relaxed text-ink-2">{item.body}</p>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-8">
+          <Button href={defineCdie.action.href} tone="outline">
+            {defineCdie.action.label}
+          </Button>
+        </div>
       </Section>
 
       <Section
-        tone="surface"
-        eyebrow="Latest from CDIE"
-        title="Meet the people, projects and conversations shaping life at the centre."
+        eyebrow={servicesCopy.eyebrow}
+        title={servicesCopy.headline}
+        standfirst={servicesCopy.standfirst}
       >
-        <Carousel
-          label="people, events and media"
-          slideLabels={featurePanels.map((panel) => panel.eyebrow ?? panel.title)}
-          slides={featurePanels.map((panel) => (
-            <article
-              key={panel.id}
-              className="flex min-h-[15rem] flex-col gap-4 border border-line bg-raise p-8"
-            >
-              <p className="kicker">{panel.eyebrow}</p>
-              <h3 className="display max-w-[22ch] text-title">{panel.title}</h3>
-              <p className="max-w-[56ch] text-body leading-relaxed text-ink-2">{panel.summary}</p>
-              <div className="mt-auto pt-2">
-                <Button href={panel.action.href} tone="quiet">
-                  {panel.action.label}
-                </Button>
-              </div>
-            </article>
+        <CardRail label="studio capabilities" columns={4}>
+          {serviceCards.map((card) => (
+            <li key={card.id} className="flex">
+              <Card card={card} tone="surface" />
+            </li>
           ))}
-        />
+        </CardRail>
       </Section>
+
+      {hasLatest ? (
+        <Section tone="surface" eyebrow={latestCopy.eyebrow} title={latestCopy.headline}>
+          <LinkedInCarousel
+            posts={feed.posts}
+            stale={false}
+            fallback={linkedInCopy.fallback}
+            pageUrl={linkedInCopy.pageUrl}
+            privacy={linkedInCopy.privacy}
+          />
+        </Section>
+      ) : null}
     </>
   );
 }
