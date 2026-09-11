@@ -55,9 +55,12 @@ export default function InventionEducationPage() {
         <p className="max-w-[58ch] text-lead leading-relaxed text-ink-2">
           {inventionEducation.takeaways}
         </p>
-        <div className="mt-8">
+        <div className="mt-8 flex flex-wrap gap-3">
           <Button href={inventionEducation.action.href}>
             {inventionEducation.action.label}
+          </Button>
+          <Button href={inventionEducation.enquiry.href} tone="outline">
+            {inventionEducation.enquiry.label}
           </Button>
         </div>
       </Section>

@@ -50,7 +50,7 @@ export function VisualCardRail({ items, label }: { items: VisualRailItem[]; labe
         <button type="button" aria-label={`Previous ${label}`} disabled={start} onClick={() => move(-1)} className="grid h-11 w-11 place-items-center border border-line bg-surface text-brand disabled:opacity-30">←</button>
         <button type="button" aria-label={`More ${label}`} disabled={end} onClick={() => move(1)} className="grid h-11 w-11 place-items-center border border-line bg-surface text-brand disabled:opacity-30">→</button>
       </div>
-      <ul ref={rail} onScroll={measure} aria-label={label} className="grid snap-x snap-mandatory auto-cols-[82%] grid-flow-col gap-5 overflow-x-auto pb-4 sm:auto-cols-[46%] lg:auto-cols-[31%]">
+      <ul ref={rail} onScroll={measure} aria-label={label} className="grid snap-x snap-mandatory auto-cols-[82%] grid-flow-col gap-5 overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:thin] sm:auto-cols-[46%] lg:auto-cols-[31%]">
         {items.map((item) => (
           <li key={item.id} className="card-hit group snap-start overflow-hidden border border-line bg-surface">
             <div className="relative aspect-[4/3] overflow-hidden"><Image src={item.image} alt={item.alt} fill sizes="(max-width: 768px) 82vw, 31vw" className="object-cover transition duration-500 group-hover:scale-105" /></div>

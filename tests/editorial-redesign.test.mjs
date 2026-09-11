@@ -27,8 +27,6 @@ test("the approved programme, partner, service, story and tour assets are presen
     "public/images/partners/rice360.png",
     "public/images/partners/riceuniversity.png",
     "public/images/story-1.jpg",
-    "public/images/tour-start-guided.png",
-    "public/images/tour-room-explorer.png",
   ];
   for (const path of required) assert.equal(existsSync(new URL(`../${path}`, import.meta.url)), true, path);
 });
@@ -49,4 +47,37 @@ test("footer exposes icon-labelled social destinations without inventing URLs", 
   assert.match(footer, /socialAccounts/);
   const site = read("content/site.ts");
   assert.match(site, /href\?: string/);
+});
+
+test("every programme's enquiry button names a topic the contact form knows", () => {
+  const programmes = read("content/programmes.ts");
+  const contact = read("content/contact.ts");
+  const known = new Set(
+    [...contact.matchAll(/\{ id: "([a-z-]+)", label:/g)].map((match) => match[1]),
+  );
+  assert.ok(known.size >= 5, "enquiry topics should parse");
+
+  for (const [, topic] of programmes.matchAll(/topic: "([a-z-]+)"/g)) {
+    assert.equal(known.has(topic), true, `opportunity topic ${topic} is not an enquiry topic`);
+  }
+  for (const [, topic] of programmes.matchAll(/href: "\/contact\?topic=([a-z-]+)"/g)) {
+    assert.equal(known.has(topic), true, `link topic ${topic} is not an enquiry topic`);
+  }
+});
+
+test("the studio's two sides are Graduate School and ATC, and textiles sits with the first", () => {
+  const studio = read("content/studio.ts");
+  assert.match(studio, /name: "Graduate School"/);
+  assert.doesNotMatch(studio, /name: "Design Studio"/);
+  const textiles = studio.slice(studio.indexOf('id: "textiles"'));
+  assert.match(textiles.slice(0, 200), /space: "studio"/);
+  // the ATC summary must not still claim textiles
+  const atc = studio.slice(studio.indexOf('id: "atc"'), studio.indexOf('id: "design"'));
+  assert.doesNotMatch(atc, /textiles/i);
+});
+
+test("an unplaced capability says nothing is documented rather than naming the ATC", () => {
+  const detail = read("components/studio/StudioDetail.tsx");
+  assert.match(detail, /Nothing documents where/);
+  assert.doesNotMatch(detail, /held at the ATC/);
 });

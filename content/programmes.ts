@@ -47,6 +47,7 @@ export const opportunities: Opportunity[] = [
       "Understand the approach behind learning through real problems: listening closely, questioning assumptions and developing ideas through designing, making and trying again.",
     status: "enquire",
     href: "/programmes/invention-education",
+    topic: "invention-education",
     pending: [],
   },
   {
@@ -57,6 +58,7 @@ export const opportunities: Opportunity[] = [
       "The graduate track: engineering, clinical needs-finding and the wider decisions involved in developing a medical device.",
     status: "enquire",
     href: "/programmes/mdi",
+    topic: "admissions",
     pending: ["Next intake and application window"],
   },
   {
@@ -67,6 +69,7 @@ export const opportunities: Opportunity[] = [
       "A real challenge. A chance to make something useful. Work with others to explore a practical response to a defined problem.",
     status: "enquire",
     href: "/programmes/design-challenge",
+    topic: "design-challenge",
     pending: [
       "Current challenge brief",
       "Who can enter and team requirements",
@@ -81,6 +84,7 @@ export const opportunities: Opportunity[] = [
       "Give an early idea room to develop. Catalyst grants support early prototyping through the Invention Education programme.",
     status: "enquire",
     href: "/programmes/catalyst-grants",
+    topic: "catalyst-grants",
     pending: [
       "Current call and eligibility",
       "Award amount",
@@ -95,6 +99,7 @@ export const opportunities: Opportunity[] = [
       "Make time to learn a practical skill. Focused sessions in design, making and medical device innovation.",
     status: "enquire",
     href: "/programmes/training",
+    topic: "training",
     pending: [
       "Session titles and learning outcomes",
       "Level, prerequisites and trainer",
@@ -162,6 +167,11 @@ export const inventionEducation = {
   takeaways:
     "A more deliberate approach to problem-solving, practical experience of prototyping and the confidence to work across disciplines.",
   action: { label: "Explore the MDI pathway", href: "/programmes/mdi", live: true },
+  enquiry: {
+    label: "Ask about Invention Education",
+    href: "/contact?topic=invention-education",
+    live: true,
+  },
 } as const;
 
 export const mdi = {
@@ -238,7 +248,7 @@ export const designChallenge = {
   standfirst:
     "Bring your curiosity and work with others to explore a practical response to a defined problem. The design challenge is an opportunity to learn through making, explain your thinking and develop an idea through feedback.",
   past: "Explore previous challenge briefs and the work developed by participating teams.",
-  action: { label: "Ask about the next challenge", href: "/contact?topic=events", live: true },
+  action: { label: "Ask about the Design Challenge", href: "/contact?topic=design-challenge", live: true },
 } as const;
 
 export const catalystGrants = {
@@ -252,14 +262,14 @@ export const catalystGrants = {
     confirmed. Decision D5. The copy authority wins on a published figure, so
     no number appears here.
   */
-  action: { label: "Ask about catalyst grants", href: "/contact?topic=programmes", live: true },
+  action: { label: "Ask about Catalyst grants", href: "/contact?topic=catalyst-grants", live: true },
 } as const;
 
 export const training = {
   headline: "Make time to learn a practical skill.",
   standfirst:
     "Explore focused sessions in design, making and medical device innovation. Each listing makes it easy to understand what you will practise and whether the session is right for you.",
-  action: { label: "Ask about upcoming training", href: "/contact?topic=events", live: true },
+  action: { label: "Ask about masterclasses and training", href: "/contact?topic=training", live: true },
 } as const;
 
 /*

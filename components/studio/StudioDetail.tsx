@@ -13,8 +13,7 @@ export function StudioDetail({ selected }: { selected: ExplorerCapability }) {
 
       {selected.modelGroup === null ? (
         <p className="border-l-2 border-brand-lift bg-raise px-4 py-3 text-body text-ink-2">
-          This one is held at the ATC, beyond the room shown in the plan, so nothing
-          is highlighted here.
+          {`Nothing documents where ${selected.name.toLowerCase()} sits in the room, so the plan stays unlit rather than guessing at a bench.`}
         </p>
       ) : null}
 

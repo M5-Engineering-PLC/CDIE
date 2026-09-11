@@ -6,9 +6,10 @@
   room navigator, inline detail, and one selected id driving all four.
 
   The rule this component exists to keep: a capability with no known position
-  highlights nothing. Metalworking, textiles and woodworking sit at the ATC and
-  their locations are undocumented, so the plan stays unlit and the panel says
-  so rather than inventing a place for them.
+  highlights nothing. Three of the seven have no documented position, so the plan
+  stays unlit and the panel says so rather than inventing a place for them. Which
+  three is a fact about the sources, not about which side of the centre they
+  belong to: textiles is Graduate School and still unplaced.
 
   Nothing here imports from content/. The page maps records onto this view model.
 */

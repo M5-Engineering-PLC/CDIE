@@ -61,6 +61,11 @@ export type Opportunity = {
   href: string;
   /** facts the programme owner has not confirmed; never rendered as claims */
   pending: string[];
+  /** the enquiry topic this programme prefills on the contact form */
+  topic: string;
+  /** review of 11 September: a picture of the programme, not an icon. The card
+      renders without one until CDIE supplies the photograph. */
+  image?: Figure;
 };
 
 export type CalendarEvent = {
@@ -106,6 +111,8 @@ export type Capability = {
 export type Space = {
   id: SpaceId;
   name: string;
+  /** the name as it fits the narrow column of the capability list */
+  shortName: string;
   summary: string;
   hasModel: boolean;
 };

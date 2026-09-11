@@ -13,18 +13,32 @@ export const studioIntro = {
   body: "The CDIE design studio brings design tools, electronics and fabrication spaces together to support medical device prototyping. It gives students room to explore ideas in different materials and learn from what they make.",
 } as const;
 
+/*
+  Review of 11 September, item R9. The two sides are the Graduate School and the
+  ATC, not the Design Studio and the ATC, and textiles and upholstery belongs to
+  the first of them rather than the second.
+
+  This is a conflict with Lucid, which names the first side Design Studio, and it
+  is recorded in docs/BUILD_PLAN.md section 3.2. What changed here is the label
+  and the membership. The page keeps its name and its route, because
+  /design-studio is public and the page covers both sides. The id stays "studio"
+  so shared ?space= links do not break.
+*/
 export const spaces: Space[] = [
   {
     id: "studio",
-    name: "Design Studio",
-    summary: "The main room: shared worktables, computers, printers and the electronics wall.",
+    name: "Graduate School",
+    shortName: "Grad school",
+    summary:
+      "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery. The room plan covers the main room; textile work is not placed in it, because nothing documents where it sits.",
     hasModel: true,
   },
   {
     id: "atc",
     name: "ATC",
+    shortName: "ATC",
     summary:
-      "Metalworking, textiles and woodworking sit beyond this room. Photographs and service information until its layout is documented.",
+      "Metalworking and woodworking sit beyond this room. Photographs and service information until its layout is documented.",
     hasModel: false,
   },
 ];
@@ -109,7 +123,7 @@ export const capabilities: Capability[] = [
   {
     id: "textiles",
     name: "Textiles and upholstery",
-    space: "atc",
+    space: "studio",
     headline: "Design for the way a product meets the body.",
     body: "Explore fabric-based components, wearable concepts and upholstery with tools for sewing, cutting and working with textiles. This area brings material choice, fit and comfort into the prototyping process.",
     modelGroup: null,

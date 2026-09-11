@@ -148,6 +148,27 @@ action over a full-bleed photograph, which is also the selected cinematic
 reference. The Lucid programme carousel becomes the three static cards, and the
 Lucid strip of latest media becomes the lower carousel.
 
+The naming of the studio's two sides. Lucid names them Design Studio and ATC,
+and the public route is /design-studio. The client review of 11 September
+instructs that the two sides are Graduate School and ATC, and moves textiles and
+upholstery across from ATC to the first of them. Reading, decided 11 September:
+the space label changes and the route does not. The centre's own manager names
+the sides, so the label follows her; /design-studio is a public URL and the page
+covers both sides, so it stays. Recorded as R9 in the Lucid update note, which
+is where Lucid gets corrected.
+
+One consequence worth stating, because it is the kind of thing that rots
+quietly. Textiles is now Graduate School but still has no documented position in
+the room, so the explorer's unplaced-capability message can no longer say the
+capability is held at the ATC. It says nothing documents where the capability
+sits, which is the true statement for all three unplaced ones and stays true
+whichever side they belong to.
+
+The source of R9, and of the other four review items numbered R10 to R13, is a
+machine transcript of poor quality in which speaker attribution is unreliable.
+The corrections pass lives with the meeting record outside this repository. Do
+not treat a line of that transcript as copy.
+
 ### 3.3 Review feedback of 11 September, and where it collides with Lucid
 
 Three review documents arrived on 11 September: a UX and structure revision
@@ -176,12 +197,12 @@ for that sits in the CEO workspace.
 | FAQ | FAQs stay split by topic. This closes D2 | yes, as already recorded |
 | R3 | Cohorts move from About Us to the MDI page | yes |
 | R6 | Students stays. No terminology change | no |
-| R7 | Design Studio keeps its name | no |
+| R7 | Design Studio keeps its name. Superseded in part by R9 of the client review later the same day: the page keeps the name, the space inside it does not | no, then see 3.4 |
 | PEND | Unconfirmed facts keep the rule and change voice | no |
 | VISUAL | Home leads with the three-programme photographic carousel; services and latest use the supplied image folder | yes, replaces the short text hero |
 | PARTNERS | Use the four supplied, cropped marks: Kenyatta University, Rice University, Rice360 and The Lemelson Foundation | no |
 | SOCIAL | Use the four account destinations published by the current CDIE site: LinkedIn, Instagram, Facebook and X | no |
-| TOUR | Use the two approved concept renders as the studio entrance and explorer preview; retain the existing illustrative Three.js geometry | no |
+| TOUR | Use the two approved concept renders as the studio entrance and explorer preview; retain the existing illustrative Three.js geometry | no. Reversed the same day: both renders were screenshots of a fictional CDIE website and were removed for a photograph |
 
 Conflicts as they were raised:
 
@@ -228,6 +249,42 @@ call to action per section, and the rewriting of pending copy into public voice.
 The last of these is section 13 of the blueprint and it is correct: the rule
 that an unconfirmed fact never publishes stays exactly as it is, but the reader
 should see an invitation to ask, not an internal gap marker.
+
+### 3.4 Client review of 11 September, and what was built from it
+
+Sections 3.2 and 3.3 record an internal review round. This section records a
+different kind of input: Stacy Awinja, the CDIE manager, walked through the built
+site and gave feedback as the client. Where 3.3 weighed reviewers against each
+other, here the centre is describing itself, which settles several questions that
+no document had settled.
+
+Her overall verdict was that the structure is right and the photographs are what
+needs replacing. The meeting record, including the corrections pass that the
+transcript needs before anything in it is quoted, is in the CEO workspace at
+11_cdie/CDIE_Website_review_meeting_2026-09-11.md.
+
+| Ref | Change | Built |
+|---|---|---|
+| R9 | The two sides are Graduate School and ATC, and textiles and upholstery belongs to the first | yes, label and membership; the route is unchanged, see 3.2 |
+| R10 | A sixth programme, the Summer Program | no. No source describes it. The box stays empty rather than carrying an invention |
+| R11 | The enquiry button sits on each programme's page and carries that programme's topic | yes |
+| R12 | The MDI page lists the curriculum by semester | no. Nobody has the unit list |
+| R13 | The repeated explanatory block below the studio detail is removed | yes |
+
+Two things found while building R11 that the review did not ask for and that
+were wrong anyway. The catalyst grants button pointed at an enquiry topic that
+had never existed, so the form silently reclassified those enquiries as general;
+every programme now owns a topic and a test asserts that each one resolves. And
+the asset test still required the two tour mockups deleted in ec4860c, so the
+suite could not pass on a clean checkout.
+
+The rest of the review is waiting on material from CDIE and cannot be worked
+around: replacement photographs for design and CAD and for 3D printing, ATC
+photography that does not yet exist, cohort one student profiles, newsletter
+issues, the reports login, and the remaining team members. The programme cards
+accept a photograph and render without one until it arrives. The full list with
+owners is in the meeting record.
+
 
 ## 4. Target architecture
 

@@ -11,8 +11,23 @@ export const contactIntro = {
     "Have a question about a programme, a studio project or working with CDIE? Tell us a little about what you need so we can direct your enquiry.",
 } as const;
 
+/*
+  Review of 11 September, item R11: the enquiry button on a programme page
+  should arrive at the form with that programme already chosen, so a reader
+  asking about catalyst grants does not have to reclassify their own question.
+  Every programme therefore owns a topic. The four general topics stay for the
+  people who arrive at Contact directly.
+
+  tests/editorial-redesign.test.mjs asserts that every programme's topic exists
+  in this list. Before this round catalyst grants pointed at a topic id that had
+  never existed and the form silently fell back to a general enquiry.
+*/
 export const enquiryTopics: EnquiryTopic[] = [
   { id: "admissions", label: "Programmes and admissions" },
+  { id: "invention-education", label: "Invention Education" },
+  { id: "design-challenge", label: "Design Challenge" },
+  { id: "catalyst-grants", label: "Catalyst grants" },
+  { id: "training", label: "Masterclasses and training" },
   { id: "studio", label: "Studio access and project support" },
   { id: "events", label: "Events and training" },
   { id: "partnerships", label: "Partnerships" },
