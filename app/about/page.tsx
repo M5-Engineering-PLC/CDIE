@@ -61,9 +61,23 @@ export default function AboutPage() {
         ) : (
           <ul className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
             {people.map((person) => (
-              <li key={person.id} className="flex flex-col gap-1 bg-raise p-5">
-                <p className="text-lead text-ink">{person.name}</p>
-                <p className="text-body text-ink-2">{person.role}</p>
+              <li key={person.id} className="flex flex-col bg-raise">
+                {person.portrait ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={person.portrait.src}
+                    alt={person.portrait.alt}
+                    width={person.portrait.width}
+                    height={person.portrait.height}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[5/6] w-full bg-line object-cover"
+                  />
+                ) : null}
+                <div className="flex flex-col gap-1 p-5">
+                  <p className="text-lead text-ink">{person.name}</p>
+                  <p className="text-body text-ink-2">{person.role}</p>
+                </div>
               </li>
             ))}
           </ul>
