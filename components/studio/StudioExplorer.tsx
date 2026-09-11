@@ -13,9 +13,10 @@
   Nothing here imports from content/. The page maps records onto this view model.
 */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { RoomPlan } from "./RoomPlan";
+import { StudioRailThumb } from "./StudioRailThumb";
+import { StudioStage } from "./StudioStage";
 import type { ServiceId } from "./studioLayout";
 
 export type ExplorerCapability = {
@@ -37,8 +38,20 @@ export type StudioExplorerProps = {
 
 export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps) {
   const [selectedId, setSelectedId] = useState(initialId);
+  const [roomOpen, setRoomOpen] = useState(false);
   const selected =
     capabilities.find((item) => item.id === selectedId) ?? capabilities[0];
+
+  /* The room emits a model group, not a capability. Map it back so selecting a
+     bench moves the list and the panel with it. A group nothing claims is
+     ignored rather than guessed at. */
+  const selectByModelGroup = useCallback(
+    (group: ServiceId) => {
+      const match = capabilities.find((item) => item.modelGroup === group);
+      if (match) setSelectedId(match.id);
+    },
+    [capabilities],
+  );
 
   // Keep the selection shareable: /design-studio?service=electronics
   useEffect(() => {
@@ -83,16 +96,21 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
             );
           })}
         </ul>
+
+        <StudioRailThumb
+          active={selected.modelGroup}
+          open={roomOpen}
+          onOpen={() => setRoomOpen(true)}
+        />
       </div>
 
       <div className="grid gap-8 bg-surface p-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
-        <div className="flex min-w-0 flex-col gap-3">
-          <RoomPlan active={selected.modelGroup} />
-          <p className="text-fine text-ink-3">
-            Illustrative and unmeasured. The room follows a hand sketch and three wall
-            photographs, normalised so it can be corrected when measurements exist.
-          </p>
-        </div>
+        <StudioStage
+          active={selected.modelGroup}
+          open={roomOpen}
+          onSelect={selectByModelGroup}
+          onClose={() => setRoomOpen(false)}
+        />
 
         <div className="flex min-w-0 flex-col gap-4">
           <p className="kicker">
