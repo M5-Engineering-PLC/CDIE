@@ -5,31 +5,24 @@
   brief's explorer — capability list, media stage, compact room navigator and
   inline detail, with one selected id driving all four.
 
-  The rule this component exists to keep: a capability with no known position
-  highlights nothing. Three of the seven have no documented position, so the
-  plan stays unlit and the panel says so rather than inventing a place for them.
-
-  Change request 2026-09-21, section 4. The tour is now a tour: starting it
-  opens the room, turns it slowly and constantly, and walks the capabilities in
-  order, each arriving with its callout and the tiles for what that area
-  covers. Choosing from the list takes the tour there and carries on from it.
-
-  Nothing here imports from content/. The page maps records onto this view model.
+  Change request 2026-09-21, section 4:
+  - Tour mode with callout and component tiles.
+  - Interactive 3D room and floor plan for both Graduate School and ATC Workshop.
+  - Space switcher (Graduate School <-> ATC Workshop).
 */
 
 import { useCallback, useEffect, useState } from "react";
 
 import { StudioCapabilityList } from "./StudioCapabilityList";
 import { StudioComponentGrid } from "./StudioComponentGrid";
-import { StudioRailThumb } from "./StudioRailThumb";
 import { StudioDetail } from "./StudioDetail";
+import { StudioRailThumb } from "./StudioRailThumb";
 import { StudioStage } from "./StudioStage";
 import { StudioTourIntro } from "./StudioTourIntro";
+import type { ExplorerCapability, UnifiedServiceId } from "./explorerModel";
 import { useViewOnly } from "./useViewOnly";
-import type { ExplorerCapability } from "./explorerModel";
-import type { ServiceId } from "./studioLayout";
 
-export type { ExplorerCapability, ExplorerComponent } from "./explorerModel";
+export type { ExplorerCapability, ExplorerComponent, UnifiedServiceId } from "./explorerModel";
 
 export type StudioExplorerProps = {
   capabilities: ExplorerCapability[];
@@ -47,6 +40,18 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
 
   const index = Math.max(0, capabilities.findIndex((item) => item.id === selectedId));
   const selected = capabilities[index] ?? capabilities[0];
+
+  // Active facility space ('studio' or 'atc')
+  const [activeSpace, setActiveSpace] = useState<"studio" | "atc">(
+    selected?.space ?? "studio",
+  );
+
+  // Sync space when selecting a capability
+  useEffect(() => {
+    if (selected?.space) {
+      setActiveSpace(selected.space);
+    }
+  }, [selected?.space]);
 
   const startTour = () => {
     setRoomOpen(true);
@@ -67,15 +72,28 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
     return () => window.clearTimeout(timer);
   }, [capabilities, index, roomOpen, tour]);
 
-  /* The room emits a model group, not a capability. Map it back so selecting a
-     bench moves the list and the panel with it. A group nothing claims is
-     ignored rather than guessed at. */
+  /* Selecting equipment in 3D maps back to the matching capability */
   const selectByModelGroup = useCallback(
-    (group: ServiceId) => {
+    (group: UnifiedServiceId) => {
       const match = capabilities.find((item) => item.modelGroup === group);
-      if (match) setSelectedId(match.id);
+      if (match) {
+        setSelectedId(match.id);
+        setActiveSpace(match.space);
+      }
     },
     [capabilities],
+  );
+
+  // Handle switching space tab directly
+  const handleSwitchSpace = useCallback(
+    (space: "studio" | "atc") => {
+      setActiveSpace(space);
+      if (selected.space !== space) {
+        const firstInSpace = capabilities.find((item) => item.space === space);
+        if (firstInSpace) setSelectedId(firstInSpace.id);
+      }
+    },
+    [capabilities, selected.space],
   );
 
   // Keep the selection shareable: /design-studio?service=electronics
@@ -96,7 +114,12 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
           read before the canvas either way. */}
       <div id="studio-room" className="grid scroll-mt-20 grid-cols-[minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]">
         <div className="order-2 border-y border-line bg-raise py-4 lg:order-1 lg:border-y-0 lg:border-r lg:py-5">
-          <p className="kicker px-5 pb-3">Explore the studio</p>
+          <div className="flex items-center justify-between px-5 pb-3">
+            <p className="kicker">Explore the studio</p>
+            <span className="font-mono text-[0.625rem] uppercase tracking-wider text-ink-3">
+              {activeSpace === "atc" ? "ATC Hub" : "Grad School"}
+            </span>
+          </div>
           <StudioCapabilityList
             items={capabilities}
             selectedId={selected.id}
@@ -107,6 +130,7 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
             <StudioRailThumb
               active={selected.modelGroup}
               open={roomOpen}
+              space={activeSpace}
               onOpen={() => { setRoomOpen(true); setTour(true); }}
             />
           </div>
@@ -120,6 +144,7 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
               tour={tour}
               viewOnly={viewOnly}
               atc={selected.atc}
+              space={activeSpace}
               name={selected.name}
               spaceName={selected.spaceName}
               headline={selected.headline}
@@ -131,6 +156,7 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
               onClose={() => { setRoomOpen(false); setTour(false); }}
               onOpen={() => { setRoomOpen(true); setTour(true); }}
               onToggleTour={() => setTour((running) => !running)}
+              onSwitchSpace={handleSwitchSpace}
             />
             <StudioComponentGrid items={selected.components} capabilityName={selected.name} />
           </div>

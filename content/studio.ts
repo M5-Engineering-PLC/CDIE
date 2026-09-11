@@ -49,8 +49,8 @@ export const spaces: Space[] = [
     name: "ATC",
     shortName: "ATC",
     summary:
-      "Metalworking and woodworking sit beyond this room. Photographs and service information until its layout is documented.",
-    hasModel: false,
+      "Engineering & Prototyping Workshop: CNC machining, laser cutting, metal fabrication, and tool storage inside and alongside the shipping container.",
+    hasModel: true,
   },
 ];
 
@@ -141,7 +141,7 @@ export const capabilities: Capability[] = [
     space: "atc",
     headline: "Make the parts your prototype needs.",
     body: "The metalworking area supports fabrication, machining and welding of metal components. Staff can guide learners in developing mechanical parts and using the space appropriately.",
-    modelGroup: null,
+    modelGroup: "metalworking",
     pending: [
       "Equipment list, supported materials and fabrication limits",
       "Safety induction, supervision, access rules and charges",
@@ -176,7 +176,7 @@ export const capabilities: Capability[] = [
     space: "atc",
     headline: "Explore your idea in wood.",
     body: "The woodworking area provides space for developing wood-based designs and prototypes.",
-    modelGroup: null,
+    modelGroup: "woodworking",
     pending: [
       "Equipment, supported materials and example work",
       "Safety induction, supervision, access rules and charges",

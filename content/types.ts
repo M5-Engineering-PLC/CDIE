@@ -133,8 +133,8 @@ export type Capability = {
   space: SpaceId;
   headline: string;
   body: string;
-  /** service group id in the studio model, or null where the position is unknown */
-  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | null;
+  /** service group id in the studio/atc model, or null where the position is unknown */
+  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | "woodworking" | "metalworking" | null;
   pending: string[];
   enquiry: string;
   media: Figure[];

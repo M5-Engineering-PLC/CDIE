@@ -5,7 +5,10 @@
   kept in their own file so StudioExplorer stays inside the 150-line rule.
 */
 
+import type { AtcServiceId } from "./atc-3js";
 import type { ServiceId } from "./studioLayout";
+
+export type UnifiedServiceId = ServiceId | AtcServiceId;
 
 /** One bench, station or tool inside a capability. See StudioComponentGrid. */
 export type ExplorerComponent = {
@@ -21,12 +24,13 @@ export type ExplorerComponent = {
 export type ExplorerCapability = {
   id: string;
   name: string;
+  space: "studio" | "atc";
   spaceName: string;
-  /** true where the capability is held at the ATC, which the room model does not cover */
+  /** true where the capability is held at the ATC */
   atc: boolean;
   headline: string;
   body: string;
-  modelGroup: ServiceId | null;
+  modelGroup: UnifiedServiceId | null;
   pending: readonly string[];
   enquiry: string;
   enquiryHref: string;

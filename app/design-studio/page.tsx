@@ -37,9 +37,8 @@ const studioImages: Record<string, string> = {
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({
   id: capability.id,
   name: capability.name,
+  space: capability.space,
   spaceName: spaceShortName.get(capability.space) ?? capability.space,
-  /* Change request 2026-09-21, section 4: a capability held at the ATC switches
-     the stage to the ATC view rather than lighting a bench in another room. */
   atc: capability.space === "atc",
   headline: capability.headline,
   body: capability.body,
