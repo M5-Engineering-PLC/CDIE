@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+/*
+  The single token declaration. Gate 1 of docs/BUILD_PLAN.md freezes this file.
+  No hex value, font stack or spacing number belongs anywhere else.
+
+  Brand values are the v2 tokens sampled from cdie-logo.webp.
+  Ink, slate and paper are the CDIE Website Skeleton (Lucid) document palette.
+*/
+
+@theme {
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --color-ink: #16232e;
+  --color-ink-2: #4a5a68;
+  --color-ink-3: #7a8794;
+  --color-slate: #2f4356;
+
+  --color-paper: #e9e7e2;
+  --color-surface: #ffffff;
+  --color-raise: #f5f4f1;
+  --color-line: #d8d5cd;
+  --color-line-soft: #e6e3dc;
+
+  --color-brand: #00508f;
+  --color-brand-live: #0b78c0;
+  --color-moss: #4f7b26;
+
+  --color-flag: #b07a1e;
+  --color-flag-wash: #f5e9c8;
+  --color-flag-ink: #7e5f00;
+
+  --text-fine: 0.8125rem;
+  --text-body: 0.9688rem;
+  --text-lead: 1.125rem;
+  --text-sub: 1.375rem;
+  --text-title: 1.75rem;
+  --text-head: 2.25rem;
+  --text-hero: 3rem;
+  --text-mega: 4rem;
+
+  --spacing-gutter: 1.75rem;
+  --spacing-section: 4.5rem;
+
+  --radius-edge: 2px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.58;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-live);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+  }
+}
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+  }
+
+  .prose-body p + p {
+    margin-top: 0.9em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
