@@ -178,6 +178,10 @@ for that sits in the CEO workspace.
 | R6 | Students stays. No terminology change | no |
 | R7 | Design Studio keeps its name | no |
 | PEND | Unconfirmed facts keep the rule and change voice | no |
+| VISUAL | Home leads with the three-programme photographic carousel; services and latest use the supplied image folder | yes, replaces the short text hero |
+| PARTNERS | Use the four supplied, cropped marks: Kenyatta University, Rice University, Rice360 and The Lemelson Foundation | no |
+| SOCIAL | Use the four account destinations published by the current CDIE site: LinkedIn, Instagram, Facebook and X | no |
+| TOUR | Use the two approved concept renders as the studio entrance and explorer preview; retain the existing illustrative Three.js geometry | no |
 
 Conflicts as they were raised:
 

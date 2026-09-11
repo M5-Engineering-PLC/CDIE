@@ -14,6 +14,7 @@
 */
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 import { RoomPlan } from "./RoomPlan";
 import type { ServiceId } from "./studioLayout";
@@ -35,17 +36,21 @@ export type StudioStageProps = {
   open: boolean;
   onSelect: (service: ServiceId) => void;
   onClose: () => void;
+  onOpen: () => void;
+  image: string;
+  imageAlt: string;
 };
 
-export function StudioStage({ active, open, onSelect, onClose }: StudioStageProps) {
+export function StudioStage({ active, open, image, imageAlt, onSelect, onClose, onOpen }: StudioStageProps) {
   if (!open) {
     return (
-      <div className="flex min-w-0 flex-col gap-3">
-        <RoomPlan active={active} />
-        <p className="text-fine text-ink-3">
-          Illustrative and unmeasured. The room follows a hand sketch and three wall
-          photographs, normalised so it can be corrected when measurements exist.
-        </p>
+      <div className="relative min-h-[28rem] overflow-hidden bg-ink">
+        <Image src={image} alt={imageAlt} fill sizes="(max-width: 1280px) 100vw, 70vw" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
+        <button type="button" onClick={onOpen} className="absolute bottom-4 left-4 w-44 border border-surface/50 bg-surface p-2 text-left shadow-lg transition hover:border-brand-live">
+          <RoomPlan active={active} className="w-full" />
+          <span className="mt-2 flex items-center justify-between text-fine font-medium text-brand">Expand 3D tour <span aria-hidden="true">↗</span></span>
+        </button>
       </div>
     );
   }
@@ -63,7 +68,7 @@ export function StudioStage({ active, open, onSelect, onClose }: StudioStageProp
           onClick={onClose}
           className="text-fine font-medium text-brand underline-offset-4 hover:underline"
         >
-          Close the room
+          Minimise 3D tour
         </button>
       </div>
     </div>

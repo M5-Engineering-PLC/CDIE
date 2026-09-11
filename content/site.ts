@@ -21,7 +21,6 @@ export const site = {
 } as const;
 
 export const nav: NavItem[] = [
-  { label: "Home", href: "/" },
   { label: "Programmes", href: "/programmes" },
   { label: "Design Studio", href: "/design-studio" },
   { label: "Media", href: "/media" },
@@ -56,16 +55,16 @@ export const contact = {
   fork fk6 still records that nobody has described what the application does.
 */
 export const utilityLinks: NavItem[] = [
-  { label: "Studio login", href: "https://app.cdie.co.ke" },
+  { label: "LOGIN", href: "https://app.cdie.co.ke" },
 ];
 
 /*
-  Copy, MEDIA > From our community. The editorial note requires confirmed
-  account URLs before anything is displayed, so these carry no href yet and the
-  footer omits the group until one is confirmed.
+  Copy, MEDIA > From our community. These four destinations were verified from
+  the current CDIE site's public social links on 2026-09-11.
 */
-export const socialAccounts: { label: string; href?: string }[] = [
-  { label: "CDIE on LinkedIn" },
-  { label: "CDIE on Instagram" },
-  { label: "CDIE on YouTube" },
+export const socialAccounts: { id: "linkedin" | "instagram" | "facebook" | "x"; label: string; href?: string }[] = [
+  { id: "linkedin", label: "CDIE on LinkedIn", href: "https://www.linkedin.com/in/invention-education-kenyatta-university-a574b9336/" },
+  { id: "instagram", label: "CDIE on Instagram", href: "https://www.instagram.com/eduinventku/" },
+  { id: "facebook", label: "CDIE on Facebook", href: "https://www.facebook.com/profile.php?id=61568090889879" },
+  { id: "x", label: "CDIE on X", href: "https://x.com/EduInventKU" },
 ];

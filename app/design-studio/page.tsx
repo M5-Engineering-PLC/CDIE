@@ -4,7 +4,6 @@
 import type { Metadata } from "next";
 
 import { Button } from "@/components/primitives/Button";
-import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { StudioExplorer, type ExplorerCapability } from "@/components/studio/StudioExplorer";
 import {
@@ -23,6 +22,16 @@ export const metadata: Metadata = {
 
 const spaceName = new Map(spaces.map((space) => [space.id, space.name]));
 
+const studioImages: Record<string, string> = {
+  design: "/images/service-design-2.jpg",
+  electronics: "/images/service-electronics-1.jpg",
+  "three-d-printing": "/images/service-3dprinting-1.jpg",
+  "co-working": "/images/service-coworking-1.jpg",
+  metalworking: "/images/service-metalworking-1.jpeg",
+  textiles: "/images/service-textile-1.jpg",
+  woodworking: "/images/service-woodworking-1.jpeg",
+};
+
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({
   id: capability.id,
   name: capability.name,
@@ -33,6 +42,7 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   pending: capability.pending,
   enquiry: capability.enquiry,
   enquiryHref: "/contact?topic=studio",
+  image: studioImages[capability.id],
 }));
 
 export default async function DesignStudioPage(props: PageProps<"/design-studio">) {
@@ -45,19 +55,13 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
 
   return (
     <>
-      <PageHero
-        eyebrow="Design Studio"
-        headline={studioIntro.tourHeadline}
-        standfirst={studioIntro.tourStandfirst}
-      />
-
-      <Section tone="surface">
-        <StudioExplorer capabilities={explorerCapabilities} initialId={initialId} />
-        <p className="mt-6 max-w-[70ch] text-fine text-ink-3">
+      <StudioExplorer capabilities={explorerCapabilities} initialId={initialId} />
+      <div className="shell py-6">
+        <p className="max-w-[70ch] text-fine text-ink-3">
           Photographs and short demonstrations are added as each area is captured. Until
           then the room gives you the layout and the text gives you the capability.
         </p>
-      </Section>
+      </div>
 
       <Section
         eyebrow="The studio"

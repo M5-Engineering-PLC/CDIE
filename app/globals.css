@@ -146,6 +146,20 @@
   .prose-body p + p {
     margin-top: 0.9em;
   }
+
+  .hero-progress {
+    transform-origin: left;
+    animation: hero-progress 7s linear forwards;
+  }
+
+  .hero-progress.paused {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes hero-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {

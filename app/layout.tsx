@@ -4,7 +4,7 @@ import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { SiteFooter } from "@/components/chrome/SiteFooter";
 import { SiteNav } from "@/components/chrome/SiteNav";
 import { SkipLink } from "@/components/chrome/SkipLink";
-import { contact, nav, site, utilityLinks } from "@/content/site";
+import { contact, nav, site, socialAccounts, utilityLinks } from "@/content/site";
 
 import "./globals.css";
 
@@ -62,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           name={site.name}
           longName={site.longName}
           institution={site.institution}
+          socialAccounts={[...socialAccounts]}
         />
       </body>
     </html>

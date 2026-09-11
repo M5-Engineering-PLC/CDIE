@@ -16,7 +16,9 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { StudioRailThumb } from "./StudioRailThumb";
+import { StudioDetail } from "./StudioDetail";
 import { StudioStage } from "./StudioStage";
+import { StudioTourIntro } from "./StudioTourIntro";
 import type { ServiceId } from "./studioLayout";
 
 export type ExplorerCapability = {
@@ -29,6 +31,7 @@ export type ExplorerCapability = {
   pending: readonly string[];
   enquiry: string;
   enquiryHref: string;
+  image: string;
 };
 
 export type StudioExplorerProps = {
@@ -41,6 +44,13 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
   const [roomOpen, setRoomOpen] = useState(false);
   const selected =
     capabilities.find((item) => item.id === selectedId) ?? capabilities[0];
+
+  const startTour = () => {
+    setRoomOpen(true);
+    window.requestAnimationFrame(() => {
+      document.getElementById("studio-room")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
 
   /* The room emits a model group, not a capability. Map it back so selecting a
      bench moves the list and the panel with it. A group nothing claims is
@@ -64,7 +74,9 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
   if (!selected) return null;
 
   return (
-    <div className="grid border border-line lg:grid-cols-[16rem_1fr]">
+    <div className="overflow-hidden border border-line bg-surface">
+      <StudioTourIntro onStart={startTour} />
+      <div id="studio-room" className="grid scroll-mt-20 lg:grid-cols-[16rem_1fr]">
       <div className="border-b border-line bg-raise py-5 lg:border-b-0 lg:border-r">
         <p className="kicker px-5 pb-3">Explore the studio</p>
         <ul>
@@ -108,37 +120,15 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
         <StudioStage
           active={selected.modelGroup}
           open={roomOpen}
+          image={selected.image}
+          imageAlt={`${selected.name} at the CDIE Design Studio`}
           onSelect={selectByModelGroup}
           onClose={() => setRoomOpen(false)}
+          onOpen={() => setRoomOpen(true)}
         />
 
-        <div className="flex min-w-0 flex-col gap-4">
-          <p className="kicker">
-            {selected.modelGroup ? "Highlighted in the room" : "No mapped area"}
-          </p>
-          <h3 className="display text-sub leading-snug">{selected.headline}</h3>
-          <p className="text-body leading-relaxed text-ink-2">{selected.body}</p>
-
-          {selected.modelGroup === null ? (
-            <p className="border-l-2 border-brand-lift bg-raise px-4 py-3 text-body text-ink-2">
-              This one is held at the ATC, beyond the room shown in the plan, so nothing
-              is highlighted here.
-            </p>
-          ) : null}
-
-          {selected.pending.length > 0 ? (
-            <p className="border-t border-line pt-4 text-body text-ink-2">
-              {`For ${selected.pending
-                .map((item) => item.charAt(0).toLowerCase() + item.slice(1))
-                .join(", ")
-                .replace(/, ([^,]*)$/, " and $1")}, ask the team.`}
-            </p>
-          ) : null}
-
-          <a href={selected.enquiryHref} className="text-body font-medium text-brand">
-            {selected.enquiry} →
-          </a>
-        </div>
+        <StudioDetail selected={selected} />
+      </div>
       </div>
     </div>
   );

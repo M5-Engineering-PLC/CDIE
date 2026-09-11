@@ -1,6 +1,6 @@
 "use client";
 
-// Lucid: nav order Home > Programmes > Design Studio > Media > About Us > Contact.
+// Review R1/R2: the logo is Home; visible links start at Programmes and end in LOGIN.
 // Decision R2, 2026-09-11: the studio login joins the bar as its last item.
 // The logo is the home link, so no wordmark sits beside it.
 
@@ -30,9 +30,9 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
   const login = utility[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-brand-lift/30 bg-brand/95 text-surface backdrop-blur">
       <div className="shell flex items-center justify-between gap-6 py-3">
-        <Link href="/" className="flex items-center gap-3 no-underline" aria-label="CDIE home">
+        <Link href="/" className="flex items-center gap-3 rounded-edge bg-surface px-2 py-1 no-underline" aria-label="CDIE home">
           <Image
             src={logo.src}
             alt={logo.alt}
@@ -41,7 +41,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
             priority
             className="h-9 w-auto md:h-10"
           />
-          <span className="hidden border-l border-line pl-3 text-fine leading-tight text-ink-2 xl:block">
+          <span className="hidden border-l border-line pl-3 text-fine leading-tight text-ink-2 2xl:block">
             {institution}
             <br />
             {longName}
@@ -58,8 +58,8 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                     aria-current={isCurrent(item.href) ? "page" : undefined}
                     className={`text-body no-underline transition-colors ${
                       isCurrent(item.href)
-                        ? "text-brand [box-shadow:inset_0_-2px_0_0_currentColor]"
-                        : "text-ink-2 hover:text-ink"
+                        ? "text-surface [box-shadow:inset_0_-2px_0_0_currentColor]"
+                        : "text-surface/75 hover:text-surface"
                     }`}
                   >
                     {item.label}
@@ -72,10 +72,9 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           {login ? (
             <a
               href={login.href}
-              className="rounded-edge border border-brand/40 px-3.5 py-2 text-body font-medium text-brand no-underline transition-colors hover:border-brand hover:bg-brand hover:text-surface"
+              className="rounded-edge border border-surface/50 bg-surface px-4 py-2 text-body font-semibold tracking-wide text-brand no-underline transition-colors hover:bg-brand-lift hover:text-ink"
             >
               {login.label}
-              <span aria-hidden="true"> ↗</span>
             </a>
           ) : null}
         </div>
@@ -85,7 +84,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="rounded-edge border border-line px-3 py-2 text-fine lg:hidden"
+          className="rounded-edge border border-surface/50 px-3 py-2 text-fine text-surface lg:hidden"
         >
           {open ? "Close" : "Menu"}
         </button>
@@ -95,7 +94,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
         id="mobile-nav"
         aria-label="Main"
         hidden={!open}
-        className="border-t border-line bg-surface lg:hidden"
+        className="border-t border-brand-lift/30 bg-brand lg:hidden"
       >
         <ul className="shell flex flex-col py-2">
           {items.map((item) => (
@@ -104,8 +103,8 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                 href={item.href}
                 onClick={() => setOpen(false)}
                 aria-current={isCurrent(item.href) ? "page" : undefined}
-                className={`block border-b border-line-soft py-3 text-lead no-underline ${
-                  isCurrent(item.href) ? "text-brand" : "text-ink"
+                className={`block border-b border-surface/15 py-3 text-lead no-underline ${
+                  isCurrent(item.href) ? "text-surface" : "text-surface/75"
                 }`}
               >
                 {item.label}
@@ -117,10 +116,9 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
               <a
                 href={login.href}
                 onClick={() => setOpen(false)}
-                className="block py-3 text-lead font-medium text-brand no-underline"
+                className="block py-3 text-lead font-semibold text-surface no-underline"
               >
                 {login.label}
-                <span aria-hidden="true"> ↗</span>
               </a>
             </li>
           ) : null}
