@@ -7,22 +7,32 @@ import { Button } from "@/components/primitives/Button";
 import { LinkedInCarousel } from "@/components/sections/LinkedInCarousel";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
-import { isStale, linkedInCopy, stubFeed } from "@/content/linkedin";
 import {
   eventsPointer,
   mediaItems,
   mediaLanding,
   newslettersCopy,
 } from "@/content/media";
+import { getLinkedInFeed, isStale, linkedInCopy } from "@/lib/linkedin";
 
 export const metadata: Metadata = {
   title: "Media",
   description: mediaLanding.standfirst,
 };
 
-export default function MediaPage() {
+/*
+  The page stays static and refreshes on a timer. Without this the feed would be
+  read once at build time and never again, so the section would look wired and
+  silently stop updating.
+
+  Next requires a literal here, so this cannot import CACHE_SECONDS. Keep the
+  two in step: lib/linkedin/config.ts holds the other half.
+*/
+export const revalidate = 600;
+
+export default async function MediaPage() {
   const newsletters = mediaItems.filter((item) => item.kind === "newsletter");
-  const feed = stubFeed;
+  const feed = await getLinkedInFeed();
 
   return (
     <>
