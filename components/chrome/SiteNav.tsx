@@ -31,7 +31,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
 
   return (
     <header className="sticky top-0 z-40 border-b border-brand-lift/30 bg-brand/95 text-surface backdrop-blur">
-      <div className="shell flex items-center justify-between gap-6 py-3">
+      <div className="shell flex items-center justify-between gap-6 py-2">
         <Link href="/" className="flex items-center gap-3 rounded-edge bg-surface px-2 py-1 no-underline" aria-label="CDIE home">
           <Image
             src={logo.src}
@@ -39,7 +39,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
             width={logo.width}
             height={logo.height}
             priority
-            className="h-9 w-auto md:h-10"
+            className="h-12 w-auto md:h-14"
           />
           <span className="hidden border-l border-line pl-3 text-fine leading-tight text-ink-2 2xl:block">
             {institution}

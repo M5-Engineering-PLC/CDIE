@@ -6,7 +6,6 @@
   on Contact and Design Studio, where someone is actually planning a visit.
 */
 
-import Image from "next/image";
 import Link from "next/link";
 
 import type { NavItem } from "@/content/types";
@@ -21,9 +20,9 @@ export type SiteFooterProps = {
     availability: string;
     campus: string;
   };
+  name: string;
   longName: string;
   institution: string;
-  logo: { src: string; alt: string; width: number; height: number };
   socialAccounts: { id: "linkedin" | "instagram" | "facebook" | "x"; label: string; href?: string }[];
 };
 
@@ -57,9 +56,9 @@ export function SiteFooter({
   items,
   utility,
   contact,
+  name,
   longName,
   institution,
-  logo,
   socialAccounts,
 }: SiteFooterProps) {
   return (
@@ -67,17 +66,12 @@ export function SiteFooter({
       <div className="shell grid gap-10 py-16 md:grid-cols-[1.25fr_.8fr_1fr]">
         <div className="flex flex-col gap-3">
           {/*
-            The asset carries a black wordmark, which disappears on the ink
-            ground. Knocking it back to a white silhouette keeps it legible;
-            the full-colour mark still renders in the header, on white.
+            Initials, not the mark. The full logo already carries the name in
+            the header; repeating it on ink meant silhouetting it, which threw
+            away the colour that makes it recognisable. The letterforms read
+            cleanly at any size and need no asset.
           */}
-          <Image
-            src={logo.src}
-            alt={logo.alt}
-            width={logo.width}
-            height={logo.height}
-            className="h-11 w-auto brightness-0 invert"
-          />
+          <p className="display text-head leading-none tracking-tight text-surface">{name}</p>
           <p className="text-fine leading-relaxed text-surface/70">
             {longName}
             <br />

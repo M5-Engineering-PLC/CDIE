@@ -10,7 +10,6 @@ import { Button } from "@/components/primitives/Button";
 import { EventGrid, type EventCardItem } from "@/components/blocks/EventGrid";
 import { FaqList } from "@/components/blocks/FaqList";
 import { SampleNotice } from "@/components/blocks/SampleNotice";
-import { PageHero } from "@/components/sections/PageHero";
 import { ProgrammeHeroCarousel, type ProgrammeHeroSlide } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
 import {
@@ -38,11 +37,10 @@ const eventCards: EventCardItem[] = events.map((event) => ({
 }));
 
 /*
-  Change request 2026-09-13, section 4.1. The hero carries the page heading from
-  the copy source; the carousel sits directly beneath it as part of the same
-  opening block, so a visitor sees the programmes themselves before any prose.
-  Slides are built from the same opportunities the page lists below, so the two
-  can never drift apart.
+  Change request 2026-09-13, section 4.1, revised: the carousel is the first
+  section. The standing page hero was removed, so each slide's title is the
+  page h1, as it already is on Home. Slides are built from the same
+  opportunities the page lists below, so the two can never drift apart.
 */
 const heroSlides: ProgrammeHeroSlide[] = opportunities
   .filter((opportunity) => opportunity.image)
@@ -64,23 +62,8 @@ export const metadata: Metadata = {
 export default function ProgrammesPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Programmes"
-        headline={programmesLanding.headline}
-        standfirst={programmesLanding.standfirst}
-      >
-        {programmesLanding.shortcuts.map((shortcut, index) => (
-          <Button
-            key={shortcut.href}
-            href={shortcut.href}
-            tone={index === 0 ? "solid" : "outline"}
-          >
-            {shortcut.label}
-          </Button>
-        ))}
-      </PageHero>
 
-      <ProgrammeHeroCarousel slides={heroSlides} headingLevel="h2" />
+      <ProgrammeHeroCarousel slides={heroSlides} />
 
       <Section
         eyebrow="How learning works"
