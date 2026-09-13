@@ -50,6 +50,11 @@ Also carried forward from the earlier remediation work:
 - The v2 tokens were later sampled from the pixels of `cdie-logo.webp`. That
   closes Lucid fork fk4, which recorded the palette as never sampled.
 
+Remediation of the current live site is tracked outside this repository, in
+the CEO workspace note CDIE_Website_live_site_fixes_2026-09-11. This
+repository holds the rules that audit produced, not the findings themselves.
+The repository is public; the findings name people and mailboxes and are not.
+
 ## 3. Information architecture
 
 Navigation order, from Lucid: Home, Programmes, Design Studio, Media, About Us,
@@ -142,6 +147,144 @@ other pages. Reading: both hold if each slide carries one short line and one
 action over a full-bleed photograph, which is also the selected cinematic
 reference. The Lucid programme carousel becomes the three static cards, and the
 Lucid strip of latest media becomes the lower carousel.
+
+The naming of the studio's two sides. Lucid names them Design Studio and ATC,
+and the public route is /design-studio. The client review of 11 September
+instructs that the two sides are Graduate School and ATC, and moves textiles and
+upholstery across from ATC to the first of them. Reading, decided 11 September:
+the space label changes and the route does not. The centre's own manager names
+the sides, so the label follows her; /design-studio is a public URL and the page
+covers both sides, so it stays. Recorded as R9 in the Lucid update note, which
+is where Lucid gets corrected.
+
+One consequence worth stating, because it is the kind of thing that rots
+quietly. Textiles is now Graduate School but still has no documented position in
+the room, so the explorer's unplaced-capability message can no longer say the
+capability is held at the ATC. It says nothing documents where the capability
+sits, which is the true statement for all three unplaced ones and stays true
+whichever side they belong to.
+
+The source of R9, and of the other four review items numbered R10 to R13, is a
+machine transcript of poor quality in which speaker attribution is unreliable.
+The corrections pass lives with the meeting record outside this repository. Do
+not treat a line of that transcript as copy.
+
+### 3.3 Review feedback of 11 September, and where it collides with Lucid
+
+Three review documents arrived on 11 September: a UX and structure revision
+blueprint, homepage comments from Mololu (`v1_comments.txt`, Drive
+`1DocG_kO1k9GftMb8fY39EiQSDthuZIo8`), and a sampled palette file. None of the
+three is a source authority under section 2. They are review of the v1 build,
+which makes them valuable and makes them not binding. Where one contradicts
+Lucid or the Actual Copy tab, it is recorded here and answered by a person, not
+by an agent.
+
+The blueprint is missing its section 2. Whatever it covered has not been read.
+
+All twelve were answered by Munene on 11 September and are built. Where an
+answer overrules Lucid, the Lucid document is the thing to change; a note asking
+for that sits in the CEO workspace.
+
+| Ref | Answer | Overrules Lucid |
+|---|---|---|
+| R1 | Home leads with the three programmes. The five-destination carousel is gone | yes |
+| TYPE | Sans only: Archivo display, IBM Plex Sans body. Newsreader dropped | no |
+| R2 | Studio login joins the navigation bar and keeps its footer link | yes |
+| C-01 | The form is wired to ive@ku.ac.ke through a route handler | no |
+| R8 | A carousel holds cards that carry a short description and a link | no |
+| R4 | All five programme child routes stay | no |
+| R5 | Newsletters stay in Media, as cards with a cover that opens the issue | no |
+| FAQ | FAQs stay split by topic. This closes D2 | yes, as already recorded |
+| R3 | Cohorts move from About Us to the MDI page | yes |
+| R6 | Students stays. No terminology change | no |
+| R7 | Design Studio keeps its name. Superseded in part by R9 of the client review later the same day: the page keeps the name, the space inside it does not | no, then see 3.4 |
+| PEND | Unconfirmed facts keep the rule and change voice | no |
+| VISUAL | Home leads with the three-programme photographic carousel; services and latest use the supplied image folder | yes, replaces the short text hero |
+| PARTNERS | Use the four supplied, cropped marks: Kenyatta University, Rice University, Rice360 and The Lemelson Foundation | no |
+| SOCIAL | Use the four account destinations published by the current CDIE site: LinkedIn, Instagram, Facebook and X | no |
+| TOUR | Use the two approved concept renders as the studio entrance and explorer preview; retain the existing illustrative Three.js geometry | no. Reversed the same day: both renders were screenshots of a fictional CDIE website and were removed for a photograph |
+
+Conflicts as they were raised:
+
+R1. The Home destination carousel. The confirmed structure and the Actual Copy
+tab put a five-destination carousel at the top of Home. The blueprint calls that
+duplicate navigation, since the same six labels sit in the navigation bar, and
+Mololu's comments replace it with a carousel of the three programmes. Two
+independent reviewers arrived at the same objection separately, which is the
+strongest signal in the whole set.
+
+R2. Login. Lucid keeps `app.cdie.co.ke` as a footer utility and fork fk6 records
+that nobody has described what it does. The blueprint and Mololu both want it in
+the navigation bar. The reviewers agree against Lucid.
+
+R3. Cohorts. Lucid puts Profiles Cohorts under About Us and the confirmed
+structure keeps them there. The blueprint moves them into MDI as programme
+evidence.
+
+R4. Programme child pages. Lucid gives Programmes five children. The blueprint
+argues that Design Challenge, Catalyst Grants and Training are thin pages and
+should be sections inside IvE until there is enough content to justify a route.
+The catalyst grants page currently publishes no figure and little else, so the
+observation is accurate.
+
+R5. Newsletters. Lucid puts newsletters inside Media, opening the published
+issue directly. The blueprint wants a dedicated chronological archive page. The
+stakeholder comments of 5 September independently propose newsletters as their
+own destination.
+
+R6. Terminology. The blueprint asks for "students" to become "innovators" where
+academic status is not the subject. Words are the Actual Copy tab's authority.
+This cannot be applied in code; it is a change to the copy document first.
+
+R7. The Design Studio name. Mololu asks whether it should be called Working
+Space. Lucid and the Actual Copy tab both say Design Studio.
+
+R8. Carousels. The blueprint says essential information must not sit behind a
+carousel. Mololu's homepage is three carousels. The two review documents
+contradict each other, and R1 cannot be answered without answering this.
+
+Not a conflict, and adopted without a decision: the sampled palette, the logo as
+the home link, clickable cards, visible hover and focus states, one dominant
+call to action per section, and the rewriting of pending copy into public voice.
+The last of these is section 13 of the blueprint and it is correct: the rule
+that an unconfirmed fact never publishes stays exactly as it is, but the reader
+should see an invitation to ask, not an internal gap marker.
+
+### 3.4 Client review of 11 September, and what was built from it
+
+Sections 3.2 and 3.3 record an internal review round. This section records a
+different kind of input: Stacy Awinja, the CDIE manager, walked through the built
+site and gave feedback as the client. Where 3.3 weighed reviewers against each
+other, here the centre is describing itself, which settles several questions that
+no document had settled.
+
+Her overall verdict was that the structure is right and the photographs are what
+needs replacing. The meeting record, including the corrections pass that the
+transcript needs before anything in it is quoted, is in the CEO workspace at
+11_cdie/CDIE_Website_review_meeting_2026-09-11.md.
+
+| Ref | Change | Built |
+|---|---|---|
+| R9 | The two sides are Graduate School and ATC, and textiles and upholstery belongs to the first | yes, label and membership; the route is unchanged, see 3.2 |
+| R10 | A sixth programme, the Summer Program | no. No source describes it. The box stays empty rather than carrying an invention |
+| R11 | The enquiry button sits on each programme's page and carries that programme's topic | yes |
+| R12 | The MDI page lists the curriculum by semester | no. Nobody has the unit list |
+| R13 | The repeated explanatory block below the studio detail is removed | yes |
+
+Two things found while building R11 that the review did not ask for and that
+were wrong anyway. The catalyst grants button pointed at an enquiry topic that
+had never existed, so the form silently reclassified those enquiries as general;
+every programme now owns a topic and a test asserts that each one resolves. And
+the asset test still required the two tour mockups deleted in ec4860c, so the
+suite could not pass on a clean checkout.
+
+The rest of the review is waiting on material from CDIE and cannot be worked
+around: replacement photographs for design and CAD and for 3D printing, ATC
+photography that does not yet exist, cohort one student profiles, newsletter
+issues, the reports login, and the remaining team members. The programme cards
+accept a photograph and render without one until it arrives. The full list with
+owners is in the meeting record.
+
 
 ## 4. Target architecture
 
@@ -279,32 +422,19 @@ Rules for parallel work:
 - Commit messages describe one behaviour change.
 - `main` stays deployable at every commit.
 
-## 9. Fix on the live site now
-
-Three items in the audit are live harm and should not wait for the rebuild.
-
-- The two fabricated staff profiles, Samantha Wood and Dan Wilkinson, are
-  published and indexable, carrying `lab@themestek.com`, lorem ipsum and
-  invented skill bars. Unpublish them.
-- The Apply page still presents an open application for a 2026 cycle that closed
-  in April. Close it or state the cycle is closed.
-- The Contacts page and the FAQ publish two different addresses. Until fork fk3
-  is answered, publish neither floor and keep the instruction to contact the
-  team before travelling.
-
-## 10. The gates
+## 9. The gates
 
 Each gate has an exit test. Record the result in `docs/gates/G<n>.md` before the
 next gate starts.
 
 ### Gate 0 — Decisions and scaffold
 
-Work: answer the decisions in section 11. Create the Next.js scaffold,
+Work: answer the decisions in section 10. Create the Next.js scaffold,
 TypeScript, Tailwind, ESLint, Prettier, the Vercel project, and the preview
 route. Import the brand assets.
 
 Exit test:
-- Every decision in section 11 has a recorded answer or a recorded deferral with
+- Every decision in section 10 has a recorded answer or a recorded deferral with
   the work it blocks.
 - `npm run build` passes.
 - The preview deployment serves an empty styled page.
@@ -390,7 +520,7 @@ Exit test:
 - An action button exists only where its destination is live. Otherwise the page
   carries the enquiry wording from the Actual Copy tab.
 - Every retired route returns a 301 to its mapped replacement.
-- The two fabricated profiles do not exist in the new content.
+- No theme demo profile from the previous site exists in the new content.
 - The LinkedIn carousel renders from the stub file, loads at most two iframes on
   first paint, and hides itself or falls back to a plain link out when
   `lastSyncedAt` is older than 48 hours. The privacy notice says that opening the
@@ -425,7 +555,7 @@ Exit test:
 - After the tag, the site is frozen. A change needs a new branch and a new gate
   record.
 
-## 11. Open decisions
+## 10. Open decisions
 
 Lucid page 3 holds seven open forks. Three are answered by later work. The rest
 block Gate 0, together with the decisions this reading added.
@@ -450,7 +580,7 @@ block Gate 0, together with the decisions this reading added.
 | D16 | Make free-tier polling floor, `urn:li:ugcPost` in the embed path, whether the trigger returns post text | Integration handoff, marked unverified | Open. Empirical checks during build step 4. None of them blocks the front end, which builds against the stub |
 | D17 | Which shared inbox receives Make's failure notifications | Integration handoff | Open. It must not be one person's address |
 
-## 12. Risks
+## 11. Risks
 
 - Two agents edit one file and the merge destroys work. Control: section 8.
 - Token drift produces a page that looks close but not right. Control: Gate 1.

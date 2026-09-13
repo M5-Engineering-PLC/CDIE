@@ -11,8 +11,23 @@ export const contactIntro = {
     "Have a question about a programme, a studio project or working with CDIE? Tell us a little about what you need so we can direct your enquiry.",
 } as const;
 
+/*
+  Review of 11 September, item R11: the enquiry button on a programme page
+  should arrive at the form with that programme already chosen, so a reader
+  asking about catalyst grants does not have to reclassify their own question.
+  Every programme therefore owns a topic. The four general topics stay for the
+  people who arrive at Contact directly.
+
+  tests/editorial-redesign.test.mjs asserts that every programme's topic exists
+  in this list. Before this round catalyst grants pointed at a topic id that had
+  never existed and the form silently fell back to a general enquiry.
+*/
 export const enquiryTopics: EnquiryTopic[] = [
   { id: "admissions", label: "Programmes and admissions" },
+  { id: "invention-education", label: "Invention Education" },
+  { id: "design-challenge", label: "Design Challenge" },
+  { id: "catalyst-grants", label: "Catalyst grants" },
+  { id: "training", label: "Masterclasses and training" },
   { id: "studio", label: "Studio access and project support" },
   { id: "events", label: "Events and training" },
   { id: "partnerships", label: "Partnerships" },
@@ -22,8 +37,10 @@ export const enquiryTopics: EnquiryTopic[] = [
 export const defaultTopicId = "general";
 
 /*
-  Contact is a task page, so these are three static cards, not a carousel.
-  Selecting one changes the form's reason. It does not send anything.
+  Kept for any page that wants to point someone at a prefilled enquiry. The
+  Contact page itself no longer renders these: blueprint section 6, decision
+  C-01, removed the separate enquiry-selection step in favour of the dropdown
+  inside the form.
 */
 export const topicCards: Card[] = [
   {
@@ -60,23 +77,18 @@ export const form = {
   messagePrompt:
     "Tell us briefly what you need help with. For a project enquiry, include the idea and the support you are looking for.",
   submit: "Send enquiry",
-  success: "Thank you. Your enquiry has been sent to the CDIE team.",
-  error: "Your message could not be sent. Please try again or email ive@ku.ac.ke.",
+  success:
+    "Thank you. Your enquiry is on its way to the CDIE team, and they will reply to the address you gave.",
+  error: "Your message could not be sent just now. Please try again, or email us at",
   /*
-    Copy editorial note: use success and acknowledgement text only once sending
-    is working. The recipient and automatic reply are not configured, so the
-    form is disabled and the page leads with email and phone instead.
-    Gate 6 enables this once a test enquiry reaches the intended mailbox.
+    Shown when the mail credential is not set on the deployment. It is not an
+    apology for a bug: it is the honest state of a form that cannot deliver, and
+    it hands the reader the address that does work. Decision C-01, 2026-09-11.
   */
-  enabled: false,
-  disabledNote:
-    "The enquiry form is not connected yet. Email or call the team and you will reach the same people.",
+  unavailable: "The form cannot send from this site yet. Please email the team at",
 } as const;
 
 export const visit = {
   headline: "Find us at Kenyatta University.",
-  pending: [
-    "Building and floor",
-    "Map pin, campus entry directions, parking and accessibility information",
-  ],
+  pending: ["the building, the floor, parking and step-free access"],
 } as const;

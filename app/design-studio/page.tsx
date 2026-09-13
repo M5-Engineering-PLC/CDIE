@@ -4,7 +4,6 @@
 import type { Metadata } from "next";
 
 import { Button } from "@/components/primitives/Button";
-import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { StudioExplorer, type ExplorerCapability } from "@/components/studio/StudioExplorer";
 import {
@@ -21,18 +20,29 @@ export const metadata: Metadata = {
   description: studioIntro.tourStandfirst,
 };
 
-const spaceName = new Map(spaces.map((space) => [space.id, space.name]));
+const spaceShortName = new Map(spaces.map((space) => [space.id, space.shortName]));
+
+const studioImages: Record<string, string> = {
+  design: "/images/service-design-2.jpg",
+  electronics: "/images/service-electronics-1.jpg",
+  "three-d-printing": "/images/service-3dprinting-1.jpg",
+  "co-working": "/images/service-coworking-1.jpg",
+  metalworking: "/images/service-metalworking-1.jpeg",
+  textiles: "/images/service-textile-1.jpg",
+  woodworking: "/images/service-woodworking-1.jpeg",
+};
 
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({
   id: capability.id,
   name: capability.name,
-  spaceName: spaceName.get(capability.space) ?? capability.space,
+  spaceName: spaceShortName.get(capability.space) ?? capability.space,
   headline: capability.headline,
   body: capability.body,
   modelGroup: capability.modelGroup,
   pending: capability.pending,
   enquiry: capability.enquiry,
   enquiryHref: "/contact?topic=studio",
+  image: studioImages[capability.id],
 }));
 
 export default async function DesignStudioPage(props: PageProps<"/design-studio">) {
@@ -45,25 +55,8 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
 
   return (
     <>
-      <PageHero
-        eyebrow="Design Studio"
-        headline={studioIntro.tourHeadline}
-        standfirst={studioIntro.tourStandfirst}
-      />
-
-      <Section tone="surface">
-        <StudioExplorer capabilities={explorerCapabilities} initialId={initialId} />
-        <p className="mt-6 max-w-[70ch] text-fine text-ink-3">
-          Photographs and short demonstrations are added as each area is captured. Until
-          then the room gives you the layout and the text gives you the capability.
-        </p>
-      </Section>
-
-      <Section
-        eyebrow="The studio"
-        title={studioIntro.headline}
-        standfirst={studioIntro.body}
-      >
+      <StudioExplorer capabilities={explorerCapabilities} initialId={initialId} />
+      <Section eyebrow="The two sides" title="Where the work happens.">
         <ul className="grid gap-px bg-line md:grid-cols-2">
           {spaces.map((space) => (
             <li key={space.id} className="flex flex-col gap-3 bg-surface p-6">
@@ -77,6 +70,10 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
             </li>
           ))}
         </ul>
+        <p className="mt-8 max-w-[70ch] text-fine text-ink-3">
+          Photographs and short demonstrations are added as each area is captured. Until
+          then the room gives you the layout and the text gives you the capability.
+        </p>
       </Section>
 
       <Section tone="surface" eyebrow="Access" title={studioAccess.headline}>

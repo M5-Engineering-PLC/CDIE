@@ -3,6 +3,8 @@
 
 import type { Metadata } from "next";
 
+import Image from "next/image";
+
 import { Chip } from "@/components/primitives/Kicker";
 import { Button } from "@/components/primitives/Button";
 import { PageHero } from "@/components/sections/PageHero";
@@ -64,19 +66,35 @@ export default function ProgrammesPage() {
         title="Find the one that fits where you are."
         standfirst="Each has its own page with what it asks of you and what to do next."
       >
+        {/* Review of 11 September: a programme should show what it looks like,
+            not only describe itself. The picture renders when CDIE has supplied
+            one; until then the card is exactly what it was. */}
         <ul className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
           {opportunities.map((opportunity) => (
-            <li key={opportunity.id} className="flex flex-col gap-3 bg-raise p-6">
-              <div className="flex items-center justify-between gap-3">
-                <p className="kicker">{opportunity.kind}</p>
-                <Chip status={opportunity.status} />
-              </div>
-              <h3 className="display text-sub leading-snug">{opportunity.title}</h3>
-              <p className="text-body leading-relaxed text-ink-2">{opportunity.summary}</p>
-              <div className="mt-auto pt-2">
-                <Button href={opportunity.href} tone="quiet">
-                  Open {opportunity.title}
-                </Button>
+            <li key={opportunity.id} className="flex flex-col bg-raise">
+              {opportunity.image ? (
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <Image
+                    src={opportunity.image.src}
+                    alt={opportunity.image.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover"
+                  />
+                </div>
+              ) : null}
+              <div className="flex flex-1 flex-col gap-3 p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="kicker">{opportunity.kind}</p>
+                  <Chip status={opportunity.status} />
+                </div>
+                <h3 className="display text-sub leading-snug">{opportunity.title}</h3>
+                <p className="text-body leading-relaxed text-ink-2">{opportunity.summary}</p>
+                <div className="mt-auto pt-2">
+                  <Button href={opportunity.href} tone="quiet">
+                    Open {opportunity.title}
+                  </Button>
+                </div>
               </div>
             </li>
           ))}

@@ -61,6 +61,11 @@ export type Opportunity = {
   href: string;
   /** facts the programme owner has not confirmed; never rendered as claims */
   pending: string[];
+  /** the enquiry topic this programme prefills on the contact form */
+  topic: string;
+  /** review of 11 September: a picture of the programme, not an icon. The card
+      renders without one until CDIE supplies the photograph. */
+  image?: Figure;
 };
 
 export type CalendarEvent = {
@@ -106,6 +111,8 @@ export type Capability = {
 export type Space = {
   id: SpaceId;
   name: string;
+  /** the name as it fits the narrow column of the capability list */
+  shortName: string;
   summary: string;
   hasModel: boolean;
 };
@@ -120,6 +127,12 @@ export type MediaItem = {
   date?: string;
   /** newsletters open the published issue in a new tab, with no intermediate click */
   external?: string;
+  /*
+    Decision R5, 2026-09-11: "cards such as newsletter 1 with an image, then
+    link to pdf in a new tab when tapped". The cover is the card; tapping it
+    opens the issue. A card without a cover still renders, as type alone.
+  */
+  cover?: Figure;
   body?: string[];
 };
 

@@ -3,7 +3,7 @@
 // Lucid: a profile needs picture, name and designation. Nothing else required.
 // Person and cohort selections expand within this page; no child routes.
 
-import type { Card, Cohort, Person } from "./types";
+import type { Card, Person } from "./types";
 
 export const aboutIntro = {
   headline: "Practical learning, with people at the centre.",
@@ -46,17 +46,86 @@ export const workYouCanSee = {
 } as const;
 
 /*
-  Copy, ABOUT US > Our team: use a real photograph, verified name and current
-  designation for each person. The current roster and preferred spellings are
-  unverified, and the editorial note forbids carrying over theme-demo profiles.
+  Copy, ABOUT US > Our team: a real photograph, verified name and current
+  designation for each person.
 
-  The live site's two fabricated profiles, Samantha Wood and Dan Wilkinson, are
-  deliberately absent and must never be ported. Build plan section 9.
+  Roster provenance: the eight profiles were read from the live site during the
+  audit and each name and role was confirmed by Munene on 2026-09-11. That
+  confirmation is what let them be published; the concept file alone would not
+  have been enough, since a concept file does not overrule the Actual Copy tab.
 
-  The grid ships empty until the roster is verified. An incomplete entry is
-  omitted from publication rather than shown as a placeholder.
+  Order follows the live site rather than an invented seniority ranking.
+
+  The previous site's theme-demo profiles are deliberately absent and must never
+  be ported. Gate 6 tests for their absence.
+
+  An incomplete entry is omitted rather than shown as a placeholder. Two open
+  items, neither of which blocks publication:
+  - "Eubrea Mitchy Njeri" was read from the page, not from HR records. Confirm
+    the spelling against HR before this goes to print anywhere.
+  - Jacqueline Muitungu has a duplicate post on the live site, F-17. Reclaim the
+    clean slug during migration.
+
+  The photographs are environmental rather than cropped headshots, so the grid
+  frames them at the plate's own ratio and crops as little as possible.
 */
-export const people: Person[] = [];
+const portrait = (slug: string, name: string, height = 712) => ({
+  src: `/team/team-${slug}.webp`,
+  alt: name,
+  width: 600,
+  height,
+});
+
+export const people: Person[] = [
+  {
+    id: "june-madete",
+    name: "Dr. June Madete",
+    role: "Director and Co-PI",
+    portrait: portrait("june-madete", "Dr. June Madete"),
+  },
+  {
+    id: "kenneth-iloka",
+    name: "Dr. Kenneth Iloka",
+    role: "Director Academia and Co-PI",
+    portrait: portrait("kenneth-iloka", "Dr. Kenneth Iloka"),
+  },
+  {
+    id: "maryanne-muriuki",
+    name: "Maryanne Muriuki",
+    role: "Director, External Engagements",
+    portrait: portrait("maryanne-muriuki", "Maryanne Muriuki"),
+  },
+  {
+    id: "caroline-nganga",
+    name: "Caroline Ng’ang’a",
+    role: "Executive Director",
+    portrait: portrait("caroline-nganga", "Caroline Ng’ang’a"),
+  },
+  {
+    id: "stacy-awinja",
+    name: "Stacy Awinja",
+    role: "CDIE Manager",
+    portrait: portrait("stacy-awinja", "Stacy Awinja"),
+  },
+  {
+    id: "eubrea-mitchy-njeri",
+    name: "Eubrea Mitchy Njeri",
+    role: "CDIE Assistant Manager",
+    portrait: portrait("eubrea-mitchy", "Eubrea Mitchy Njeri"),
+  },
+  {
+    id: "jacqueline-muitungu",
+    name: "Jacqueline Muitungu",
+    role: "Communications Lead",
+    portrait: portrait("jacqueline-muitungu", "Jacqueline Muitungu"),
+  },
+  {
+    id: "james-wambugu",
+    name: "James Wambugu",
+    role: "Assistant Administrator",
+    portrait: portrait("james-wambugu", "James Wambugu", 600),
+  },
+];
 
 export const peopleCopy = {
   headline: "Our team",
@@ -64,13 +133,19 @@ export const peopleCopy = {
   empty: "The current team roster is being verified before publication.",
 } as const;
 
-export const cohorts: Cohort[] = [];
+/*
+  Cohorts used to live here. Decision R3, 2026-09-11 moved them onto the MDI
+  page, where the blueprint argues they belong: a cohort is evidence of the
+  programme, and it reads as evidence next to the curriculum rather than next to
+  the staff. This overrules Lucid, which draws Profiles Cohorts under About Us.
 
-export const cohortsCopy = {
-  headline: "Our cohorts",
-  standfirst: "Meet the people taking their ideas forward.",
-  body: "Discover current and past cohorts, the projects they explored and the paths they have taken since.",
-  empty: "Cohort records are being verified before publication.",
+  About Us stays institutional: what the centre is, why it is here, who runs it.
+  See mdiCohorts in content/programmes.ts.
+*/
+export const cohortsPointer = {
+  headline: "Looking for a cohort?",
+  body: "Cohort profiles and the projects they took forward sit with the programme itself.",
+  action: { label: "See MDI cohorts", href: "/programmes/mdi#cohorts", live: true },
 } as const;
 
 export const collaborate = {

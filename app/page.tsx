@@ -1,92 +1,83 @@
 // Lucid: Home. Copy: HOME.
-// Fixed order: five-destination carousel, three cards, second carousel, footer.
-// Nothing else. The three cards and the lower carousel already carry the jobs a
-// studio teaser, a programme strip and a newsletter strip would duplicate.
+/*
+  Decision R1, revised 2026-09-11: the three programmes now lead as a visual
+  carousel, followed by the CDIE definition, services, supplied partner marks,
+  and image-led recent activity.
+*/
 
-import { CardGrid } from "@/components/blocks/Card";
+import type { Metadata } from "next";
+
 import { Button } from "@/components/primitives/Button";
-import { Carousel } from "@/components/sections/Carousel";
+import { PartnerStrip } from "@/components/sections/PartnerStrip";
+import { ProgrammeHeroCarousel } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
-import { destinationSlides, featurePanels, homeHero, programmeCards } from "@/content/home";
-import type { CarouselSlide } from "@/content/types";
+import { VisualCardRail } from "@/components/sections/VisualCardRail";
+import { defineCdie, homeHero, latestCopy, latestHighlights, programmeHeroSlides, servicesCopy } from "@/content/home";
+import { capabilities } from "@/content/studio";
 
-function DestinationSlide({ slide }: { slide: CarouselSlide }) {
-  return (
-    <article className="flex min-h-[22rem] flex-col justify-end gap-4 border border-line bg-slate p-8 text-paper md:min-h-[26rem] md:p-12">
-      <p className="font-mono text-fine uppercase tracking-[0.13em] text-paper/70">
-        {slide.eyebrow}
-      </p>
-      <h3 className="display max-w-[16ch] text-head text-paper md:text-hero">{slide.title}</h3>
-      <p className="max-w-[52ch] text-lead leading-relaxed text-paper/85">{slide.line}</p>
-      <div className="mt-2">
-        <Button
-          href={slide.action.href}
-          className="border-paper/30 bg-paper text-ink hover:border-paper hover:bg-surface"
-        >
-          {slide.action.label}
-        </Button>
-      </div>
-    </article>
-  );
-}
+export const metadata: Metadata = {
+  description: homeHero.standfirst,
+};
+
+const serviceImages: Record<string, string> = {
+  design: "/images/service-design-2.jpg",
+  electronics: "/images/service-electronics-1.jpg",
+  "three-d-printing": "/images/service-3dprinting-1.jpg",
+  "co-working": "/images/service-coworking-1.jpg",
+  metalworking: "/images/service-metalworking-1.jpeg",
+  textiles: "/images/service-textile-1.jpg",
+  woodworking: "/images/service-woodworking-1.jpeg",
+};
+
+const serviceCards = capabilities.map((capability) => ({
+  id: capability.id,
+  eyebrow: capability.name,
+  title: capability.headline,
+  summary: capability.body,
+  image: serviceImages[capability.id],
+  alt: `${capability.name} at the CDIE Design Studio`,
+  href: `/design-studio?service=${capability.id}`,
+  action: `Open ${capability.name}`,
+}));
 
 export default function HomePage() {
   return (
     <>
-      <section className="border-b border-line bg-surface">
-        <div className="shell py-12 md:py-16">
-          <h1 className="display max-w-[20ch] text-head md:text-hero">{homeHero.headline}</h1>
-          <p className="mt-5 max-w-[58ch] text-lead leading-relaxed text-ink-2">
-            {homeHero.standfirst}
-          </p>
-          <div className="mt-7">
-            <Button href={homeHero.primary.href}>{homeHero.primary.label}</Button>
-          </div>
+      <ProgrammeHeroCarousel slides={[...programmeHeroSlides]} />
 
-          <div className="mt-12">
-            <Carousel
-              label="site sections"
-              slideLabels={destinationSlides.map((slide) => slide.eyebrow)}
-              slides={destinationSlides.map((slide) => (
-                <DestinationSlide key={slide.id} slide={slide} />
-              ))}
-            />
-          </div>
+      <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
+        <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-16">
+          <p aria-hidden="true" className="display text-mega leading-none text-brand">C.D.I.E</p>
+          <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{defineCdie.body}</p>
         </div>
-      </section>
+        <ul className="mt-12 grid gap-px bg-line md:grid-cols-3">
+          {defineCdie.triad.map((item) => (
+            <li key={item.id} className="flex flex-col gap-2 bg-raise p-6">
+              <h3 className="display text-sub text-brand">{item.title}</h3>
+              <p className="text-body leading-relaxed text-ink-2">{item.body}</p>
+            </li>
+          ))}
+        </ul>
 
-      <Section
-        eyebrow="Start here"
-        title="Three ways in."
-        standfirst="The learning model, the graduate pathway, and the room where the work happens."
-      >
-        <CardGrid cards={programmeCards} />
+        <div className="mt-8">
+          <Button href={defineCdie.action.href} tone="outline">
+            {defineCdie.action.label}
+          </Button>
+        </div>
       </Section>
 
       <Section
-        tone="surface"
-        eyebrow="Latest from CDIE"
-        title="Meet the people, projects and conversations shaping life at the centre."
+        eyebrow={servicesCopy.eyebrow}
+        title={servicesCopy.headline}
+        standfirst={servicesCopy.standfirst}
       >
-        <Carousel
-          label="people, events and media"
-          slideLabels={featurePanels.map((panel) => panel.eyebrow ?? panel.title)}
-          slides={featurePanels.map((panel) => (
-            <article
-              key={panel.id}
-              className="flex min-h-[15rem] flex-col gap-4 border border-line bg-raise p-8"
-            >
-              <p className="kicker">{panel.eyebrow}</p>
-              <h3 className="display max-w-[22ch] text-title">{panel.title}</h3>
-              <p className="max-w-[56ch] text-body leading-relaxed text-ink-2">{panel.summary}</p>
-              <div className="mt-auto pt-2">
-                <Button href={panel.action.href} tone="quiet">
-                  {panel.action.label}
-                </Button>
-              </div>
-            </article>
-          ))}
-        />
+        <VisualCardRail items={serviceCards} label="studio capabilities" />
+      </Section>
+
+      <PartnerStrip />
+
+      <Section tone="surface" eyebrow={latestCopy.eyebrow} title={latestCopy.headline}>
+        <VisualCardRail items={[...latestHighlights]} label="recent CDIE activity" />
       </Section>
     </>
   );

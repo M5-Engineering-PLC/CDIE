@@ -67,9 +67,10 @@ a record's `pending` array and renders through the `Pending` component as an
 honest gap pointing at an enquiry. An action button exists only where its
 destination is live.
 
-This is not abstract. The live site currently publishes two fabricated staff
-profiles and an open application for a cycle that closed in April. See
-`docs/BUILD_PLAN.md` section 9.
+This is not abstract. An audit of the current site found published facts that
+no source supports, including profiles that were never real people. The record
+of those findings is kept outside this repository; the rules they produced are
+the ones above.
 
 ## Deployment
 

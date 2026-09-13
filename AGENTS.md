@@ -38,9 +38,9 @@ If two sources disagree, do not pick one quietly. Record the conflict in
 
 ## Claim safety
 
-This is the rule that matters most on this project. The live site currently
-publishes fabricated staff profiles and an open application for a closed cycle.
-Do not add to that.
+This is the rule that matters most on this project. An audit of the current
+site found published facts that no source supports. The new site does not
+repeat that.
 
 - Never invent a date, a fee, an award amount, a specification, a person, a
   cohort, an alumni destination or a testimonial.

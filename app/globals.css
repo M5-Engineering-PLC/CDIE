@@ -4,32 +4,43 @@
   The single token declaration. Gate 1 of docs/BUILD_PLAN.md freezes this file.
   No hex value, font stack or spacing number belongs anywhere else.
 
-  Brand values are the v2 tokens sampled from cdie-logo.webp.
-  Ink, slate and paper are the CDIE Website Skeleton (Lucid) document palette.
+  Every value here is sampled from the pixel data of cdie-logo.webp, carried in
+  from _deliverables/cdie-palette.css on 2026-09-11. The ink, paper and line
+  values replace the earlier warm-sand set; the grounds are now cool, which is
+  what the logo's own blues sit on without fighting.
+
+  Type follows Form A of the same file: Archivo for display and body weight,
+  IBM Plex Sans for running text, IBM Plex Mono for labels and data. The
+  Newsreader serif is deliberately gone. Decision TYPE, 2026-09-11.
 */
 
 @theme {
-  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-plex-sans), "Segoe UI", system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
 
-  --color-ink: #16232e;
-  --color-ink-2: #4a5a68;
-  --color-ink-3: #7a8794;
-  --color-slate: #2f4356;
+  --color-ink: #10151a;
+  --color-ink-2: #2e4356;
+  --color-ink-3: #6b7c8c;
+  --color-slate: #2e4356;
 
-  --color-paper: #e9e7e2;
+  --color-paper: #f5f7f6;
   --color-surface: #ffffff;
-  --color-raise: #f5f4f1;
-  --color-line: #d8d5cd;
-  --color-line-soft: #e6e3dc;
+  --color-raise: #ecefee;
+  --color-line: #cbd3d6;
+  --color-line-soft: #e1e6e7;
 
   --color-brand: #00508f;
   --color-brand-live: #0b78c0;
+  --color-brand-lift: #61a2d2;
   --color-moss: #4f7b26;
 
-  --color-flag: #b07a1e;
-  --color-flag-wash: #f5e9c8;
+  --color-ok: #4f7b26;
+  --color-soon: #b87400;
+  --color-closed: #9e1b1b;
+
+  --color-flag: #b87400;
+  --color-flag-wash: #f4ecdc;
   --color-flag-ink: #7e5f00;
 
   --text-fine: 0.8125rem;
@@ -65,7 +76,7 @@
   h2,
   h3,
   h4 {
-    font-weight: 400;
+    font-weight: 700;
     text-wrap: balance;
   }
 
@@ -98,13 +109,57 @@
 
   .display {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    letter-spacing: -0.022em;
     line-height: 1.06;
+  }
+
+  /*
+    One clickable card. The anchor covers the card, so the whole surface is the
+    target and the visible label still reads as the action. Blueprint 11:
+    users should not have to find a small link inside a clickable-looking card.
+  */
+  .card-hit {
+    position: relative;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .card-hit:hover {
+    border-color: var(--color-brand-live);
+  }
+
+  .card-hit:has(a:focus-visible) {
+    outline: 2px solid var(--color-brand-live);
+    outline-offset: 2px;
+  }
+
+  .card-hit a.stretch::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .card-hit a.stretch:focus-visible {
+    outline: none;
   }
 
   .prose-body p + p {
     margin-top: 0.9em;
   }
+
+  .hero-progress {
+    transform-origin: left;
+    animation: hero-progress 7s linear forwards;
+  }
+
+  .hero-progress.paused {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes hero-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {

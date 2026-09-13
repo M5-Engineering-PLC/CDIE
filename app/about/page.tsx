@@ -1,5 +1,8 @@
-// Lucid: About Us > Explainer, Profiles Team, Profiles Cohorts. Copy: ABOUT US.
-// Profiles expand within this page. No person or cohort child routes.
+// Lucid: About Us > Explainer, Profiles Team. Copy: ABOUT US.
+// Profiles expand within this page. No person child routes.
+// Decision R3, 2026-09-11: cohorts moved to the MDI page, where they read as
+// programme evidence. This page stays institutional. The #cohorts anchor is
+// kept as a signpost so existing links still land somewhere useful.
 
 import type { Metadata } from "next";
 
@@ -8,8 +11,7 @@ import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import {
   aboutIntro,
-  cohorts,
-  cohortsCopy,
+  cohortsPointer,
   collaborate,
   people,
   peopleCopy,
@@ -61,30 +63,36 @@ export default function AboutPage() {
         ) : (
           <ul className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
             {people.map((person) => (
-              <li key={person.id} className="flex flex-col gap-1 bg-raise p-5">
-                <p className="text-lead text-ink">{person.name}</p>
-                <p className="text-body text-ink-2">{person.role}</p>
+              <li key={person.id} className="flex flex-col bg-raise">
+                {person.portrait ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={person.portrait.src}
+                    alt={person.portrait.alt}
+                    width={person.portrait.width}
+                    height={person.portrait.height}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[5/6] w-full bg-line object-cover"
+                  />
+                ) : null}
+                <div className="flex flex-col gap-1 p-5">
+                  <p className="text-lead text-ink">{person.name}</p>
+                  <p className="text-body text-ink-2">{person.role}</p>
+                </div>
               </li>
             ))}
           </ul>
         )}
       </Section>
 
-      <Section
-        id="cohorts"
-        eyebrow="Our cohorts"
-        title={cohortsCopy.headline}
-        standfirst={cohortsCopy.body}
-      >
-        {cohorts.length === 0 ? (
-          <div className="border border-dashed border-line bg-surface p-8">
-            <p className="max-w-[54ch] text-lead text-ink-2">{cohortsCopy.empty}</p>
-            <p className="mt-3 max-w-[62ch] text-body text-ink-3">
-              Work in progress is distinguished from completed work, and a destination or
-              an outcome is published only once it is confirmed.
-            </p>
-          </div>
-        ) : null}
+      <Section id="cohorts" eyebrow="Cohorts" title={cohortsPointer.headline}>
+        <p className="max-w-[58ch] text-lead leading-relaxed text-ink-2">
+          {cohortsPointer.body}
+        </p>
+        <div className="mt-6">
+          <Button href={cohortsPointer.action.href}>{cohortsPointer.action.label}</Button>
+        </div>
       </Section>
 
       <Section tone="surface" eyebrow="Work you can see" title={workYouCanSee.headline}>

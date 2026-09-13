@@ -1,24 +1,26 @@
-// Block. One card shape for programme cards, feature panels and topic cards.
-// The action is the only link, so no link nests inside another link.
+// Block. One card shape for programme cards, service cards and topic cards.
+// Blueprint 11, decision of 2026-09-11: the whole card is the target. The
+// anchor stretches over the surface, so there is still exactly one link and the
+// visible label still says where it goes.
 
-import { Button } from "@/components/primitives/Button";
 import type { Card as CardRecord } from "@/content/types";
 
 export function Card({ card, tone = "surface" }: { card: CardRecord; tone?: "surface" | "raise" }) {
   return (
     <article
-      className={`flex h-full flex-col gap-4 border border-line p-6 ${
+      className={`card-hit flex h-full flex-col gap-3 border border-line p-6 ${
         tone === "raise" ? "bg-raise" : "bg-surface"
       }`}
     >
       {card.eyebrow ? <p className="kicker">{card.eyebrow}</p> : null}
       <h3 className="display text-sub leading-snug text-ink">{card.title}</h3>
       <p className="text-body leading-relaxed text-ink-2">{card.summary}</p>
-      <div className="mt-auto pt-2">
-        <Button href={card.action.href} tone="quiet">
+      <p className="mt-auto pt-3 text-body font-medium text-brand">
+        <a href={card.action.href} className="stretch no-underline">
           {card.action.label}
-        </Button>
-      </div>
+        </a>
+        <span aria-hidden="true"> →</span>
+      </p>
     </article>
   );
 }
