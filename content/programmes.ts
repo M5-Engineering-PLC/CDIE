@@ -49,6 +49,12 @@ export const opportunities: Opportunity[] = [
     href: "/programmes/invention-education",
     topic: "invention-education",
     pending: [],
+    image: {
+      src: "/images/hero-workshop-2.jpg",
+      alt: "An Invention Education cohort at the centre",
+      width: 1600,
+      height: 1000,
+    },
   },
   {
     id: "mdi",
@@ -60,6 +66,12 @@ export const opportunities: Opportunity[] = [
     href: "/programmes/mdi",
     topic: "admissions",
     pending: ["Next intake and application window"],
+    image: {
+      src: "/images/hero-workshop-1.jpg",
+      alt: "Students building and testing a device in the workshop",
+      width: 1600,
+      height: 1000,
+    },
   },
   {
     id: "design-challenge",
@@ -75,6 +87,12 @@ export const opportunities: Opportunity[] = [
       "Who can enter and team requirements",
       "Timeline, submission requirements, judging criteria, prizes and support",
     ],
+    image: {
+      src: "/images/story-3.jpg",
+      alt: "Teams presenting work at a CDIE design challenge",
+      width: 1600,
+      height: 1000,
+    },
   },
   {
     id: "catalyst-grants",
@@ -90,6 +108,12 @@ export const opportunities: Opportunity[] = [
       "Award amount",
       "Assessment criteria and application deadline",
     ],
+    image: {
+      src: "/images/story-11.jpg",
+      alt: "A funded project team at work",
+      width: 1600,
+      height: 1000,
+    },
   },
   {
     id: "training",
@@ -105,6 +129,12 @@ export const opportunities: Opportunity[] = [
       "Level, prerequisites and trainer",
       "Format, schedule, venue, cost and sign-up route",
     ],
+    image: {
+      src: "/images/service-electronics-1.jpg",
+      alt: "A hands-on training session at the electronics bench",
+      width: 1600,
+      height: 1000,
+    },
   },
 ];
 
@@ -282,11 +312,16 @@ export const training = {
 */
 export const mdiCohorts: Cohort[] = [];
 
+/*
+  Change request 2026-09-13, section 6.2: "Our cohorts" describes an internal
+  grouping; a visitor deciding whether to apply is asking what happened to
+  people who did. The band is now framed by outcome.
+*/
 export const mdiCohortsCopy = {
-  headline: "Our cohorts",
+  headline: "Success stories",
   standfirst: "Meet the people taking their ideas forward.",
-  body: "Discover current and past cohorts, the projects they explored and the paths they have taken since.",
-  empty: "Cohort profiles are published once each record is confirmed. Ask the team about a particular cohort or project.",
+  body: "Where graduates of the programme have taken their work, in their own words.",
+  empty: "Graduate stories are published once each person has confirmed their words and given consent. Ask the team about a particular cohort or project.",
 } as const;
 
 export function getOpportunity(id: string): Opportunity | undefined {

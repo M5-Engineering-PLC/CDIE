@@ -121,7 +121,7 @@ export function EnquiryForm({
       {state === "failed" || state === "unavailable" ? (
         <p role="alert" className="border-l-2 border-flag bg-surface px-4 py-3 text-body text-ink-2">
           {state === "unavailable" ? unavailable : error}{" "}
-          <a href={`mailto:${email}`} className="font-medium text-brand">
+          <a href={`mailto:${email}`} className="font-medium text-brand hover:text-brand-live">
             {email}
           </a>
         </p>

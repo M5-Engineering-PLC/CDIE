@@ -96,7 +96,7 @@ export function LinkedInCarousel({
       <p className="text-body text-ink-2">
         {fallback}{" "}
         {pageUrl ? (
-          <a href={pageUrl} target="_blank" rel="noreferrer" className="text-brand">
+          <a href={pageUrl} target="_blank" rel="noreferrer" className="text-brand hover:text-brand-live">
             CDIE on LinkedIn ↗
           </a>
         ) : (

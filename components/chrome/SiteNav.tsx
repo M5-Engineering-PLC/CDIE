@@ -57,9 +57,15 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                     href={item.href}
                     aria-current={isCurrent(item.href) ? "page" : undefined}
                     className={`text-body no-underline transition-colors ${
+                      /*
+                        Change request 2026-09-13, section 2.2: the current page
+                        is signalled by colour, not a rule under the word. Full
+                        white against 70% is a clear step and keeps contrast on
+                        the brand header, where brand-lift would not.
+                      */
                       isCurrent(item.href)
-                        ? "text-surface [box-shadow:inset_0_-2px_0_0_currentColor]"
-                        : "text-surface/75 hover:text-surface"
+                        ? "text-surface"
+                        : "text-surface/70 hover:text-surface"
                     }`}
                   >
                     {item.label}

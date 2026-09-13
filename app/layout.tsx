@@ -59,9 +59,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           items={[...nav]}
           utility={[...utilityLinks]}
           contact={contact}
-          name={site.name}
           longName={site.longName}
           institution={site.institution}
+          logo={site.logo}
           socialAccounts={[...socialAccounts]}
         />
       </body>

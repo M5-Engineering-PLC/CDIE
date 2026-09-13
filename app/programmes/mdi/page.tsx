@@ -11,7 +11,10 @@ import { Button } from "@/components/primitives/Button";
 import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
+import { StoryGrid } from "@/components/blocks/StoryGrid";
+import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { mdi, mdiCohorts, mdiCohortsCopy } from "@/content/programmes";
+import { SHOW_SAMPLE_CONTENT, sampleStories } from "@/content/samples";
 
 export const metadata: Metadata = {
   title: "Medical Device Innovation",
@@ -104,15 +107,26 @@ export default function MdiPage() {
 
       <Section
         id="cohorts"
-        eyebrow="Cohorts"
+        eyebrow="Success stories"
         title={mdiCohortsCopy.headline}
         standfirst={mdiCohortsCopy.body}
       >
-        {mdiCohorts.length === 0 ? (
+        {/*
+          Change request 2026-09-13, section 6.2. mdiCohorts is empty by policy.
+          Sample graduates render behind the flag so the card can be reviewed;
+          their social links are deliberately absent, because a quote and a link
+          about a real person need that person's written consent.
+        */}
+        {mdiCohorts.length === 0 && !SHOW_SAMPLE_CONTENT ? (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[54ch] text-lead text-ink-2">{mdiCohortsCopy.empty}</p>
           </div>
-        ) : null}
+        ) : (
+          <>
+            {mdiCohorts.length === 0 ? <SampleNotice what="graduate stories" /> : null}
+            <StoryGrid items={sampleStories} />
+          </>
+        )}
       </Section>
 
       <Section tone="surface" eyebrow="Fees and funding" title={mdi.fees.headline}>

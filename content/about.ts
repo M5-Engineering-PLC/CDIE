@@ -142,10 +142,11 @@ export const peopleCopy = {
   About Us stays institutional: what the centre is, why it is here, who runs it.
   See mdiCohorts in content/programmes.ts.
 */
+// Change request 2026-09-13, section 6.2: renamed in step with the MDI band.
 export const cohortsPointer = {
-  headline: "Looking for a cohort?",
-  body: "Cohort profiles and the projects they took forward sit with the programme itself.",
-  action: { label: "See MDI cohorts", href: "/programmes/mdi#cohorts", live: true },
+  headline: "Looking for graduate stories?",
+  body: "What graduates went on to do, and the projects they took forward, sit with the programme itself.",
+  action: { label: "Read success stories", href: "/programmes/mdi#cohorts", live: true },
 } as const;
 
 export const collaborate = {
