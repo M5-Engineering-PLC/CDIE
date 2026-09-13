@@ -187,12 +187,22 @@ export const programmeFaqs: Faq[] = [
 
 // ---------------------------------------------------------------- child pages
 
+/*
+  Change request 2026-09-13, section 4.5. Restored to the published wording at
+  cdie.co.ke/invention-education-program/, which the build had paraphrased.
+
+  One correction to the source: "empathetic investors" reads "empathetic
+  inventors". The audit registers the original as a typo, and investors is not
+  what the sentence is about.
+*/
 export const inventionEducation = {
   headline: "Good ideas begin with better questions.",
   standfirst:
-    "Invention Education (IvE) is an approach to learning through real problems. You learn to listen closely, question assumptions and develop ideas through designing, making and trying again.",
+    "Invention Education (IvE) is an innovative approach to learning that equips students with hands-on problem-solving skills, encouraging them to become empathetic inventors.",
   body: [
-    "At CDIE, IvE connects students with healthcare challenges and the people who understand them. The Medical Device Innovation master’s programme is its flagship graduate track.",
+    "Unlike traditional passive learning methods, this model actively engages students in identifying real-world challenges, especially those without straightforward solutions, and developing their own creative solutions. Through designing, prototyping and critical thinking, students cultivate a mindset of exploration and resilience.",
+    "In Kenya, Invention Education is being integrated into the national innovation ecosystem to strengthen pathways for young innovators. Universities play a crucial role in this transformation by fostering talent and facilitating idea generation to address local and global challenges. Kenyatta University’s first graduate IvE programme is the M.Sc. in Biomedical Engineering – Medical Device Innovation (MDI).",
+    "In the MDI programme, students are presented with opportunities that simulate professional practice, from team-based design projects to mock interviews to working alongside medical health professionals. Students take classes in early-stage device innovation and develop professional networks through interaction with industry, learning the standards of medical device development.",
   ],
   takeaways:
     "A more deliberate approach to problem-solving, practical experience of prototyping and the confidence to work across disciplines.",
@@ -245,15 +255,22 @@ export const mdi = {
       body: "Practise presenting ideas, explaining evidence and building professional relationships.",
     },
   ],
-  curriculum: [
-    "The first stage develops foundations in clinical needs-finding, biomedical design, fabrication, entrepreneurship and communication.",
-    "The next stage builds your understanding of device design, regulatory strategy, quality systems, physiology, project management and quantitative methods.",
-    "The final stage brings your learning together through advanced biomaterials, industry seminars and an M.Sc. project.",
-  ],
+  /*
+    Change request 2026-09-13, section 4.5. The published Requirements block on
+    cdie.co.ke/mdi/ states the entry criteria outright, so the pending entry
+    that stood here is closed. Wording follows the source.
+  */
   who: {
     headline: "Who should consider applying?",
-    body: "The programme is aimed at graduates with a strong science and mathematics foundation who want to apply their skills to healthcare challenges. Curiosity, teamwork and a willingness to learn through practical work matter here.",
-    pending: ["Exact degree, grade and other entry requirements"],
+    body: "We are looking for candidates who meet the following criteria.",
+    criteria: [
+      "B.Sc. in Biomedical Engineering, or another engineering and technology related field including mechanical, electrical, mechatronics, chemical, computer science or physics, with at least an upper second class division.",
+      "B.Sc. in a health or applied science related field with at least an upper second class division.",
+      "Lower second class graduates in the above areas will be considered with an additional two years of relevant work experience.",
+    ],
+    experience:
+      "Ideal candidates have experience in industry, preferably in design, development or roles involving medical technology and healthcare innovation. We look for a demonstrated interest in healthcare, shown through coursework, lab work, work experience or volunteering.",
+    pending: [],
   },
   applications: {
     headline: "Take the next step with a clear picture of the programme.",
