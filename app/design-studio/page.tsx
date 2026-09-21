@@ -115,7 +115,11 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
         </div>
 
         <div className="mt-8 md:mt-12">
-          <FaqList items={[...studioFaqs]} />
+          {/* Change request 2026-09-21, second pass: "require manual input and
+              confirmation for all faqs". An unconfirmed answer sends the
+              reader to the studio enquiry rather than publishing a sentence
+              nobody has stood behind. */}
+          <FaqList items={[...studioFaqs]} enquiryHref="/contact?topic=studio" />
         </div>
       </Section>
     </>

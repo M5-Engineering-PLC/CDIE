@@ -8,9 +8,17 @@
   a wider screen.
 */
 // Profiles expand within this page. No person child routes.
-// Decision R3, 2026-09-11: cohorts moved to the MDI page, where they read as
-// programme evidence. This page stays institutional. The #cohorts anchor is
-// kept as a signpost so existing links still land somewhere useful.
+/*
+  Change request 2026-09-21, second pass, About Us:
+  - "Add a hero image for the first section". The hero takes the two-column
+    form PageHero already supports. The photograph is a genuine CDIE image
+    from public/images and its alt text describes only what is in the frame.
+  - "remove cohort section". The signpost band pointing at the MDI page goes
+    with it. Decision R3 of 2026-09-11 still holds: cohorts live on the MDI
+    page, where a cohort reads as evidence of the programme. What is withdrawn
+    here is the pointer, not the cohorts themselves, and /about#cohorts now
+    lands at the top of About Us rather than at a band of its own.
+*/
 
 import type { Metadata } from "next";
 
@@ -19,7 +27,6 @@ import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import {
   aboutIntro,
-  cohortsPointer,
   collaborate,
   people,
   peopleCopy,
@@ -39,6 +46,7 @@ export default function AboutPage() {
         eyebrow="About Us"
         headline={aboutIntro.headline}
         standfirst={aboutIntro.standfirst}
+        image={aboutIntro.image}
       />
 
       <Section eyebrow="Why we are here" title={purpose.headline}>
@@ -106,16 +114,10 @@ export default function AboutPage() {
         )}
       </Section>
 
-      <Section id="cohorts" eyebrow="Cohorts" title={cohortsPointer.headline}>
-        <p className="trim-mobile max-w-[58ch] text-lead leading-relaxed text-ink-2">
-          {cohortsPointer.body}
-        </p>
-        <div className="mt-6">
-          <Button href={cohortsPointer.action.href}>{cohortsPointer.action.label}</Button>
-        </div>
-      </Section>
-
-      <Section tone="surface" eyebrow="Work you can see" title={workYouCanSee.headline}>
+      {/* The cohorts band sat between Our team and this one. With it gone the
+          two bands would have shared a ground and read as one, so the tones
+          step from here down. */}
+      <Section eyebrow="Work you can see" title={workYouCanSee.headline}>
         <p className="trim-mobile max-w-[58ch] text-lead leading-relaxed text-ink-2">
           {workYouCanSee.body}
         </p>
@@ -132,7 +134,7 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <Section eyebrow="Work with us" title={collaborate.headline}>
+      <Section tone="surface" eyebrow="Work with us" title={collaborate.headline}>
         <div className="prose-body trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">
           {collaborate.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>

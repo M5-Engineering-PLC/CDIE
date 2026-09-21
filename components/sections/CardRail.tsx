@@ -13,9 +13,16 @@
   On a narrow screen the rail scrolls and snaps, which is the mobile-first
   behaviour the blueprint asks for, and it is a plain scroll container, so it
   works with no JavaScript at all. The buttons are a convenience on top.
+
+  Change request 2026-09-21, second pass: "apply smoother transitions for all
+  carousels". The buttons glide the rail on the site's own duration and easing
+  through lib/motion.ts instead of the browser's smooth-scroll curve, which is
+  shorter and differs between engines.
 */
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+
+import { glideBy } from "@/lib/motion";
 
 export type CardRailProps = {
   label: string;
@@ -50,7 +57,7 @@ export function CardRail({ label, children, columns = 3 }: CardRailProps) {
     const node = rail.current;
     if (!node) return;
     const step = node.clientWidth / (columns === 4 ? 3 : 2);
-    node.scrollBy({ left: direction * step, behavior: "smooth" });
+    glideBy(node, direction * step);
   };
 
   const track = columns === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3";
@@ -61,8 +68,7 @@ export function CardRail({ label, children, columns = 3 }: CardRailProps) {
         ref={rail}
         onScroll={measure}
         aria-label={label}
-        className={`grid auto-cols-[minmax(17rem,85%)] grid-flow-col gap-5 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:thin] [&>*]:snap-start sm:auto-cols-[minmax(20rem,46%)] lg:auto-cols-auto lg:grid-flow-row lg:overflow-visible ${track}`}
-        style={{ scrollSnapType: "x mandatory" }}
+        className={`rail-glide grid auto-cols-[minmax(17rem,85%)] grid-flow-col gap-5 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:thin] sm:auto-cols-[minmax(20rem,46%)] lg:auto-cols-auto lg:grid-flow-row lg:overflow-visible ${track}`}
       >
         {children}
       </ul>
@@ -72,7 +78,7 @@ export function CardRail({ label, children, columns = 3 }: CardRailProps) {
           type="button"
           onClick={() => nudge(-1)}
           disabled={atStart}
-          className="rounded-edge border border-line bg-surface px-3 py-1.5 text-body disabled:cursor-not-allowed disabled:opacity-35"
+          className="rounded-edge border border-line bg-surface px-3 py-1.5 text-body transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-35"
         >
           <span aria-hidden="true">←</span>
           <span className="sr-only">Scroll {label} back</span>
@@ -81,7 +87,7 @@ export function CardRail({ label, children, columns = 3 }: CardRailProps) {
           type="button"
           onClick={() => nudge(1)}
           disabled={atEnd}
-          className="rounded-edge border border-line bg-surface px-3 py-1.5 text-body disabled:cursor-not-allowed disabled:opacity-35"
+          className="rounded-edge border border-line bg-surface px-3 py-1.5 text-body transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-35"
         >
           <span aria-hidden="true">→</span>
           <span className="sr-only">Scroll {label} forward</span>

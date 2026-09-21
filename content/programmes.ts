@@ -13,6 +13,19 @@
   The pairing also matches the home carousel now. The two pages had the same
   two workshop photographs attached to opposite programmes, which is the
   confusion the change request names.
+
+  Change request 2026-09-21, second pass. Two things:
+
+  - Every opportunity carries a carouselTitle. The five names are the client's
+    own, given verbatim in the change request, and the landing carousel's tab
+    strip reads them. Their capitalisation is the client's; where it differs
+    from the Actual Copy tab's ("Invention education" against "Invention
+    Education", "Design challenges" against "Design Challenge") that is logged
+    as conflict C-07 in docs/BUILD_PLAN.md section 3.2 rather than quietly
+    resolved here.
+  - Every FAQ answer carries its confirmation. None has one yet, so none
+    publishes: FaqList renders the enquiry wording under each question until a
+    named person confirms the wording and the date is recorded.
 */
 
 import type { CalendarEvent, Cohort, Faq, LearningStage, Opportunity } from "./types";
@@ -55,6 +68,7 @@ export const opportunities: Opportunity[] = [
     id: "invention-education",
     title: "Invention Education",
     kind: "Learning model",
+    carouselTitle: "Invention education",
     summary:
       "Understand the approach behind learning through real problems: listening closely, questioning assumptions and developing ideas through designing, making and trying again.",
     status: "enquire",
@@ -72,6 +86,7 @@ export const opportunities: Opportunity[] = [
     id: "mdi",
     title: "Medical Device Innovation",
     kind: "M.Sc. pathway",
+    carouselTitle: "MSc MDI",
     summary:
       "The graduate track: engineering, clinical needs-finding and the wider decisions involved in developing a medical device.",
     status: "enquire",
@@ -89,6 +104,7 @@ export const opportunities: Opportunity[] = [
     id: "design-challenge",
     title: "Design Challenge",
     kind: "Challenge",
+    carouselTitle: "Design challenges",
     summary:
       "A real challenge. A chance to make something useful. Work with others to explore a practical response to a defined problem.",
     status: "enquire",
@@ -110,6 +126,7 @@ export const opportunities: Opportunity[] = [
     id: "catalyst-grants",
     title: "Catalyst grants",
     kind: "Funding",
+    carouselTitle: "Catalyst grants",
     summary:
       "Give an early idea room to develop. Catalyst grants support early prototyping through the Invention Education programme.",
     status: "enquire",
@@ -131,6 +148,7 @@ export const opportunities: Opportunity[] = [
     id: "training",
     title: "Masterclasses and training",
     kind: "Short format",
+    carouselTitle: "Training and masterclasses",
     summary:
       "Make time to learn a practical skill. Focused sessions in design, making and medical device innovation.",
     status: "enquire",
@@ -171,29 +189,34 @@ export const programmeFaqs: Faq[] = [
     question: "Can I study online or at weekends?",
     answer:
       "The programme is described as full-time and in person, with clinical and industry engagement forming part of the learning experience.",
+    confirmed: null,
   },
   {
     id: "idea",
     question: "Do I need to arrive with a medical device idea?",
     answer:
       "The programme teaches needs-finding and concept development. If you already have an idea, ask the team how it could fit within the programme’s project requirements.",
+    confirmed: null,
   },
   {
     id: "studio",
     question: "Will I use the design studio?",
     answer:
       "Studio-based prototyping supports the MDI learning experience. The team will explain access arrangements and equipment guidance.",
+    confirmed: null,
   },
   {
     id: "industry",
     question: "Does the programme include industry experience?",
     answer:
       "The source programme description includes a mandatory internship and opportunities to meet industry professionals. Confirm current placement arrangements with the programme team.",
+    confirmed: null,
   },
   {
     id: "apply",
     question: "When can I apply?",
     answer: "Contact the team for current admissions information.",
+    confirmed: null,
   },
 ];
 

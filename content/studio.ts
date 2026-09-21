@@ -200,35 +200,47 @@ export const studioAccess = {
   action: { label: "Ask about studio access", href: "/contact?topic=studio", live: true },
 } as const;
 
+/*
+  Change request 2026-09-21, second pass: "require manual input and
+  confirmation for all faqs". Every answer here is typed from the source by
+  hand and none has been confirmed by a named person, so none publishes. The
+  page renders the question with the enquiry wording until `confirmed` is
+  filled in. See the Faq type in content/types.ts.
+*/
 export const studioFaqs: Faq[] = [
   {
     id: "who",
     question: "Who can use the studio?",
     answer:
       "Current access supports MDI-linked projects. Ask the team about eligibility before planning a visit or equipment use.",
+    confirmed: null,
   },
   {
     id: "booking",
     question: "How do I book, and what does it cost?",
     answer:
       "Contact the team with your project, the area you need and your preferred timing, and they will explain the current arrangements.",
+    confirmed: null,
   },
   {
     id: "unfamiliar",
     question: "What if I have not used a tool before?",
     answer: "Ask the CDIE staff member on duty for guidance before using unfamiliar equipment.",
+    confirmed: null,
   },
   {
     id: "suggest",
     question: "Can I suggest a project for students?",
     answer:
       "Email ive@ku.ac.ke with a short description of the problem or project and your contact details.",
+    confirmed: null,
   },
   {
     id: "where",
     question: "Where is the studio?",
     answer:
       "CDIE is at Kenyatta University’s main campus. Please contact the team before travelling so we can confirm where to meet you.",
+    confirmed: null,
   },
 ];
 

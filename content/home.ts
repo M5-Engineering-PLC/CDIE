@@ -16,11 +16,18 @@
   2026-09-11 and are rendered without adding unsupported partnership claims.
 
   Change request 2026-09-21, section 2: "photos on home page; what cdie is" and
-  "cut down on placeholder text". What CDIE is now carries a photograph and one
-  picture per word of the triad, and every summary on this page is trimmed to
-  the sentence that earns its place. The photographs are genuine CDIE images
+  "cut down on placeholder text". Every summary on this page is trimmed to the
+  sentence that earns its place. The photographs are genuine CDIE images
   already in public/images; their alt text describes what is visible and claims
   nothing about who is in the frame or when it was taken.
+
+  Change request 2026-09-21, second pass: "remove CDIE photo, keep the initials
+  and three images for innovate convene, create". The photograph that opened
+  What CDIE is goes; the C.D.I.E lettering stands there again and the three
+  words keep their pictures. "remove meet cdie button" closes defineCdie.action,
+  and "remove in the studio sub title" closes servicesCopy.standfirst. Neither
+  key is left declared and unread: a field nothing renders is a field the next
+  writer will put words into.
 */
 
 import type { Card } from "./types";
@@ -105,10 +112,6 @@ export const defineCdie = {
   eyebrow: "What CDIE is",
   headline: "Practical learning, with people at the centre.",
   body: "The Centre for Design, Innovation & Engineering at Kenyatta University supports the design, engineering and prototyping of medical devices. As part of Invention Education, we bring together hands-on learning, research and collaboration around healthcare needs.",
-  image: {
-    src: "/images/hero-workshop-1.jpg",
-    alt: "People in workshop coats marking and cutting a wooden part at a bench",
-  },
   triad: [
     {
       id: "innovate",
@@ -132,13 +135,11 @@ export const defineCdie = {
       alt: "A rack of 3D printers, filament and a wash-and-cure station in the CDIE studio",
     },
   ],
-  action: { label: "Meet CDIE", href: "/about", live: true },
 } as const;
 
 export const servicesCopy = {
   eyebrow: "In the studio",
   headline: "What you can use, and what it is for.",
-  standfirst: "Each one opens the studio at that service.",
 } as const;
 
 export const latestCopy = {

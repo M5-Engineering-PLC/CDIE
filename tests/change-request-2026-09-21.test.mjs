@@ -16,17 +16,18 @@ test("the mobile band rhythm is a token, not a padding per component", () => {
   }
 });
 
-test("the bar is white, closes on navigation, and drops Contact", () => {
+/*
+  The bar's colour and Contact's place in it were reversed by the second pass of
+  this change request: "revert navbar back to cobalt blue" and "restore contact
+  page". What the first pass added and the second kept is asserted here; the
+  reversed half is asserted in change-request-2026-09-21-second-pass.test.mjs.
+*/
+test("the bar closes on navigation and carries an icon control", () => {
   const nav = read("components/chrome/SiteNav.tsx");
-  assert.match(nav, /bg-surface\/95/);
-  assert.doesNotMatch(nav, /bg-brand\/95/);
   assert.match(nav, /MenuIcon/);
   assert.doesNotMatch(nav, /\{open \? "Close" : "Menu"\}/);
   assert.match(nav, /setLastPath\(pathname\)[\s\S]*setOpen\(false\)/);
-
-  const site = read("content/site.ts");
-  assert.doesNotMatch(site, /label: "Contact"/);
-  // the route still exists and the footer still reaches it
+  // the footer reaches Contact whatever the bar does
   assert.match(read("app/layout.tsx"), /label: "Contact", href: "\/contact"/);
 });
 
@@ -55,10 +56,14 @@ test("the landing carousel drops its counters and answers a swipe", () => {
   assert.match(hero, /SWIPE_PX/);
 });
 
-test("What CDIE is carries a photograph and becomes a rail on a phone", () => {
-  const home = read("app/page.tsx");
-  assert.doesNotMatch(home, /display text-mega leading-none text-brand/);
-  assert.match(home, /TriadRail/);
+/*
+  The photograph at the head of What CDIE is was withdrawn by the second pass:
+  "remove CDIE photo, keep the initials and three images". The three pictures
+  are what survived, so that is what this asserts; the lettering's return is
+  asserted in change-request-2026-09-21-second-pass.test.mjs.
+*/
+test("What CDIE is gives each of its three words a picture", () => {
+  assert.match(read("app/page.tsx"), /TriadRail/);
   assert.match(read("content/home.ts"), /image: "\/images\//);
   // a rail on a phone, a grid from md, with no JavaScript either side
   assert.match(read("components/sections/TriadRail.tsx"), /rail[\s\S]*md:grid-cols-3/);

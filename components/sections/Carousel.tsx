@@ -6,6 +6,13 @@
   touch support, and a disabled arrow at each end rather than silent wrapping.
   One item renders as a static card. No item auto-advances, and nothing here
   nests a link inside another link.
+
+  Change request 2026-09-21, second pass: "apply smoother transitions for all
+  carousels". A slide used to appear by having `hidden` taken off it, which is
+  a cut. It now rises in with .settle from app/globals.css. The slides are not
+  stacked and crossfaded, the way the landing carousel's are, because each one
+  sets the height of the band it sits in; stacking them absolutely would
+  collapse that band to nothing.
 */
 
 import { useId, useRef, useState, type ReactNode } from "react";
@@ -52,10 +59,13 @@ export function Carousel({ label, slides, slideLabels }: CarouselProps) {
       <div id={regionId} aria-live="polite">
         {slides.map((slide, position) => (
           <div
-            key={slideLabels[position] ?? position}
+            /* Keyed on the position as well, so React mounts a fresh node when
+               the slide changes and the animation runs again. */
+            key={`${slideLabels[position] ?? position}-${position === index ? index : "off"}`}
             hidden={position !== index}
             aria-roledescription="slide"
             aria-label={`${position + 1} of ${slides.length}: ${slideLabels[position] ?? ""}`}
+            className={position === index ? "settle" : undefined}
           >
             {slide}
           </div>
@@ -91,7 +101,7 @@ export function Carousel({ label, slides, slideLabels }: CarouselProps) {
             onClick={() => go(index - 1)}
             disabled={atStart}
             aria-controls={regionId}
-            className="rounded-edge border border-line px-3 py-1.5 text-body disabled:cursor-not-allowed disabled:opacity-35"
+            className="rounded-edge border border-line px-3 py-1.5 text-body transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-35"
           >
             <span aria-hidden="true">←</span>
             <span className="sr-only">Previous {label}</span>
@@ -101,7 +111,7 @@ export function Carousel({ label, slides, slideLabels }: CarouselProps) {
             onClick={() => go(index + 1)}
             disabled={atEnd}
             aria-controls={regionId}
-            className="rounded-edge border border-line px-3 py-1.5 text-body disabled:cursor-not-allowed disabled:opacity-35"
+            className="rounded-edge border border-line px-3 py-1.5 text-body transition-colors hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-35"
           >
             <span aria-hidden="true">→</span>
             <span className="sr-only">Next {label}</span>
