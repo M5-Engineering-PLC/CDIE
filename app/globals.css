@@ -80,6 +80,25 @@
     text-wrap: balance;
   }
 
+  /*
+    Change request 2026-09-13, section 2.2. One link rule for the whole site,
+    replacing `no-underline` applied ad hoc per component.
+
+    No underline at rest; hover is a colour shift, never an appearing underline,
+    which would reflow the line. Specificity is deliberately low — a single
+    element plus pseudo-class — so any component that needs its own hover
+    colour, such as the footer on ink, still wins with a utility class.
+  */
+  a {
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  a:hover {
+    color: var(--color-brand-live);
+  }
+
+  /* Untouched: an accessibility requirement, not a style choice. */
   :focus-visible {
     outline: 2px solid var(--color-brand-live);
     outline-offset: 2px;

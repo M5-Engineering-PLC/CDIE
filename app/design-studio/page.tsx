@@ -3,8 +3,10 @@
 
 import type { Metadata } from "next";
 
+import { FaqList } from "@/components/blocks/FaqList";
 import { Button } from "@/components/primitives/Button";
 import { Section } from "@/components/sections/Section";
+import { VisualCardRail, type VisualRailItem } from "@/components/sections/VisualCardRail";
 import { StudioExplorer, type ExplorerCapability } from "@/components/studio/StudioExplorer";
 import {
   capabilities,
@@ -45,6 +47,17 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   image: studioImages[capability.id],
 }));
 
+const capabilityCards: VisualRailItem[] = capabilities.map((capability) => ({
+  id: capability.id,
+  eyebrow: spaceShortName.get(capability.space) ?? capability.space,
+  title: capability.name,
+  summary: capability.headline,
+  image: studioImages[capability.id],
+  alt: `${capability.name} at the CDIE Design Studio`,
+  href: `/design-studio?service=${capability.id}`,
+  action: "Open in the room",
+}));
+
 export default async function DesignStudioPage(props: PageProps<"/design-studio">) {
   const query = await props.searchParams;
   const requested = typeof query.service === "string" ? query.service : undefined;
@@ -56,7 +69,23 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
   return (
     <>
       <StudioExplorer capabilities={explorerCapabilities} initialId={initialId} />
-      <Section eyebrow="The two sides" title="Where the work happens.">
+
+      {/*
+        Change request 2026-09-13, section 3.1. The explorer shows one
+        capability at a time, which is right for the room but gives no sense of
+        how many there are. The rail answers "what else is in here" without
+        making the visitor click through the model. Selecting a card returns to
+        the explorer with that capability open, so the two stay in step.
+      */}
+      <Section
+        eyebrow="Capabilities"
+        title="Seven ways to make something."
+        standfirst="Browse the workshop areas, then open any one of them in the room above."
+      >
+        <VisualCardRail items={capabilityCards} label="studio capabilities" />
+      </Section>
+
+      <Section tone="surface" eyebrow="The two sides" title="Where the work happens.">
         <ul className="grid gap-px bg-line md:grid-cols-2">
           {spaces.map((space) => (
             <li key={space.id} className="flex flex-col gap-3 bg-surface p-6">
@@ -82,16 +111,9 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
           <Button href={studioAccess.action.href}>{studioAccess.action.label}</Button>
         </div>
 
-        <dl className="mt-12 flex flex-col gap-px bg-line">
-          {studioFaqs.map((faq) => (
-            <div key={faq.id} className="bg-raise p-6">
-              <dt className="text-lead text-ink">{faq.question}</dt>
-              <dd className="mt-2 max-w-[64ch] text-body leading-relaxed text-ink-2">
-                {faq.answer}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <div className="mt-12">
+          <FaqList items={[...studioFaqs]} />
+        </div>
       </Section>
     </>
   );

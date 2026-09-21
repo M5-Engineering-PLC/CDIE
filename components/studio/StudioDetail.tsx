@@ -26,7 +26,7 @@ export function StudioDetail({ selected }: { selected: ExplorerCapability }) {
         </p>
       ) : null}
 
-      <a href={selected.enquiryHref} className="text-body font-medium text-brand">
+      <a href={selected.enquiryHref} className="text-body font-medium text-brand hover:text-brand-live">
         {selected.enquiry} →
       </a>
     </div>

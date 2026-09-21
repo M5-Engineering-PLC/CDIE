@@ -31,7 +31,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
 
   return (
     <header className="sticky top-0 z-40 border-b border-brand-lift/30 bg-brand/95 text-surface backdrop-blur">
-      <div className="shell flex items-center justify-between gap-6 py-3">
+      <div className="shell flex items-center justify-between gap-6 py-2">
         <Link href="/" className="flex items-center gap-3 rounded-edge bg-surface px-2 py-1 no-underline" aria-label="CDIE home">
           <Image
             src={logo.src}
@@ -39,7 +39,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
             width={logo.width}
             height={logo.height}
             priority
-            className="h-9 w-auto md:h-10"
+            className="h-12 w-auto md:h-14"
           />
           <span className="hidden border-l border-line pl-3 text-fine leading-tight text-ink-2 2xl:block">
             {institution}
@@ -57,9 +57,15 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                     href={item.href}
                     aria-current={isCurrent(item.href) ? "page" : undefined}
                     className={`text-body no-underline transition-colors ${
+                      /*
+                        Change request 2026-09-13, section 2.2: the current page
+                        is signalled by colour, not a rule under the word. Full
+                        white against 70% is a clear step and keeps contrast on
+                        the brand header, where brand-lift would not.
+                      */
                       isCurrent(item.href)
-                        ? "text-surface [box-shadow:inset_0_-2px_0_0_currentColor]"
-                        : "text-surface/75 hover:text-surface"
+                        ? "text-surface"
+                        : "text-surface/70 hover:text-surface"
                     }`}
                   >
                     {item.label}

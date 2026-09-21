@@ -56,7 +56,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
           <div className="bg-raise p-6">
             <dt className="kicker">Email</dt>
             <dd className="mt-2 text-lead">
-              <a href={`mailto:${contact.email}`} className="text-brand">
+              <a href={`mailto:${contact.email}`} className="text-brand hover:text-brand-live">
                 {contact.email}
               </a>
             </dd>
@@ -64,7 +64,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
           <div className="bg-raise p-6">
             <dt className="kicker">Phone</dt>
             <dd className="mt-2 text-lead">
-              <a href={contact.phoneHref} className="text-brand">
+              <a href={contact.phoneHref} className="text-brand hover:text-brand-live">
                 {contact.phone}
               </a>
             </dd>

@@ -152,6 +152,24 @@ export type Cohort = {
   projects: Card[];
 };
 
+/*
+  Change request 2026-09-13, section 4.5. The curriculum published on
+  cdie.co.ke lists every unit with its code and description. The build had
+  summarised it into three sentences, which is the drift that item names.
+*/
+export type Course = {
+  /** unit code, e.g. BME 810. Absent for the elective slots. */
+  code?: string;
+  title: string;
+  body: string;
+};
+
+export type Semester = {
+  id: string;
+  name: string;
+  courses: Course[];
+};
+
 export type EnquiryTopic = {
   id: string;
   label: string;

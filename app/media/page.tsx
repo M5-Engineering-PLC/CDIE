@@ -2,8 +2,10 @@
 // Copy: MEDIA. Newsletters open the published issue in a new tab.
 
 import type { Metadata } from "next";
-import Image from "next/image";
 
+import { FaqList } from "@/components/blocks/FaqList";
+import { NewsletterGrid, type NewsletterCardItem } from "@/components/blocks/NewsletterGrid";
+import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { Button } from "@/components/primitives/Button";
 import { LinkedInCarousel } from "@/components/sections/LinkedInCarousel";
 import { PageHero } from "@/components/sections/PageHero";
@@ -11,9 +13,11 @@ import { Section } from "@/components/sections/Section";
 import {
   eventsPointer,
   mediaItems,
+  mediaFaqs,
   mediaLanding,
   newslettersCopy,
 } from "@/content/media";
+import { SHOW_SAMPLE_CONTENT, sampleNewsletters } from "@/content/samples";
 import { getLinkedInFeed, isStale, linkedInCopy } from "@/lib/linkedin";
 
 export const metadata: Metadata = {
@@ -33,6 +37,15 @@ export const revalidate = 600;
 
 export default async function MediaPage() {
   const newsletters = mediaItems.filter((item) => item.kind === "newsletter");
+  const newsletterCards: NewsletterCardItem[] = newsletters.map((item) => ({
+    id: item.id,
+    issue: item.date ?? "Issue",
+    title: item.title,
+    summary: item.summary,
+    image: item.cover?.src ?? "/images/hero-workshop-2.jpg",
+    alt: item.cover?.alt ?? item.title,
+    href: item.external,
+  }));
   const feed = await getLinkedInFeed();
 
   return (
@@ -41,6 +54,10 @@ export default async function MediaPage() {
         eyebrow="Media"
         headline={mediaLanding.headline}
         standfirst={mediaLanding.standfirst}
+        image={{
+          src: "/images/hero-workshop-2.jpg",
+          alt: "A CDIE cohort at the centre",
+        }}
       >
         <Button href="#newsletters">Browse newsletters</Button>
         <Button href="#community" tone="outline">
@@ -54,7 +71,12 @@ export default async function MediaPage() {
         title={newslettersCopy.headline}
         standfirst={newslettersCopy.standfirst}
       >
-        {newsletters.length === 0 ? (
+        {/*
+          Change request 2026-09-13, section 5.2. mediaItems is empty by policy,
+          so sample issues render behind a flag purely to review the card. The
+          real path below runs unchanged the moment issues are published.
+        */}
+        {newsletters.length === 0 && !SHOW_SAMPLE_CONTENT ? (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[52ch] text-lead text-ink-2">{newslettersCopy.empty}</p>
             <div className="mt-5">
@@ -64,44 +86,12 @@ export default async function MediaPage() {
             </div>
           </div>
         ) : (
-          <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {newsletters.map((item) => (
-              <li key={item.id} className="card-hit flex flex-col border border-line bg-surface">
-                {item.cover ? (
-                  <Image
-                    src={item.cover.src}
-                    alt={item.cover.alt}
-                    width={item.cover.width}
-                    height={item.cover.height}
-                    className="aspect-[4/3] w-full object-cover"
-                  />
-                ) : null}
-                <div className="flex flex-1 flex-col gap-3 p-6">
-                  {item.date ? (
-                    <p className="font-mono text-fine tabular-nums text-ink-3">{item.date}</p>
-                  ) : null}
-                  <h3 className="display text-sub leading-snug">{item.title}</h3>
-                  <p className="text-body leading-relaxed text-ink-2">{item.summary}</p>
-                  {item.external ? (
-                    <p className="mt-auto pt-3 text-body font-medium text-brand">
-                      <a
-                        href={item.external}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="stretch no-underline"
-                      >
-                        Read this issue
-                      </a>
-                      <span aria-hidden="true"> ↗</span>
-                      <span className="mt-1 block text-fine font-normal text-ink-3">
-                        {newslettersCopy.linkNote}
-                      </span>
-                    </p>
-                  ) : null}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <>
+            {newsletters.length === 0 ? <SampleNotice what="newsletter issues" /> : null}
+            <NewsletterGrid
+              items={newsletters.length === 0 ? sampleNewsletters : newsletterCards}
+            />
+          </>
         )}
       </Section>
 
@@ -120,6 +110,12 @@ export default async function MediaPage() {
           privacy={linkedInCopy.privacy}
         />
       </Section>
+
+      {mediaFaqs.length > 0 ? (
+        <Section eyebrow="Questions" title="Before you ask.">
+          <FaqList items={[...mediaFaqs]} />
+        </Section>
+      ) : null}
 
       <Section eyebrow="Events" title={eventsPointer.headline}>
         <p className="max-w-[58ch] text-lead leading-relaxed text-ink-2">{eventsPointer.body}</p>

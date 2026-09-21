@@ -36,7 +36,7 @@ export function Pending({
   return (
     <p className="border-l-2 border-brand-lift bg-surface py-3 pl-4 text-body text-ink-2">
       {lead ?? `For ${sentence(items)}, please ask the team directly.`}{" "}
-      <Link href={href} className="font-medium text-brand">
+      <Link href={href} className="font-medium text-brand hover:text-brand-live">
         {label}
       </Link>
       <span aria-hidden="true"> →</span>

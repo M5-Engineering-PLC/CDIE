@@ -1,5 +1,6 @@
 // Section. The opening of every page except Home. Copy supplies the headline.
 
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -11,6 +12,12 @@ export type PageHeroProps = {
   standfirst?: string;
   crumbs?: Crumb[];
   children?: ReactNode;
+  /*
+    Change request 2026-09-13, section 5.1. Optional so every existing hero is
+    unchanged; when supplied the hero becomes two columns and the text keeps its
+    measure instead of stretching to meet the picture.
+  */
+  image?: { src: string; alt: string };
 };
 
 export function PageHero({
@@ -19,10 +26,16 @@ export function PageHero({
   standfirst,
   crumbs,
   children,
+  image,
 }: PageHeroProps) {
   return (
     <section className="border-b border-line bg-surface">
-      <div className="shell py-14 md:py-20">
+      <div
+        className={`shell py-14 md:py-20 ${
+          image ? "grid items-center gap-10 md:grid-cols-[1.05fr_.95fr] md:gap-14" : ""
+        }`}
+      >
+        <div>
         {crumbs && crumbs.length > 0 ? (
           <nav aria-label="Breadcrumb" className="mb-6">
             <ol className="flex flex-wrap items-center gap-2 font-mono text-fine text-ink-3">
@@ -44,6 +57,20 @@ export function PageHero({
           <p className="mt-6 max-w-[58ch] text-lead leading-relaxed text-ink-2">{standfirst}</p>
         ) : null}
         {children ? <div className="mt-8 flex flex-wrap gap-3">{children}</div> : null}
+        </div>
+
+        {image ? (
+          <div className="relative aspect-[4/3] overflow-hidden border border-line md:aspect-[5/4]">
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              sizes="(max-width: 768px) 100vw, 45vw"
+              priority
+              className="object-cover"
+            />
+          </div>
+        ) : null}
       </div>
     </section>
   );

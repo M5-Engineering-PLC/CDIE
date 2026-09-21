@@ -61,9 +61,19 @@ export default function AboutPage() {
             </p>
           </div>
         ) : (
-          <ul className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
+          /*
+            Change request 2026-09-13, section 6.1. Was a single hairline grid,
+            which read as one block of faces. Each person is now a discrete
+            card, so a name belongs visibly to a portrait. Lucid: a profile
+            needs picture, name and designation, nothing else - so nothing else
+            is added here.
+          */
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {people.map((person) => (
-              <li key={person.id} className="flex flex-col bg-raise">
+              <li
+                key={person.id}
+                className="flex flex-col overflow-hidden border border-line bg-surface transition-colors hover:border-brand-lift"
+              >
                 {person.portrait ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
@@ -73,11 +83,13 @@ export default function AboutPage() {
                     height={person.portrait.height}
                     loading="lazy"
                     decoding="async"
-                    className="aspect-[5/6] w-full bg-line object-cover"
+                    className="aspect-[5/6] w-full bg-raise object-cover"
                   />
-                ) : null}
-                <div className="flex flex-col gap-1 p-5">
-                  <p className="text-lead text-ink">{person.name}</p>
+                ) : (
+                  <div className="aspect-[5/6] w-full bg-raise" />
+                )}
+                <div className="flex flex-col gap-1 border-t border-line p-5">
+                  <p className="display text-sub leading-snug text-ink">{person.name}</p>
                   <p className="text-body text-ink-2">{person.role}</p>
                 </div>
               </li>
