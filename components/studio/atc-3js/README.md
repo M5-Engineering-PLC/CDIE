@@ -35,7 +35,7 @@ export function AtcModelExample() {
 
 ## Public Props
 
-- `active`: highlighted station service id (`cnc-machining`, `tooling-storage`, `laser-cutting`, `manual-fabrication`, `facility-access`), or `null`.
+- `active`: highlighted station service id (`woodworking`, `tooling-storage`, `laser-cutting`, `metalworking`, `facility-access`), or `null`.
 - `onSelect`: callback when user clicks equipment in the 3D scene.
 - `className`: optional CSS classes for the container.
 - `initialView`: `isometric` or `top`.
