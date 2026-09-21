@@ -9,14 +9,56 @@ import type { ServiceId } from "./studioLayout";
 
 export type StudioView = "isometric" | "top";
 
+/*
+  Change request 2026-09-21, section 4. Three capabilities the room did not have:
+
+  - `tour`. "let the room rotate slowly, constantly, highlighting different
+    parts of the room". While the tour runs the camera is driven here rather
+    than by OrbitControls: a constant, slow yaw around whatever is in focus.
+  - `focus`. The camera closes on the selected service group and pulls back to
+    the whole room when nothing is selected. This is the only camera behaviour
+    a phone gets, per "lets have only autofocus capabilities, no scrolling".
+  - `interactive`. False disables orbit, zoom and pan outright, so a touch on
+    the canvas scrolls the page instead of dragging the room.
+
+  Drive and orbit are deliberately not mixed. OrbitControls' own autoRotate
+  works by rotating around its target, so lerping the camera toward a new
+  focus at the same time makes the two fight and the room judders. While the
+  tour runs the controls are off and the loop owns the camera; the moment it
+  stops, controls.target is already where the camera is looking, so handing
+  back is seamless.
+*/
 type SceneOptions = {
   canvasRef: RefObject<HTMLCanvasElement | null>;
   active: ServiceId | null;
   view: StudioView;
+  tour?: boolean;
+  interactive?: boolean;
   onSelect?: (service: ServiceId) => void;
   onReady?: () => void;
   onError?: () => void;
 };
+
+/** radians per frame: one full turn in roughly ninety seconds at 60fps */
+const YAW_PER_FRAME = 0.0012;
+/** how hard the camera chases its mark each frame. Low is slow and smooth. */
+const CHASE = 0.045;
+
+const ROOM = { radius: 14.5, phi: 0.92, height: 0.9 };
+const CLOSE = { radius: 6.4, phi: 1.12 };
+
+/** Centre of a service group, cached: the geometry never moves. */
+function centreOf(runtime: StudioRuntime, service: ServiceId | null, into: THREE.Vector3) {
+  if (!service) return into.set(0, ROOM.height, 0);
+  const group = runtime.services[service];
+  if (!group) return into.set(0, ROOM.height, 0);
+  const cached = group.userData.centre as THREE.Vector3 | undefined;
+  if (cached) return into.copy(cached);
+  const box = new THREE.Box3().setFromObject(group);
+  const centre = box.getCenter(new THREE.Vector3());
+  group.userData.centre = centre;
+  return into.copy(centre);
+}
 
 const views = {
   isometric: {
@@ -57,6 +99,8 @@ export function useDesignStudioScene({
   canvasRef,
   active,
   view,
+  tour = false,
+  interactive = true,
   onSelect,
   onReady,
   onError,
@@ -64,6 +108,9 @@ export function useDesignStudioScene({
   const runtimeRef = useRef<StudioRuntime | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
+  /* The loop reads these every frame. They are refs, not state, because a
+     change must reach the running animation without rebuilding the scene. */
+  const driveRef = useRef({ tour, interactive, active });
   const selectRef = useRef(onSelect);
   const readyRef = useRef(onReady);
   const errorRef = useRef(onError);
@@ -73,6 +120,10 @@ export function useDesignStudioScene({
     readyRef.current = onReady;
     errorRef.current = onError;
   }, [onSelect, onReady, onError]);
+
+  useEffect(() => {
+    driveRef.current = { tour, interactive, active };
+  }, [tour, interactive, active]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -158,8 +209,50 @@ export function useDesignStudioScene({
     const contextLost = () => errorRef.current?.();
     canvas.addEventListener("click", choose);
     canvas.addEventListener("webglcontextlost", contextLost);
+
+    const mark = new THREE.Vector3();
+    const aim = controls.target.clone();
+    const seat = new THREE.Vector3();
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let yaw = Math.atan2(camera.position.z, camera.position.x);
+    let reach = camera.position.distanceTo(controls.target);
+
     renderer.setAnimationLoop(() => {
-      controls.update();
+      const drive = driveRef.current;
+
+      if (drive.tour) {
+        // The loop owns the camera: constant slow yaw, closing on whatever is
+        // highlighted and pulling back to the whole room when nothing is.
+        controls.enabled = false;
+        if (!still) yaw += YAW_PER_FRAME;
+        const close = drive.active !== null;
+        const { radius, phi } = close ? CLOSE : ROOM;
+
+        centreOf(runtime, drive.active, mark);
+        if (!close) mark.y = ROOM.height;
+        aim.lerp(mark, CHASE);
+        reach += (radius - reach) * CHASE;
+
+        seat.set(
+          aim.x + reach * Math.sin(phi) * Math.cos(yaw),
+          aim.y + reach * Math.cos(phi),
+          aim.z + reach * Math.sin(phi) * Math.sin(yaw),
+        );
+        camera.position.lerp(seat, CHASE);
+        camera.lookAt(aim);
+        // Kept in step so releasing the tour hands the reader the same view.
+        controls.target.copy(aim);
+      } else {
+        controls.enabled = drive.interactive;
+        yaw = Math.atan2(
+          camera.position.z - controls.target.z,
+          camera.position.x - controls.target.x,
+        );
+        reach = camera.position.distanceTo(controls.target);
+        aim.copy(controls.target);
+        controls.update();
+      }
+
       renderer.render(scene, camera);
     });
     readyRef.current?.();
@@ -189,12 +282,14 @@ export function useDesignStudioScene({
     if (runtimeRef.current) setSelection(runtimeRef.current, active);
   }, [active]);
 
+  /* A view button is a manual override, so it does nothing while the tour is
+     driving: the camera would snap and the tour would drag it straight back. */
   useEffect(() => {
     const camera = cameraRef.current;
     const controls = controlsRef.current;
-    if (!camera || !controls) return;
+    if (!camera || !controls || tour) return;
     camera.position.copy(views[view].position);
     controls.target.copy(views[view].target);
     controls.update();
-  }, [view]);
+  }, [tour, view]);
 }

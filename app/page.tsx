@@ -3,6 +3,12 @@
   Decision R1, revised 2026-09-11: the three programmes now lead as a visual
   carousel, followed by the CDIE definition, services, supplied partner marks,
   and image-led recent activity.
+
+  Change request 2026-09-21, section 2. The definition band now opens with a
+  photograph rather than the C.D.I.E lettering, which was decoration standing
+  where a picture of the place belongs. Its three words are a swipe-able rail
+  on a phone and the same three-up grid above it. Our latest shows one card at
+  a time and moves on after three seconds unless the reader is holding it.
 */
 
 import type { Metadata } from "next";
@@ -11,9 +17,13 @@ import { Button } from "@/components/primitives/Button";
 import { PartnerStrip } from "@/components/sections/PartnerStrip";
 import { ProgrammeHeroCarousel } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
+import { SoloCardCarousel } from "@/components/sections/SoloCardCarousel";
+import { TriadRail } from "@/components/sections/TriadRail";
 import { VisualCardRail } from "@/components/sections/VisualCardRail";
 import { defineCdie, homeHero, latestCopy, latestHighlights, programmeHeroSlides, servicesCopy } from "@/content/home";
 import { capabilities } from "@/content/studio";
+
+import Image from "next/image";
 
 export const metadata: Metadata = {
   description: homeHero.standfirst,
@@ -37,7 +47,8 @@ const serviceCards = capabilities.map((capability) => ({
   image: serviceImages[capability.id],
   alt: `${capability.name} at the CDIE Design Studio`,
   href: `/design-studio?service=${capability.id}`,
-  action: `Open ${capability.name}`,
+  // Change request 2026-09-21: "instead of open ..., just say read more/explore".
+  action: `Explore ${capability.name.toLowerCase()}`,
 }));
 
 export default function HomePage() {
@@ -46,20 +57,26 @@ export default function HomePage() {
       <ProgrammeHeroCarousel slides={[...programmeHeroSlides]} />
 
       <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
-        <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-16">
-          <p aria-hidden="true" className="display text-mega leading-none text-brand">C.D.I.E</p>
-          <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{defineCdie.body}</p>
+        <div className="grid items-center gap-6 lg:grid-cols-[1fr_1fr] lg:gap-16">
+          <div className="relative aspect-[5/4] overflow-hidden border border-line">
+            <Image
+              src={defineCdie.image.src}
+              alt={defineCdie.image.alt}
+              fill
+              sizes="(max-width: 1024px) 100vw, 45vw"
+              className="object-cover"
+            />
+          </div>
+          <p className="trim-mobile max-w-[62ch] text-body leading-relaxed text-ink-2 md:text-lead">
+            {defineCdie.body}
+          </p>
         </div>
-        <ul className="mt-12 grid gap-px bg-line md:grid-cols-3">
-          {defineCdie.triad.map((item) => (
-            <li key={item.id} className="flex flex-col gap-2 bg-raise p-6">
-              <h3 className="display text-sub text-brand">{item.title}</h3>
-              <p className="text-body leading-relaxed text-ink-2">{item.body}</p>
-            </li>
-          ))}
-        </ul>
 
-        <div className="mt-8">
+        <div className="mt-6 md:mt-12">
+          <TriadRail items={defineCdie.triad} />
+        </div>
+
+        <div className="mt-6 md:mt-8">
           <Button href={defineCdie.action.href} tone="outline">
             {defineCdie.action.label}
           </Button>
@@ -77,7 +94,7 @@ export default function HomePage() {
       <PartnerStrip />
 
       <Section tone="surface" eyebrow={latestCopy.eyebrow} title={latestCopy.headline}>
-        <VisualCardRail items={[...latestHighlights]} label="recent CDIE activity" />
+        <SoloCardCarousel items={[...latestHighlights]} label="recent CDIE activity" />
       </Section>
     </>
   );

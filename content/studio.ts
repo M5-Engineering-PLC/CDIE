@@ -5,6 +5,17 @@
 
 import type { Capability, Faq, Space } from "./types";
 
+/*
+  Change request 2026-09-21, section 4: "for now just use generic placeholders
+  for different components within any specific service".
+
+  Each capability lists the things it actually covers, so the tour can show
+  what sits behind one highlighted station. Every name below is lifted from
+  that capability's own `body` in this file, which is the Actual Copy tab's
+  wording; none is a product, a model, a count or a specification. Those stay
+  in `pending` until CDIE confirms them.
+*/
+
 export const studioIntro = {
   tourHeadline: "Step inside the CDIE studio.",
   tourStandfirst:
@@ -64,6 +75,11 @@ export const capabilities: Capability[] = [
     ],
     enquiry: "Ask about design support",
     media: [],
+    components: [
+      { id: "sketching", name: "Sketching tools", note: "Where a concept starts, before it reaches a screen." },
+      { id: "cad-workstations", name: "CAD workstations", note: "Workstations for computer-aided design." },
+      { id: "design-software", name: "Design software", note: "Computer-aided design software for developing the form." },
+    ],
   },
   {
     id: "electronics",
@@ -78,6 +94,11 @@ export const capabilities: Capability[] = [
     ],
     enquiry: "Ask about electronics support",
     media: [],
+    components: [
+      { id: "circuit-software", name: "Circuit-design software", note: "For laying out and checking a circuit before it is built." },
+      { id: "microcontrollers", name: "Microcontrollers", note: "The programmable part of a prototype." },
+      { id: "measurement", name: "Measurement equipment", note: "Oscilloscopes and other instruments for observing behaviour." },
+    ],
   },
   {
     id: "three-d-printing",
@@ -92,6 +113,10 @@ export const capabilities: Capability[] = [
     ],
     enquiry: "Ask about 3D printing",
     media: [],
+    components: [
+      { id: "fdm", name: "FDM printing", note: "Building a part up in layers of filament." },
+      { id: "sla", name: "SLA printing", note: "Resin printing where the detail matters more than the speed." },
+    ],
   },
   {
     id: "co-working",
@@ -105,6 +130,10 @@ export const capabilities: Capability[] = [
     ],
     enquiry: "Ask about the workspace",
     media: [],
+    components: [
+      { id: "desks", name: "Co-working desks", note: "Room to work alongside other teams." },
+      { id: "brainstorming", name: "Brainstorming space", note: "For comparing ideas and planning the next step." },
+    ],
   },
   {
     id: "metalworking",
@@ -119,6 +148,11 @@ export const capabilities: Capability[] = [
     ],
     enquiry: "Ask about metalworking",
     media: [],
+    components: [
+      { id: "fabrication", name: "Fabrication", note: "Cutting and forming metal components." },
+      { id: "machining", name: "Machining", note: "Bringing a part to its finished dimensions." },
+      { id: "welding", name: "Welding", note: "Joining metal parts of an assembly." },
+    ],
   },
   {
     id: "textiles",
@@ -130,6 +164,11 @@ export const capabilities: Capability[] = [
     pending: ["Equipment and materials", "Access, staff support and charges"],
     enquiry: "Ask about textile prototyping",
     media: [],
+    components: [
+      { id: "sewing", name: "Sewing", note: "Making up fabric-based components." },
+      { id: "cutting", name: "Cutting", note: "Preparing material for a wearable or upholstered part." },
+      { id: "upholstery", name: "Upholstery", note: "Working on the surfaces a product presents to the body." },
+    ],
   },
   {
     id: "woodworking",
@@ -144,6 +183,9 @@ export const capabilities: Capability[] = [
     ],
     enquiry: "Ask about woodworking",
     media: [],
+    components: [
+      { id: "wood-prototyping", name: "Wood prototyping", note: "Developing wood-based designs and prototypes." },
+    ],
   },
 ];
 

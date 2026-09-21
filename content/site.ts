@@ -1,5 +1,11 @@
-// Lucid: nav order Home > Programmes > Design Studio > Media > About Us > Contact.
+// Lucid: nav order Home > Programmes > Design Studio > Media > About Us.
 // Copy: CONTACT > Contact CDIE.
+/*
+  Change request 2026-09-21, section 2: "remove contact". The bar drops the
+  item. The /contact route itself stays, because every enquiry button on the
+  site resolves there and the footer still carries it: removing the page would
+  break the one route the claim-safety rule sends every unconfirmed fact to.
+*/
 
 import type { NavItem } from "./types";
 
@@ -25,7 +31,6 @@ export const nav: NavItem[] = [
   { label: "Design Studio", href: "/design-studio" },
   { label: "Media", href: "/media" },
   { label: "About Us", href: "/about" },
-  { label: "Contact", href: "/contact" },
 ];
 
 /*

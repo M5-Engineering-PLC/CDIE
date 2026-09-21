@@ -19,7 +19,6 @@ export function Card({ card, tone = "surface" }: { card: CardRecord; tone?: "sur
         <a href={card.action.href} className="stretch no-underline">
           {card.action.label}
         </a>
-        <span aria-hidden="true"> →</span>
       </p>
     </article>
   );

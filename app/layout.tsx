@@ -55,8 +55,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           logo={site.logo}
         />
         <main id="main">{children}</main>
+        {/*
+          Change request 2026-09-21: Contact leaves the top bar but not the
+          site. The footer keeps it, so the route every enquiry resolves to is
+          still one click from any page.
+        */}
         <SiteFooter
-          items={[...nav]}
+          items={[...nav, { label: "Contact", href: "/contact" }]}
           utility={[...utilityLinks]}
           contact={contact}
           name={site.name}

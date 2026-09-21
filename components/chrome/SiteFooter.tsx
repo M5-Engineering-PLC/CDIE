@@ -62,8 +62,8 @@ export function SiteFooter({
   socialAccounts,
 }: SiteFooterProps) {
   return (
-    <footer className="mt-24 border-t border-brand-lift/25 bg-ink text-surface">
-      <div className="shell grid gap-10 py-16 md:grid-cols-[1.25fr_.8fr_1fr]">
+    <footer className="mt-12 border-t md:mt-24 border-brand-lift/25 bg-ink text-surface">
+      <div className="shell grid gap-8 py-10 md:gap-10 md:py-16 md:grid-cols-[1.25fr_.8fr_1fr]">
         <div className="flex flex-col gap-3">
           {/*
             Initials, not the mark. The full logo already carries the name in
@@ -115,7 +115,7 @@ export function SiteFooter({
                   href={item.href}
                   className="font-mono text-fine text-brand-lift no-underline hover:text-surface"
                 >
-                  {item.label} ↗
+                  {item.label}
                 </a>
               </li>
             ))}

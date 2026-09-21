@@ -58,7 +58,7 @@ export function VisualCardRail({ items, label }: { items: VisualRailItem[]; labe
               <p className="kicker">{item.eyebrow}</p>
               <h3 className="display mt-3 text-sub">{item.title}</h3>
               <p className="mt-3 text-body leading-relaxed text-ink-2">{item.summary}</p>
-              <Link href={item.href} className="stretch mt-auto pt-5 font-medium text-brand no-underline">{item.action} →</Link>
+              <Link href={item.href} className="stretch mt-auto pt-5 font-medium text-brand no-underline">{item.action}</Link>
             </div>
           </li>
         ))}

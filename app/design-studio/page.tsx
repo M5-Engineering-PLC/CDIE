@@ -38,6 +38,9 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   id: capability.id,
   name: capability.name,
   spaceName: spaceShortName.get(capability.space) ?? capability.space,
+  /* Change request 2026-09-21, section 4: a capability held at the ATC switches
+     the stage to the ATC view rather than lighting a bench in another room. */
+  atc: capability.space === "atc",
   headline: capability.headline,
   body: capability.body,
   modelGroup: capability.modelGroup,
@@ -45,6 +48,7 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   enquiry: capability.enquiry,
   enquiryHref: "/contact?topic=studio",
   image: studioImages[capability.id],
+  components: capability.components,
 }));
 
 const capabilityCards: VisualRailItem[] = capabilities.map((capability) => ({
@@ -55,7 +59,7 @@ const capabilityCards: VisualRailItem[] = capabilities.map((capability) => ({
   image: studioImages[capability.id],
   alt: `${capability.name} at the CDIE Design Studio`,
   href: `/design-studio?service=${capability.id}`,
-  action: "Open in the room",
+  action: "Explore in the room",
 }));
 
 export default async function DesignStudioPage(props: PageProps<"/design-studio">) {

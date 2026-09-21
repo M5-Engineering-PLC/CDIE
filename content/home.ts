@@ -14,6 +14,13 @@
 
   The partner marks arrived in the approved website source package on
   2026-09-11 and are rendered without adding unsupported partnership claims.
+
+  Change request 2026-09-21, section 2: "photos on home page; what cdie is" and
+  "cut down on placeholder text". What CDIE is now carries a photograph and one
+  picture per word of the triad, and every summary on this page is trimmed to
+  the sentence that earns its place. The photographs are genuine CDIE images
+  already in public/images; their alt text describes what is visible and claims
+  nothing about who is in the frame or when it was taken.
 */
 
 import type { Card } from "./types";
@@ -25,7 +32,7 @@ export const programmeHeroSlides = [
     title: "Good ideas begin with better questions.",
     summary: "Learn the medical innovation cycle, leading innovators through a proven process of advancing medical technologies.",
     image: "/images/hero-workshop-1.jpg",
-    alt: "Innovators learning through practical workshop activity at CDIE",
+    alt: "People in workshop coats marking and cutting a wooden part at a bench",
     action: { label: "Discover Invention Education", href: "/programmes/invention-education" },
   },
   {
@@ -33,8 +40,8 @@ export const programmeHeroSlides = [
     eyebrow: "Medical Device Innovation",
     title: "Build the skills behind better medical devices.",
     summary: "Take your interest in healthcare further with an M.Sc. in Biomedical Engineering focused on medical device innovation.",
-    image: "/images/hero-workshop-2.jpg",
-    alt: "A medical device innovation cohort outside CDIE at Kenyatta University",
+    image: "/images/service-design-2.jpg",
+    alt: "A person working on a laptop beside desktop workstations in the CDIE studio",
     action: { label: "Explore the MDI programme", href: "/programmes/mdi" },
   },
   {
@@ -43,7 +50,7 @@ export const programmeHeroSlides = [
     title: "See where ideas take shape.",
     summary: "Explore the spaces, tools and workbenches that support design and prototyping at CDIE.",
     image: "/images/service-electronics-1.jpg",
-    alt: "Electronics workspace inside the CDIE Design Studio",
+    alt: "Two people soldering and testing a circuit at the CDIE electronics bench",
     action: { label: "Start the studio tour", href: "/design-studio" },
   },
 ] as const;
@@ -98,21 +105,31 @@ export const defineCdie = {
   eyebrow: "What CDIE is",
   headline: "Practical learning, with people at the centre.",
   body: "The Centre for Design, Innovation & Engineering at Kenyatta University supports the design, engineering and prototyping of medical devices. As part of Invention Education, we bring together hands-on learning, research and collaboration around healthcare needs.",
+  image: {
+    src: "/images/hero-workshop-1.jpg",
+    alt: "People in workshop coats marking and cutting a wooden part at a bench",
+  },
   triad: [
     {
       id: "innovate",
       title: "Innovate",
       body: "Explore healthcare needs with curiosity and careful thinking.",
+      image: "/images/story-1.jpg",
+      alt: "A team presenting a project on screen to a room at CDIE",
     },
     {
       id: "convene",
       title: "Convene",
       body: "Bring students, healthcare professionals and industry perspectives into the conversation.",
+      image: "/images/story-3.jpg",
+      alt: "A large group in CDIE coats gathered outside the centre's co-working space",
     },
     {
       id: "create",
       title: "Create",
       body: "Use design and prototyping to make ideas tangible.",
+      image: "/images/service-3dprinting-1.jpg",
+      alt: "A rack of 3D printers, filament and a wash-and-cure station in the CDIE studio",
     },
   ],
   action: { label: "Meet CDIE", href: "/about", live: true },
@@ -121,8 +138,7 @@ export const defineCdie = {
 export const servicesCopy = {
   eyebrow: "In the studio",
   headline: "What you can use, and what it is for.",
-  standfirst:
-    "Each capability opens the studio at that service, with its own information and photographs.",
+  standfirst: "Each one opens the studio at that service.",
 } as const;
 
 export const latestCopy = {
@@ -135,9 +151,9 @@ export const latestHighlights = [
     id: "programme-projects",
     eyebrow: "Programme work",
     title: "Ideas presented, questioned and improved.",
-    summary: "See the learning activities and project presentations taking place across CDIE programmes.",
-    image: "/images/story-1.jpg",
-    alt: "Innovators presenting a healthcare project at CDIE",
+    summary: "Learning activities and project presentations across CDIE programmes.",
+    image: "/images/hero-workshop-1.jpg",
+    alt: "People in workshop coats marking and cutting a wooden part at a bench",
     href: "/media",
     action: "Explore recent work",
   },
@@ -145,9 +161,9 @@ export const latestHighlights = [
     id: "cohort-moments",
     eyebrow: "From our programmes",
     title: "Learning happens around the workbench.",
-    summary: "Follow the people, practical sessions and conversations shaping medical device innovation.",
+    summary: "The people and practical sessions behind medical device innovation.",
     image: "/images/story-3.jpg",
-    alt: "A group of innovators gathered after a CDIE programme session",
+    alt: "A large group in CDIE coats gathered outside the centre's co-working space",
     href: "/programmes",
     action: "Explore programmes",
   },
@@ -155,9 +171,9 @@ export const latestHighlights = [
     id: "community",
     eyebrow: "From our community",
     title: "A closer look at life at CDIE.",
-    summary: "Browse stories, programme highlights and updates from the centre and its collaborators.",
+    summary: "Stories and updates from the centre and its collaborators.",
     image: "/images/story-11.jpg",
-    alt: "Participants at a medical technology programme event",
+    alt: "A group at a MedTech Connect event in front of a Policy Innovation wall",
     href: "/media",
     action: "Browse media",
   },

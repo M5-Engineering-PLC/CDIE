@@ -76,7 +76,7 @@ function PostCard({ post }: { post: LinkedInPost }) {
             rel="noreferrer"
             className="mt-auto text-body text-brand"
           >
-            Read on LinkedIn ↗
+            Read on LinkedIn
           </a>
         </div>
       )}
@@ -97,7 +97,7 @@ export function LinkedInCarousel({
         {fallback}{" "}
         {pageUrl ? (
           <a href={pageUrl} target="_blank" rel="noreferrer" className="text-brand hover:text-brand-live">
-            CDIE on LinkedIn ↗
+            CDIE on LinkedIn
           </a>
         ) : (
           <span className="text-ink-3">The account link is added once it is confirmed.</span>

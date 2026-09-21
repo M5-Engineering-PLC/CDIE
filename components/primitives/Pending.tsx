@@ -39,7 +39,6 @@ export function Pending({
       <Link href={href} className="font-medium text-brand hover:text-brand-live">
         {label}
       </Link>
-      <span aria-hidden="true"> →</span>
     </p>
   );
 }
