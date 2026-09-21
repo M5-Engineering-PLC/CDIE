@@ -165,6 +165,8 @@ export function StudioStage({
           <Atc3D
             active={active as AtcServiceId | null}
             onSelect={(s) => onSelect(s)}
+            tour={tour}
+            interactive={!viewOnly}
           />
         ) : (
           <DesignStudio3D
@@ -192,15 +194,13 @@ export function StudioStage({
             : "Drag to orbit, scroll to zoom, select a bench to jump to its capability. Illustrative and unmeasured."}
         </p>
         <div className="flex gap-4">
-          {!isAtc && (
-            <button
-              type="button"
-              onClick={onToggleTour}
-              className="text-fine font-medium text-brand underline-offset-4 hover:underline"
-            >
-              {tour ? "Pause the tour" : "Resume the tour"}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onToggleTour}
+            className="text-fine font-medium text-brand underline-offset-4 hover:underline"
+          >
+            {tour ? "Pause the tour" : "Resume the tour"}
+          </button>
           <button
             type="button"
             onClick={onClose}
