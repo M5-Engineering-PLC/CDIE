@@ -130,9 +130,10 @@ export type CapabilityId =
   | "electronics"
   | "three-d-printing"
   | "co-working"
-  | "metalworking"
   | "textiles"
-  | "woodworking";
+  | "metalworking"
+  | "woodworking"
+  | "laser-cutting";
 
 /*
   Change request 2026-09-21, section 4: "for now just use generic placeholders
@@ -173,7 +174,7 @@ export type Capability = {
   headline: string;
   body: string;
   /** service group id in the studio/atc model, or null where the position is unknown */
-  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | "woodworking" | "metalworking" | null;
+  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | "woodworking" | "metalworking" | "laser-cutting" | null;
   pending: string[];
   enquiry: string;
   media: Figure[];

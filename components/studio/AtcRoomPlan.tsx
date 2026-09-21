@@ -1,6 +1,6 @@
 /*
   The compact ATC Workshop navigator, drawn from the vendored atcLayout module.
-  This is the lightweight 2D stand-in for the Three.js model.
+  Lightweight 2D stand-in for the Three.js model.
 */
 
 import { atcLayout, type AtcServiceId } from "./atc-3js";
@@ -13,7 +13,6 @@ const halfDepth = depth / 2;
 
 const toX = (x: number) => (x + halfWidth) * SCALE + PAD;
 const toY = (z: number) => (z + halfDepth) * SCALE + PAD;
-
 const viewWidth = width * SCALE + PAD * 2;
 const viewHeight = depth * SCALE + PAD * 2;
 
@@ -22,50 +21,25 @@ export type AtcRoomPlanProps = {
   className?: string;
 };
 
-type Rect = {
-  key: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  service: AtcServiceId;
-  label?: string;
-  number?: number;
+const rects = atcLayout.stations.map((st) => ({
+  key: st.id,
+  x: toX(st.position[0] - st.size[0] / 2),
+  y: toY(st.position[2] - st.size[2] / 2),
+  w: st.size[0] * SCALE,
+  h: st.size[2] * SCALE,
+  service: st.service,
+  label: st.label,
+  number: st.number,
+}));
+
+const gridLines = {
+  vertical: Array.from({ length: Math.floor(width) + 1 }, (_, i) => -halfWidth + i),
+  horizontal: Array.from({ length: Math.floor(depth) + 1 }, (_, i) => -halfDepth + i),
 };
 
-function buildRects(): Rect[] {
-  return atcLayout.stations.map((station) => {
-    const [x, , z] = station.position;
-    const [w, , d] = station.size;
-    return {
-      key: station.id,
-      x: toX(x - w / 2),
-      y: toY(z - d / 2),
-      w: w * SCALE,
-      h: d * SCALE,
-      service: station.service,
-      label: station.label,
-      number: station.number,
-    };
-  });
-}
-
-const rects = buildRects();
-
-const gridLines = (() => {
-  const vertical: number[] = [];
-  const horizontal: number[] = [];
-  for (let x = -halfWidth; x <= halfWidth + 0.01; x += 1.0) vertical.push(x);
-  for (let z = -halfDepth; z <= halfDepth + 0.01; z += 1.0) horizontal.push(z);
-  return { vertical, horizontal };
-})();
-
 export function AtcRoomPlan({ active, className = "" }: AtcRoomPlanProps) {
-  // Container bounding coordinates: center [-4.5, 0, -0.2], size [3.2, 2.5, 6.4]
   const contX = toX(-4.5 - 3.2 / 2);
   const contY = toY(-0.2 - 6.4 / 2);
-  const contW = 3.2 * SCALE;
-  const contH = 6.4 * SCALE;
 
   return (
     <svg
@@ -74,7 +48,6 @@ export function AtcRoomPlan({ active, className = "" }: AtcRoomPlanProps) {
       aria-label="Plan of the CDIE ATC Prototyping Workshop, with selected area highlighted"
       className={`h-auto w-full border border-line bg-raise ${className}`}
     >
-      {/* Background Architectural Grid */}
       <g stroke="var(--color-line)" strokeWidth={0.6}>
         {gridLines.vertical.map((x) => (
           <line key={`v${x}`} x1={toX(x)} y1={toY(-halfDepth)} x2={toX(x)} y2={toY(halfDepth)} />
@@ -83,85 +56,27 @@ export function AtcRoomPlan({ active, className = "" }: AtcRoomPlanProps) {
           <line key={`h${z}`} x1={toX(-halfWidth)} y1={toY(z)} x2={toX(halfWidth)} y2={toY(z)} />
         ))}
       </g>
-
-      {/* Workshop Outer Boundary */}
-      <rect
-        x={PAD}
-        y={PAD}
-        width={width * SCALE}
-        height={depth * SCALE}
-        fill="none"
-        stroke="var(--color-ink-3)"
-        strokeWidth={1.5}
-      />
-
-      {/* Shipping Container Enclosure Outline */}
-      <rect
-        x={contX}
-        y={contY}
-        width={contW}
-        height={contH}
-        fill="rgba(29, 79, 141, 0.08)"
-        stroke="rgba(29, 79, 141, 0.5)"
-        strokeWidth={1.5}
-        strokeDasharray="4 2"
-        rx={3}
-      />
-      <text
-        x={contX + 8}
-        y={contY + 16}
-        fontSize={8}
-        fontFamily="var(--font-mono)"
-        fill="var(--color-ink-3)"
-        letterSpacing="0.05em"
-      >
+      <rect x={PAD} y={PAD} width={width * SCALE} height={depth * SCALE} fill="none" stroke="var(--color-ink-3)" strokeWidth={1.5} />
+      <rect x={contX} y={contY} width={3.2 * SCALE} height={6.4 * SCALE} fill="rgba(29, 79, 141, 0.08)" stroke="rgba(29, 79, 141, 0.5)" strokeWidth={1.5} strokeDasharray="4 2" rx={3} />
+      <text x={contX + 8} y={contY + 16} fontSize={8} fontFamily="var(--font-mono)" fill="var(--color-ink-3)" letterSpacing="0.05em">
         BLUE SHIPPING CONTAINER
       </text>
-
-      {/* Entrance Doorway Marker on Right Wall */}
       <g stroke="var(--color-ink-3)" strokeWidth={1.2}>
         <line x1={toX(halfWidth)} y1={toY(-0.6)} x2={toX(halfWidth + 0.4)} y2={toY(-0.6)} />
         <line x1={toX(halfWidth)} y1={toY(1.6)} x2={toX(halfWidth + 0.4)} y2={toY(1.6)} />
-        <text
-          x={toX(halfWidth) - 6}
-          y={toY(0.5)}
-          textAnchor="end"
-          fontSize={8}
-          fontFamily="var(--font-mono)"
-          fill="var(--color-ink-3)"
-        >
+        <text x={toX(halfWidth) - 6} y={toY(0.5)} textAnchor="end" fontSize={8} fontFamily="var(--font-mono)" fill="var(--color-ink-3)">
           ENTRANCE →
         </text>
       </g>
-
-      {/* Workshop Stations / Equipment Blocks */}
       {rects.map((rect) => {
-        const on = active !== null && rect.service === active;
+        const on = active !== null && (rect.service === active || (active === "metalworking" && rect.service === "tooling-storage"));
         return (
           <g key={rect.key}>
-            <rect
-              x={rect.x}
-              y={rect.y}
-              width={rect.w}
-              height={rect.h}
-              rx={2}
-              fill={on ? "var(--color-brand-live)" : "var(--color-ink-3)"}
-              opacity={on ? 0.95 : 0.28}
-            />
+            <rect x={rect.x} y={rect.y} width={rect.w} height={rect.h} rx={2} fill={on ? "var(--color-brand-live)" : "var(--color-ink-3)"} opacity={on ? 0.95 : 0.28} />
             {rect.number ? (
               <g transform={`translate(${rect.x + rect.w / 2}, ${rect.y + rect.h / 2})`}>
-                <circle
-                  r={8}
-                  fill={on ? "var(--color-surface)" : "var(--color-brand)"}
-                />
-                <text
-                  y={3}
-                  textAnchor="middle"
-                  fontSize={8}
-                  fontFamily="var(--font-mono)"
-                  fontWeight="bold"
-                  fill={on ? "var(--color-brand-live)" : "#ffffff"}
-                >
+                <circle r={8} fill={on ? "var(--color-surface)" : "var(--color-brand)"} />
+                <text y={3} textAnchor="middle" fontSize={8} fontFamily="var(--font-mono)" fontWeight="bold" fill={on ? "var(--color-brand-live)" : "#ffffff"}>
                   {rect.number}
                 </text>
               </g>

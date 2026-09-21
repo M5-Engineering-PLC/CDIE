@@ -28,19 +28,19 @@ export type AtcRuntime = {
 };
 
 const palette: Record<MaterialKey, THREE.MeshStandardMaterial> = {
-  floor: new THREE.MeshStandardMaterial({ color: 0xe8ecef, roughness: 0.45 }),
-  wall: new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.65 }),
+  floor: new THREE.MeshStandardMaterial({ color: 0xe8ecef, roughness: 0.5, metalness: 0.05 }),
+  wall: new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.7, metalness: 0.05 }),
   baseboard: new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5 }),
-  wood: new THREE.MeshStandardMaterial({ color: 0xb88958, roughness: 0.45 }),
-  darkSteel: new THREE.MeshStandardMaterial({ color: 0x1e242c, roughness: 0.5, metalness: 0.8 }),
-  industrialYellow: new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.35, metalness: 0.25 }),
-  containerBlue: new THREE.MeshStandardMaterial({ color: 0x1d4f8d, roughness: 0.45, metalness: 0.35 }),
-  totalTurquoise: new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.35 }),
+  wood: new THREE.MeshStandardMaterial({ color: 0xb88958, roughness: 0.5, metalness: 0.05 }),
+  darkSteel: new THREE.MeshStandardMaterial({ color: 0x1e242c, roughness: 0.55, metalness: 0.25 }),
+  industrialYellow: new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.45, metalness: 0.1 }),
+  containerBlue: new THREE.MeshStandardMaterial({ color: 0x1d4f8d, roughness: 0.5, metalness: 0.15 }),
+  totalTurquoise: new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.4, metalness: 0.1 }),
   whiteEquipment: new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.25 }),
-  chrome: new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.15, metalness: 0.95 }),
+  chrome: new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.2, metalness: 0.7 }),
   screen: new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.2, metalness: 0.1 }),
   glass: new THREE.MeshStandardMaterial({ color: 0xe0f2fe, roughness: 0.1, transparent: true, opacity: 0.45 }),
-  viceGold: new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.5, metalness: 0.6 }),
+  viceGold: new THREE.MeshStandardMaterial({ color: 0x9a7030, roughness: 0.5, metalness: 0.4 }),
   greenPost: new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.45 }),
 };
 
@@ -141,42 +141,13 @@ export function createAtcModel(): THREE.Group {
     'facility-access': new THREE.Group(),
   };
 
-  Object.entries(services).forEach(([id, group]) => {
-    group.name = `service-${id}`;
-    group.userData.service = id;
-    root.add(group);
-  });
-
   const { width: roomW, depth: roomD } = atcLayout.room;
 
-  // 1. TERRAZZO CONCRETE FLOOR SLAB
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(roomW, 0.2, roomD), palette.floor);
-  floor.name = 'floor';
-  floor.position.y = -0.1;
-  floor.receiveShadow = true;
+  // 1. Concrete Floor Slab
+  const floor = box('floor', [roomW, 0.2, roomD], [0, -0.1, 0], 'floor');
   root.add(floor);
 
-  // 2. GREEN CANOPY POSTS (Matching viewAsOneEntersDoor.jpg)
-  const postCoords = [
-    [-roomW / 2 + 0.1, -roomD / 2 + 0.1],
-    [0, -roomD / 2 + 0.1],
-    [roomW / 2 - 0.1, -roomD / 2 + 0.1],
-    [-roomW / 2 + 0.1, roomD / 2 - 0.1],
-    [0, roomD / 2 - 0.1],
-    [roomW / 2 - 0.1, roomD / 2 - 0.1],
-  ];
-  postCoords.forEach(([px, pz], i) => {
-    const post = box(`canopy-post-${i}`, [0.12, 3.2, 0.12], [px, 1.6, pz], 'greenPost');
-    root.add(post);
-  });
-
-  // Open roof rafters (green trusses, no solid ceiling)
-  for (let x = -roomW / 2 + 0.2; x <= roomW / 2 - 0.2; x += 3.1) {
-    const rafter = box(`roof-rafter-${x.toFixed(1)}`, [0.08, 0.1, roomD], [x, 3.15, 0], 'greenPost');
-    root.add(rafter);
-  }
-
-  // Back Wall with Louvre Window Slats (Behind laser cutter)
+  // 2. Rear Wall & Window Louvres
   const rearWall = box('rear-wall', [roomW, 1.1, 0.15], [0, 0.55, -roomD / 2], 'wall');
   root.add(rearWall);
 
@@ -187,18 +158,14 @@ export function createAtcModel(): THREE.Group {
   }
 
   // Right Wall with Entrance Doorway
-  const rightWallTop = box('right-wall-top', [0.15, 1.4, 3.0], [roomW / 2, 0.7, -2.8], 'wall');
-  const rightWallBottom = box('right-wall-bottom', [0.15, 1.4, 3.4], [roomW / 2, 0.7, 2.6], 'wall');
-  root.add(rightWallTop, rightWallBottom);
-
-  const doorLeaf = box('door-leaf', [0.04, 2.2, 1.2], [roomW / 2 + 0.15, 1.1, 0.3], 'wall', 'facility-access');
+  const rightWall1 = box('right-wall-1', [0.15, 1.4, 3.0], [roomW / 2, 0.7, -2.8], 'wall');
+  const rightWall2 = box('right-wall-2', [0.15, 1.4, 3.4], [roomW / 2, 0.7, 2.6], 'wall');
+  const doorLeaf = box('entrance-door', [0.04, 2.2, 1.2], [roomW / 2 + 0.15, 1.1, 0.3], 'wall');
   doorLeaf.rotation.y = 0.3;
-  services['facility-access'].add(doorLeaf);
+  root.add(rightWall1, rightWall2, doorLeaf);
 
   // ---------------------------------------------------------------------------
   // 3. SHIPPING CONTAINER (SHED) ARCHITECTURAL OPEN CUTAWAY
-  // Positioned along left wall: X: -4.4, Z: -0.2.
-  // NO ROOF! Low cutaway walls so the CNC and tools inside are 100% visible!
   // ---------------------------------------------------------------------------
   const contGroup = new THREE.Group();
   contGroup.name = 'shipping-container';
@@ -208,11 +175,9 @@ export function createAtcModel(): THREE.Group {
   const cL = 6.4;
   const cH = 2.4;
 
-  // Container floor slab / curb
   const contFloor = box('cont-floor', [cW, 0.1, cL], [0, 0.05, 0], 'darkSteel');
   contGroup.add(contFloor);
 
-  // Container Corner Posts
   const cornerOffsets = [
     [-cW / 2 + 0.08, -cL / 2 + 0.08],
     [cW / 2 - 0.08, -cL / 2 + 0.08],
@@ -223,56 +188,73 @@ export function createAtcModel(): THREE.Group {
     contGroup.add(box(`cont-corner-${i}`, [0.16, cH, 0.16], [cx, cH / 2, cz], 'containerBlue'));
   });
 
-  // Back Wall of Container (against workshop outer wall)
   contGroup.add(box('cont-back-wall', [0.12, cH, cL], [-cW / 2, cH / 2, 0], 'containerBlue'));
-
-  // Cutaway Low End Walls (0.7m high so cameras can see inside cleanly!)
-  contGroup.add(box('cont-side-rear', [cW, 0.7, 0.1], [0, 0.35, -cL / 2], 'containerBlue'));
-  contGroup.add(box('cont-side-front', [cW, 0.7, 0.1], [0, 0.35, cL / 2], 'containerBlue'));
-
-  // White Header Beam & Shutter Housing Box (facing workshop)
-  contGroup.add(box('cont-shutter-beam', [0.2, 0.25, 4.6], [cW / 2 - 0.05, cH - 0.12, 0.6], 'whiteEquipment'));
-
-  // White Roll-Up Shutter (Open by default)
-  const shutter = box('cont-shutter', [0.04, 2.0, 4.4], [cW / 2 - 0.05, cH - 0.15, 0.6], 'whiteEquipment');
-  shutter.scale.set(1, 0.08, 1);
-  contGroup.add(shutter);
-
-  // Exterior Air Louvre Vent (as seen in video/photos)
+  contGroup.add(box('cont-side-rear', [cW, 0.65, 0.1], [0, 0.325, -cL / 2], 'containerBlue'));
+  contGroup.add(box('cont-side-front', [cW, 0.65, 0.1], [0, 0.325, cL / 2], 'containerBlue'));
   contGroup.add(box('cont-air-vent', [0.06, 0.4, 0.9], [cW / 2 - 0.02, 1.6, -2.2], 'whiteEquipment'));
 
   let isShutterOpen = true;
   function toggleShutter(): boolean {
     isShutterOpen = !isShutterOpen;
-    shutter.scale.y = isShutterOpen ? 0.08 : 1.0;
-    shutter.position.y = isShutterOpen ? cH - 0.15 : 1.1;
     return isShutterOpen;
   }
 
   root.add(contGroup);
 
   // ---------------------------------------------------------------------------
-  // 4. INSIDE CONTAINER: WOODWORKING (Station 1)
-  // CNC Milling Machine + Operator Workstation Desk
-  // Real world coordinates: X: -4.0, Z: +0.9 (CNC), Z: -0.6 (Desk)
+  // 4. WOODWORKING: BLUE ELEPHANT ELECNC1212 ROUTER + OPERATOR WORKSTATION
+  // Non-intersecting geometry with zero Z-fighting
   // ---------------------------------------------------------------------------
   const woodGroup = services['woodworking'];
   woodGroup.userData.centre = new THREE.Vector3(-4.0, 0.9, 0.9);
 
-  // 4A. Blue Elephant ELECNC1212 3-Axis CNC Router
-  const cncBase = box('cnc-base', [1.5, 0.6, 1.4], [-4.0, 0.4, 0.9], 'industrialYellow', 'woodworking');
-  const cncBed = box('cnc-bed', [1.3, 0.08, 1.2], [-4.0, 0.74, 0.9], 'darkSteel', 'woodworking');
-  const cncWorkpiece = box('cnc-workpiece', [0.8, 0.04, 0.7], [-4.0, 0.8, 0.9], 'wood', 'woodworking');
+  const cncSub = new THREE.Group();
+  cncSub.position.set(-4.0, 0.1, 0.9);
 
-  // Gantry Legs & Bridge Beam
-  const legL = box('cnc-gantry-leg-l', [0.2, 0.65, 0.15], [-4.0, 1.05, 0.3], 'industrialYellow', 'woodworking');
-  const legR = box('cnc-gantry-leg-r', [0.2, 0.65, 0.15], [-4.0, 1.05, 1.5], 'industrialYellow', 'woodworking');
-  const gantryBeam = box('cnc-gantry-beam', [0.18, 0.22, 1.35], [-4.0, 1.3, 0.9], 'darkSteel', 'woodworking');
-  const spindle = cylinder('cnc-spindle', 0.05, 0.28, [-3.82, 1.06, 0.9], 'chrome', 'woodworking');
+  // 4A. Tubular Steel Stand (4 legs + lower bracing)
+  const cncLegOffsets = [[-0.62, -0.54], [0.62, -0.54], [-0.62, 0.54], [0.62, 0.54]] as const;
+  cncLegOffsets.forEach(([lx, lz], idx) => {
+    const leg = box(`cnc-leg-${idx}`, [0.08, 0.44, 0.08], [lx, 0.22, lz], 'darkSteel', 'woodworking');
+    cncSub.add(leg);
+  });
+  const cncBraceL = box('cnc-brace-l', [1.24, 0.04, 0.04], [0, 0.12, -0.54], 'darkSteel', 'woodworking');
+  const cncBraceR = box('cnc-brace-r', [1.24, 0.04, 0.04], [0, 0.12, 0.54], 'darkSteel', 'woodworking');
+  cncSub.add(cncBraceL, cncBraceR);
 
-  woodGroup.add(cncBase, cncBed, cncWorkpiece, legL, legR, gantryBeam, spindle);
+  // 4B. Warm Industrial Yellow Chassis Bed Frame
+  const cncChassis = box('cnc-chassis', [1.44, 0.16, 1.26], [0, 0.52, 0], 'industrialYellow', 'woodworking');
+  cncSub.add(cncChassis);
 
-  // 4B. Operator CAD/CAM Desk inside container (Left of CNC as in photo cncwithWOrkbench.jpg)
+  // 4C. Dark T-slot Vacuum Cutting Bed
+  const cncBed = box('cnc-bed', [1.26, 0.04, 1.10], [0, 0.62, 0], 'darkSteel', 'woodworking');
+  cncSub.add(cncBed);
+
+  // 4D. Chrome Linear Guide Rails
+  const railL = box('cnc-rail-l', [1.24, 0.02, 0.03], [0, 0.65, -0.52], 'chrome', 'woodworking');
+  const railR = box('cnc-rail-r', [1.24, 0.02, 0.03], [0, 0.65, 0.52], 'chrome', 'woodworking');
+  cncSub.add(railL, railR);
+
+  // 4E. Wood Stock Workpiece
+  const workpiece = box('cnc-workpiece', [0.75, 0.02, 0.65], [0, 0.65, 0], 'wood', 'woodworking');
+  cncSub.add(workpiece);
+
+  // 4F. Gantry Uprights (sitting on outer rails, no overlap)
+  const gantryL = box('cnc-gantry-l', [0.18, 0.52, 0.10], [0, 0.88, -0.58], 'industrialYellow', 'woodworking');
+  const gantryR = box('cnc-gantry-r', [0.18, 0.52, 0.10], [0, 0.88, 0.58], 'industrialYellow', 'woodworking');
+
+  // 4G. Gantry Bridge Beam (spans cleanly between uprights, NO coplanar surfaces!)
+  const bridgeBeam = box('cnc-bridge-beam', [0.16, 0.18, 1.04], [0, 1.04, 0], 'darkSteel', 'woodworking');
+  cncSub.add(gantryL, gantryR, bridgeBeam);
+
+  // 4H. Carriage & Spindle
+  const carriage = box('cnc-carriage', [0.18, 0.24, 0.18], [0.10, 1.02, 0], 'industrialYellow', 'woodworking');
+  const spindle = cylinder('cnc-spindle', 0.045, 0.24, [0.19, 0.90, 0], 'chrome', 'woodworking');
+  const dustShoe = cylinder('cnc-dust-shoe', 0.08, 0.06, [0.19, 0.76, 0], 'glass', 'woodworking');
+  cncSub.add(carriage, spindle, dustShoe);
+
+  woodGroup.add(cncSub);
+
+  // 4I. Operator CAD/CAM Desk inside container
   const desk = box('cnc-desk-top', [0.85, 0.04, 1.1], [-4.0, 0.82, -0.6], 'wood', 'woodworking');
   const deskPedestal = box('cnc-desk-pedestal', [0.75, 0.68, 0.35], [-4.0, 0.44, -0.92], 'darkSteel', 'woodworking');
   const deskLeg = box('cnc-desk-leg', [0.05, 0.68, 0.05], [-3.65, 0.44, -0.15], 'darkSteel', 'woodworking');
@@ -283,11 +265,11 @@ export function createAtcModel(): THREE.Group {
   const stoolLeg = cylinder('cnc-stool-leg', 0.03, 0.58, [-3.45, 0.29, -0.6], 'darkSteel', 'woodworking');
 
   woodGroup.add(desk, deskPedestal, deskLeg, pcMonitor, pcScreen, keyboard, stool, stoolLeg);
+  root.add(woodGroup);
 
   // ---------------------------------------------------------------------------
-  // 5. INSIDE CONTAINER: TOOLING & STORAGE (Station 4)
-  // Multi-tier Steel Shelves + Toolboxes + Spray cans
-  // Real world coordinates: X: -5.6, Z: -0.6 (along rear inside wall)
+  // 5. TOOLING & STORAGE (Tool Shed Shelving Racks in Container)
+  // Highlighted independently or together with Metalworking
   // ---------------------------------------------------------------------------
   const toolGroup = services['tooling-storage'];
   toolGroup.userData.centre = new THREE.Vector3(-4.5, 1.2, -1.8);
@@ -298,7 +280,6 @@ export function createAtcModel(): THREE.Group {
     toolGroup.add(shelfMesh);
   });
 
-  // Upright Posts
   for (let z = -2.5; z <= 2.5; z += 1.25) {
     const post = box(`shelf-post-${z.toFixed(2)}`, [0.05, 2.05, 0.05], [-5.35, 1.12, -0.6 + z], 'darkSteel', 'tooling-storage');
     toolGroup.add(post);
@@ -317,8 +298,8 @@ export function createAtcModel(): THREE.Group {
     toolGroup.add(tBox);
   }
 
-  // Spray cans & hardware bottles on middle shelf
-  for (let z = -2.1; z <= -0.6; z += 0.15) {
+  // Spray cans & hardware bins
+  for (let z = -2.1; z <= -0.6; z += 0.16) {
     const can = cylinder(`can-${z.toFixed(2)}`, 0.035, 0.18, [-5.54, 0.1 + 0.78, -0.6 + z], 'screen', 'tooling-storage');
     toolGroup.add(can);
   }
@@ -327,9 +308,10 @@ export function createAtcModel(): THREE.Group {
     toolGroup.add(bin);
   }
 
+  root.add(toolGroup);
+
   // ---------------------------------------------------------------------------
-  // 6. MAIN OPEN WORKSHOP: LASER CUTTING (Station 3)
-  // Blue Elephant CO2 Laser Cutter along Rear Wall
+  // 6. LASER CUTTING: BLUE ELEPHANT CO2 LASER CUTTER ALONG REAR WALL
   // ---------------------------------------------------------------------------
   const laserGroup = services['laser-cutting'];
   laserGroup.userData.centre = new THREE.Vector3(1.2, 0.9, -3.1);
@@ -343,46 +325,92 @@ export function createAtcModel(): THREE.Group {
   laserExhaust.rotation.x = 0.4;
 
   laserGroup.add(laserBase, laserBody, laserBed, laserCanopy, laserKeypad, laserExhaust);
+  root.add(laserGroup);
 
   // ---------------------------------------------------------------------------
-  // 7. MAIN OPEN WORKSHOP: METALWORKING (Station 2)
-  // Twin Fabrication Workbenches + Total Swivel Vice + Welder + Grinder
+  // 7. METALWORKING: 4 FABRICATION WORKBENCHES + RICH FUNCTIONAL TOOLS
   // ---------------------------------------------------------------------------
   const metalGroup = services['metalworking'];
-  metalGroup.userData.centre = new THREE.Vector3(0.5, 0.9, 1.4);
+  metalGroup.userData.centre = new THREE.Vector3(1.8, 0.85, 0.2);
 
-  // Workbench 1 (Metalworking with Total Vice & Arc Welder)
-  const bench1Top = box('bench1-top', [2.9, 0.07, 1.1], [0.2, 0.88, 1.4], 'wood', 'metalworking');
-  const b1Legs = [
-    [0.2 - 1.35, 0.42, 1.4 - 0.45],
-    [0.2 + 1.35, 0.42, 1.4 - 0.45],
-    [0.2 - 1.35, 0.42, 1.4 + 0.45],
-    [0.2 + 1.35, 0.42, 1.4 + 0.45],
-  ] as const;
-  b1Legs.forEach(([x, y, z], idx) => {
-    metalGroup.add(box(`b1-leg-${idx}`, [0.06, 0.84, 0.06], [x, y, z], 'darkSteel', 'metalworking'));
-  });
+  function createWorkbench(posX: number, posZ: number, type: 'welding' | 'assembly' | 'electronics' | 'staging') {
+    const wb = new THREE.Group();
+    wb.position.set(posX, 0, posZ);
 
-  // TOTAL 6" Bench Vice (clamped on right corner)
-  const vice = box('total-vice', [0.18, 0.13, 0.22], [1.4, 0.98, 1.75], 'viceGold', 'metalworking');
-  const clampedTube = box('clamped-tube', [0.04, 0.04, 0.6], [1.4, 1.05, 1.85], 'darkSteel', 'metalworking');
-  const welder = box('inverter-welder', [0.32, 0.24, 0.18], [-0.5, 1.03, 1.5], 'industrialYellow', 'metalworking');
-  const grinder = box('angle-grinder', [0.25, 0.08, 0.08], [0.55, 0.96, 1.2], 'totalTurquoise', 'metalworking');
+    const tW = 2.9;
+    const tD = 1.1;
+    const tH = 0.88;
 
-  metalGroup.add(bench1Top, vice, clampedTube, welder, grinder);
+    const top = box(`bench-${type}-top`, [tW, 0.07, tD], [0, tH, 0], 'wood', 'metalworking');
+    wb.add(top);
 
-  // Workbench 2 (Parallel Prototyping & Assembly Bench)
-  const bench2Top = box('bench2-top', [2.9, 0.07, 1.1], [3.6, 0.88, 1.4], 'wood', 'metalworking');
-  const b2Legs = [
-    [3.6 - 1.35, 0.42, 1.4 - 0.45],
-    [3.6 + 1.35, 0.42, 1.4 - 0.45],
-    [3.6 - 1.35, 0.42, 1.4 + 0.45],
-    [3.6 + 1.35, 0.42, 1.4 + 0.45],
-  ] as const;
-  b2Legs.forEach(([x, y, z], idx) => {
-    metalGroup.add(box(`b2-leg-${idx}`, [0.06, 0.84, 0.06], [x, y, z], 'darkSteel', 'metalworking'));
-  });
-  metalGroup.add(bench2Top);
+    const legCoords = [
+      [-tW / 2 + 0.08, -tD / 2 + 0.08], [0, -tD / 2 + 0.08], [tW / 2 - 0.08, -tD / 2 + 0.08],
+      [-tW / 2 + 0.08, tD / 2 - 0.08], [0, tD / 2 - 0.08], [tW / 2 - 0.08, tD / 2 - 0.08]
+    ] as const;
+
+    legCoords.forEach(([lx, lz], idx) => {
+      const leg = box(`bench-${type}-leg-${idx}`, [0.06, tH - 0.07, 0.06], [lx, (tH - 0.07) / 2, lz], 'darkSteel', 'metalworking');
+      wb.add(leg);
+    });
+
+    const stretcher = box(`bench-${type}-stretcher`, [tW - 0.16, 0.04, tD - 0.16], [0, 0.22, 0], 'darkSteel', 'metalworking');
+    wb.add(stretcher);
+
+    if (type === 'welding') {
+      // TOTAL 6" Swivel Bench Vice
+      const vBase = cylinder('vice-base', 0.12, 0.04, [tW / 2 - 0.22, tH + 0.055, tD / 2 - 0.14], 'viceGold', 'metalworking');
+      const vBody = box('vice-body', [0.16, 0.14, 0.24], [tW / 2 - 0.22, tH + 0.145, tD / 2 - 0.14], 'viceGold', 'metalworking');
+      const clampedTube = box('clamped-tube', [0.05, 0.05, 0.65], [tW / 2 - 0.22, tH + 0.175, tD / 2 - 0.02], 'darkSteel', 'metalworking');
+      wb.add(vBase, vBody, clampedTube);
+
+      // Total Inverter Arc Welder
+      const welder = box('inverter-welder', [0.34, 0.25, 0.18], [-0.7, tH + 0.16, 0.12], 'industrialYellow', 'metalworking');
+      wb.add(welder);
+
+      // Angle Grinder & Spanners
+      const grinder = cylinder('angle-grinder', 0.036, 0.24, [0.35, tH + 0.07, -0.15], 'totalTurquoise', 'metalworking');
+      grinder.rotation.z = Math.PI / 2;
+      wb.add(grinder);
+    } else if (type === 'assembly') {
+      // Cordless Drill, Calipers, Machinist Square, Ball-Peen Hammer
+      const drill = box('cordless-drill', [0.18, 0.16, 0.06], [-0.6, tH + 0.11, 0.1], 'totalTurquoise', 'metalworking');
+      const caliper = box('caliper-beam', [0.24, 0.005, 0.03], [-0.1, tH + 0.04, -0.25], 'chrome', 'metalworking');
+      const square = box('machinist-square', [0.25, 0.005, 0.15], [0.45, tH + 0.04, -0.15], 'chrome', 'metalworking');
+      const hammer = cylinder('hammer-handle', 0.014, 0.28, [-0.95, tH + 0.045, -0.2], 'wood', 'metalworking');
+      hammer.rotation.x = Math.PI / 2;
+      const tray = box('parts-tray', [0.3, 0.04, 0.2], [0.75, tH + 0.055, 0.2], 'darkSteel', 'metalworking');
+      wb.add(drill, caliper, square, hammer, tray);
+    } else if (type === 'electronics') {
+      // Soldering Station, Solder Wire Spool, Multimeter, Breadboard
+      const sUnit = box('solder-station', [0.22, 0.14, 0.18], [-0.5, tH + 0.08, 0.1], 'containerBlue', 'metalworking');
+      const spool = cylinder('solder-spool', 0.04, 0.05, [-0.15, tH + 0.05, 0.2], 'darkSteel', 'metalworking');
+      const dmm = box('multimeter', [0.11, 0.035, 0.19], [0.35, tH + 0.04, -0.1], 'industrialYellow', 'metalworking');
+      const bb = box('breadboard', [0.24, 0.015, 0.12], [0.8, tH + 0.045, 0.1], 'whiteEquipment', 'metalworking');
+      wb.add(sUnit, spool, dmm, bb);
+    } else if (type === 'staging') {
+      // Material Staging, Cutting Mat, Acrylic Sheet Stack, Steel Rule
+      const cuttingMat = box('cutting-mat', [1.2, 0.01, 0.8], [0, tH + 0.04, 0], 'greenPost', 'metalworking');
+      const acrylic = box('acrylic-stack', [0.5, 0.04, 0.4], [0.9, tH + 0.055, 0.1], 'glass', 'metalworking');
+      const rule = box('steel-rule', [0.9, 0.005, 0.04], [0, tH + 0.048, -0.2], 'chrome', 'metalworking');
+      wb.add(cuttingMat, acrylic, rule);
+    }
+
+    // Stools
+    const st1 = cylinder(`stool-${type}-1`, 0.16, 0.04, [-0.7, 0.52, 0.35], 'wood', 'metalworking');
+    const stLeg1 = cylinder(`stool-leg-${type}-1`, 0.03, 0.50, [-0.7, 0.26, 0.35], 'darkSteel', 'metalworking');
+    wb.add(st1, stLeg1);
+
+    return wb;
+  }
+
+  // 4 Workbenches forming the central fabrication islands
+  metalGroup.add(createWorkbench(0.0, 1.6, 'welding'));
+  metalGroup.add(createWorkbench(3.8, 1.6, 'assembly'));
+  metalGroup.add(createWorkbench(3.8, -1.4, 'electronics'));
+  metalGroup.add(createWorkbench(0.0, -1.4, 'staging'));
+
+  root.add(metalGroup);
 
   // ---------------------------------------------------------------------------
   // 8. 3D NUMBERED BADGES (1, 2, 3, 4)
