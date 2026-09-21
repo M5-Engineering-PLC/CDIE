@@ -75,6 +75,15 @@
   --motion-glide: 520ms;
   --motion-scene: 900ms;
   --ease-glide: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /*
+    Change request 2026-09-21, second pass: "apply smoother transitions for all
+    carousels". One duration for a rail's arrow step, read by lib/motion.ts so
+    the eased scroll and the CSS transitions around it cannot drift apart. It
+    is longer than a browser's own smooth scroll, which is what made the arrows
+    feel like a jump rather than a move.
+  */
+  --motion-rail: 640ms;
 }
 
 @layer base {
@@ -164,8 +173,14 @@
       transform var(--motion-glide) var(--ease-glide);
   }
 
+  /*
+    Change request 2026-09-21, second pass, Home: "add hover effects". The
+    border already answered a pointer; the card now lifts with it, on the
+    transform transition the rule below already declared and never used.
+  */
   .card-hit:hover {
     border-color: var(--color-brand-live);
+    transform: translateY(-3px);
   }
 
   .card-hit:has(a:focus-visible) {
@@ -264,6 +279,35 @@
     opacity: 0;
     transform: translateY(0.75rem);
   }
+
+  /*
+    Change request 2026-09-21, second pass: "apply smoother transitions for all
+    carousels". Two carousels changed slide by swapping the element outright,
+    which reads as a flicker however well the picture behind it crossfades.
+
+    .settle animates the arriving slide in. It is keyed on the slide in the
+    component, so React replaces the node and the animation runs again; a
+    transition would not, because the node it would transition from is gone.
+    Used where a slide sets the height of its own band and so cannot be
+    stacked absolutely for a crossfade.
+  */
+  .settle {
+    animation: settle var(--motion-scene) var(--ease-glide) both;
+  }
+
+  /*
+    A rail scrolled by its own arrows. lib/motion.ts drives the scroll frame by
+    frame, so scroll-behavior must stay auto here or the two fight; the class
+    exists to mark the contract and to carry the snap and the scrollbar.
+  */
+  .rail-glide {
+    scroll-behavior: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .rail-glide > * {
+    scroll-snap-align: start;
+  }
 }
 
 @media (min-width: 768px) {
@@ -281,6 +325,11 @@
 @keyframes hero-progress {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
+}
+
+@keyframes settle {
+  from { opacity: 0; transform: translateY(0.6rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -41,12 +41,18 @@ const eventCards: EventCardItem[] = events.map((event) => ({
   section. The standing page hero was removed, so each slide's title is the
   page h1, as it already is on Home. Slides are built from the same
   opportunities the page lists below, so the two can never drift apart.
+
+  Change request 2026-09-21, second pass: "change the carousel titles to
+  Invention education, MSc MDI, Design challenges, Catalyst grants, Training
+  and masterclasses". The tab strip reads a slide's eyebrow, so the eyebrow is
+  now the opportunity's carouselTitle rather than its kind. The kind is not
+  lost: it still labels the programme on its row below.
 */
 const heroSlides: ProgrammeHeroSlide[] = opportunities
   .filter((opportunity) => opportunity.image)
   .map((opportunity) => ({
     id: opportunity.id,
-    eyebrow: opportunity.kind,
+    eyebrow: opportunity.carouselTitle,
     title: opportunity.title,
     summary: opportunity.summary,
     image: opportunity.image!.src,
@@ -168,8 +174,16 @@ export default function ProgrammesPage() {
         )}
       </Section>
 
-      <Section tone="surface" eyebrow="Questions" title="Before you enquire.">
-        <FaqList items={[...programmeFaqs]} />
+      {/*
+        Change request 2026-09-21, second pass: "change questions secton to
+        faqs, remove 'before you ask' subtitle". The band is FAQs and the
+        questions stand on their own. "require manual input and confirmation
+        for all faqs": FaqList publishes an answer only where content/types.ts
+        records who confirmed it, so every question here currently carries the
+        enquiry wording instead.
+      */}
+      <Section tone="surface" eyebrow="FAQs">
+        <FaqList items={[...programmeFaqs]} enquiryHref="/contact?topic=admissions" />
         <div className="mt-8">
           <Button href="/contact?topic=admissions">Ask about the next intake</Button>
         </div>

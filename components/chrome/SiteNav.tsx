@@ -4,12 +4,11 @@
 // LOGIN. Decision R2, 2026-09-11: the studio login joins the bar as its last
 // item. The logo is the home link, so no wordmark sits beside it.
 /*
-  Change request 2026-09-21, section 2. The bar is white: it was solid brand,
-  which fought every hero under it and left the logo in a white patch of its
-  own. The mobile control is a hamburger that becomes an X, because "Menu" and
-  "Close" were doing an icon's job. And the panel closes on its own: it already
-  closed on a refresh, since the state is per-mount, but not on a client-side
-  navigation, on Escape, or when a rotation reached the desktop breakpoint.
+  Change request 2026-09-21, second pass: "revert navbar back to cobalt blue".
+  The white bar is withdrawn. The bar is solid brand again, the logo keeps the
+  white plate that carries it against that ground, and the current page is full
+  white against 70%, the step that holds contrast where brand-lift would not.
+  The hamburger and the self-closing panel stay as the first pass left them.
 */
 
 import Image from "next/image";
@@ -70,16 +69,16 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
   const login = utility[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 text-ink backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-brand-lift/30 bg-brand/95 text-surface backdrop-blur">
       <div className="shell flex items-center justify-between gap-6 py-2">
-        <Link href="/" className="flex items-center gap-3" aria-label="CDIE home">
+        <Link href="/" className="flex items-center gap-3 rounded-edge bg-surface px-2 py-1" aria-label="CDIE home">
           <Image
             src={logo.src}
             alt={logo.alt}
             width={logo.width}
             height={logo.height}
             priority
-            className="h-10 w-auto md:h-14"
+            className="h-12 w-auto md:h-14"
           />
           <span className="hidden border-l border-line pl-3 text-fine leading-tight text-ink-2 2xl:block">
             {institution}
@@ -98,11 +97,11 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                     aria-current={isCurrent(item.href) ? "page" : undefined}
                     /* Change request 2026-09-13, section 2.2: the current page
                        is signalled by colour, not a rule under the word. On
-                       white that step is brand against ink-2. */
+                       the cobalt bar that step is full white against 70%. */
                     className={`text-body transition-colors ${
                       isCurrent(item.href)
-                        ? "font-medium text-brand"
-                        : "text-ink-2 hover:text-brand"
+                        ? "font-medium text-surface"
+                        : "text-surface/70 hover:text-surface"
                     }`}
                   >
                     {item.label}
@@ -115,7 +114,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           {login ? (
             <a
               href={login.href}
-              className="rounded-edge border border-brand bg-brand px-4 py-2 text-body font-semibold tracking-wide text-surface transition-colors hover:bg-brand-live hover:border-brand-live"
+              className="rounded-edge border border-surface/50 bg-surface px-4 py-2 text-body font-semibold tracking-wide text-brand transition-colors hover:bg-brand-lift hover:text-ink"
             >
               {login.label}
             </a>
@@ -127,7 +126,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="grid h-10 w-10 place-items-center rounded-edge border border-line text-ink lg:hidden"
+          className="grid h-10 w-10 place-items-center rounded-edge border border-surface/50 text-surface lg:hidden"
         >
           <MenuIcon open={open} />
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
@@ -141,7 +140,6 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
         isCurrent={isCurrent}
         onNavigate={() => setOpen(false)}
       />
-
     </header>
   );
 }
