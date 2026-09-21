@@ -16,19 +16,15 @@
 
 import type { LinkedInFeed } from "@/content/linkedin";
 
-import { CACHE_SECONDS } from "./config";
 import { readStoreConfig } from "./config";
+import { EMPTY_FEED } from "./client";
 import { buildFeed } from "./feed";
 import { readStore } from "./store";
 
-export { CACHE_SECONDS, MAX_POSTS } from "./config";
+export { CACHE_SECONDS, MAX_POSTS, RECENT_POSTS } from "./config";
+export { EMPTY_FEED, fetchLinkedInFeed } from "./client";
 export { isStale, linkedInCopy, STALE_AFTER_HOURS } from "@/content/linkedin";
 export type { LinkedInFeed, LinkedInPost } from "@/content/linkedin";
-
-export const EMPTY_FEED: LinkedInFeed = {
-  lastSyncedAt: "1970-01-01T00:00:00Z",
-  posts: [],
-};
 
 /** Server-side read. Safe to call from a server component or a route handler. */
 export async function getLinkedInFeed(): Promise<LinkedInFeed> {
@@ -37,21 +33,6 @@ export async function getLinkedInFeed(): Promise<LinkedInFeed> {
     return buildFeed(await readStore(config));
   } catch (error) {
     console.error("[linkedin] feed read failed", error);
-    return EMPTY_FEED;
-  }
-}
-
-/** Client-side read through the API route. `base` is only needed when calling
-    from somewhere without a relative-URL context. */
-export async function fetchLinkedInFeed(base = ""): Promise<LinkedInFeed> {
-  try {
-    const response = await fetch(`${base}/api/linkedin-posts`, {
-      next: { revalidate: CACHE_SECONDS },
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return (await response.json()) as LinkedInFeed;
-  } catch (error) {
-    console.error("[linkedin] feed fetch failed", error);
     return EMPTY_FEED;
   }
 }

@@ -91,11 +91,16 @@ export default function ProgrammesPage() {
           face and the alternation stops the page becoming a rhythm of identical
           blocks. Photographs are placeholders until CDIE art-directs them.
         */}
-        <ul className="flex flex-col gap-px bg-line">
+        {/*
+          Change request 2026-09-21, section 1. Five full-width rows made this
+          the longest band on the site on a phone. It now scroll-snaps
+          sideways there and keeps the alternating two-column rows from md.
+        */}
+        <ul className="rail -mx-gutter auto-cols-[85%] gap-4 px-gutter md:mx-0 md:flex md:flex-col md:gap-px md:overflow-visible md:bg-line md:px-0">
           {opportunities.map((opportunity, index) => (
             <li
               key={opportunity.id}
-              className="grid items-stretch gap-px bg-line md:grid-cols-2"
+              className="grid items-stretch gap-px border border-line bg-line md:grid-cols-2 md:border-0"
             >
               {opportunity.image ? (
                 <PlaceholderPhoto

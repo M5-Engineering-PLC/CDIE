@@ -25,9 +25,9 @@ export function StudioComponentGrid({
   if (items.length === 0) return null;
 
   return (
-    <section aria-label={`What ${capabilityName.toLowerCase()} covers`}>
+    <section className="min-w-0" aria-label={`What ${capabilityName.toLowerCase()} covers`}>
       <p className="kicker">In this area</p>
-      <ul className="rail -mx-gutter mt-3 auto-cols-[62%] gap-3 px-gutter sm:mx-0 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+      <ul className="rail mt-3 auto-cols-[62%] gap-3 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:overflow-visible lg:grid-cols-3">
         {items.map((item) => (
           <li key={item.id} className="flex flex-col border border-line bg-surface">
             <div className="relative aspect-[4/3] overflow-hidden bg-raise">

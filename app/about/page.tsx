@@ -1,4 +1,12 @@
 // Lucid: About Us > Explainer, Profiles Team. Copy: ABOUT US.
+/*
+  Change request 2026-09-21, section 1: a phone shows half the band. Two lists
+  did most of the length here — the three purposes and eight portraits, each a
+  full-width card in a single column. Both scroll-snap sideways below the
+  breakpoint and are the grids they were above it. Nothing is removed: the
+  supporting paragraphs fold to three lines with .trim-mobile and open again on
+  a wider screen.
+*/
 // Profiles expand within this page. No person child routes.
 // Decision R3, 2026-09-11: cohorts moved to the MDI page, where they read as
 // programme evidence. This page stays institutional. The #cohorts anchor is
@@ -34,10 +42,10 @@ export default function AboutPage() {
       />
 
       <Section eyebrow="Why we are here" title={purpose.headline}>
-        <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{purpose.body}</p>
-        <ul className="mt-10 grid gap-px bg-line md:grid-cols-3">
+        <p className="trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">{purpose.body}</p>
+        <ul className="rail -mx-gutter mt-6 auto-cols-[80%] gap-4 px-gutter md:mx-0 md:mt-10 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:gap-px md:overflow-visible md:bg-line md:px-0">
           {purpose.triad.map((item) => (
-            <li key={item.id} className="flex flex-col gap-3 bg-surface p-6">
+            <li key={item.id} className="flex flex-col gap-3 border border-line bg-surface p-5 md:border-0 md:p-6">
               <h3 className="display text-sub text-brand">{item.title}</h3>
               <p className="text-body leading-relaxed text-ink-2">{item.body}</p>
             </li>
@@ -68,7 +76,7 @@ export default function AboutPage() {
             needs picture, name and designation, nothing else - so nothing else
             is added here.
           */
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="rail -mx-gutter auto-cols-[62%] gap-4 px-gutter sm:mx-0 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
             {people.map((person) => (
               <li
                 key={person.id}
@@ -99,7 +107,7 @@ export default function AboutPage() {
       </Section>
 
       <Section id="cohorts" eyebrow="Cohorts" title={cohortsPointer.headline}>
-        <p className="max-w-[58ch] text-lead leading-relaxed text-ink-2">
+        <p className="trim-mobile max-w-[58ch] text-lead leading-relaxed text-ink-2">
           {cohortsPointer.body}
         </p>
         <div className="mt-6">
@@ -108,7 +116,7 @@ export default function AboutPage() {
       </Section>
 
       <Section tone="surface" eyebrow="Work you can see" title={workYouCanSee.headline}>
-        <p className="max-w-[58ch] text-lead leading-relaxed text-ink-2">
+        <p className="trim-mobile max-w-[58ch] text-lead leading-relaxed text-ink-2">
           {workYouCanSee.body}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
@@ -125,7 +133,7 @@ export default function AboutPage() {
       </Section>
 
       <Section eyebrow="Work with us" title={collaborate.headline}>
-        <div className="prose-body max-w-[62ch] text-lead leading-relaxed text-ink-2">
+        <div className="prose-body trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">
           {collaborate.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}

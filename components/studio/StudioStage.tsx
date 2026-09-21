@@ -80,7 +80,7 @@ export function StudioStage({
 }: StudioStageProps) {
   if (!open) {
     return (
-      <div className="relative min-h-64 overflow-hidden bg-ink md:min-h-[28rem]">
+      <div className="relative min-h-48 overflow-hidden bg-ink md:min-h-[28rem]">
         <Image src={image} alt={imageAlt} fill sizes="(max-width: 1280px) 100vw, 70vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
         <button type="button" onClick={onOpen} className="absolute bottom-4 left-4 w-36 border border-surface/50 bg-surface p-2 text-left shadow-lg transition hover:border-brand-live md:w-44">

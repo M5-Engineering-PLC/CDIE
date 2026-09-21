@@ -58,7 +58,7 @@ export default function HomePage() {
 
       <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
         <div className="grid items-center gap-6 lg:grid-cols-[1fr_1fr] lg:gap-16">
-          <div className="relative aspect-[5/4] overflow-hidden border border-line">
+          <div className="relative aspect-[16/10] overflow-hidden border border-line lg:aspect-[5/4]">
             <Image
               src={defineCdie.image.src}
               alt={defineCdie.image.alt}

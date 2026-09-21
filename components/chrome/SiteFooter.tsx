@@ -63,8 +63,10 @@ export function SiteFooter({
 }: SiteFooterProps) {
   return (
     <footer className="mt-12 border-t md:mt-24 border-brand-lift/25 bg-ink text-surface">
-      <div className="shell grid gap-8 py-10 md:gap-10 md:py-16 md:grid-cols-[1.25fr_.8fr_1fr]">
-        <div className="flex flex-col gap-3">
+      {/* Change request 2026-09-21, section 1: the two link columns sit side by
+          side on a phone rather than stacking, which halves the footer. */}
+      <div className="shell grid grid-cols-2 gap-x-6 gap-y-8 py-10 md:gap-10 md:py-16 md:grid-cols-[1.25fr_.8fr_1fr]">
+        <div className="col-span-2 flex flex-col gap-3 md:col-span-1">
           {/*
             Initials, not the mark. The full logo already carries the name in
             the header; repeating it on ink meant silhouetting it, which threw

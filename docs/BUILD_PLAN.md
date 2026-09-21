@@ -169,6 +169,40 @@ machine transcript of poor quality in which speaker attribution is unreliable.
 The corrections pass lives with the meeting record outside this repository. Do
 not treat a line of that transcript as copy.
 
+#### Conflict C-06, 2026-09-21. The events calendar cannot be populated yet
+
+The change request of 21 September asks for the Media events calendar to be
+populated by searching the CDIE Invention Education LinkedIn account and
+transcribing what is there into the Gantt calendar.
+
+The calendar itself is built and is the first band on Media. It is not
+populated, and it is not populated for a reason that is worth writing down
+rather than working around.
+
+- The build environment has no route to linkedin.com. The account's activity
+  page cannot be read from here, so there is no source to transcribe.
+- The claim-safety rule in AGENTS.md is the binding constraint even if there
+  were. An event carries a date, a venue and usually a registration route, and
+  every one of those is a published fact. A date recovered from a post that
+  nobody has checked is exactly the kind of unsupported fact the audit of the
+  current site found, and it would be published under CDIE's name.
+
+So the calendar ships empty, with the enquiry wording, and the sample bars sit
+behind SHOW_SAMPLE_CONTENT so the band can be reviewed.
+
+What unblocks it, in order of preference:
+
+1. CDIE supplies the confirmed events directly: title, start, end where the
+   event runs more than a day, venue, and a registration link where one exists.
+   They go into the `events` array in `content/programmes.ts`, which is the
+   single record both Programmes and Media read.
+2. Someone with access to the account exports or lists the relevant posts, and
+   a person confirms each derived date against CDIE's own record before it is
+   entered.
+
+Neither route changes a line of component code. The calendar renders whatever
+the record holds.
+
 ### 3.3 Review feedback of 11 September, and where it collides with Lucid
 
 Three review documents arrived on 11 September: a UX and structure revision

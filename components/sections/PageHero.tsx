@@ -62,7 +62,7 @@ export function PageHero({
         </div>
 
         {image ? (
-          <div className="relative aspect-[4/3] overflow-hidden border border-line md:aspect-[5/4]">
+          <div className="relative aspect-[16/10] overflow-hidden border border-line md:aspect-[5/4]">
             <Image
               src={image.src}
               alt={image.alt}

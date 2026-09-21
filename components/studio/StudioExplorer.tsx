@@ -91,22 +91,28 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
   return (
     <div className="overflow-hidden border border-line bg-surface">
       <StudioTourIntro onStart={startTour} />
-      <div id="studio-room" className="grid scroll-mt-20 lg:grid-cols-[16rem_1fr]">
-        <div className="border-b border-line bg-raise py-4 lg:border-b-0 lg:border-r lg:py-5">
+      {/* On a phone the room leads and the list follows it; from lg the list is
+          the column beside the room. Source order puts the list first so it is
+          read before the canvas either way. */}
+      <div id="studio-room" className="grid scroll-mt-20 grid-cols-[minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <div className="order-2 border-y border-line bg-raise py-4 lg:order-1 lg:border-y-0 lg:border-r lg:py-5">
           <p className="kicker px-5 pb-3">Explore the studio</p>
           <StudioCapabilityList
             items={capabilities}
             selectedId={selected.id}
             onSelect={setSelectedId}
           />
-          <StudioRailThumb
-            active={selected.modelGroup}
-            open={roomOpen}
-            onOpen={() => { setRoomOpen(true); setTour(true); }}
-          />
+          {/* Redundant on a phone, where the room is directly above it. */}
+          <div className="hidden lg:block">
+            <StudioRailThumb
+              active={selected.modelGroup}
+              open={roomOpen}
+              onOpen={() => { setRoomOpen(true); setTour(true); }}
+            />
+          </div>
         </div>
 
-        <div className="grid gap-6 bg-surface p-4 md:p-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
+        <div className="order-1 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 bg-surface p-4 md:p-6 lg:order-2 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
           <div className="flex min-w-0 flex-col gap-6">
             <StudioStage
               active={selected.modelGroup}

@@ -1,19 +1,15 @@
 "use client";
 
-// Review R1/R2: the logo is Home; visible links start at Programmes and end in LOGIN.
-// Decision R2, 2026-09-11: the studio login joins the bar as its last item.
-// The logo is the home link, so no wordmark sits beside it.
+// Review R1/R2: the logo is Home; visible links start at Programmes and end in
+// LOGIN. Decision R2, 2026-09-11: the studio login joins the bar as its last
+// item. The logo is the home link, so no wordmark sits beside it.
 /*
-  Change request 2026-09-21, section 2. Three changes:
-
-  - The bar is white. It was solid brand, which fought every hero underneath it
-    and left the logo sitting in a white patch of its own.
-  - The mobile control is a hamburger that becomes an X. The words "Menu" and
-    "Close" were doing an icon's job.
-  - The panel closes on its own. It already closed on a refresh, because the
-    state is per-mount; what it did not do was close on a client-side
-    navigation, on Escape, or when a rotation took the viewport wide enough for
-    the desktop bar. All three now close it.
+  Change request 2026-09-21, section 2. The bar is white: it was solid brand,
+  which fought every hero under it and left the logo in a white patch of its
+  own. The mobile control is a hamburger that becomes an X, because "Menu" and
+  "Close" were doing an icon's job. And the panel closes on its own: it already
+  closed on a refresh, since the state is per-mount, but not on a client-side
+  navigation, on Escape, or when a rotation reached the desktop breakpoint.
 */
 
 import Image from "next/image";
@@ -100,12 +96,10 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                   <Link
                     href={item.href}
                     aria-current={isCurrent(item.href) ? "page" : undefined}
+                    /* Change request 2026-09-13, section 2.2: the current page
+                       is signalled by colour, not a rule under the word. On
+                       white that step is brand against ink-2. */
                     className={`text-body transition-colors ${
-                      /*
-                        Change request 2026-09-13, section 2.2: the current page
-                        is signalled by colour, not a rule under the word. On
-                        white that step is brand against ink-2.
-                      */
                       isCurrent(item.href)
                         ? "font-medium text-brand"
                         : "text-ink-2 hover:text-brand"

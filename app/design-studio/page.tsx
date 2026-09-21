@@ -92,30 +92,30 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
       <Section tone="surface" eyebrow="The two sides" title="Where the work happens.">
         <ul className="grid gap-px bg-line md:grid-cols-2">
           {spaces.map((space) => (
-            <li key={space.id} className="flex flex-col gap-3 bg-surface p-6">
+            <li key={space.id} className="flex flex-col gap-2 bg-surface p-5 md:gap-3 md:p-6">
               <div className="flex items-center gap-3">
                 <h3 className="display text-sub">{space.name}</h3>
                 <span className="font-mono text-[0.625rem] uppercase tracking-widest text-ink-3">
                   {space.hasModel ? "Room model" : "Photographs only"}
                 </span>
               </div>
-              <p className="text-body leading-relaxed text-ink-2">{space.summary}</p>
+              <p className="trim-mobile text-body leading-relaxed text-ink-2">{space.summary}</p>
             </li>
           ))}
         </ul>
-        <p className="mt-8 max-w-[70ch] text-fine text-ink-3">
+        <p className="trim-mobile mt-6 max-w-[70ch] text-fine text-ink-3 md:mt-8">
           Photographs and short demonstrations are added as each area is captured. Until
           then the room gives you the layout and the text gives you the capability.
         </p>
       </Section>
 
       <Section tone="surface" eyebrow="Access" title={studioAccess.headline}>
-        <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{studioAccess.body}</p>
+        <p className="trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">{studioAccess.body}</p>
         <div className="mt-6">
           <Button href={studioAccess.action.href}>{studioAccess.action.label}</Button>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-8 md:mt-12">
           <FaqList items={[...studioFaqs]} />
         </div>
       </Section>

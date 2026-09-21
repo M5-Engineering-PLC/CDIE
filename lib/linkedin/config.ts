@@ -20,6 +20,14 @@ export const CACHE_SECONDS = 600;
 /** Ceiling on rendered posts. Each one becomes an iframe once it scrolls in. */
 export const MAX_POSTS = 8;
 
+/*
+  Change request 2026-09-21, section 5: "have the 3 recent posts, even reposts,
+  on the webpage". The store keeps up to MAX_POSTS so the band has something to
+  fall back on when the most recent rows are malformed; the page shows this
+  many.
+*/
+export const RECENT_POSTS = 3;
+
 /** Refuses a store that is not a published Google Sheet, so a mistyped or
     injected env var cannot turn the read layer into a general fetcher. */
 function isPublishedSheetUrl(value: string): boolean {
