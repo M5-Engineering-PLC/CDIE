@@ -95,6 +95,38 @@ export type CapabilityId =
   | "textiles"
   | "woodworking";
 
+/*
+  Change request 2026-09-21, section 4: "for now just use generic placeholders
+  for different components within any specific service".
+
+  A station in the room stands for several things a reader cannot see at that
+  scale: the design bench is workstations and the software on them, the
+  electronics area is a power bench, a signals bench and a soldering bench.
+  A StudioComponent is one of those, shown as a card when the tour focuses on
+  its capability.
+
+  Every name here is taken from that capability's own body copy in the source.
+  Nothing names a product, a model or a version: those are exactly the facts
+  the sources mark unconfirmed, and they stay in the capability's `pending`
+  array until CDIE supplies them.
+
+  `image` is deliberately optional and deliberately empty everywhere today.
+  CDIE has not photographed the individual benches, and a general studio
+  photograph captioned "power bench" would be the same fabrication the alt text
+  rule exists to stop. Until the photographs are taken each component renders
+  an empty, labelled frame; adding a src is the only change needed then.
+*/
+export type StudioComponent = {
+  id: string;
+  name: string;
+  /** one line, drawn from the capability's source copy */
+  note: string;
+  /** the component's own photograph, once it exists */
+  image?: string;
+  /** what is visible in the frame, never what the picture stands for */
+  alt?: string;
+};
+
 export type Capability = {
   id: CapabilityId;
   name: string;
@@ -106,6 +138,8 @@ export type Capability = {
   pending: string[];
   enquiry: string;
   media: Figure[];
+  /** the benches, stations and tools this capability covers. Placeholders for now. */
+  components: StudioComponent[];
 };
 
 export type Space = {

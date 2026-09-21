@@ -56,6 +56,25 @@
   --spacing-section: 4.5rem;
 
   --radius-edge: 2px;
+
+  /*
+    Change request 2026-09-21, section 1. "On mobile, everything should be 50%
+    percent shorter, not in actuality but just to reduce content on screen."
+
+    Two mechanisms, both declared here so no component carries a number:
+
+    - the band rhythm halves below the md breakpoint, via --band-y, which
+      Section and every hero reads instead of a literal padding;
+    - .trim-mobile clamps a supporting paragraph to three lines on a phone and
+      releases it on a wider screen, so the words are still in the document and
+      still read by a screen reader. Nothing is deleted, only folded.
+  */
+  --band-y: 1.75rem;
+
+  --motion-swift: 220ms;
+  --motion-glide: 520ms;
+  --motion-scene: 900ms;
+  --ease-glide: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 @layer base {
@@ -91,7 +110,7 @@
   */
   a {
     text-decoration: none;
-    transition: color 150ms ease;
+    transition: color var(--motion-swift) var(--ease-glide);
   }
 
   a:hover {
@@ -140,7 +159,9 @@
   */
   .card-hit {
     position: relative;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    transition: border-color var(--motion-swift) var(--ease-glide),
+      background-color var(--motion-swift) var(--ease-glide),
+      transform var(--motion-glide) var(--ease-glide);
   }
 
   .card-hit:hover {
@@ -173,6 +194,87 @@
 
   .hero-progress.paused {
     animation-play-state: paused;
+  }
+
+  /*
+    The one vertical rhythm. Every band reads --band-y rather than declaring a
+    padding of its own, so the mobile halving above is a single edit.
+  */
+  .band-y {
+    padding-block: var(--band-y);
+  }
+
+  .trim-mobile {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  /*
+    A horizontal rail that is a plain scroll container first. The buttons and
+    the autoplay are a convenience laid on top, so the content is reachable
+    with no JavaScript and no pointer.
+  */
+  .rail {
+    display: grid;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+  }
+
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rail > * {
+    scroll-snap-align: start;
+  }
+
+  /*
+    Change request 2026-09-21: "smoothen transition, professional but super
+    smooth". A slide crossfades and drifts a few pixels rather than cutting.
+    The drift is what reads as deliberate; the fade alone reads as a glitch.
+  */
+  .scene {
+    transition: opacity var(--motion-scene) var(--ease-glide),
+      transform var(--motion-scene) var(--ease-glide),
+      visibility 0s linear var(--motion-scene);
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(1.03);
+  }
+
+  .scene.on {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0s;
+  }
+
+  .scene-copy > * {
+    transition: opacity var(--motion-scene) var(--ease-glide),
+      transform var(--motion-scene) var(--ease-glide);
+  }
+
+  .scene:not(.on) .scene-copy > * {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --band-y: 3.5rem;
+  }
+
+  .trim-mobile {
+    display: block;
+    -webkit-line-clamp: none;
+    overflow: visible;
   }
 }
 

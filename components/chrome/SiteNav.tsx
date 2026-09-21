@@ -1,15 +1,26 @@
 "use client";
 
-// Review R1/R2: the logo is Home; visible links start at Programmes and end in LOGIN.
-// Decision R2, 2026-09-11: the studio login joins the bar as its last item.
-// The logo is the home link, so no wordmark sits beside it.
+// Review R1/R2: the logo is Home; visible links start at Programmes and end in
+// LOGIN. Decision R2, 2026-09-11: the studio login joins the bar as its last
+// item. The logo is the home link, so no wordmark sits beside it.
+/*
+  Change request 2026-09-21, section 2. The bar is white: it was solid brand,
+  which fought every hero under it and left the logo in a white patch of its
+  own. The mobile control is a hamburger that becomes an X, because "Menu" and
+  "Close" were doing an icon's job. And the panel closes on its own: it already
+  closed on a refresh, since the state is per-mount, but not on a client-side
+  navigation, on Escape, or when a rotation reached the desktop breakpoint.
+*/
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { NavItem } from "@/content/types";
+
+import { MenuIcon } from "./MenuIcon";
+import { NavPanel } from "./NavPanel";
 
 export type SiteNavProps = {
   items: NavItem[];
@@ -27,19 +38,48 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
   const isCurrent = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  /*
+    A navigation closes the panel: the reader has arrived, so the menu is
+    spent. Adjusted during render rather than in an effect, which is React's
+    own answer for state that derives from a prop change and avoids the
+    cascading second render an effect would cost.
+  */
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    // Reaching the desktop breakpoint reveals the full bar, so the panel is
+    // redundant and would otherwise stay open behind it.
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const onWide = () => wide.matches && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    wide.addEventListener("change", onWide);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      wide.removeEventListener("change", onWide);
+    };
+  }, [open]);
+
   const login = utility[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-brand-lift/30 bg-brand/95 text-surface backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 text-ink backdrop-blur">
       <div className="shell flex items-center justify-between gap-6 py-2">
-        <Link href="/" className="flex items-center gap-3 rounded-edge bg-surface px-2 py-1 no-underline" aria-label="CDIE home">
+        <Link href="/" className="flex items-center gap-3" aria-label="CDIE home">
           <Image
             src={logo.src}
             alt={logo.alt}
             width={logo.width}
             height={logo.height}
             priority
-            className="h-12 w-auto md:h-14"
+            className="h-10 w-auto md:h-14"
           />
           <span className="hidden border-l border-line pl-3 text-fine leading-tight text-ink-2 2xl:block">
             {institution}
@@ -56,16 +96,13 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                   <Link
                     href={item.href}
                     aria-current={isCurrent(item.href) ? "page" : undefined}
-                    className={`text-body no-underline transition-colors ${
-                      /*
-                        Change request 2026-09-13, section 2.2: the current page
-                        is signalled by colour, not a rule under the word. Full
-                        white against 70% is a clear step and keeps contrast on
-                        the brand header, where brand-lift would not.
-                      */
+                    /* Change request 2026-09-13, section 2.2: the current page
+                       is signalled by colour, not a rule under the word. On
+                       white that step is brand against ink-2. */
+                    className={`text-body transition-colors ${
                       isCurrent(item.href)
-                        ? "text-surface"
-                        : "text-surface/70 hover:text-surface"
+                        ? "font-medium text-brand"
+                        : "text-ink-2 hover:text-brand"
                     }`}
                   >
                     {item.label}
@@ -78,7 +115,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           {login ? (
             <a
               href={login.href}
-              className="rounded-edge border border-surface/50 bg-surface px-4 py-2 text-body font-semibold tracking-wide text-brand no-underline transition-colors hover:bg-brand-lift hover:text-ink"
+              className="rounded-edge border border-brand bg-brand px-4 py-2 text-body font-semibold tracking-wide text-surface transition-colors hover:bg-brand-live hover:border-brand-live"
             >
               {login.label}
             </a>
@@ -90,46 +127,21 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="rounded-edge border border-surface/50 px-3 py-2 text-fine text-surface lg:hidden"
+          className="grid h-10 w-10 place-items-center rounded-edge border border-line text-ink lg:hidden"
         >
-          {open ? "Close" : "Menu"}
+          <MenuIcon open={open} />
+          <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
         </button>
       </div>
 
-      <nav
-        id="mobile-nav"
-        aria-label="Main"
-        hidden={!open}
-        className="border-t border-brand-lift/30 bg-brand lg:hidden"
-      >
-        <ul className="shell flex flex-col py-2">
-          {items.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                onClick={() => setOpen(false)}
-                aria-current={isCurrent(item.href) ? "page" : undefined}
-                className={`block border-b border-surface/15 py-3 text-lead no-underline ${
-                  isCurrent(item.href) ? "text-surface" : "text-surface/75"
-                }`}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-          {login ? (
-            <li>
-              <a
-                href={login.href}
-                onClick={() => setOpen(false)}
-                className="block py-3 text-lead font-semibold text-surface no-underline"
-              >
-                {login.label}
-              </a>
-            </li>
-          ) : null}
-        </ul>
-      </nav>
+      <NavPanel
+        items={items}
+        login={login}
+        open={open}
+        isCurrent={isCurrent}
+        onNavigate={() => setOpen(false)}
+      />
+
     </header>
   );
 }

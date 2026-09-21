@@ -14,6 +14,16 @@ export type LinkedInPost = {
   text: string;
   embedUrl: string;
   permalink: string;
+  /*
+    Change request 2026-09-21, section 5: "the 3 recent posts, even reposts".
+
+    A repost already reaches the store as an activity URN of its own, so it
+    needs no new path through the read layer; what it needs is to be labelled,
+    because a card that reads as CDIE's own words when the words are someone
+    else's is a misattribution. The store supplies the flag; nothing here
+    infers it from the text.
+  */
+  repost: boolean;
 };
 
 export type LinkedInFeed = {
@@ -53,12 +63,17 @@ export function normalisePost(raw: unknown): LinkedInPost | null {
   const postedAt = typeof row.postedAt === "string" ? row.postedAt : "";
   if (Number.isNaN(Date.parse(postedAt))) return null;
 
+  const repost = row.repost;
+
   return {
     id,
     postedAt,
     text: typeof row.text === "string" ? row.text : "",
     embedUrl: `https://www.linkedin.com/embed/feed/update/${id}`,
     permalink: `https://www.linkedin.com/feed/update/${id}/`,
+    // A sheet column arrives as text, so "TRUE", "true" and "1" all count.
+    repost:
+      repost === true || (typeof repost === "string" && /^(true|yes|1)$/i.test(repost.trim())),
   };
 }
 
@@ -74,7 +89,7 @@ export const stubFeed: LinkedInFeed = {
 
 export const linkedInCopy = {
   headline: "From our community",
-  standfirst: "Follow the ideas, questions and work we share along the way.",
+  standfirst: "The three most recent posts from the CDIE account, reposts included.",
   fallback: "See the latest from CDIE on LinkedIn.",
   /** shown once the account URL is confirmed; see decision D17 and the copy note */
   pageUrl: null as string | null,

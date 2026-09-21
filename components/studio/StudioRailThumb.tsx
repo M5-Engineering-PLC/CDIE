@@ -34,7 +34,7 @@ export function StudioRailThumb({ active, open, onOpen }: StudioRailThumbProps) 
         <span className="mt-2 flex items-baseline justify-between gap-2">
           <span className="text-fine text-ink-3">Illustrative layout</span>
           <span className="text-fine text-brand">
-            {open ? "Showing" : "Explore in 3D →"}
+            {open ? "Showing" : "Explore in 3D"}
           </span>
         </span>
       </button>

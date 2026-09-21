@@ -3,15 +3,15 @@
 
 import type { Metadata } from "next";
 
-import Image from "next/image";
-
 import { Chip } from "@/components/primitives/Kicker";
 import { Button } from "@/components/primitives/Button";
 import { EventGrid, type EventCardItem } from "@/components/blocks/EventGrid";
 import { FaqList } from "@/components/blocks/FaqList";
+import { PlaceholderPhoto } from "@/components/blocks/PlaceholderPhoto";
 import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { ProgrammeHeroCarousel, type ProgrammeHeroSlide } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
+import { SnakeRoute } from "@/components/sections/SnakeRoute";
 import {
   events,
   eventsCopy,
@@ -51,7 +51,7 @@ const heroSlides: ProgrammeHeroSlide[] = opportunities
     summary: opportunity.summary,
     image: opportunity.image!.src,
     alt: opportunity.image!.alt,
-    action: { label: `Open ${opportunity.title}`, href: opportunity.href },
+    action: { label: `Explore ${opportunity.title}`, href: opportunity.href },
   }));
 
 export const metadata: Metadata = {
@@ -65,22 +65,17 @@ export default function ProgrammesPage() {
 
       <ProgrammeHeroCarousel slides={heroSlides} />
 
+      {/*
+        Change request 2026-09-21, section 3: the four stages are stations on
+        one route rather than four boxes side by side, so the order they run in
+        is visible before a word is read.
+      */}
       <Section
         eyebrow="How learning works"
         title="Understand the need, then build something you can test."
         standfirst="Four stages, in order. Each one is a habit you practise rather than a box you tick."
       >
-        <ol className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-4">
-          {learningStages.map((stage, index) => (
-            <li key={stage.id} className="flex flex-col gap-3 bg-surface p-6">
-              <span className="font-mono text-fine text-brand-live">
-                Stage {index + 1} of {learningStages.length}
-              </span>
-              <h3 className="display text-sub leading-snug">{stage.title}</h3>
-              <p className="text-body leading-relaxed text-ink-2">{stage.body}</p>
-            </li>
-          ))}
-        </ol>
+        <SnakeRoute stages={learningStages} />
       </Section>
 
       <Section
@@ -96,39 +91,41 @@ export default function ProgrammesPage() {
           face and the alternation stops the page becoming a rhythm of identical
           blocks. Photographs are placeholders until CDIE art-directs them.
         */}
-        <ul className="flex flex-col gap-px bg-line">
+        {/*
+          Change request 2026-09-21, section 1. Five full-width rows made this
+          the longest band on the site on a phone. It now scroll-snaps
+          sideways there and keeps the alternating two-column rows from md.
+        */}
+        <ul className="rail -mx-gutter auto-cols-[85%] gap-4 px-gutter md:mx-0 md:flex md:flex-col md:gap-px md:overflow-visible md:bg-line md:px-0">
           {opportunities.map((opportunity, index) => (
             <li
               key={opportunity.id}
-              className="grid items-stretch gap-px bg-line md:grid-cols-2"
+              className="grid items-stretch gap-px border border-line bg-line md:grid-cols-2 md:border-0"
             >
               {opportunity.image ? (
-                <div
-                  className={`relative min-h-64 overflow-hidden bg-raise ${
+                <PlaceholderPhoto
+                  src={opportunity.image.src}
+                  alt={opportunity.image.alt}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className={`min-h-44 bg-raise md:min-h-64 ${
                     index % 2 === 1 ? "md:order-2" : ""
                   }`}
-                >
-                  <Image
-                    src={opportunity.image.src}
-                    alt={opportunity.image.alt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-                </div>
+                />
               ) : null}
-              <div className="flex flex-col gap-3 bg-raise p-8 md:p-10">
+              <div className="flex flex-col gap-3 bg-raise p-6 md:p-10">
                 <div className="flex items-center justify-between gap-3">
                   <p className="kicker">{opportunity.kind}</p>
                   <Chip status={opportunity.status} />
                 </div>
                 <h3 className="display text-title leading-snug">{opportunity.title}</h3>
-                <p className="max-w-[52ch] text-body leading-relaxed text-ink-2">
+                <p className="trim-mobile max-w-[52ch] text-body leading-relaxed text-ink-2">
                   {opportunity.summary}
                 </p>
                 <div className="mt-auto pt-4">
+                  {/* Change request 2026-09-21, section 3: "instead of open ...,
+                      just say read more/explore etc". */}
                   <Button href={opportunity.href} tone="quiet">
-                    Open {opportunity.title}
+                    Read more
                   </Button>
                 </div>
               </div>

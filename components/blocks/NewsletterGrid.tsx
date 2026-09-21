@@ -11,6 +11,14 @@
   descriptions here have to be written rather than migrated.
 */
 
+/*
+  Change request 2026-09-21, section 1: a phone shows half the band. A stack of
+  cards is the single biggest thing on a long page, so below the md breakpoint
+  the list scroll-snaps sideways and the reader sees one card and the edge of
+  the next. Above it, the grid it has always been. No JavaScript either side:
+  the browser supplies the swipe, the inertia and the keyboard.
+*/
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -28,9 +36,9 @@ export function NewsletterGrid({ items }: { items: NewsletterCardItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <ul className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
+    <ul className="rail -mx-gutter auto-cols-[82%] gap-4 px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-2 md:gap-px md:overflow-visible md:bg-line md:px-0 lg:grid-cols-3">
       {items.map((issue) => (
-        <li key={issue.id} className="card-hit group flex flex-col bg-raise">
+        <li key={issue.id} className="card-hit group flex flex-col border border-line bg-raise md:border-0">
           <div className="relative aspect-[16/10] overflow-hidden">
             <Image
               src={issue.image}

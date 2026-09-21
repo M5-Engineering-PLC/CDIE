@@ -5,14 +5,28 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { createDesignStudioModel, type StudioRuntime } from "./createDesignStudioModel";
+import { createTourCamera } from "./tourCamera";
 import type { ServiceId } from "./studioLayout";
 
 export type StudioView = "isometric" | "top";
 
+/*
+  Change request 2026-09-21, section 4. Three capabilities the room did not have:
+
+  - `tour`. "let the room rotate slowly, constantly, highlighting different
+    parts of the room", and closing on whatever is highlighted. The camera is
+    driven by ./tourCamera while it runs; see that file for why drive and
+    orbit are not mixed.
+  - `interactive`. False disables orbit, zoom and pan outright, so a touch on
+    the canvas scrolls the page instead of dragging the room. That is the
+    mobile posture: autofocus and the slow turn, nothing to drag.
+*/
 type SceneOptions = {
   canvasRef: RefObject<HTMLCanvasElement | null>;
   active: ServiceId | null;
   view: StudioView;
+  tour?: boolean;
+  interactive?: boolean;
   onSelect?: (service: ServiceId) => void;
   onReady?: () => void;
   onError?: () => void;
@@ -57,6 +71,8 @@ export function useDesignStudioScene({
   canvasRef,
   active,
   view,
+  tour = false,
+  interactive = true,
   onSelect,
   onReady,
   onError,
@@ -64,6 +80,9 @@ export function useDesignStudioScene({
   const runtimeRef = useRef<StudioRuntime | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
+  /* The loop reads these every frame. They are refs, not state, because a
+     change must reach the running animation without rebuilding the scene. */
+  const driveRef = useRef({ tour, interactive, active });
   const selectRef = useRef(onSelect);
   const readyRef = useRef(onReady);
   const errorRef = useRef(onError);
@@ -73,6 +92,10 @@ export function useDesignStudioScene({
     readyRef.current = onReady;
     errorRef.current = onError;
   }, [onSelect, onReady, onError]);
+
+  useEffect(() => {
+    driveRef.current = { tour, interactive, active };
+  }, [tour, interactive, active]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -158,8 +181,12 @@ export function useDesignStudioScene({
     const contextLost = () => errorRef.current?.();
     canvas.addEventListener("click", choose);
     canvas.addEventListener("webglcontextlost", contextLost);
+
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const step = createTourCamera(runtime, camera, controls, still);
+
     renderer.setAnimationLoop(() => {
-      controls.update();
+      step(driveRef.current);
       renderer.render(scene, camera);
     });
     readyRef.current?.();
@@ -189,12 +216,14 @@ export function useDesignStudioScene({
     if (runtimeRef.current) setSelection(runtimeRef.current, active);
   }, [active]);
 
+  /* A view button is a manual override, so it does nothing while the tour is
+     driving: the camera would snap and the tour would drag it straight back. */
   useEffect(() => {
     const camera = cameraRef.current;
     const controls = controlsRef.current;
-    if (!camera || !controls) return;
+    if (!camera || !controls || tour) return;
     camera.position.copy(views[view].position);
     controls.target.copy(views[view].target);
     controls.update();
-  }, [view]);
+  }, [tour, view]);
 }

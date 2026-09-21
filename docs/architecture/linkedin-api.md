@@ -75,6 +75,18 @@ One tab, one row per post, first row a header. Column names must match:
 | `postedAt` | yes | ISO 8601 |
 | `text` | no | The post commentary |
 | `syncedAt` | no | ISO 8601, written every run. See staleness below |
+| `repost` | no | `TRUE` where the post is a repost. Anything else reads as false |
+
+`repost` was added on 2026-09-21. A repost already arrives as an activity URN
+of its own and needs no new path through the read layer, but the card has to
+say so: the words in a repost are not CDIE's, and a card that does not label
+them misattributes them. The scenario sets the column; nothing in the read
+layer infers it from the text.
+
+The page shows the three most recent rows. `RECENT_POSTS` in
+`lib/linkedin/config.ts` is that number; the store still keeps up to
+`MAX_POSTS`, so the band has something to fall back on when the newest rows are
+malformed and get dropped.
 
 `embedUrl` and `permalink` are not columns. They are rebuilt from the validated
 URN, so a malformed or hostile row cannot put an arbitrary iframe on the page.

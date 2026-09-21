@@ -1,4 +1,10 @@
 // Primitive. Source: cdie_landing_concepts v2 tokens; labels come from Actual Copy.
+/*
+  Change request 2026-09-21, section 2: "remove arrows on links". The trailing
+  glyph is gone from every button and link label on the site. The external case
+  keeps its screen-reader note, because that one carries information a sighted
+  reader gets from the browser rather than from a decoration.
+*/
 
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -37,16 +43,12 @@ export function Button({
     return (
       <a className={classes} href={href} target="_blank" rel="noreferrer">
         {children}
-        <span aria-hidden="true">↗</span>
         <span className="sr-only">(opens in a new tab)</span>
       </a>
     );
   }
 
   return (
-    <Link className={classes} href={href}>
-      {children}
-      <span aria-hidden="true">→</span>
-    </Link>
+    <Link className={classes} href={href}>{children}</Link>
   );
 }

@@ -12,6 +12,16 @@ export type DesignStudio3DProps = {
   onSelect?: (service: ServiceId) => void;
   className?: string;
   initialView?: StudioView;
+  /** the camera drives itself: slow constant yaw, closing on what is highlighted */
+  tour?: boolean;
+  /*
+    Change request 2026-09-21, section 4, mobile: "only autofocus capabilities,
+    no scrolling, implement a view only mechanism of the same interface as
+    desktop". False removes orbit, zoom, pan and the view buttons, and lets a
+    touch on the canvas scroll the page. The room, the highlight and the
+    autofocus are identical to the desktop tour.
+  */
+  interactive?: boolean;
 };
 
 export function DesignStudio3D({
@@ -19,6 +29,8 @@ export function DesignStudio3D({
   onSelect,
   className = "",
   initialView = "isometric",
+  tour = false,
+  interactive = true,
 }: DesignStudio3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [view, setView] = useState<StudioView>(initialView);
@@ -28,6 +40,8 @@ export function DesignStudio3D({
     canvasRef,
     active,
     view,
+    tour,
+    interactive,
     onSelect,
     onReady: () => setStatus("ready"),
     onError: () => setStatus("error"),
@@ -48,9 +62,13 @@ export function DesignStudio3D({
     <div className={`relative overflow-hidden border border-line bg-raise ${className}`}>
       <canvas
         ref={canvasRef}
-        className="block aspect-video min-h-96 w-full touch-none"
+        className={`block aspect-video w-full md:min-h-96 ${interactive ? "touch-none" : "touch-pan-y"}`}
         role="img"
-        aria-label="Interactive three-dimensional plan of the CDIE Design Studio. Drag to orbit, scroll to zoom, or select equipment to highlight its service."
+        aria-label={
+          interactive
+            ? "Interactive three-dimensional plan of the CDIE Design Studio. Drag to orbit, scroll to zoom, or select equipment to highlight its service."
+            : "Three-dimensional plan of the CDIE Design Studio. It turns on its own and moves to whichever capability is selected."
+        }
       />
 
       {status === "loading" ? (
@@ -59,6 +77,7 @@ export function DesignStudio3D({
         </p>
       ) : null}
 
+      {interactive && !tour ? (
       <div className="absolute bottom-4 right-4 flex border border-line bg-surface p-1 shadow-sm" aria-label="Studio camera controls">
         {(["isometric", "top"] as const).map((option) => (
           <button
@@ -74,6 +93,7 @@ export function DesignStudio3D({
           </button>
         ))}
       </div>
+      ) : null}
     </div>
   );
 }

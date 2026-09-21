@@ -31,13 +31,13 @@ export function PageHero({
   return (
     <section className="border-b border-line bg-surface">
       <div
-        className={`shell py-14 md:py-20 ${
+        className={`shell band-y ${
           image ? "grid items-center gap-10 md:grid-cols-[1.05fr_.95fr] md:gap-14" : ""
         }`}
       >
         <div>
         {crumbs && crumbs.length > 0 ? (
-          <nav aria-label="Breadcrumb" className="mb-6">
+          <nav aria-label="Breadcrumb" className="mb-4 md:mb-6">
             <ol className="flex flex-wrap items-center gap-2 font-mono text-fine text-ink-3">
               {crumbs.map((crumb, index) => (
                 <li key={crumb.href} className="flex items-center gap-2">
@@ -52,15 +52,17 @@ export function PageHero({
         ) : null}
 
         <p className="kicker">{eyebrow}</p>
-        <h1 className="display mt-4 max-w-[18ch] text-head md:text-hero">{headline}</h1>
+        <h1 className="display mt-3 max-w-[18ch] text-title md:mt-4 md:text-hero">{headline}</h1>
         {standfirst ? (
-          <p className="mt-6 max-w-[58ch] text-lead leading-relaxed text-ink-2">{standfirst}</p>
+          <p className="trim-mobile mt-4 max-w-[58ch] text-lead leading-relaxed text-ink-2 md:mt-6">
+            {standfirst}
+          </p>
         ) : null}
-        {children ? <div className="mt-8 flex flex-wrap gap-3">{children}</div> : null}
+        {children ? <div className="mt-5 flex flex-wrap gap-3 md:mt-8">{children}</div> : null}
         </div>
 
         {image ? (
-          <div className="relative aspect-[4/3] overflow-hidden border border-line md:aspect-[5/4]">
+          <div className="relative aspect-[16/10] overflow-hidden border border-line md:aspect-[5/4]">
             <Image
               src={image.src}
               alt={image.alt}

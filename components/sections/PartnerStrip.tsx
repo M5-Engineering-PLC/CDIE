@@ -17,12 +17,12 @@ const partners = [
 export function PartnerStrip() {
   return (
     <section aria-labelledby="partners-title" className="border-y border-line-soft bg-surface">
-      <div className="shell py-14">
+      <div className="shell band-y">
         <p id="partners-title" className="kicker text-center">Partners</p>
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-x-14 gap-y-9 md:justify-between">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:mt-9 md:gap-x-14 md:gap-y-9 md:justify-between">
           {partners.map((partner) => (
-            <div key={partner.src} className="grid h-20 min-w-40 place-items-center">
-              <Image src={partner.src} alt={partner.alt} width={partner.width} height={partner.height} unoptimized className="max-h-16 w-auto max-w-52 object-contain" />
+            <div key={partner.src} className="grid h-14 min-w-32 place-items-center md:h-20 md:min-w-40">
+              <Image src={partner.src} alt={partner.alt} width={partner.width} height={partner.height} unoptimized className="max-h-11 w-auto max-w-40 object-contain md:max-h-16 md:max-w-52" />
             </div>
           ))}
         </div>

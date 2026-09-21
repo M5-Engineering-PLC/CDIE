@@ -3,6 +3,18 @@
 // Lucid moved Events and Masterclasses out of Design Studio and into Programmes.
 // Programmes owns every event record; Home and Media render views of them.
 
+/*
+  Change request 2026-09-21, section 3. Every opportunity photograph is a
+  placeholder: nothing in public/images was taken of Catalyst grants, of a
+  Design Challenge or of a masterclass. The alt text now describes only what is
+  visible in the frame, never which programme the picture is standing in for,
+  and the page renders each one through PlaceholderPhoto so a reader is told.
+
+  The pairing also matches the home carousel now. The two pages had the same
+  two workshop photographs attached to opposite programmes, which is the
+  confusion the change request names.
+*/
+
 import type { CalendarEvent, Cohort, Faq, LearningStage, Opportunity } from "./types";
 
 export const programmesLanding = {
@@ -50,8 +62,8 @@ export const opportunities: Opportunity[] = [
     topic: "invention-education",
     pending: [],
     image: {
-      src: "/images/hero-workshop-2.jpg",
-      alt: "An Invention Education cohort at the centre",
+      src: "/images/hero-workshop-1.jpg",
+      alt: "People in workshop coats marking and cutting a wooden part at a bench",
       width: 1600,
       height: 1000,
     },
@@ -67,8 +79,8 @@ export const opportunities: Opportunity[] = [
     topic: "admissions",
     pending: ["Next intake and application window"],
     image: {
-      src: "/images/hero-workshop-1.jpg",
-      alt: "Students building and testing a device in the workshop",
+      src: "/images/service-design-2.jpg",
+      alt: "A person working on a laptop beside desktop workstations in the CDIE studio",
       width: 1600,
       height: 1000,
     },
@@ -88,8 +100,8 @@ export const opportunities: Opportunity[] = [
       "Timeline, submission requirements, judging criteria, prizes and support",
     ],
     image: {
-      src: "/images/story-3.jpg",
-      alt: "Teams presenting work at a CDIE design challenge",
+      src: "/images/story-1.jpg",
+      alt: "A team presenting a project on screen to a room at CDIE",
       width: 1600,
       height: 1000,
     },
@@ -109,8 +121,8 @@ export const opportunities: Opportunity[] = [
       "Assessment criteria and application deadline",
     ],
     image: {
-      src: "/images/story-11.jpg",
-      alt: "A funded project team at work",
+      src: "/images/story-3.jpg",
+      alt: "A large group in CDIE coats gathered outside the centre's co-working space",
       width: 1600,
       height: 1000,
     },
@@ -130,8 +142,8 @@ export const opportunities: Opportunity[] = [
       "Format, schedule, venue, cost and sign-up route",
     ],
     image: {
-      src: "/images/service-electronics-1.jpg",
-      alt: "A hands-on training session at the electronics bench",
+      src: "/images/story-11.jpg",
+      alt: "A group at a MedTech Connect event in front of a Policy Innovation wall",
       width: 1600,
       height: 1000,
     },
