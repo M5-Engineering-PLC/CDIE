@@ -46,10 +46,11 @@ function setSelection(runtime: AtcRuntime, active: AtcServiceId | null) {
           material.userData.baseEmissive = material.emissive.getHex();
           material.userData.baseEmissiveIntensity = material.emissiveIntensity;
         }
-        const selected = active === id;
+        const selected = active === id || (active === 'metalworking' && id === 'tooling-storage');
         const muted = active !== null && !selected;
         material.transparent = muted || material.userData.baseTransparent;
-        material.opacity = muted ? 0.28 : material.userData.baseOpacity;
+        material.opacity = muted ? 0.24 : material.userData.baseOpacity;
+        material.depthWrite = !muted;
         material.emissive.setHex(selected ? 0x0b78c0 : material.userData.baseEmissive);
         material.emissiveIntensity = selected ? 0.35 : material.userData.baseEmissiveIntensity;
       }

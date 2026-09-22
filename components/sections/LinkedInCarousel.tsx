@@ -16,6 +16,11 @@
   emptier one — a store that has momentarily failed degrades to EMPTY_FEED, and
   replacing three good posts with nothing because of a blip would be worse than
   showing the three.
+
+  Change request 2026-09-21, second pass: "apply smoother transitions for all
+  carousels". This one is scrolled, never stepped, so what it needed was
+  scroll-smooth: a keyboard or an anchor now eases the band along instead of
+  jumping it. The reduced-motion rule in app/globals.css turns that off.
 */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -74,7 +79,7 @@ export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy }: L
 
   return (
     <div className="flex flex-col gap-4">
-      <ul className="flex max-h-[76vh] snap-y snap-mandatory flex-col gap-4 overflow-y-auto overscroll-y-contain sm:max-h-none sm:snap-x sm:flex-row sm:overflow-x-auto sm:overflow-y-visible sm:pb-3">
+      <ul className="flex max-h-[76vh] snap-y snap-mandatory scroll-smooth flex-col gap-4 overflow-y-auto overscroll-y-contain sm:max-h-none sm:snap-x sm:flex-row sm:overflow-x-auto sm:overflow-y-visible sm:pb-3">
         {feed.posts.map((post) => (
           <LinkedInPostCard key={post.id} post={post} />
         ))}

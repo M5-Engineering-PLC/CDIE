@@ -136,25 +136,6 @@ export const capabilities: Capability[] = [
     ],
   },
   {
-    id: "metalworking",
-    name: "Metalworking",
-    space: "atc",
-    headline: "Make the parts your prototype needs.",
-    body: "The metalworking area supports fabrication, machining and welding of metal components. Staff can guide learners in developing mechanical parts and using the space appropriately.",
-    modelGroup: "metalworking",
-    pending: [
-      "Equipment list, supported materials and fabrication limits",
-      "Safety induction, supervision, access rules and charges",
-    ],
-    enquiry: "Ask about metalworking",
-    media: [],
-    components: [
-      { id: "fabrication", name: "Fabrication", note: "Cutting and forming metal components." },
-      { id: "machining", name: "Machining", note: "Bringing a part to its finished dimensions." },
-      { id: "welding", name: "Welding", note: "Joining metal parts of an assembly." },
-    ],
-  },
-  {
     id: "textiles",
     name: "Textiles and upholstery",
     space: "studio",
@@ -171,11 +152,31 @@ export const capabilities: Capability[] = [
     ],
   },
   {
+    id: "metalworking",
+    name: "Metalworking",
+    space: "atc",
+    headline: "Make the structural parts your prototype needs.",
+    body: "Centered on 4 heavy-duty steel fabrication workbenches and the container tooling shed. Outfitted for metal cutting, filing, grinding, arc welding, and mechanical assembly with TOTAL bench vice, inverter MMA welder, and organized tool storage.",
+    modelGroup: "metalworking",
+    pending: [
+      "Equipment list, supported materials and fabrication limits",
+      "Safety induction, supervision, access rules and charges",
+    ],
+    enquiry: "Ask about metalworking",
+    media: [],
+    components: [
+      { id: "fabrication", name: "Heavy-duty fabrication benches", note: "Welding, mechanical assembly, electronics and staging tables." },
+      { id: "vice", name: "Heavy-duty swivel bench vice", note: "Cast steel vice with anvil for cutting, filing and bending." },
+      { id: "welding", name: "Inverter arc welding unit", note: "Portable MMA welding unit with digital readout and PPE." },
+      { id: "tool-shed", name: "Tool storage shelving", note: "Multi-tier steel racks with power tools, drills, lubricants and parts bins." },
+    ],
+  },
+  {
     id: "woodworking",
     name: "Woodworking",
     space: "atc",
-    headline: "Explore your idea in wood.",
-    body: "The woodworking area provides space for developing wood-based designs and prototypes.",
+    headline: "Explore your idea in wood, composites & plastics.",
+    body: "Housed inside the blue shipping container for dust containment and acoustic control. Features the Blue Elephant ELECNC1212 3-axis CNC router with 1200×1200mm vacuum T-slot bed, water-cooled spindle, and dedicated CAD/CAM operator workstation.",
     modelGroup: "woodworking",
     pending: [
       "Equipment, supported materials and example work",
@@ -184,7 +185,29 @@ export const capabilities: Capability[] = [
     enquiry: "Ask about woodworking",
     media: [],
     components: [
-      { id: "wood-prototyping", name: "Wood prototyping", note: "Developing wood-based designs and prototypes." },
+      { id: "cnc-router", name: "Three-axis CNC routing bed", note: "Vacuum bed, water-cooled spindle, stepper gantry." },
+      { id: "operator-station", name: "CAD and CAM workstation", note: "Dedicated terminal with toolpath control and preview." },
+      { id: "dust-extraction", name: "Dust extraction system", note: "High-vacuum swarf collector over spindle head." },
+    ],
+  },
+  {
+    id: "laser-cutting",
+    name: "Laser Cutting",
+    space: "atc",
+    headline: "Rapid 2D profiling and precision sheet prototyping.",
+    body: "Positioned along the rear louvred window wall. The enclosed Blue Elephant CO2 laser cutter offers precision cutting and engraving across acrylic, MDF, plywood, cardboard, and technical textiles with active window exhaust.",
+    modelGroup: "laser-cutting",
+    pending: [
+      "Supported sheet materials, thickness limits and cutting speeds",
+      "Digital file preparation (.dxf, .ai, .svg) and Ruida DSP training",
+      "Laser safety induction and exhaust extraction checklist",
+    ],
+    enquiry: "Ask about laser cutting",
+    media: [],
+    components: [
+      { id: "co2-laser", name: "Enclosed laser cutting bed", note: "Enclosed cutting bed with safety interlock viewing canopy." },
+      { id: "dsp-controller", name: "Digital controller keypad", note: "Digital speed, power and origin positioning keypad." },
+      { id: "honeycomb-bed", name: "Honeycomb and knife bed", note: "Dual-surface cutting bed with active fume exhaust duct." },
     ],
   },
 ];
@@ -200,35 +223,47 @@ export const studioAccess = {
   action: { label: "Ask about studio access", href: "/contact?topic=studio", live: true },
 } as const;
 
+/*
+  Change request 2026-09-21, second pass: "require manual input and
+  confirmation for all faqs". Every answer here is typed from the source by
+  hand and none has been confirmed by a named person, so none publishes. The
+  page renders the question with the enquiry wording until `confirmed` is
+  filled in. See the Faq type in content/types.ts.
+*/
 export const studioFaqs: Faq[] = [
   {
     id: "who",
     question: "Who can use the studio?",
     answer:
       "Current access supports MDI-linked projects. Ask the team about eligibility before planning a visit or equipment use.",
+    confirmed: null,
   },
   {
     id: "booking",
     question: "How do I book, and what does it cost?",
     answer:
       "Contact the team with your project, the area you need and your preferred timing, and they will explain the current arrangements.",
+    confirmed: null,
   },
   {
     id: "unfamiliar",
     question: "What if I have not used a tool before?",
     answer: "Ask the CDIE staff member on duty for guidance before using unfamiliar equipment.",
+    confirmed: null,
   },
   {
     id: "suggest",
     question: "Can I suggest a project for students?",
     answer:
       "Email ive@ku.ac.ke with a short description of the problem or project and your contact details.",
+    confirmed: null,
   },
   {
     id: "where",
     question: "Where is the studio?",
     answer:
       "CDIE is at Kenyatta University’s main campus. Please contact the team before travelling so we can confirm where to meet you.",
+    confirmed: null,
   },
 ];
 

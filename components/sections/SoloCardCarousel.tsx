@@ -12,6 +12,12 @@
   Decision R8 still holds: the rail carries cards that link onward, never the
   only copy of something a reader needs. Every destination here is also reachable
   from the navigation.
+
+  Change request 2026-09-21, second pass: "apply smoother transitions for all
+  carousels". The picture crossfaded while the words under it swapped in the
+  same frame, which is the cut the first pass was trying to remove. The copy
+  now rises in with .settle on the same token, and the dots ease rather than
+  step.
 */
 
 import Image from "next/image";
@@ -79,11 +85,14 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
             </div>
           ))}
         </div>
-        <div className="flex flex-col gap-2 p-5 md:p-6">
+        <div key={item.id} className="settle flex flex-col gap-2 p-5 md:p-6">
           <p className="kicker">{item.eyebrow}</p>
           <h3 className="display text-sub">{item.title}</h3>
           <p className="trim-mobile text-body leading-relaxed text-ink-2">{item.summary}</p>
-          <Link href={item.href} className="stretch pt-2 font-medium text-brand">
+          <Link
+            href={item.href}
+            className="stretch pt-2 font-medium text-brand transition-colors hover:text-brand-live"
+          >
             {item.action}
           </Link>
         </div>
@@ -97,7 +106,7 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
             aria-label={candidate.title}
             aria-current={candidateIndex === index}
             onClick={() => { setHeld(true); setIndex(candidateIndex); }}
-            className={`h-1.5 w-10 rounded-full transition-colors ${
+            className={`h-1.5 w-10 rounded-full transition-colors duration-500 hover:bg-brand-lift ${
               candidateIndex === index ? "bg-brand" : "bg-line"
             }`}
           />

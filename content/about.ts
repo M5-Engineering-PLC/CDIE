@@ -1,5 +1,12 @@
 // Lucid: About Us > Explainer, Profiles Team, Profiles Cohorts.
 // Copy: ABOUT US.
+/*
+  Change request 2026-09-21, second pass: "Add a hero image for the first
+  section" and "remove cohort section". aboutIntro gains the photograph the
+  hero renders; cohortsPointer is withdrawn, because the band that read it is
+  gone and a content record nothing renders is a record the next writer will
+  put words into.
+*/
 // Lucid: a profile needs picture, name and designation. Nothing else required.
 // Person and cohort selections expand within this page; no child routes.
 
@@ -12,6 +19,15 @@ export const aboutIntro = {
   body: [
     "As part of Invention Education, we bring together hands-on learning, research and collaboration around healthcare needs. Our studio supports students in the Medical Device Innovation master’s programme as they develop ideas into prototypes.",
   ],
+  /*
+    A genuine CDIE photograph from the approved source package. The alt text
+    describes what is in the frame and nothing else: not who the people are,
+    not which programme they belong to and not when it was taken.
+  */
+  image: {
+    src: "/images/story-1.jpg",
+    alt: "A team presenting a project on screen to a room at CDIE",
+  },
 } as const;
 
 export const purpose = {
@@ -139,15 +155,11 @@ export const peopleCopy = {
   programme, and it reads as evidence next to the curriculum rather than next to
   the staff. This overrules Lucid, which draws Profiles Cohorts under About Us.
 
-  About Us stays institutional: what the centre is, why it is here, who runs it.
-  See mdiCohorts in content/programmes.ts.
+  Change request 2026-09-21, second pass: "remove cohort section". The signpost
+  band that pointed at the MDI page is gone from the page and its record with
+  it. About Us stays institutional: what the centre is, why it is here, who
+  runs it. See mdiCohorts in content/programmes.ts.
 */
-// Change request 2026-09-13, section 6.2: renamed in step with the MDI band.
-export const cohortsPointer = {
-  headline: "Looking for graduate stories?",
-  body: "What graduates went on to do, and the projects they took forward, sit with the programme itself.",
-  action: { label: "Read success stories", href: "/programmes/mdi#cohorts", live: true },
-} as const;
 
 export const collaborate = {
   headline: "Share your experience. Help someone take the next step.",

@@ -56,6 +56,16 @@ export type Opportunity = {
   id: string;
   title: string;
   kind: string;
+  /*
+    Change request 2026-09-21, second pass, Programmes: "change the carousel
+    titles to Invention education, MSc MDI, Design challenges, Catalyst grants,
+    Training and masterclasses". The five names are the client's own, given in
+    the change request, and they are what the carousel's tab strip reads. They
+    are held apart from `title`, which is the programme's name on its own page
+    and in the Actual Copy tab, and from `kind`, which says what sort of thing
+    it is. Nothing else may use this field.
+  */
+  carouselTitle: string;
   summary: string;
   status: OpportunityStatus;
   href: string;
@@ -78,10 +88,39 @@ export type CalendarEvent = {
   registration?: Destination;
 };
 
+/*
+  Change request 2026-09-21, second pass, Programmes: "require manual input and
+  confirmation for all faqs".
+
+  An answer is a published claim about fees, access, eligibility or a process.
+  The audit that opened this project found exactly that kind of claim on the
+  live site with nothing behind it, so an answer now carries its own
+  provenance and cannot be written without one:
+
+  - `answer` is typed by hand from the source. Nothing generates it.
+  - `confirmed` records who confirmed the wording and when. Until it is
+    present, FaqList does not publish the answer: it renders the question with
+    the enquiry wording instead, exactly as the claim-safety rule in AGENTS.md
+    requires of a fact the source has not confirmed.
+
+  The field is required, not optional, so the decision has to be made for every
+  question anyone adds rather than defaulted past.
+*/
+export type FaqConfirmation = {
+  /** who at CDIE confirmed this wording */
+  by: string;
+  /** ISO date of that confirmation */
+  on: string;
+  /** where the wording comes from: the Actual Copy heading, or the page */
+  source: string;
+};
+
 export type Faq = {
   id: string;
   question: string;
   answer: string;
+  /** null until a person has confirmed the answer. Never defaulted. */
+  confirmed: FaqConfirmation | null;
 };
 
 export type SpaceId = "studio" | "atc";
@@ -91,9 +130,10 @@ export type CapabilityId =
   | "electronics"
   | "three-d-printing"
   | "co-working"
-  | "metalworking"
   | "textiles"
-  | "woodworking";
+  | "metalworking"
+  | "woodworking"
+  | "laser-cutting";
 
 /*
   Change request 2026-09-21, section 4: "for now just use generic placeholders
@@ -134,7 +174,7 @@ export type Capability = {
   headline: string;
   body: string;
   /** service group id in the studio/atc model, or null where the position is unknown */
-  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | "woodworking" | "metalworking" | null;
+  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | "woodworking" | "metalworking" | "laser-cutting" | null;
   pending: string[];
   enquiry: string;
   media: Figure[];

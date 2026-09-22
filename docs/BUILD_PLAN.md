@@ -203,6 +203,51 @@ What unblocks it, in order of preference:
 Neither route changes a line of component code. The calendar renders whatever
 the record holds.
 
+#### Conflict C-07, 2026-09-21. The carousel titles are not the Actual Copy names
+
+The second pass of the 21 September change request names the five slides of the
+Programmes carousel: Invention education, MSc MDI, Design challenges, Catalyst
+grants, Training and masterclasses.
+
+Three of those differ from the Actual Copy tab, which is the source authority
+for words:
+
+| Change request | Actual Copy tab |
+|---|---|
+| Invention education | Invention Education |
+| MSc MDI | Medical Device Innovation, an M.Sc. pathway |
+| Design challenges | Design Challenge |
+
+The change request is a direct instruction from the client and the names are
+short labels on a tab strip, not body copy, so they are carried verbatim into
+`carouselTitle` on each opportunity in `content/programmes.ts`. That field is
+read by the carousel and by nothing else: each programme's own page, its row in
+the Opportunities band and every enquiry topic still read `title`, which stays
+as the Actual Copy tab has it.
+
+What is open is whether the client intends these as a renaming or only as a
+shorthand for the carousel. Until that is answered the two spellings coexist by
+design, in one field each, rather than one of them being quietly rewritten.
+
+#### Conflict C-08, 2026-09-21. Every FAQ answer is now unconfirmed
+
+The same change request asks for manual input and confirmation for all FAQs.
+
+An FAQ answer is a published claim about eligibility, access, cost or process,
+which is the class of claim the opening audit found unsupported on the live
+site. The `Faq` type in `content/types.ts` therefore requires a `confirmed`
+record naming who confirmed the wording, when, and against which source, and
+`FaqList` publishes an answer only where that record exists.
+
+No answer in the repository carries one today. The answers were drafted from
+published CDIE pages during the build; nobody at CDIE has confirmed a single
+one of them in writing. So all ten questions, five on Programmes and five on
+Design Studio, currently render the enquiry wording instead of their answer.
+
+What unblocks it: a named person at CDIE reads each answer and confirms it. The
+confirmation goes into the record as `confirmed: { by, on, source }` and that
+answer publishes immediately, one question at a time. Nothing else changes.
+
 ### 3.3 Review feedback of 11 September, and where it collides with Lucid
 
 Three review documents arrived on 11 September: a UX and structure revision
