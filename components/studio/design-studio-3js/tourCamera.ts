@@ -36,6 +36,17 @@ const CENTRE_PULL = -0.15;
 const EYE_HEIGHT = 2.0;
 const CLOSE = { radius: 6.4, phi: 1.12 };
 
+/*
+  Enhancements 2026-09-22: "on design and cad just zoom in into the monitors".
+  The design group spans the door, the screens and the whiteboard, so its
+  centre is mid-room. For design the tour looks at the computer stations
+  instead (studioLayout 'computer-stations', monitors at about 1.2 m), from a
+  standing position just in front of them.
+*/
+const CLOSE_UPS: Partial<Record<ServiceId, { aim: [number, number, number]; seat: [number, number, number] }>> = {
+  design: { aim: [-2.45, 1.15, -3.12], seat: [-2.45, 1.55, -1.35] },
+};
+
 /** Centre of a service group, cached: the geometry never moves. */
 function centreOf(runtime: StudioRuntime, service: ServiceId | null, into: THREE.Vector3) {
   if (!service) return into.set(0, ROOM.height, 0);
@@ -92,7 +103,9 @@ export function createTourCamera(
     const close = drive.active !== null;
     const { radius, phi } = close ? CLOSE : ROOM;
 
-    centreOf(runtime, drive.active, mark);
+    const closeUp = drive.active ? CLOSE_UPS[drive.active] : undefined;
+    if (closeUp) mark.set(...closeUp.aim);
+    else centreOf(runtime, drive.active, mark);
     if (!close) mark.y = ROOM.height;
     aim.lerp(mark, CHASE);
     reach += (radius - reach) * CHASE;
@@ -105,7 +118,8 @@ export function createTourCamera(
          behind a wall. A station at the very centre is seen from just in
          front of it. */
       const toward = Math.hypot(aim.x, aim.z);
-      if (toward > 0.5) seat.set(aim.x * CENTRE_PULL, EYE_HEIGHT, aim.z * CENTRE_PULL);
+      if (closeUp) seat.set(...closeUp.seat);
+      else if (toward > 0.5) seat.set(aim.x * CENTRE_PULL, EYE_HEIGHT, aim.z * CENTRE_PULL);
       else seat.set(aim.x, EYE_HEIGHT, aim.z + 3.2);
       // Keep the orbit in step, so pulling back to the room starts from here.
       yaw = Math.atan2(camera.position.z - aim.z, camera.position.x - aim.x);

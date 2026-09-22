@@ -41,8 +41,10 @@ export function EnquiryForm({
 }: EnquiryFormProps) {
   const [state, setState] = useState<State>("idle");
 
+  // 16px on phones: iOS zooms the page into any field set smaller, which
+  // pushes the form off the edge of the screen. text-body again from sm.
   const field =
-    "rounded-edge border border-line bg-surface px-3 py-2.5 text-body text-ink disabled:opacity-60";
+    "w-full min-w-0 rounded-edge border border-line bg-surface px-3 py-2.5 text-[1rem] text-ink disabled:opacity-60 sm:text-body";
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -112,7 +114,7 @@ export function EnquiryForm({
         <button
           type="submit"
           disabled={state === "sending"}
-          className="rounded-edge bg-brand px-5 py-2.5 text-body font-medium text-surface transition-colors hover:bg-brand-live disabled:cursor-wait disabled:opacity-60"
+          className="w-full rounded-edge bg-brand px-5 py-3 text-[1rem] font-medium sm:w-auto sm:py-2.5 sm:text-body text-surface transition-colors hover:bg-brand-live disabled:cursor-wait disabled:opacity-60"
         >
           {state === "sending" ? "Sending…" : submit}
         </button>

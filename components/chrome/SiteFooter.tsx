@@ -118,7 +118,7 @@ export function SiteFooter({
             </li>
             <li>{contact.availability}</li>
           </ul>
-          <ul className="mt-7 flex gap-3" aria-label="Social media">
+          <ul className="mt-7 flex flex-wrap gap-3" aria-label="Social media">
             {socialAccounts.filter((account) => account.href).map((account) => (
               <li key={account.id}>
                 <a href={account.href} target="_blank" rel="noreferrer" aria-label={account.label} className="grid h-10 w-10 place-items-center rounded-full border border-surface/25 text-surface/75 transition hover:border-brand-lift hover:text-brand-lift">

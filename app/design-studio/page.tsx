@@ -31,7 +31,14 @@ const studioImages: Record<string, string> = {
   metalworking: "/images/service-metalworking-1.jpeg",
   textiles: "/images/service-textile-2.jpg",
   woodworking: "/images/service-woodworking-1.jpeg",
+  // Enhancements 2026-09-22: "for laser use the image titled summer program".
+  "laser-cutting": "/images/cdie-summer-program-laser-cutting.jpg",
 };
+
+// The heading counts the capabilities rather than stating a number that goes
+// stale when one is added (laser cutting made it eight).
+const countWord = (n: number) =>
+  ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][n] ?? String(n);
 
 const workshopPhotos = [
   { src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw" },
@@ -88,7 +95,7 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
       */}
       <Section
         eyebrow="Capabilities"
-        title="Seven ways to make something."
+        title={`${countWord(capabilities.length)} ways to make something.`}
         standfirst="Browse the workshop areas, then open any one of them in the room above."
       >
         <VisualCardRail items={capabilityCards} label="studio capabilities" />
