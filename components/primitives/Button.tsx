@@ -13,11 +13,11 @@ type Tone = "solid" | "outline" | "quiet";
 
 const tones: Record<Tone, string> = {
   solid:
-    "bg-brand text-surface border border-brand hover:bg-brand-live hover:border-brand-live",
+    "button-solid bg-brand text-surface border border-brand",
   outline:
-    "bg-transparent text-brand border border-brand/40 hover:border-brand hover:bg-brand/5",
+    "button-outline bg-transparent text-brand border border-brand/40",
   quiet:
-    "bg-transparent text-ink border-b border-ink/30 hover:border-ink rounded-none px-0 py-1",
+    "button-quiet bg-transparent text-ink border-b border-ink/30 rounded-none px-0 py-1",
 };
 
 export type ButtonProps = {
@@ -36,7 +36,7 @@ export function Button({
   className = "",
 }: ButtonProps) {
   const base =
-    "inline-flex items-center gap-2 rounded-edge px-4 py-2.5 text-body font-medium transition-colors";
+    "button-motion inline-flex items-center gap-2 rounded-edge px-4 py-2.5 text-body font-medium";
   const classes = `${base} ${tones[tone]} ${className}`.trim();
 
   if (external) {

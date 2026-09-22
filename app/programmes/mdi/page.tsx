@@ -8,7 +8,6 @@
 import type { Metadata } from "next";
 
 import { Button } from "@/components/primitives/Button";
-import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
 import { MdiSectionNav } from "@/components/sections/MdiSectionNav";
 import { Section } from "@/components/sections/Section";
@@ -58,9 +57,6 @@ export default async function MdiPage() {
             </div>
           ))}
         </dl>
-        <div className="mt-8 max-w-[62ch]">
-          <Pending items={mdi.structurePending} />
-        </div>
         <div className="prose-body mt-10 max-w-[62ch] text-body leading-relaxed text-ink-2">
           {mdi.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
@@ -134,11 +130,6 @@ export default async function MdiPage() {
         <p className="mt-6 max-w-[70ch] text-body leading-relaxed text-ink-2">
           {mdi.who.experience}
         </p>
-        {mdi.who.pending.length > 0 ? (
-          <div className="mt-6 max-w-[62ch]">
-            <Pending items={mdi.who.pending} />
-          </div>
-        ) : null}
 
         <h3 className="display mt-12 text-title">{mdi.applications.headline}</h3>
         <p className="mt-4 max-w-[62ch] text-body leading-relaxed text-ink-2">
@@ -147,9 +138,6 @@ export default async function MdiPage() {
         <p className="mt-3 max-w-[62ch] text-body leading-relaxed text-ink-2">
           {mdi.applications.process}
         </p>
-        <div className="mt-6 max-w-[62ch]">
-          <Pending items={mdi.applications.pending} />
-        </div>
         <div className="mt-6">
           <Button href={mdi.applications.action.href}>{mdi.applications.action.label}</Button>
         </div>
@@ -179,17 +167,9 @@ export default async function MdiPage() {
             <StoryGrid items={sampleStories} />
           </>
         )}
-      </Section>
-
-      <Section id="funding" tone="surface" eyebrow="Fees and funding" title={mdi.fees.headline}>
-        <div className="max-w-[62ch]">
-          <Pending items={mdi.fees.pending} />
+        <div className="mt-8">
+          <Button href="/contact?topic=admissions">Contact admissions</Button>
         </div>
-        <p className="mt-5 max-w-[62ch] text-body text-ink-2">{mdi.fees.guidance}</p>
-        <p className="mt-3 max-w-[62ch] text-body text-ink-2">
-          Ask the admissions team about scholarships, funding and any teaching or research
-          role attached to the programme.
-        </p>
       </Section>
       </div>
       </div>

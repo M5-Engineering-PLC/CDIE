@@ -54,7 +54,7 @@ export function VisualCardRail({ items, label }: { items: VisualRailItem[]; labe
       const first = node.firstElementChild as HTMLElement | null;
       const loop = clone && first ? clone.offsetLeft - first.offsetLeft : 0;
       if (last && loop && !document.hidden && node.dataset.visible === "true") {
-        node.scrollLeft += Math.min(time - last, 40) * 0.051;
+        node.scrollLeft += Math.min(time - last, 40) * 0.028;
         if (node.scrollLeft >= loop) node.scrollLeft -= loop;
       }
       last = time;

@@ -141,7 +141,7 @@ export default function ProgrammesPage() {
                   <Chip status={opportunity.status} />
                 </div>
                 <h3 className="display text-title leading-snug">{opportunity.title}</h3>
-                <p className="trim-mobile max-w-[52ch] text-body leading-relaxed text-ink-2">
+                <p className="max-w-[52ch] text-body leading-relaxed text-ink-2">
                   {opportunity.summary}
                 </p>
                 <div className="mt-auto pt-4">

@@ -66,7 +66,7 @@ export default function HomePage() {
       <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
         <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:gap-16">
           <p aria-hidden="true" className="display text-mega leading-none text-brand">C.D.I.E</p>
-          <p className="trim-mobile max-w-[62ch] text-body leading-relaxed text-ink-2 md:text-lead">
+          <p className="max-w-[62ch] text-body leading-relaxed text-ink-2 md:text-lead">
             {defineCdie.body}
           </p>
         </div>

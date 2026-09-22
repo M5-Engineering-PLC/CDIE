@@ -9,7 +9,6 @@ const sections = [
   { id: "curriculum", label: "Curriculum & timeline" },
   { id: "applying", label: "Applying" },
   { id: "cohorts", label: "Success stories" },
-  { id: "funding", label: "Fees & funding" },
 ];
 
 export function MdiSectionNav() {

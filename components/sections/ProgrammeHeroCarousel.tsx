@@ -31,7 +31,7 @@ export type ProgrammeHeroSlide = {
 
 /* Enhancements 2026-09-22: rotate slowly and never pause. Choosing a slide
    moves to it and the rotation carries on from there. */
-const ROTATION_MS = 9000;
+const ROTATION_MS = 12000;
 /** A drag shorter than this is a tap or a scroll, not a swipe. */
 const SWIPE_PX = 48;
 

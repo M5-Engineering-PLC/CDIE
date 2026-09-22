@@ -4,8 +4,7 @@
   did most of the length here — the three purposes and eight portraits, each a
   full-width card in a single column. Both scroll-snap sideways below the
   breakpoint and are the grids they were above it. Nothing is removed: the
-  supporting paragraphs fold to three lines with .trim-mobile and open again on
-  a wider screen.
+  supporting paragraphs remain readable in full at every size.
 */
 // Profiles expand within this page. No person child routes.
 /*
@@ -56,10 +55,11 @@ export default async function AboutPage() {
         headline={aboutIntro.headline}
         standfirst={aboutIntro.standfirst}
         image={aboutIntro.image}
+        mediaClassName="about-hero-image"
       />
 
       <Section eyebrow="Why we are here" title={purpose.headline}>
-        <p className="trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">{purpose.body}</p>
+        <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{purpose.body}</p>
         <AutoRail className="rail -mx-gutter mt-6 auto-cols-[80%] gap-4 px-gutter md:mx-0 md:mt-10 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:gap-px md:overflow-visible md:bg-line md:px-0">
           {purpose.triad.map((item) => (
             <li key={item.id} className="flex flex-col gap-3 border border-line bg-surface p-5 md:border-0 md:p-6">
@@ -97,7 +97,7 @@ export default async function AboutPage() {
             {team.map((person) => (
               <li
                 key={person.id}
-                className="flex flex-col overflow-hidden border border-line bg-surface transition-colors hover:border-brand-lift"
+                className="about-person flex flex-col overflow-hidden border border-line bg-surface hover:border-brand-lift"
               >
                 {person.portrait ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
@@ -127,7 +127,7 @@ export default async function AboutPage() {
           two bands would have shared a ground and read as one, so the tones
           step from here down. */}
       <Section eyebrow="Work you can see" title={workYouCanSee.headline}>
-        <p className="trim-mobile max-w-[58ch] text-lead leading-relaxed text-ink-2">
+        <p className="max-w-[58ch] text-lead leading-relaxed text-ink-2">
           {workYouCanSee.body}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
@@ -144,7 +144,7 @@ export default async function AboutPage() {
       </Section>
 
       <Section tone="surface" eyebrow="Work with us" title={collaborate.headline}>
-        <div className="prose-body trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">
+        <div className="prose-body max-w-[62ch] text-lead leading-relaxed text-ink-2">
           {collaborate.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
