@@ -9,6 +9,7 @@ import { EventGrid, type EventCardItem } from "@/components/blocks/EventGrid";
 import { FaqList } from "@/components/blocks/FaqList";
 import { PlaceholderPhoto } from "@/components/blocks/PlaceholderPhoto";
 import { SampleNotice } from "@/components/blocks/SampleNotice";
+import { AutoRail } from "@/components/sections/AutoRail";
 import { ProgrammeHeroCarousel, type ProgrammeHeroSlide } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
 import { SnakeRoute } from "@/components/sections/SnakeRoute";
@@ -23,18 +24,24 @@ import {
 import { SHOW_SAMPLE_CONTENT, sampleEvents } from "@/content/samples";
 
 /*
-  Real events map into the card shape. The collection is empty today, so this
-  is the path that runs the moment confirmed records arrive.
+  Enhancements 2026-09-22: "on programmes just have the most recent 3 events".
+  Only events with their own photograph qualify, so no card has an empty frame;
+  the full list is the Media calendar.
 */
-const eventCards: EventCardItem[] = events.map((event) => ({
-  id: event.id,
-  title: event.title,
-  start: event.start,
-  venue: event.venue ?? "Venue to be confirmed",
-  summary: event.registration?.label ?? "",
-  image: "/images/cdie-stakeholder-engagement-golden-tulip.jpg",
-  alt: event.title,
-}));
+const eventCards: EventCardItem[] = events
+  .filter((event) => event.image)
+  .sort((a, b) => Date.parse(b.end ?? b.start) - Date.parse(a.end ?? a.start))
+  .slice(0, 3)
+  .map((event) => ({
+    id: event.id,
+    title: event.title,
+    start: event.start,
+    venue: event.kind ?? "",
+    summary: "",
+    image: event.image as string,
+    alt: event.title,
+    href: event.link,
+  }));
 
 /*
   Change request 2026-09-13, section 4.1, revised: the carousel is the first
@@ -111,7 +118,7 @@ export default function ProgrammesPage() {
           the longest band on the site on a phone. It now scroll-snaps
           sideways there and keeps the alternating two-column rows from md.
         */}
-        <ul className="rail -mx-gutter auto-cols-[85%] gap-4 px-gutter md:mx-0 md:flex md:flex-col md:gap-px md:overflow-visible md:bg-line md:px-0">
+        <AutoRail className="rail -mx-gutter auto-cols-[85%] gap-4 px-gutter md:mx-0 md:flex md:flex-col md:gap-px md:overflow-visible md:bg-line md:px-0">
           {opportunities.map((opportunity, index) => (
             <li
               key={opportunity.id}
@@ -147,7 +154,7 @@ export default function ProgrammesPage() {
               </div>
             </li>
           ))}
-        </ul>
+        </AutoRail>
       </Section>
 
       <Section
@@ -176,8 +183,8 @@ export default function ProgrammesPage() {
             {events.length === 0 ? <SampleNotice what="events" /> : null}
             <EventGrid items={events.length === 0 ? sampleEvents : eventCards} />
             <div className="mt-8">
-              <Button href="/contact?topic=events" tone="outline">
-                Ask what is planned
+              <Button href="/media#events" tone="outline">
+                See the full events calendar
               </Button>
             </div>
           </>

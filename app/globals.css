@@ -306,6 +306,26 @@
   }
 }
 
+/*
+  Enhancements 2026-09-22, second round: "on mobile all cards, make sure it
+  centers only one card and plays the cards in a continuous rotating loop".
+  Below md every rail shows exactly one card, full width inside the gutter and
+  snapped to the centre; lib/useRailRotation.ts advances it and loops.
+*/
+@media (max-width: 767px) {
+  .rail:not(.rail-pills),
+  .rail-glide {
+    grid-auto-columns: 100% !important;
+    /* Twice the gutter, so the neighbouring cards sit fully off screen. */
+    column-gap: calc(var(--spacing-gutter) * 2) !important;
+  }
+
+  .rail:not(.rail-pills) > *,
+  .rail-glide > * {
+    scroll-snap-align: center;
+  }
+}
+
 @media (min-width: 768px) {
   :root {
     --band-y: 3.5rem;

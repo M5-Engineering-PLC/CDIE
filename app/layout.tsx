@@ -61,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           still one click from any page.
         */}
         <SiteFooter
-          items={[...nav, { label: "Contact", href: "/contact" }]}
+          items={[...nav]}
           utility={[...utilityLinks]}
           contact={contact}
           name={site.name}

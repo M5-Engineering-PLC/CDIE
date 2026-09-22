@@ -86,6 +86,14 @@ export type CalendarEvent = {
   venue?: string;
   contact?: string;
   registration?: Destination;
+  /** the event type from the source sheet, such as "Workshop" */
+  kind?: string;
+  /** true where the source gives the date as an estimate */
+  estimated?: boolean;
+  /** the post or page the record comes from */
+  link?: string;
+  /** a photograph from this event, when one exists */
+  image?: string;
 };
 
 /*

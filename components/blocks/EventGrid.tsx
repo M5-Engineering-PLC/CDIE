@@ -15,6 +15,8 @@
 
 import Image from "next/image";
 
+import { AutoRail } from "@/components/sections/AutoRail";
+
 export type EventCardItem = {
   id: string;
   title: string;
@@ -23,6 +25,8 @@ export type EventCardItem = {
   summary: string;
   image: string;
   alt: string;
+  /** where the event is written up, such as its LinkedIn post */
+  href?: string;
 };
 
 function formatDate(iso: string) {
@@ -40,9 +44,9 @@ export function EventGrid({ items }: { items: EventCardItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <ul className="rail -mx-gutter auto-cols-[82%] gap-4 px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-2 md:gap-px md:overflow-visible md:bg-line md:px-0 lg:grid-cols-3">
+    <AutoRail className="rail -mx-gutter auto-cols-[82%] gap-4 px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-2 md:gap-px md:overflow-visible md:bg-line md:px-0 lg:grid-cols-3">
       {items.map((event) => (
-        <li key={event.id} className="flex flex-col border border-line bg-raise md:border-0">
+        <li key={event.id} className="card-hit group flex flex-col border border-line bg-raise md:border-0">
           <div className="relative aspect-[16/10] overflow-hidden">
             <Image
               src={event.image}
@@ -56,12 +60,20 @@ export function EventGrid({ items }: { items: EventCardItem[] }) {
             <p className="kicker">
               <time dateTime={event.start}>{formatDate(event.start)}</time>
             </p>
-            <h3 className="display text-sub leading-snug">{event.title}</h3>
-            <p className="text-body leading-relaxed text-ink-2">{event.summary}</p>
+            <h3 className="display text-sub leading-snug">
+              {event.href ? (
+                <a href={event.href} target="_blank" rel="noopener noreferrer" className="stretch transition-colors group-hover:text-brand">
+                  {event.title}
+                </a>
+              ) : (
+                event.title
+              )}
+            </h3>
+            {event.summary ? <p className="text-body leading-relaxed text-ink-2">{event.summary}</p> : null}
             <p className="mt-auto pt-3 text-fine text-ink-3">{event.venue}</p>
           </div>
         </li>
       ))}
-    </ul>
+    </AutoRail>
   );
 }

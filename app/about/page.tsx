@@ -24,6 +24,7 @@ import type { Metadata } from "next";
 
 import { Button } from "@/components/primitives/Button";
 import { PageHero } from "@/components/sections/PageHero";
+import { AutoRail } from "@/components/sections/AutoRail";
 import { Section } from "@/components/sections/Section";
 import {
   aboutIntro,
@@ -59,14 +60,14 @@ export default async function AboutPage() {
 
       <Section eyebrow="Why we are here" title={purpose.headline}>
         <p className="trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">{purpose.body}</p>
-        <ul className="rail -mx-gutter mt-6 auto-cols-[80%] gap-4 px-gutter md:mx-0 md:mt-10 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:gap-px md:overflow-visible md:bg-line md:px-0">
+        <AutoRail className="rail -mx-gutter mt-6 auto-cols-[80%] gap-4 px-gutter md:mx-0 md:mt-10 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:gap-px md:overflow-visible md:bg-line md:px-0">
           {purpose.triad.map((item) => (
             <li key={item.id} className="flex flex-col gap-3 border border-line bg-surface p-5 md:border-0 md:p-6">
               <h3 className="display text-sub text-brand">{item.title}</h3>
               <p className="text-body leading-relaxed text-ink-2">{item.body}</p>
             </li>
           ))}
-        </ul>
+        </AutoRail>
       </Section>
 
       <Section
@@ -92,7 +93,7 @@ export default async function AboutPage() {
             needs picture, name and designation, nothing else - so nothing else
             is added here.
           */
-          <ul className="rail -mx-gutter auto-cols-[62%] gap-4 px-gutter sm:mx-0 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+          <AutoRail className="rail -mx-gutter auto-cols-[62%] gap-4 px-gutter sm:mx-0 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
             {team.map((person) => (
               <li
                 key={person.id}
@@ -118,7 +119,7 @@ export default async function AboutPage() {
                 </div>
               </li>
             ))}
-          </ul>
+          </AutoRail>
         )}
       </Section>
 

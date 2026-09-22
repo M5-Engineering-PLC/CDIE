@@ -27,8 +27,9 @@ test("the bar closes on navigation and carries an icon control", () => {
   assert.match(nav, /MenuIcon/);
   assert.doesNotMatch(nav, /\{open \? "Close" : "Menu"\}/);
   assert.match(nav, /setLastPath\(pathname\)[\s\S]*setOpen\(false\)/);
-  // the footer reaches Contact whatever the bar does
-  assert.match(read("app/layout.tsx"), /label: "Contact", href: "\/contact"/);
+  // the footer lists Contact once, through the nav, and carries LOGIN
+  assert.doesNotMatch(read("app/layout.tsx"), /\.\.\.nav, \{ label: "Contact"/);
+  assert.match(read("content/site.ts"), /\{ label: "Contact", href: "\/contact" \}/);
 });
 
 test("no link or button label carries a trailing arrow glyph", () => {
@@ -151,14 +152,19 @@ test("nothing in components/studio imports from content/", () => {
   }
 });
 
-test("Media leads with the calendar, and the calendar invents no event", () => {
+test("Media leads with the calendar, and every event cites its source", () => {
   const media = read("app/media/page.tsx");
   const events = media.indexOf('id="events"');
   const newsletters = media.indexOf('id="newsletters"');
   const community = media.indexOf('id="community"');
   assert.ok(events > 0 && events < newsletters && newsletters < community, "calendar leads the page");
-  assert.match(media, /EventTimeline/);
-  assert.match(read("content/programmes.ts"), /export const events: CalendarEvent\[\] = \[\];/);
+  assert.match(media, /EventGantt/);
+  // Enhancements 2026-09-22: events come from the CDIE LinkedIn feed sheet, and
+  // each one links to the post it was taken from.
+  const programmes = read("content/programmes.ts");
+  const records = [...programmes.matchAll(/\{ id: "ev\d+".*\}/g)].map((m) => m[0]);
+  assert.ok(records.length > 0, "events are populated");
+  for (const record of records) assert.match(record, /link: "https:\/\/www\.linkedin\.com\/feed\/update\//, record);
   assert.match(read("docs/BUILD_PLAN.md"), /Conflict C-06/);
 });
 

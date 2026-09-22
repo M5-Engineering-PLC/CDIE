@@ -203,6 +203,13 @@ What unblocks it, in order of preference:
 Neither route changes a line of component code. The calendar renders whatever
 the record holds.
 
+Resolved 2026-09-22. The CDIE LinkedIn feed sheet in the CDIE website Drive
+folder now lists 42 events, each with its start and end date, type and the
+LinkedIn post it comes from. content/programmes.ts carries those records.
+Dates the sheet marks as estimated render as approximate ("c."). The Media
+calendar shows six months back and three months ahead; Programmes shows the
+three most recent events that have their own photograph.
+
 #### Conflict C-07, 2026-09-21. The carousel titles are not the Actual Copy names
 
 The second pass of the 21 September change request names the five slides of the

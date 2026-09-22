@@ -92,6 +92,14 @@ export function SiteFooter({
                 </Link>
               </li>
             ))}
+            {/* Enhancements 2026-09-22: LOGIN joins the pages list. */}
+            {utility.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} className="text-body text-surface/70 no-underline hover:text-surface">
+                  {item.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
 
@@ -109,18 +117,6 @@ export function SiteFooter({
               </a>
             </li>
             <li>{contact.availability}</li>
-          </ul>
-          <ul className="mt-6 flex flex-col gap-2">
-            {utility.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="font-mono text-fine text-brand-lift no-underline hover:text-surface"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
           </ul>
           <ul className="mt-7 flex gap-3" aria-label="Social media">
             {socialAccounts.filter((account) => account.href).map((account) => (

@@ -3,7 +3,7 @@
 
 import type { Metadata } from "next";
 
-import { EventTimeline, type TimelineEvent } from "@/components/blocks/EventTimeline";
+import { EventGantt, type GanttEvent } from "@/components/blocks/EventGantt";
 import { FaqList } from "@/components/blocks/FaqList";
 import { NewsletterGrid, type NewsletterCardItem } from "@/components/blocks/NewsletterGrid";
 import { SampleNotice } from "@/components/blocks/SampleNotice";
@@ -51,13 +51,21 @@ export const revalidate = 600;
   See docs/BUILD_PLAN.md section 3.2 for why the calendar could not be
   populated from the CDIE LinkedIn account in this pass.
 */
-const programmeEvents: TimelineEvent[] = events.map((event) => ({
+const programmeEvents: GanttEvent[] = events.map((event) => ({
   id: event.id,
   title: event.title,
   start: event.start,
   end: event.end,
-  venue: event.venue,
+  kind: event.kind,
+  estimated: event.estimated,
+  link: event.link,
 }));
+
+const shiftMonths = (iso: string, months: number) => {
+  const date = new Date(iso);
+  date.setUTCMonth(date.getUTCMonth() + months);
+  return date.toISOString().slice(0, 10);
+};
 
 export default async function MediaPage() {
   /* Enhancements 2026-09-22: one timeline holds programme events plus the
@@ -68,11 +76,11 @@ export default async function MediaPage() {
     listItems("media"),
     listItems("newsletters"),
   ]);
-  const calendarEvents: TimelineEvent[] = [
+  const calendarEvents: GanttEvent[] = [
     ...programmeEvents,
-    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, summary: item.summary, kind: "Event" })),
-    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, summary: item.summary, kind: "Activity" })),
-    ...media.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), summary: item.summary, kind: "Media" })),
+    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, kind: "Event" })),
+    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, kind: "Activity" })),
+    ...media.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Media", link: item.link })),
   ];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -135,7 +143,7 @@ export default async function MediaPage() {
         ) : (
           <>
             {calendarEvents.length === 0 ? <SampleNotice what="events" /> : null}
-            <EventTimeline items={calendarEvents.length === 0 ? sampleEvents : calendarEvents} today={today} />
+            <EventGantt items={calendarEvents.length === 0 ? sampleEvents : calendarEvents} from={shiftMonths(today, -6)} to={shiftMonths(today, 3)} today={today} />
           </>
         )}
       </Section>

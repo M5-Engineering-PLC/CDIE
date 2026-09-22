@@ -4,7 +4,6 @@
 import type { Metadata } from "next";
 
 import { FaqList } from "@/components/blocks/FaqList";
-import { Button } from "@/components/primitives/Button";
 import { Section } from "@/components/sections/Section";
 import { WorkshopGallery } from "@/components/sections/WorkshopGallery";
 import { VisualCardRail, type VisualRailItem } from "@/components/sections/VisualCardRail";
@@ -13,7 +12,6 @@ import {
   capabilities,
   defaultCapabilityId,
   spaces,
-  studioAccess,
   studioFaqs,
   studioIntro,
 } from "@/content/studio";
@@ -116,13 +114,10 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
         </div>
       </Section>
 
-      <Section tone="surface" eyebrow="Access" title={studioAccess.headline}>
-        <p className="hidden max-w-[62ch] text-lead leading-relaxed text-ink-2 md:block">{studioAccess.body}</p>
-        <div className="mt-6">
-          <Button href={studioAccess.action.href}>{studioAccess.action.label}</Button>
-        </div>
-
-        <div className="mt-8 md:mt-12">
+      {/* Enhancements 2026-09-22: "remove access section in design studio page".
+          The FAQs it carried stay, in a band of their own. */}
+      <Section eyebrow="FAQs" title="Questions about the studio.">
+        <div>
           {/* Change request 2026-09-21, second pass: "require manual input and
               confirmation for all faqs". An unconfirmed answer sends the
               reader to the studio enquiry rather than publishing a sentence

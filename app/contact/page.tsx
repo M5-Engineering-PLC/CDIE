@@ -32,7 +32,12 @@ export default async function ContactPage(props: PageProps<"/contact">) {
   return (
     <>
       <PageHero
-        image={{ src: "/images/service-design-1.jpg", alt: "Empty design workstations in the CDIE studio" }}
+        /* Enhancements 2026-09-22: "embed map on contact us page hero". */
+        map={{
+          src: "https://maps.google.com/maps?cid=15811625221212988447&output=embed",
+          title: "Map showing CDIE at Kenyatta University",
+          href: "https://maps.google.com/?cid=15811625221212988447",
+        }}
         eyebrow="Contact"
         headline={contactIntro.headline}
         standfirst={contactIntro.standfirst}

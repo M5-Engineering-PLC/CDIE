@@ -169,7 +169,57 @@ export const opportunities: Opportunity[] = [
   Nothing is confirmed, so the list is empty and the empty state carries the
   wording from the Actual Copy tab. No event is invented to fill the band.
 */
-export const events: CalendarEvent[] = [];
+/*
+  Enhancements 2026-09-22: "populate events", from the CDIE LinkedIn feed
+  sheet's events tab (Drive, CDIE website folder). Every record is an event CDIE
+  posted about, with the post as its source. Dates the sheet marks "Est." are
+  flagged `estimated` and shown as approximate. `image` is set only where a
+  photograph from that event is in the repository.
+*/
+export const events: CalendarEvent[] = [
+  { id: "ev01", title: "IvE Design Challenge 2025", kind: "Design challenge", start: "2025-09-22", end: "2025-09-26", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7376549585634127872/" },
+  { id: "ev02", title: "MDI Info Session (Oct 2025)", kind: "Info session", start: "2025-10-06", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7380525086853804033/" },
+  { id: "ev03", title: "Cocktails & Conversations – MDI Programme Launch", kind: "Networking event", start: "2025-10-21", link: "https://www.linkedin.com/feed/update/urn:li:activity:7386817397006958592/" },
+  { id: "ev04", title: "RICE360 IvE Africa Network Design Competition", kind: "Design competition", start: "2025-11-18", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7396487414585888769/" },
+  { id: "ev05", title: "MDI Cohort 1 Orientation", kind: "Orientation", start: "2026-01-09", link: "https://www.linkedin.com/feed/update/urn:li:activity:7415315474164432897/" },
+  { id: "ev06", title: "Guest Lecture – Prof. Khama Rogo", kind: "Guest lecture", start: "2026-02-05", link: "https://www.linkedin.com/feed/update/urn:li:activity:7425211392028405761/" },
+  { id: "ev07", title: "MDI Info Session (Feb 2026)", kind: "Info session", start: "2026-02-12", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7427284894814461952/" },
+  { id: "ev08", title: "Guest Lecture – Innocent Abayo (IQVIA)", kind: "Guest lecture", start: "2026-02-13", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7428007547313393664/" },
+  { id: "ev09", title: "The Professional Exchange", kind: "Networking event", start: "2026-02-20", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7430532441859203072/", image: "/images/events/cdie-professional-exchange.jpg" },
+  { id: "ev10", title: "Lemelson Foundation Visit (Maggie Flanagan)", kind: "Partner visit", start: "2026-02-24", link: "https://www.linkedin.com/feed/update/urn:li:activity:7432431264818892800/", image: "/images/events/cdie-lemelson-foundation-visit.jpg" },
+  { id: "ev11", title: "MDI Info Session (Mar 2026)", kind: "Info session", start: "2026-03-05", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7434654271339581441/" },
+  { id: "ev12", title: "IvE Poster Presentation", kind: "Poster presentation", start: "2026-03-06", link: "https://www.linkedin.com/feed/update/urn:li:activity:7435972266875801600/", image: "/images/events/cdie-poster-presentation.jpg" },
+  { id: "ev13", title: "Rice University Working Visit", kind: "Partner visit", start: "2026-03-16", end: "2026-03-20", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7442563452331663360/", image: "/images/events/cdie-rice-university-working-visit.jpg" },
+  { id: "ev14", title: "IvE–Rice Strategic Planning", kind: "Strategic meeting", start: "2026-03-18", end: "2026-03-19", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7442872985285337088/", image: "/images/events/cdie-ive-rice-strategic-planning.jpg" },
+  { id: "ev15", title: "Stakeholder Engagement Event – Golden Tulip", kind: "Stakeholder event", start: "2026-03-20", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7442971132695097344/", image: "/images/cdie-stakeholder-engagement-golden-tulip.jpg" },
+  { id: "ev16", title: "Toastmasters Public Speaking Session", kind: "Workshop", start: "2026-03-20", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7449026073398292480/", image: "/images/events/cdie-professional-development-communication-class.jpg" },
+  { id: "ev17", title: "IvE MDI Design Challenge: Assistive Care", kind: "Design challenge", start: "2026-03-23", end: "2026-03-27", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7443959708895375360/", image: "/images/cdie-design-challenge-awards.jpg" },
+  { id: "ev18", title: "Guest Lecture – Elizabeth Odima (Invhestia)", kind: "Guest lecture", start: "2026-04-01", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7445372035683397632/" },
+  { id: "ev19", title: "Guest Talk – Maryanne Muriuki", kind: "Guest lecture", start: "2026-04-10", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7448274838189690880/" },
+  { id: "ev20", title: "Metalworking Session (MDI)", kind: "Workshop", start: "2026-04-13", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7449543196298158080/", image: "/images/events/cdie-mdi-metalworking-session.jpg" },
+  { id: "ev21", title: "Speaker Spotlight – Sahar Jamal", kind: "Guest lecture", start: "2026-04-17", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7451170176475049984/" },
+  { id: "ev22", title: "Advisory Board Meeting", kind: "Strategic meeting", start: "2026-04-17", link: "https://www.linkedin.com/feed/update/urn:li:activity:7451900711023296512/", image: "/images/cdie-advisory-board-meeting.jpg" },
+  { id: "ev23", title: "MDI Info Session (Apr 2026)", kind: "Info session", start: "2026-04-21", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7452030836171849728/" },
+  { id: "ev24", title: "Cocktails & Conversations – MSc Info Reception", kind: "Networking event", start: "2026-04-22", link: "https://www.linkedin.com/feed/update/urn:li:activity:7452393230714716161/" },
+  { id: "ev25", title: "Semester One Completion Celebration", kind: "Milestone", start: "2026-05-08", link: "https://www.linkedin.com/feed/update/urn:li:activity:7459860199630331904/", image: "/images/events/cdie-mdi-cohort-1-semester-one-celebration-01.jpg" },
+  { id: "ev26", title: "Hackcessible Challenge (AKU CIME)", kind: "External event", start: "2026-05-11", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7459950519139176448/" },
+  { id: "ev27", title: "CDIE Summer Program 2026", kind: "Summer program", start: "2026-05-13", end: "2026-06-09", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7470557914076831745/", image: "/images/events/cdie-summer-program-2026-launch.jpg" },
+  { id: "ev28", title: "MDI Cohort 1 End of Semester One Showcase", kind: "Showcase", start: "2026-05-18", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7462804321424834561/", image: "/images/cdie-mdi-cohort-1-semester-one-showcase.jpg" },
+  { id: "ev29", title: "MDI Cohort 1 Clinical Immersion Findings", kind: "Milestone", start: "2026-06-10", link: "https://www.linkedin.com/feed/update/urn:li:activity:7470739121565528064/", image: "/images/events/cdie-mdi-cohort-1-clinical-immersion-findings.jpg" },
+  { id: "ev30", title: "Moi University Visit", kind: "Partner visit", start: "2026-06-12", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7472188673988444160/", image: "/images/events/cdie-moi-university-visit.jpg" },
+  { id: "ev31", title: "MDI Cohort 1 Third Design Review", kind: "Milestone", start: "2026-06-23", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7475533315639369731/", image: "/images/events/cdie-mdi-cohort-1-third-design-review-01.jpg" },
+  { id: "ev32", title: "WIBEK 2026 Conference (Sponsor)", kind: "External event", start: "2026-06-27", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7477624524193161216/", image: "/images/cdie-wibek-2026-conference-01.jpg" },
+  { id: "ev33", title: "Faculty Development Workshop – La Mada Hotel", kind: "Workshop", start: "2026-06-29", end: "2026-07-03", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7479812277597294592/", image: "/images/events/cdie-faculty-development-workshop-la-mada.jpg" },
+  { id: "ev34", title: "Catalyst Grant Winners Presentations", kind: "Grant", start: "2026-07-08", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7482338803991638016/" },
+  { id: "ev35", title: "International PPH Conference", kind: "External event", start: "2026-07-22", link: "https://www.linkedin.com/feed/update/urn:li:activity:7485732927729721344/", image: "/images/cdie-pph-conference-hackathon.jpg" },
+  { id: "ev36", title: "MDI Cohort 1 Design Freeze", kind: "Milestone", start: "2026-08-18", link: "https://www.linkedin.com/feed/update/urn:li:activity:7495744070837780481/", image: "/images/events/cdie-mdi-cohort-1-design-freeze.jpg" },
+  { id: "ev37", title: "Women in STEM – Transforming Healthcare", kind: "Panel / event", start: "2026-08-19", link: "https://www.linkedin.com/feed/update/urn:li:activity:7495028815115747328/" },
+  { id: "ev38", title: "MDI Cohort 1 Regulatory Presentations", kind: "Milestone", start: "2026-08-20", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7498642968527052800/", image: "/images/cdie-bme-813-regulatory-strategies-presentations.jpg" },
+  { id: "ev39", title: "EEE First-Years Orientation & Open Day", kind: "Orientation", start: "2026-08-28", estimated: true, link: "https://www.linkedin.com/feed/update/urn:li:activity:7500228454383230976/", image: "/images/cdie-eee-first-years-orientation-open-day-06.jpg" },
+  { id: "ev40", title: "MDI Cohort 2 Orientation", kind: "Orientation", start: "2026-09-07", link: "https://www.linkedin.com/feed/update/urn:li:activity:7503034070562680832/", image: "/images/cdie-mdi-cohort-2-orientation-01.jpg" },
+  { id: "ev41", title: "IvE Design Challenge: Maternal & Neonatal Care", kind: "Design challenge", start: "2026-09-14", end: "2026-09-18", link: "https://www.linkedin.com/feed/update/urn:li:activity:7508065548178710528/" },
+  { id: "ev42", title: "Radio Interview – Stacy Awinja", kind: "Media", start: "2026-09-15", link: "https://www.linkedin.com/feed/update/urn:li:activity:7505491285416357888/" },
+];
 
 export const eventsCopy = {
   headline: "Meet, learn and exchange ideas.",

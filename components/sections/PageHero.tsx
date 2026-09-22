@@ -18,6 +18,8 @@ export type PageHeroProps = {
     measure instead of stretching to meet the picture.
   */
   image?: { src: string; alt: string };
+  /** an embedded map in place of the photograph (Contact) */
+  map?: { src: string; title: string; href: string };
 };
 
 export function PageHero({
@@ -27,12 +29,14 @@ export function PageHero({
   crumbs,
   children,
   image,
+  map,
 }: PageHeroProps) {
+  const media = Boolean(image || map);
   return (
     <section className="border-b border-line bg-surface">
       <div
         className={`shell band-y ${
-          image ? "grid items-center gap-10 md:grid-cols-[1.05fr_.95fr] md:gap-14" : ""
+          media ? "grid items-center gap-10 md:grid-cols-[1.05fr_.95fr] md:gap-14" : ""
         }`}
       >
         <div>
@@ -61,7 +65,25 @@ export function PageHero({
         {children ? <div className="mt-5 flex flex-wrap gap-3 md:mt-8">{children}</div> : null}
         </div>
 
-        {image ? (
+        {map ? (
+          <figure className="flex flex-col gap-2">
+            <div className="relative aspect-[4/3] overflow-hidden border border-line md:aspect-[5/4]">
+              <iframe
+                src={map.src}
+                title={map.title}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full border-0"
+              />
+            </div>
+            <figcaption>
+              <a href={map.href} target="_blank" rel="noopener noreferrer" className="text-fine font-medium text-brand hover:text-brand-live">
+                Open in Google Maps
+              </a>
+            </figcaption>
+          </figure>
+        ) : image ? (
           <div className="relative aspect-[16/10] overflow-hidden border border-line md:aspect-[5/4]">
             <Image
               src={image.src}

@@ -10,6 +10,8 @@
   is the column beside the room it has always been.
 */
 
+import { useEffect, useRef } from "react";
+
 export type CapabilityListItem = {
   id: string;
   name: string;
@@ -25,8 +27,20 @@ export function StudioCapabilityList({
   selectedId: string;
   onSelect: (id: string) => void;
 }) {
+  /* Enhancements 2026-09-22: "when the 3d view moves, ensure the exact service
+     is highlighted as well". On a phone the chips scroll sideways, so the
+     highlighted one is brought to the centre of the row whenever the tour or a
+     tap changes it. Only the row scrolls, never the page. */
+  const list = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const row = list.current;
+    const chip = row?.querySelector<HTMLElement>('[aria-pressed="true"]')?.parentElement;
+    if (!row || !chip || row.scrollWidth <= row.clientWidth) return;
+    row.scrollTo({ left: chip.offsetLeft - (row.clientWidth - chip.offsetWidth) / 2, behavior: "smooth" });
+  }, [selectedId]);
+
   return (
-    <ul className="rail auto-cols-max gap-px lg:grid-flow-row lg:auto-cols-auto lg:overflow-visible">
+    <ul ref={list} className="rail rail-pills auto-cols-max gap-px lg:grid-flow-row lg:auto-cols-auto lg:overflow-visible">
       {items.map((item, index) => {
         const active = item.id === selectedId;
         return (
