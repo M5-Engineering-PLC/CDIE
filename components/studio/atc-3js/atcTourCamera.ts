@@ -16,10 +16,11 @@ const YAW_PER_FRAME = 0.0015;
 const CHASE = 0.045;
 
 const ROOM = { radius: 15.5, phi: 0.95, height: 0.5 };
-/** How far from the room centre toward a station the camera stands (0 = centre). */
-const CENTRE_PULL = 0.2;
+/** How far from the room centre toward a station the camera stands (0 = centre,
+    negative = back past the centre). "zoom out abit": a little behind centre. */
+const CENTRE_PULL = -0.15;
 /** Standing eye height inside the room, in metres. */
-const EYE_HEIGHT = 1.6;
+const EYE_HEIGHT = 1.9;
 const CLOSE = { radius: 5.8, phi: 1.05 };
 
 function centreOf(runtime: AtcRuntime, service: AtcServiceId | null, into: THREE.Vector3) {
@@ -83,13 +84,13 @@ export function createAtcTourCamera(
     if (close) {
       /* Enhancements 2026-09-22: "let it happen from the centre of the room so
          that the components are on the front view". The camera stands near
-         the middle of the room, a little way toward the station, and faces
+         the middle of the room, just back from centre, and faces
          it: the station is seen head-on from inside the room, never from
          behind a wall. A station at the very centre is seen from just in
          front of it. */
       const toward = Math.hypot(aim.x, aim.z);
       if (toward > 0.5) seat.set(aim.x * CENTRE_PULL, EYE_HEIGHT, aim.z * CENTRE_PULL);
-      else seat.set(aim.x, EYE_HEIGHT, aim.z + 2.5);
+      else seat.set(aim.x, EYE_HEIGHT, aim.z + 3.2);
       // Keep the orbit in step, so pulling back to the room starts from here.
       yaw = Math.atan2(camera.position.z - aim.z, camera.position.x - aim.x);
     } else {

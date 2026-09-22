@@ -79,7 +79,7 @@ export function PageHero({
             </div>
             <figcaption>
               <a href={map.href} target="_blank" rel="noopener noreferrer" className="text-fine font-medium text-brand hover:text-brand-live">
-                Open in Google Maps
+                Open the full map
               </a>
             </figcaption>
           </figure>

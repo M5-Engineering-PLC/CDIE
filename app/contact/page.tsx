@@ -32,11 +32,13 @@ export default async function ContactPage(props: PageProps<"/contact">) {
   return (
     <>
       <PageHero
-        /* Enhancements 2026-09-22: "embed map on contact us page hero". */
+        /* Enhancements 2026-09-22: "embed map on contact us page hero", then
+           "use open streetmap". The marker is the Graduate School Building,
+           Kenyatta University, the point the team's Google Maps listing gives. */
         map={{
-          src: "https://maps.google.com/maps?cid=15811625221212988447&output=embed",
-          title: "Map showing CDIE at Kenyatta University",
-          href: "https://maps.google.com/?cid=15811625221212988447",
+          src: "https://www.openstreetmap.org/export/embed.html?bbox=36.9238%2C-1.1867%2C36.9318%2C-1.1808&layer=mapnik&marker=-1.183746%2C36.927809",
+          title: "OpenStreetMap showing CDIE at the Graduate School Building, Kenyatta University",
+          href: "https://www.openstreetmap.org/?mlat=-1.183746&mlon=36.927809#map=17/-1.183746/36.927809",
         }}
         eyebrow="Contact"
         headline={contactIntro.headline}
