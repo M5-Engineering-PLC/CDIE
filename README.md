@@ -41,18 +41,37 @@ npm run build
 ```text
 app/                routes and page composition only, no styles of their own
   api/              route handlers
+  admin/            internal tooling, not part of the viewer site
 components/
   primitives/       Button, Kicker, Chip, Pending
   blocks/           Card and the card grid
   sections/         page sections, including the carousels
   chrome/           SiteNav, SiteFooter, SkipLink
   studio/           the room model and its viewer; imports nothing from content/
+  admin/            components for the admin area only
 content/            typed content modules, one per collection
 docs/               the build plan, the gate records, the governing references
 ```
 
 `app/globals.css` holds every colour, font and spacing token. Nothing else
 declares one. It is owned by the review session: if you need a new token, ask.
+
+## The admin area
+
+`/admin` is internal tooling served by the same application. It is not part of
+the viewer site: it is not in the Lucid IA, it renders no copy from the Actual
+Copy tab, and no nav, footer or page on the viewer side links to it. It is
+reached by typing the URL, and it is marked `noindex`.
+
+Its first page is the model lab, at `/admin/models/design-studio` and
+`/admin/models/atc`. Each mounts one Three.js package on its own, with the
+station highlights, the tour and interactive flags, the room dimensions and a
+log of the service ids the viewer emits. It exists so the models can be worked
+on without driving the studio explorer around them.
+
+There is no authentication on `/admin`. Anyone who knows the URL can open it on
+a deployed environment, so nothing behind it may be private, and it stays
+free of anything that writes or reveals data until an access decision is made.
 
 ## The two rules that matter most
 
