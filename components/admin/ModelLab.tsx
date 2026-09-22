@@ -1,10 +1,12 @@
 "use client";
 
 /*
-  Not a website surface. This is the isolation harness for the two Three.js
-  packages, so their geometry, lighting and camera can be worked on without
-  the studio explorer, its content records or its tour state around them.
-  It renders no copy from content/ and is never linked from a public page.
+  Admin tooling, served under /admin. Not a website surface.
+
+  The isolation harness for the two Three.js packages, so their geometry,
+  lighting and camera can be worked on without the studio explorer, its
+  content records or its tour state around them. It renders no copy from
+  content/, and no viewer page links to it.
 */
 
 import { useState, type ReactNode } from "react";

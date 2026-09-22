@@ -1,9 +1,9 @@
 "use client";
 
-// Isolation harness for components/studio/atc-3js. Not a website surface.
+// Admin model lab: isolation harness for components/studio/atc-3js. Not a website surface.
 
 import { Atc3D, atcLayout, type AtcServiceId } from "@/components/studio/atc-3js";
-import { ModelLab } from "@/components/lab/ModelLab";
+import { ModelLab } from "@/components/admin/ModelLab";
 
 export default function AtcLabPage() {
   return (

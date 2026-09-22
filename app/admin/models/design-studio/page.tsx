@@ -1,13 +1,13 @@
 "use client";
 
-// Isolation harness for components/studio/design-studio-3js. Not a website surface.
+// Admin model lab: isolation harness for components/studio/design-studio-3js. Not a website surface.
 
 import {
   DesignStudio3D,
   studioLayout,
   type ServiceId,
 } from "@/components/studio/design-studio-3js";
-import { ModelLab } from "@/components/lab/ModelLab";
+import { ModelLab } from "@/components/admin/ModelLab";
 
 const stations = studioLayout.stations.map((station, index) => ({
   id: station.id,
