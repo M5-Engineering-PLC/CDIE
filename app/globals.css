@@ -522,7 +522,7 @@
 .triad-dots button[aria-current] { width: 1.5rem; background: var(--color-brand-live); }
 @media (min-width: 768px) { .triad-dots { display: none; } }
 
-.cdie-initial { color: var(--color-brand); font-weight: 700; }
+.cdie-initial { color: var(--color-brand); font-size: 1.2em; font-weight: 800; }
 .cdie-mark-stage { perspective: 900px; }
 .cdie-mark { display: inline-block; transform-origin: left center; transform-style: preserve-3d; transition: transform 620ms var(--ease-glide), text-shadow 620ms var(--ease-glide); }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
