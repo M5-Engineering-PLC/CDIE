@@ -3,16 +3,16 @@
 
 import type { Metadata } from "next";
 
-import { EventGantt, type GanttEvent } from "@/components/blocks/EventGantt";
+import { EventTimeline, type TimelineEvent } from "@/components/blocks/EventTimeline";
 import { FaqList } from "@/components/blocks/FaqList";
 import { NewsletterGrid, type NewsletterCardItem } from "@/components/blocks/NewsletterGrid";
 import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { Button } from "@/components/primitives/Button";
 import { LinkedInCarousel } from "@/components/sections/LinkedInCarousel";
+import { NewsletterSignup } from "@/components/sections/NewsletterSignup";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import {
-  eventsPointer,
   mediaItems,
   mediaFaqs,
   mediaLanding,
@@ -20,6 +20,7 @@ import {
 } from "@/content/media";
 import { events, eventsCopy } from "@/content/programmes";
 import { SHOW_SAMPLE_CONTENT, sampleEvents, sampleNewsletters } from "@/content/samples";
+import { listItems } from "@/lib/admin/store";
 import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
 
 export const metadata: Metadata = {
@@ -50,7 +51,7 @@ export const revalidate = 600;
   See docs/BUILD_PLAN.md section 3.2 for why the calendar could not be
   populated from the CDIE LinkedIn account in this pass.
 */
-const calendarEvents: GanttEvent[] = events.map((event) => ({
+const programmeEvents: TimelineEvent[] = events.map((event) => ({
   id: event.id,
   title: event.title,
   start: event.start,
@@ -59,16 +60,43 @@ const calendarEvents: GanttEvent[] = events.map((event) => ({
 }));
 
 export default async function MediaPage() {
+  /* Enhancements 2026-09-22: one timeline holds programme events plus the
+     events, upcoming activities and media items added in the admin dashboard. */
+  const [added, activities, media, addedIssues] = await Promise.all([
+    listItems("events"),
+    listItems("activities"),
+    listItems("media"),
+    listItems("newsletters"),
+  ]);
+  const calendarEvents: TimelineEvent[] = [
+    ...programmeEvents,
+    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, summary: item.summary, kind: "Event" })),
+    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, summary: item.summary, kind: "Activity" })),
+    ...media.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), summary: item.summary, kind: "Media" })),
+  ];
+  const today = new Date().toISOString().slice(0, 10);
+
   const newsletters = mediaItems.filter((item) => item.kind === "newsletter");
-  const newsletterCards: NewsletterCardItem[] = newsletters.map((item) => ({
+  const newsletterCards: NewsletterCardItem[] = [
+    ...addedIssues.map((item) => ({
+      id: item.id,
+      issue: item.issue,
+      title: item.title,
+      summary: item.summary,
+      image: item.image,
+      alt: `Cover of ${item.issue}`,
+      href: item.pdf,
+    })),
+    ...newsletters.map((item) => ({
     id: item.id,
-    issue: item.date ?? "Issue",
+    issue: item.issue ?? item.date ?? "Issue",
     title: item.title,
     summary: item.summary,
     image: item.cover?.src ?? "/images/hero-workshop-2.jpg",
     alt: item.cover?.alt ?? item.title,
     href: item.external,
-  }));
+  })),
+  ];
   const feed = await getLinkedInFeed();
   const recent = feed.posts.slice(0, RECENT_POSTS);
 
@@ -79,8 +107,8 @@ export default async function MediaPage() {
         headline={mediaLanding.headline}
         standfirst={mediaLanding.standfirst}
         image={{
-          src: "/images/hero-workshop-2.jpg",
-          alt: "A CDIE cohort at the centre",
+          src: "/images/cdie-mdi-cohort-1-semester-one-celebration-speech.jpg",
+          alt: "Speaker at a podium between Invention Education banners",
         }}
       >
         <Button href="#events">See what is on</Button>
@@ -107,7 +135,7 @@ export default async function MediaPage() {
         ) : (
           <>
             {calendarEvents.length === 0 ? <SampleNotice what="events" /> : null}
-            <EventGantt items={calendarEvents.length === 0 ? sampleEvents : calendarEvents} />
+            <EventTimeline items={calendarEvents.length === 0 ? sampleEvents : calendarEvents} today={today} />
           </>
         )}
       </Section>
@@ -123,7 +151,10 @@ export default async function MediaPage() {
           so sample issues render behind a flag purely to review the card. The
           real path below runs unchanged the moment issues are published.
         */}
-        {newsletters.length === 0 && !SHOW_SAMPLE_CONTENT ? (
+        <div className="mb-8">
+          <NewsletterSignup />
+        </div>
+        {newsletterCards.length === 0 && !SHOW_SAMPLE_CONTENT ? (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[52ch] text-lead text-ink-2">{newslettersCopy.empty}</p>
             <div className="mt-5">
@@ -134,9 +165,9 @@ export default async function MediaPage() {
           </div>
         ) : (
           <>
-            {newsletters.length === 0 ? <SampleNotice what="newsletter issues" /> : null}
+            {newsletterCards.length === 0 ? <SampleNotice what="newsletter issues" /> : null}
             <NewsletterGrid
-              items={newsletters.length === 0 ? sampleNewsletters : newsletterCards}
+              items={newsletterCards.length === 0 ? sampleNewsletters : newsletterCards}
             />
           </>
         )}
@@ -164,16 +195,6 @@ export default async function MediaPage() {
         </Section>
       ) : null}
 
-      {/*
-        The calendar above is the view; registration and the full record live on
-        Programmes, which owns them. This is the hand-off, not a second listing.
-      */}
-      <Section eyebrow="Taking part" title={eventsPointer.headline}>
-        <p className="trim-mobile max-w-[58ch] text-lead leading-relaxed text-ink-2">{eventsPointer.body}</p>
-        <div className="mt-6">
-          <Button href={eventsPointer.action.href}>{eventsPointer.action.label}</Button>
-        </div>
-      </Section>
     </>
   );
 }

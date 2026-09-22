@@ -204,11 +204,7 @@
 
   .hero-progress {
     transform-origin: left;
-    animation: hero-progress 7s linear forwards;
-  }
-
-  .hero-progress.paused {
-    animation-play-state: paused;
+    animation: hero-progress 9s linear forwards;
   }
 
   /*

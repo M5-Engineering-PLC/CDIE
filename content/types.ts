@@ -199,6 +199,8 @@ export type MediaItem = {
   title: string;
   summary: string;
   date?: string;
+  /** the label an issue is referred to by, such as "Issue 6" */
+  issue?: string;
   /** newsletters open the published issue in a new tab, with no intermediate click */
   external?: string;
   /*

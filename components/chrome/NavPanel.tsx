@@ -3,7 +3,7 @@
 // The mobile disclosure panel. Split from SiteNav so neither file grows past
 // the 150-line rule in AGENTS.md.
 // Change request 2026-09-21, second pass: the panel follows the bar back to
-// cobalt, so opening the menu does not drop a white sheet out of a blue bar.
+// cobalt. Enhancements 2026-09-22: both are white again.
 
 import Link from "next/link";
 
@@ -23,7 +23,7 @@ export function NavPanel({ items, login, open, isCurrent, onNavigate }: NavPanel
       id="mobile-nav"
       aria-label="Main"
       hidden={!open}
-      className="border-t border-brand-lift/30 bg-brand lg:hidden"
+      className="border-t border-line bg-surface lg:hidden"
     >
       <ul className="shell flex flex-col py-1">
         {items.map((item) => (
@@ -32,8 +32,8 @@ export function NavPanel({ items, login, open, isCurrent, onNavigate }: NavPanel
               href={item.href}
               onClick={onNavigate}
               aria-current={isCurrent(item.href) ? "page" : undefined}
-              className={`block border-b border-surface/15 py-2.5 text-lead transition-colors ${
-                isCurrent(item.href) ? "font-medium text-surface" : "text-surface/75 hover:text-surface"
+              className={`block border-b border-line py-2.5 text-lead transition-colors ${
+                isCurrent(item.href) ? "font-medium text-brand" : "text-ink-2 hover:text-brand"
               }`}
             >
               {item.label}
@@ -45,7 +45,7 @@ export function NavPanel({ items, login, open, isCurrent, onNavigate }: NavPanel
             <a
               href={login.href}
               onClick={onNavigate}
-              className="block py-2.5 text-lead font-semibold text-surface"
+              className="block py-2.5 text-lead font-semibold text-ink-2 transition-colors hover:text-brand"
             >
               {login.label}
             </a>

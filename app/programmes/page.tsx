@@ -32,7 +32,7 @@ const eventCards: EventCardItem[] = events.map((event) => ({
   start: event.start,
   venue: event.venue ?? "Venue to be confirmed",
   summary: event.registration?.label ?? "",
-  image: "/images/story-1.jpg",
+  image: "/images/cdie-stakeholder-engagement-golden-tulip.jpg",
   alt: event.title,
 }));
 
@@ -48,15 +48,24 @@ const eventCards: EventCardItem[] = events.map((event) => ({
   now the opportunity's carouselTitle rather than its kind. The kind is not
   lost: it still labels the programme on its row below.
 */
+/* Image matching sheet 2026-09-22, Programs P1-P5: the carousel has its own
+   photographs. Catalyst grants has none yet, so it has no slide. */
+const heroImages: Record<string, { src: string; alt: string }> = {
+  "invention-education": { src: "/images/cdie-summer-program-clinical-immersion-group.jpg", alt: "Summer program participants in scrubs outside a hospital" },
+  mdi: { src: "/images/cdie-mdi-cohort-1-semester-one-celebration-group.jpg", alt: "MSc cohort and guests at an evening celebration" },
+  "design-challenge": { src: "/images/cdie-design-challenge-awards.jpg", alt: "Design challenge winners receiving their award" },
+  training: { src: "/images/cdie-metalwork-welding.jpg", alt: "Trainee welding a frame while others watch" },
+};
+
 const heroSlides: ProgrammeHeroSlide[] = opportunities
-  .filter((opportunity) => opportunity.image)
+  .filter((opportunity) => heroImages[opportunity.id])
   .map((opportunity) => ({
     id: opportunity.id,
     eyebrow: opportunity.carouselTitle,
     title: opportunity.title,
     summary: opportunity.summary,
-    image: opportunity.image!.src,
-    alt: opportunity.image!.alt,
+    image: heroImages[opportunity.id].src,
+    alt: heroImages[opportunity.id].alt,
     action: { label: `Explore ${opportunity.title}`, href: opportunity.href },
   }));
 
@@ -110,6 +119,7 @@ export default function ProgrammesPage() {
             >
               {opportunity.image ? (
                 <PlaceholderPhoto
+                  standingIn={false}
                   src={opportunity.image.src}
                   alt={opportunity.image.alt}
                   sizes="(max-width: 768px) 100vw, 50vw"

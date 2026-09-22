@@ -26,13 +26,13 @@ export function StudioTourIntro({ onStart }: { onStart: () => void }) {
   return (
     <section className="relative isolate overflow-hidden bg-ink text-surface">
       <Image
-        src="/images/hero-workshop-1.jpg"
+        src="/images/service-3dprinting-2.jpeg"
         alt=""
         aria-hidden="true"
         fill
         priority
         sizes="100vw"
-        className="-z-10 object-cover object-[65%_50%]"
+        className="-z-10 object-cover"
       />
       {/*
         Two washes rather than one. The vertical pass keeps the band readable
@@ -59,7 +59,7 @@ export function StudioTourIntro({ onStart }: { onStart: () => void }) {
           >
             Start the guided tour
           </button>
-          <p className="trim-mobile mt-6 max-w-[38ch] border-t border-surface/20 pt-4 text-body text-surface/70 md:mt-8 md:pt-5">
+          <p className="mt-6 hidden max-w-[38ch] border-t border-surface/20 pt-4 text-body text-surface/70 md:mt-8 md:block md:pt-5">
             The tour turns the room slowly and stops at each area in turn. Pick a
             capability from the list at any point to go straight to it.
           </p>

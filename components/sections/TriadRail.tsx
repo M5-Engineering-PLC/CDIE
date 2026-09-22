@@ -11,6 +11,8 @@
 
 import Image from "next/image";
 
+import { AutoRail } from "./AutoRail";
+
 export type TriadItem = {
   id: string;
   title: string;
@@ -21,7 +23,7 @@ export type TriadItem = {
 
 export function TriadRail({ items }: { items: readonly TriadItem[] }) {
   return (
-    <ul className="rail -mx-gutter auto-cols-[78%] gap-px px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:overflow-visible md:bg-line md:px-0">
+    <AutoRail className="rail -mx-gutter auto-cols-[78%] gap-px px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:overflow-visible md:bg-line md:px-0">
       {items.map((item) => (
         <li key={item.id} className="flex flex-col border border-line bg-raise md:border-0">
           <div className="relative aspect-[16/10] overflow-hidden">
@@ -39,6 +41,6 @@ export function TriadRail({ items }: { items: readonly TriadItem[] }) {
           </div>
         </li>
       ))}
-    </ul>
+    </AutoRail>
   );
 }

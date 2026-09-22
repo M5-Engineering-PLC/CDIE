@@ -25,8 +25,8 @@ export const aboutIntro = {
     not which programme they belong to and not when it was taken.
   */
   image: {
-    src: "/images/story-1.jpg",
-    alt: "A team presenting a project on screen to a room at CDIE",
+    src: "/images/cdie-summer-program-2026-launch-original.jpg",
+    alt: "Summer program participants and staff in a group photo outside CDIE",
   },
 } as const;
 

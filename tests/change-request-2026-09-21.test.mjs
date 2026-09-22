@@ -69,9 +69,10 @@ test("What CDIE is gives each of its three words a picture", () => {
   assert.match(read("components/sections/TriadRail.tsx"), /rail[\s\S]*md:grid-cols-3/);
 });
 
-test("Our latest shows one card and moves on after three seconds", () => {
+test("Our latest shows one card and rotates slowly without pausing", () => {
   const solo = read("components/sections/SoloCardCarousel.tsx");
-  assert.match(solo, /DWELL_MS = 3000/);
+  assert.match(solo, /DWELL_MS = 6000/);
+  assert.doesNotMatch(solo, /onMouseEnter|setHeld/);
   assert.match(read("app/page.tsx"), /SoloCardCarousel/);
 });
 
@@ -91,15 +92,14 @@ test("how learning works is one route, and Open X became Read more", () => {
   assert.match(read("app/programmes/invention-education/page.tsx"), /SnakeRoute/);
 });
 
-test("no programme photograph claims to be of that programme", () => {
+test("programme photographs follow the image matching sheet, and Catalyst has none", () => {
+  // Image matching sheet 2026-09-22: each programme has its own photograph, so
+  // the placeholder tag is off. P4/P9: no photograph shows a Catalyst grant.
   const programmes = read("content/programmes.ts");
-  for (const [, alt] of programmes.matchAll(/alt: "([^"]+)"/g)) {
-    for (const claim of ["Invention Education", "Design Challenge", "Catalyst", "cohort", "funded"]) {
-      assert.doesNotMatch(alt, new RegExp(claim, "i"), `alt text claims "${claim}": ${alt}`);
-    }
-  }
-  assert.match(read("app/programmes/page.tsx"), /PlaceholderPhoto/);
-  assert.match(read("components/blocks/PlaceholderPhoto.tsx"), /Placeholder image/);
+  const catalyst = programmes.slice(programmes.indexOf('id: "catalyst-grants"'), programmes.indexOf('id: "training"'));
+  assert.doesNotMatch(catalyst, /src: "/);
+  assert.match(read("app/programmes/page.tsx"), /standingIn=\{false\}/);
+  assert.doesNotMatch(read("app/programmes/page.tsx"), /"catalyst-grants": \{ src/);
 });
 
 test("the studio hero is a background at every width, not a stacked column", () => {
@@ -132,7 +132,10 @@ test("component tiles name only what the source names, and claim no photograph",
   for (const [, name] of studio.matchAll(/\{ id: "[a-z0-9-]+", name: "([^"]+)"/g)) {
     assert.doesNotMatch(name, /\d/, `component name carries a number: ${name}`);
   }
-  assert.match(read("components/studio/StudioComponentGrid.tsx"), /Photograph to come/);
+  // Enhancements 2026-09-22: an unphotographed component gets no tile at all.
+  const grid = read("components/studio/StudioComponentGrid.tsx");
+  assert.doesNotMatch(grid, /Photograph to come/);
+  assert.match(grid, /filter\(\(item\) => item\.image\)/);
 });
 
 test("nothing in components/studio imports from content/", () => {
@@ -154,7 +157,7 @@ test("Media leads with the calendar, and the calendar invents no event", () => {
   const newsletters = media.indexOf('id="newsletters"');
   const community = media.indexOf('id="community"');
   assert.ok(events > 0 && events < newsletters && newsletters < community, "calendar leads the page");
-  assert.match(media, /EventGantt/);
+  assert.match(media, /EventTimeline/);
   assert.match(read("content/programmes.ts"), /export const events: CalendarEvent\[\] = \[\];/);
   assert.match(read("docs/BUILD_PLAN.md"), /Conflict C-06/);
 });

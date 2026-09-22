@@ -31,13 +31,36 @@ export const newslettersCopy = {
 } as const;
 
 /*
-  Copy, MEDIA > Newsletters: the issue-card description pattern requires a
-  confirmed topic, a confirmed contributor and a confirmed activity. The audit
-  found issues 4, 5 and 6 on the live site as bare PDF links with no summary.
-  None of those summaries exist yet, so the archive ships empty with a useful
-  message rather than fabricated cards. Populate at build step 4.
+  Enhancements 2026-09-22: "use the actual newsletters in the repo, open in
+  separate new tab". The six published Invention Education issues live in
+  public/newsletters with a cover image for each. Every summary below restates
+  the opening of that issue's own front page, so nothing here goes beyond what
+  the PDF itself says. Newest first.
 */
-export const mediaItems: MediaItem[] = [];
+const issue = (n: number, file: string, title: string, summary: string): MediaItem => ({
+  id: `ive-newsletter-${n}`,
+  kind: "newsletter",
+  issue: `Issue ${n}`,
+  title,
+  summary,
+  external: `/newsletters/${file}`,
+  cover: { src: `/newsletters/issue${n}.webp`, alt: `Cover of the IvE newsletter, issue ${n}`, width: 211, height: 141 },
+});
+
+export const mediaItems: MediaItem[] = [
+  issue(6, "IvE-Newsletter-Issue-6-2026-compressed.pdf", "The inaugural MDI cohort arrives",
+    "January 2026: the first cohort of the MSc Biomedical Engineering (Medical Device Innovation) programme opens its doors at Kenyatta University."),
+  issue(5, "IvE-Newsletter-5.pdf", "First cohort selection underway",
+    "Applications for the new MSc Biomedical Engineering (Medical Device Innovation) programme have closed and selection of the first cohort has begun."),
+  issue(4, "IvE-Newsletter-issue-4.pdf", "Inside the MDI programme",
+    "How the 18-month professional master's combines medicine, engineering and business, guided by real-world clinical needs."),
+  issue(3, "IvE-Newsletter-Issue-3.pdf", "Learning with visiting faculty",
+    "Visiting faculty from Rice University join the programme, drawing on practice from institutions including MIT."),
+  issue(2, "IvE-Newsletter-Issue-2.pdf", "The MDI programme launches",
+    "The Medical Device Innovation programme officially launches at Kenyatta University on 8 January 2025."),
+  issue(1, "IvE-Newsletter-Issue-1.pdf", "Invention Education comes to KU",
+    "Dr June Madete on how Kenyatta University is advancing healthcare innovation with Rice360 and funding from The Lemelson Foundation."),
+];
 
 export const communityCopy = {
   headline: "Follow the ideas, questions and work we share along the way.",

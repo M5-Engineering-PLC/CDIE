@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { glideBy } from "@/lib/motion";
+import { useRailRotation } from "@/lib/useRailRotation";
 
 export type VisualRailItem = {
   id: string;
@@ -37,6 +38,7 @@ export function VisualCardRail({ items, label }: { items: VisualRailItem[]; labe
   const rail = useRef<HTMLUListElement>(null);
   const [start, setStart] = useState(true);
   const [end, setEnd] = useState(false);
+  useRailRotation(rail);
   const measure = () => {
     const node = rail.current;
     if (!node) return;

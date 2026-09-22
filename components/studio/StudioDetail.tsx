@@ -4,7 +4,7 @@ import type { ExplorerCapability } from "./explorerModel";
 
 export function StudioDetail({ selected }: { selected: ExplorerCapability }) {
   return (
-    <div className="flex min-w-0 flex-col gap-4">
+    <div className="hidden min-w-0 flex-col gap-4 md:flex">
       <p className="kicker">
         {selected.modelGroup
           ? "Highlighted in the room"

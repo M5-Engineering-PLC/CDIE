@@ -33,13 +33,21 @@ import {
   purpose,
   workYouCanSee,
 } from "@/content/about";
+import { listItems } from "@/lib/admin/store";
 
 export const metadata: Metadata = {
   title: "About Us",
   description: aboutIntro.standfirst,
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  /* Enhancements 2026-09-22: staff added in the dashboard join the team, and a
+     profile without a portrait is not shown, so no empty frames appear. */
+  const added = (await listItems("staff"))
+    .filter((item) => item.image)
+    .map((item) => ({ id: item.id, name: item.name, role: item.role, portrait: { src: item.image, alt: item.name, width: 600, height: 720 } }));
+  const team = [...people.filter((person) => person.portrait), ...added];
+
   return (
     <>
       <PageHero
@@ -68,7 +76,7 @@ export default function AboutPage() {
         title={peopleCopy.headline}
         standfirst={peopleCopy.standfirst}
       >
-        {people.length === 0 ? (
+        {team.length === 0 ? (
           <div className="border border-dashed border-line bg-raise p-8">
             <p className="max-w-[54ch] text-lead text-ink-2">{peopleCopy.empty}</p>
             <p className="mt-3 max-w-[62ch] text-body text-ink-3">
@@ -85,7 +93,7 @@ export default function AboutPage() {
             is added here.
           */
           <ul className="rail -mx-gutter auto-cols-[62%] gap-4 px-gutter sm:mx-0 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
-            {people.map((person) => (
+            {team.map((person) => (
               <li
                 key={person.id}
                 className="flex flex-col overflow-hidden border border-line bg-surface transition-colors hover:border-brand-lift"

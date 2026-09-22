@@ -14,7 +14,9 @@ import { Section } from "@/components/sections/Section";
 import { StoryGrid } from "@/components/blocks/StoryGrid";
 import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { mdiSemesters } from "@/content/curriculum";
+import { CohortGrid } from "@/components/blocks/CohortGrid";
 import { mdi, mdiCohorts, mdiCohortsCopy } from "@/content/programmes";
+import { listItems } from "@/lib/admin/store";
 import { SHOW_SAMPLE_CONTENT, sampleStories } from "@/content/samples";
 
 export const metadata: Metadata = {
@@ -27,7 +29,11 @@ const crumbs = [
   { label: "Medical Device Innovation", href: "/programmes/mdi" },
 ];
 
-export default function MdiPage() {
+export default async function MdiPage() {
+  const cohorts = (await listItems("cohorts"))
+    .filter((item) => item.image)
+    .map((item) => ({ id: item.id, name: item.name, programme: item.programme, year: item.year, summary: item.summary, image: item.image }));
+
   return (
     <>
       <PageHero
@@ -157,7 +163,9 @@ export default function MdiPage() {
           their social links are deliberately absent, because a quote and a link
           about a real person need that person's written consent.
         */}
-        {mdiCohorts.length === 0 && !SHOW_SAMPLE_CONTENT ? (
+        {cohorts.length > 0 ? (
+          <CohortGrid items={cohorts} />
+        ) : mdiCohorts.length === 0 && !SHOW_SAMPLE_CONTENT ? (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[54ch] text-lead text-ink-2">{mdiCohortsCopy.empty}</p>
           </div>

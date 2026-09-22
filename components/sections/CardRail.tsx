@@ -23,6 +23,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { glideBy } from "@/lib/motion";
+import { useRailRotation } from "@/lib/useRailRotation";
 
 export type CardRailProps = {
   label: string;
@@ -35,6 +36,7 @@ export function CardRail({ label, children, columns = 3 }: CardRailProps) {
   const rail = useRef<HTMLUListElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  useRailRotation(rail);
 
   const measure = useCallback(() => {
     const node = rail.current;

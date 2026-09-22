@@ -29,6 +29,7 @@ import type { LinkedInPost } from "@/content/linkedin";
 import { isStale } from "@/content/linkedin";
 import { fetchLinkedInFeed } from "@/lib/linkedin/client";
 import { CACHE_SECONDS, RECENT_POSTS } from "@/lib/linkedin/config";
+import { useRailRotation } from "@/lib/useRailRotation";
 
 import { LinkedInPostCard } from "./LinkedInPostCard";
 
@@ -46,6 +47,8 @@ export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy }: L
      reading one during render is not pure, so the window opens on the first
      time the tab is hidden and shown again. */
   const checked = useRef<number | null>(null);
+  const rail = useRef<HTMLUListElement>(null);
+  useRailRotation(rail);
 
   const listen = useCallback(async () => {
     if (document.visibilityState !== "visible") return;
@@ -79,7 +82,7 @@ export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy }: L
 
   return (
     <div className="flex flex-col gap-4">
-      <ul className="flex max-h-[76vh] snap-y snap-mandatory scroll-smooth flex-col gap-4 overflow-y-auto overscroll-y-contain sm:max-h-none sm:snap-x sm:flex-row sm:overflow-x-auto sm:overflow-y-visible sm:pb-3">
+      <ul ref={rail} className="flex max-h-[76vh] snap-y snap-mandatory flex-col gap-4 overflow-y-auto overscroll-y-contain sm:max-h-none sm:snap-x sm:flex-row sm:overflow-x-auto sm:overflow-y-visible sm:pb-3">
         {feed.posts.map((post) => (
           <LinkedInPostCard key={post.id} post={post} />
         ))}

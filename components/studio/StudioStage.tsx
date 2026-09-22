@@ -6,6 +6,7 @@ import Image from "next/image";
 import { AtcRoomPlan } from "./AtcRoomPlan";
 import { RoomPlan } from "./RoomPlan";
 import { StudioCallout } from "./StudioCallout";
+import { StudioViewPill } from "./StudioViewPill";
 import type { AtcServiceId } from "./atc-3js";
 import type { UnifiedServiceId } from "./explorerModel";
 import type { ServiceId } from "./studioLayout";
@@ -43,13 +44,12 @@ export type StudioStageProps = {
   onSelect: (service: UnifiedServiceId) => void;
   onClose: () => void;
   onOpen: () => void;
-  onToggleTour: () => void;
   onSwitchSpace?: (space: "studio" | "atc") => void;
 };
 
 export function StudioStage({
   active, open, tour, viewOnly, atc, space, name, spaceName, headline,
-  step, of, image, imageAlt, onSelect, onClose, onOpen, onToggleTour, onSwitchSpace,
+  step, of, image, imageAlt, onSelect, onClose, onOpen, onSwitchSpace,
 }: StudioStageProps) {
   const isAtc = space === "atc" || atc;
 
@@ -74,22 +74,26 @@ export function StudioStage({
           ATC Workshop
         </button>
       </div>
-      <span className="font-mono text-[0.6875rem] text-ink-3 uppercase tracking-wider">
-        {isAtc ? "12.8m × 8.8m Prototyping Hub" : "Shared Workspace & Labs"}
+      {/* Enhancements 2026-09-22: "remove dimensions on atc hub". */}
+      <span className="hidden font-mono text-[0.6875rem] text-ink-3 uppercase tracking-wider md:inline">
+        {isAtc ? "Prototyping Hub" : "Shared Workspace & Labs"}
       </span>
     </div>
   ) : null;
+
+  const viewPill = <StudioViewPill open={open} onOpen={onOpen} onClose={onClose} />;
 
   if (!open) {
     return (
       <div className="flex min-w-0 flex-col gap-3">
         {toggleBar}
+        {viewPill}
         <div className="relative min-h-48 overflow-hidden bg-ink md:min-h-[28rem]">
           <Image src={image} alt={imageAlt} fill sizes="(max-width: 1280px) 100vw, 70vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
           <button
             type="button" onClick={onOpen}
-            className="absolute bottom-4 left-4 w-36 border border-surface/50 bg-surface p-2 text-left shadow-lg transition hover:border-brand-live md:w-44"
+            className="absolute bottom-4 left-4 hidden w-36 border md:block border-surface/50 bg-surface p-2 text-left shadow-lg transition hover:border-brand-live md:w-44"
           >
             {isAtc ? (
               <AtcRoomPlan active={active as AtcServiceId | null} className="w-full" />
@@ -106,6 +110,7 @@ export function StudioStage({
   return (
     <div className="flex min-w-0 flex-col gap-3">
       {toggleBar}
+      {viewPill}
       <div className="relative">
         {isAtc ? (
           <Atc3D active={active as AtcServiceId | null} onSelect={(s) => onSelect(s)} tour={tour} interactive={!viewOnly} />
@@ -114,7 +119,7 @@ export function StudioStage({
         )}
         <StudioCallout show={tour || isAtc} name={name} spaceName={spaceName} headline={headline} step={step} of={of} />
       </div>
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
+      <div className="hidden flex-wrap items-baseline justify-between gap-3 md:flex">
         <p className="max-w-[52ch] text-fine text-ink-3">
           {isAtc
             ? "Drag to orbit, scroll to zoom, select equipment to jump to its capability. Non-selected equipment becomes transparent."
@@ -123,9 +128,6 @@ export function StudioStage({
             : "Drag to orbit, scroll to zoom, select a bench to jump to its capability. Illustrative and unmeasured."}
         </p>
         <div className="flex gap-4">
-          <button type="button" onClick={onToggleTour} className="text-fine font-medium text-brand underline-offset-4 hover:underline">
-            {tour ? "Pause the tour" : "Resume the tour"}
-          </button>
           <button type="button" onClick={onClose} className="text-fine font-medium text-brand underline-offset-4 hover:underline">
             Minimise 3D tour
           </button>

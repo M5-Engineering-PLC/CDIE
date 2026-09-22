@@ -26,7 +26,7 @@ export function StudioCallout({ show, name, spaceName, headline, step, of }: Stu
   return (
     <div
       aria-live="polite"
-      className={`pointer-events-none absolute inset-x-3 bottom-3 transition-all duration-500 ease-out md:inset-x-5 md:bottom-5 md:max-w-sm ${
+      className={`pointer-events-none absolute inset-x-3 bottom-3 hidden transition-all md:block duration-500 ease-out md:inset-x-5 md:bottom-5 md:max-w-sm ${
         show ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
       }`}
     >

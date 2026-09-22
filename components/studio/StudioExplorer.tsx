@@ -30,9 +30,13 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
   const selected = capabilities[index] ?? capabilities[0];
   const [activeSpace, setActiveSpace] = useState<"studio" | "atc">(selected?.space ?? "studio");
 
-  useEffect(() => {
-    if (selected?.space) setActiveSpace(selected.space);
-  }, [selected?.space]);
+  // Follow the selected capability into its space, adjusted during render
+  // rather than in an effect (see SiteNav for the same pattern).
+  const [lastSpace, setLastSpace] = useState(selected?.space);
+  if (selected?.space && selected.space !== lastSpace) {
+    setLastSpace(selected.space);
+    setActiveSpace(selected.space);
+  }
 
   const startTour = () => {
     setRoomOpen(true);
@@ -85,7 +89,7 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
     <div className="overflow-hidden border border-line bg-surface">
       <StudioTourIntro onStart={startTour} />
       <div id="studio-room" className="grid scroll-mt-20 grid-cols-[minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]">
-        <div className="order-2 border-y border-line bg-raise py-4 lg:order-1 lg:border-y-0 lg:border-r lg:py-5">
+        <div className="order-1 border-y border-line bg-raise py-4 lg:order-1 lg:border-y-0 lg:border-r lg:py-5">
           <div className="flex items-center justify-between px-5 pb-3">
             <p className="kicker">Explore the studio</p>
             <span className="font-mono text-[0.625rem] uppercase tracking-wider text-ink-3">
@@ -98,14 +102,14 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
           </div>
         </div>
 
-        <div className="order-1 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 bg-surface p-4 md:p-6 lg:order-2 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
+        <div className="order-2 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 bg-surface p-4 md:p-6 lg:order-2 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
           <div className="flex min-w-0 flex-col gap-6">
             <StudioStage
               active={selected.modelGroup} open={roomOpen} tour={tour} viewOnly={viewOnly} atc={selected.atc} space={activeSpace}
               name={selected.name} spaceName={selected.spaceName} headline={selected.headline} step={index + 1} of={capabilities.length}
               image={selected.image} imageAlt={`${selected.name} at the CDIE Design Studio`} onSelect={selectByModelGroup}
               onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={() => { setRoomOpen(true); setTour(true); }}
-              onToggleTour={() => setTour((running) => !running)} onSwitchSpace={handleSwitchSpace}
+              onSwitchSpace={handleSwitchSpace}
             />
             <StudioComponentGrid items={selected.components} capabilityName={selected.name} />
           </div>

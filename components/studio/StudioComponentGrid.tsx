@@ -13,6 +13,8 @@
 
 import Image from "next/image";
 
+import { AutoRail } from "@/components/sections/AutoRail";
+
 import type { ExplorerComponent } from "./explorerModel";
 
 export function StudioComponentGrid({
@@ -22,28 +24,25 @@ export function StudioComponentGrid({
   items: readonly ExplorerComponent[];
   capabilityName: string;
 }) {
-  if (items.length === 0) return null;
+  // Enhancements 2026-09-22: "dont have any empty photos, only enable a card if
+  // a photo for it exists". An unphotographed component gets no tile.
+  const photographed = items.filter((item) => item.image);
+  if (photographed.length === 0) return null;
 
   return (
     <section className="min-w-0" aria-label={`What ${capabilityName.toLowerCase()} covers`}>
       <p className="kicker">In this area</p>
-      <ul className="rail mt-3 auto-cols-[62%] gap-3 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:overflow-visible lg:grid-cols-3">
-        {items.map((item) => (
+      <AutoRail className="rail mt-3 auto-cols-[62%] gap-3 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:overflow-visible lg:grid-cols-3">
+        {photographed.map((item) => (
           <li key={item.id} className="flex flex-col border border-line bg-surface">
             <div className="relative aspect-[4/3] overflow-hidden bg-raise">
-              {item.image ? (
-                <Image
-                  src={item.image}
-                  alt={item.alt ?? ""}
-                  fill
-                  sizes="(max-width: 640px) 62vw, 30vw"
-                  className="object-cover"
-                />
-              ) : (
-                <p className="absolute inset-0 grid place-items-center px-3 text-center font-mono text-[0.625rem] uppercase tracking-widest text-ink-3">
-                  Photograph to come
-                </p>
-              )}
+              <Image
+                src={item.image as string}
+                alt={item.alt ?? ""}
+                fill
+                sizes="(max-width: 640px) 62vw, 30vw"
+                className="object-cover"
+              />
             </div>
             <div className="flex flex-col gap-1 p-4">
               <h4 className="text-body font-semibold text-ink">{item.name}</h4>
@@ -51,7 +50,7 @@ export function StudioComponentGrid({
             </div>
           </li>
         ))}
-      </ul>
+      </AutoRail>
     </section>
   );
 }

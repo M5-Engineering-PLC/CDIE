@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# admin dashboard content, analytics and uploads (see lib/admin/store.ts)
+/.data/

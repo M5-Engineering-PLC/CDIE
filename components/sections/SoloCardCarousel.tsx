@@ -26,29 +26,27 @@ import { useEffect, useRef, useState } from "react";
 
 import type { VisualRailItem } from "./VisualCardRail";
 
-const DWELL_MS = 3000;
+/* Enhancements 2026-09-22: rotate slowly and never pause. */
+const DWELL_MS = 6000;
 const SWIPE_PX = 48;
 
 export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; label: string }) {
   const [index, setIndex] = useState(0);
-  const [held, setHeld] = useState(false);
   const down = useRef<number | null>(null);
 
   useEffect(() => {
-    if (held || items.length < 2) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (items.length < 2) return;
     const timer = window.setTimeout(
       () => setIndex((current) => (current + 1) % items.length),
       DWELL_MS,
     );
     return () => window.clearTimeout(timer);
-  }, [held, index, items.length]);
+  }, [index, items.length]);
 
   const swipe = (end: number) => {
     const start = down.current;
     down.current = null;
     if (start === null || Math.abs(end - start) < SWIPE_PX) return;
-    setHeld(true);
     setIndex((current) => (current + (end < start ? 1 : items.length - 1)) % items.length);
   };
 
@@ -60,9 +58,6 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
       aria-roledescription="carousel"
       aria-label={label}
       className="mx-auto max-w-[46rem]"
-      onMouseEnter={() => setHeld(true)}
-      onMouseLeave={() => setHeld(false)}
-      onFocus={() => setHeld(true)}
       onPointerDown={(event) => { down.current = event.clientX; }}
       onPointerUp={(event) => swipe(event.clientX)}
       onPointerCancel={() => { down.current = null; }}
@@ -105,7 +100,7 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
             type="button"
             aria-label={candidate.title}
             aria-current={candidateIndex === index}
-            onClick={() => { setHeld(true); setIndex(candidateIndex); }}
+            onClick={() => setIndex(candidateIndex)}
             className={`h-1.5 w-10 rounded-full transition-colors duration-500 hover:bg-brand-lift ${
               candidateIndex === index ? "bg-brand" : "bg-line"
             }`}

@@ -76,8 +76,8 @@ export const opportunities: Opportunity[] = [
     topic: "invention-education",
     pending: [],
     image: {
-      src: "/images/hero-workshop-1.jpg",
-      alt: "People in workshop coats marking and cutting a wooden part at a bench",
+      src: "/images/cdie-summer-program-needs-filtering.jpg",
+      alt: "Participants working through needs filtering at tables",
       width: 1600,
       height: 1000,
     },
@@ -94,8 +94,8 @@ export const opportunities: Opportunity[] = [
     topic: "admissions",
     pending: ["Next intake and application window"],
     image: {
-      src: "/images/service-design-2.jpg",
-      alt: "A person working on a laptop beside desktop workstations in the CDIE studio",
+      src: "/images/cdie-mdi-cohort-1-semester-one-showcase.jpg",
+      alt: "MDI student presenting at the end of semester showcase",
       width: 1600,
       height: 1000,
     },
@@ -116,8 +116,8 @@ export const opportunities: Opportunity[] = [
       "Timeline, submission requirements, judging criteria, prizes and support",
     ],
     image: {
-      src: "/images/story-1.jpg",
-      alt: "A team presenting a project on screen to a room at CDIE",
+      src: "/images/cdie-ive-design-challenge.jpg",
+      alt: "Design challenge teams presenting their prototype",
       width: 1600,
       height: 1000,
     },
@@ -137,12 +137,7 @@ export const opportunities: Opportunity[] = [
       "Award amount",
       "Assessment criteria and application deadline",
     ],
-    image: {
-      src: "/images/story-3.jpg",
-      alt: "A large group in CDIE coats gathered outside the centre's co-working space",
-      width: 1600,
-      height: 1000,
-    },
+    // Image matching sheet P4/P9: no photograph shows a Catalyst grant, so none is used.
   },
   {
     id: "training",
@@ -160,8 +155,8 @@ export const opportunities: Opportunity[] = [
       "Format, schedule, venue, cost and sign-up route",
     ],
     image: {
-      src: "/images/story-11.jpg",
-      alt: "A group at a MedTech Connect event in front of a Policy Innovation wall",
+      src: "/images/cdie-summer-program-cnc-class-01.jpg",
+      alt: "Participant operating a CNC machine",
       width: 1600,
       height: 1000,
     },

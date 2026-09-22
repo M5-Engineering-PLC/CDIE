@@ -29,7 +29,9 @@ export type ProgrammeHeroSlide = {
   action: { label: string; href: string };
 };
 
-const ROTATION_MS = 7000;
+/* Enhancements 2026-09-22: rotate slowly and never pause. Choosing a slide
+   moves to it and the rotation carries on from there. */
+const ROTATION_MS = 9000;
 /** A drag shorter than this is a tap or a scroll, not a swipe. */
 const SWIPE_PX = 48;
 
@@ -42,8 +44,6 @@ export function ProgrammeHeroCarousel({
 }) {
   const Heading = headingLevel;
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [chosen, setChosen] = useState(false);
   const down = useRef<number | null>(null);
   const go = useCallback(
     (next: number) => setIndex((next + slides.length) % slides.length),
@@ -51,16 +51,14 @@ export function ProgrammeHeroCarousel({
   );
 
   useEffect(() => {
-    if (paused || chosen || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setTimeout(() => go(index + 1), ROTATION_MS);
     return () => window.clearTimeout(timer);
-  }, [chosen, go, index, paused]);
+  }, [go, index]);
 
   const swipe = (end: number) => {
     const start = down.current;
     down.current = null;
     if (start === null || Math.abs(end - start) < SWIPE_PX) return;
-    setChosen(true);
     go(index + (end < start ? 1 : -1));
   };
 
@@ -69,16 +67,12 @@ export function ProgrammeHeroCarousel({
       aria-roledescription="carousel"
       aria-label="CDIE programmes"
       className="relative min-h-[22rem] touch-pan-y overflow-hidden bg-ink text-surface md:min-h-[44rem]"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
       onPointerDown={(event) => { down.current = event.clientX; }}
       onPointerUp={(event) => swipe(event.clientX)}
       onPointerCancel={() => { down.current = null; }}
       onKeyDown={(event) => {
-        if (event.key === "ArrowRight") { setChosen(true); go(index + 1); }
-        if (event.key === "ArrowLeft") { setChosen(true); go(index - 1); }
+        if (event.key === "ArrowRight") { go(index + 1); }
+        if (event.key === "ArrowLeft") { go(index - 1); }
       }}
     >
       {slides.map((slide, slideIndex) => (
@@ -114,10 +108,10 @@ export function ProgrammeHeroCarousel({
               key={slide.id}
               type="button"
               aria-current={slideIndex === index}
-              onClick={() => { setChosen(true); setIndex(slideIndex); }}
+              onClick={() => setIndex(slideIndex)}
               className={`relative flex min-w-0 items-center py-4 text-left text-fine transition-colors md:py-5 ${slideIndex === index ? "text-surface" : "text-surface/55 hover:text-surface"}`}
             >
-              {slideIndex === index ? <span key={index} className={`hero-progress absolute inset-x-0 top-0 h-0.5 bg-brand-lift ${paused ? "paused" : ""}`} /> : null}
+              {slideIndex === index ? <span key={index} className="hero-progress absolute inset-x-0 top-0 h-0.5 bg-brand-lift" /> : null}
               <span
                 aria-hidden="true"
                 className={`mx-1 h-1.5 w-full rounded-full transition-colors sm:hidden ${slideIndex === index ? "bg-brand-lift" : "bg-surface/30"}`}

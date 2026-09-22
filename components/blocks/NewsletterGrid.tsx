@@ -20,7 +20,8 @@
 */
 
 import Image from "next/image";
-import Link from "next/link";
+
+import { AutoRail } from "@/components/sections/AutoRail";
 
 export type NewsletterCardItem = {
   id: string;
@@ -36,7 +37,7 @@ export function NewsletterGrid({ items }: { items: NewsletterCardItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <ul className="rail -mx-gutter auto-cols-[82%] gap-4 px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-2 md:gap-px md:overflow-visible md:bg-line md:px-0 lg:grid-cols-3">
+    <AutoRail className="rail -mx-gutter auto-cols-[82%] gap-4 px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-2 md:gap-px md:overflow-visible md:bg-line md:px-0 lg:grid-cols-3">
       {items.map((issue) => (
         <li key={issue.id} className="card-hit group flex flex-col border border-line bg-raise md:border-0">
           <div className="relative aspect-[16/10] overflow-hidden">
@@ -54,12 +55,14 @@ export function NewsletterGrid({ items }: { items: NewsletterCardItem[] }) {
             <p className="text-body leading-relaxed text-ink-2">{issue.summary}</p>
             <div className="mt-auto pt-4">
               {issue.href ? (
-                <Link
+                <a
                   href={issue.href}
-                  className="stretch font-medium text-brand no-underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="stretch font-medium text-brand no-underline transition-colors group-hover:text-brand-live"
                 >
-                  Read this issue →
-                </Link>
+                  Read this issue →<span className="sr-only"> (PDF, opens in a new tab)</span>
+                </a>
               ) : (
                 <span className="text-fine text-ink-3">Link to be confirmed</span>
               )}
@@ -67,6 +70,6 @@ export function NewsletterGrid({ items }: { items: NewsletterCardItem[] }) {
           </div>
         </li>
       ))}
-    </ul>
+    </AutoRail>
   );
 }

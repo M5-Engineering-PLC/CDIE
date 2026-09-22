@@ -32,6 +32,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
   return (
     <>
       <PageHero
+        image={{ src: "/images/service-design-1.jpg", alt: "Empty design workstations in the CDIE studio" }}
         eyebrow="Contact"
         headline={contactIntro.headline}
         standfirst={contactIntro.standfirst}

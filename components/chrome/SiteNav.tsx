@@ -9,6 +9,10 @@
   white plate that carries it against that ground, and the current page is full
   white against 70%, the step that holds contrast where brand-lift would not.
   The hamburger and the self-closing panel stay as the first pass left them.
+  Enhancements 2026-09-22: "navbar-white", "remove pill on navbar", "keep
+  hover feature on navbar". The bar is white again, the logo needs no plate on
+  it, and LOGIN is a plain link like the others: no filled or outlined pill.
+  Every link keeps its colour step on hover.
 */
 
 import Image from "next/image";
@@ -69,9 +73,9 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
   const login = utility[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-brand-lift/30 bg-brand/95 text-surface backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 text-ink backdrop-blur">
       <div className="shell flex items-center justify-between gap-6 py-2">
-        <Link href="/" className="flex items-center gap-3 rounded-edge bg-surface px-2 py-1" aria-label="CDIE home">
+        <Link href="/" className="flex items-center gap-3 py-1" aria-label="CDIE home">
           <Image
             src={logo.src}
             alt={logo.alt}
@@ -97,11 +101,11 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
                     aria-current={isCurrent(item.href) ? "page" : undefined}
                     /* Change request 2026-09-13, section 2.2: the current page
                        is signalled by colour, not a rule under the word. On
-                       the cobalt bar that step is full white against 70%. */
+                       the white bar that step is brand against ink-2. */
                     className={`text-body transition-colors ${
                       isCurrent(item.href)
-                        ? "font-medium text-surface"
-                        : "text-surface/70 hover:text-surface"
+                        ? "font-medium text-brand"
+                        : "text-ink-2 hover:text-brand"
                     }`}
                   >
                     {item.label}
@@ -114,7 +118,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           {login ? (
             <a
               href={login.href}
-              className="rounded-edge border border-surface/50 bg-surface px-4 py-2 text-body font-semibold tracking-wide text-brand transition-colors hover:bg-brand-lift hover:text-ink"
+              className="text-body font-semibold tracking-wide text-ink-2 transition-colors hover:text-brand"
             >
               {login.label}
             </a>
@@ -126,7 +130,7 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="grid h-10 w-10 place-items-center rounded-edge border border-surface/50 text-surface lg:hidden"
+          className="grid h-10 w-10 place-items-center rounded-edge border border-line text-ink lg:hidden"
         >
           <MenuIcon open={open} />
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>

@@ -40,7 +40,7 @@ const serviceImages: Record<string, string> = {
   "three-d-printing": "/images/service-3dprinting-1.jpg",
   "co-working": "/images/service-coworking-1.jpg",
   metalworking: "/images/service-metalworking-1.jpeg",
-  textiles: "/images/service-textile-1.jpg",
+  textiles: "/images/service-textile-2.jpg",
   woodworking: "/images/service-woodworking-1.jpeg",
 };
 

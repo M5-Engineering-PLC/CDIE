@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { FaqList } from "@/components/blocks/FaqList";
 import { Button } from "@/components/primitives/Button";
 import { Section } from "@/components/sections/Section";
+import { WorkshopGallery } from "@/components/sections/WorkshopGallery";
 import { VisualCardRail, type VisualRailItem } from "@/components/sections/VisualCardRail";
 import { StudioExplorer, type ExplorerCapability } from "@/components/studio/StudioExplorer";
 import {
@@ -30,9 +31,16 @@ const studioImages: Record<string, string> = {
   "three-d-printing": "/images/service-3dprinting-1.jpg",
   "co-working": "/images/service-coworking-1.jpg",
   metalworking: "/images/service-metalworking-1.jpeg",
-  textiles: "/images/service-textile-1.jpg",
+  textiles: "/images/service-textile-2.jpg",
   woodworking: "/images/service-woodworking-1.jpeg",
 };
+
+const workshopPhotos = [
+  { src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw" },
+  { src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board" },
+  { src: "/images/cdie-studio-laptop-working-session.jpg", alt: "Students gathered around a laptop at a studio bench" },
+  { src: "/images/cdie-3d-printing-heart-model-01.jpeg", alt: "3D printer finishing a model of a human heart" },
+];
 
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({
   id: capability.id,
@@ -98,18 +106,18 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
                   {space.hasModel ? "Room model" : "Photographs only"}
                 </span>
               </div>
-              <p className="trim-mobile text-body leading-relaxed text-ink-2">{space.summary}</p>
+              <p className="hidden text-body leading-relaxed text-ink-2 md:block">{space.summary}</p>
             </li>
           ))}
         </ul>
-        <p className="trim-mobile mt-6 max-w-[70ch] text-fine text-ink-3 md:mt-8">
-          Photographs and short demonstrations are added as each area is captured. Until
-          then the room gives you the layout and the text gives you the capability.
-        </p>
+        {/* Image matching sheet 2026-09-22, Design Studio D11-D14: workshop areas. */}
+        <div className="mt-6 md:mt-8">
+          <WorkshopGallery items={workshopPhotos} />
+        </div>
       </Section>
 
       <Section tone="surface" eyebrow="Access" title={studioAccess.headline}>
-        <p className="trim-mobile max-w-[62ch] text-lead leading-relaxed text-ink-2">{studioAccess.body}</p>
+        <p className="hidden max-w-[62ch] text-lead leading-relaxed text-ink-2 md:block">{studioAccess.body}</p>
         <div className="mt-6">
           <Button href={studioAccess.action.href}>{studioAccess.action.label}</Button>
         </div>
