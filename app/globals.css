@@ -90,7 +90,7 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     scroll-padding-top: 6rem;
   }
 
@@ -458,10 +458,12 @@
 @media (max-width: 767px) { .mdi-layout { display: block; } .mdi-index { z-index: 20; top: 4.7rem; max-height: none; padding: 0.4rem var(--spacing-gutter); background: var(--color-surface); border-bottom: 1px solid var(--color-line); } .mdi-index > p { display: none; } .mdi-index ol { display: flex; overflow-x: auto; gap: 0.5rem; margin: 0; border: 0; scrollbar-width: none; } .mdi-index li { flex: none; } .mdi-index a { margin: 0; padding: 0.55rem; border: 0; border-bottom: 2px solid transparent; white-space: nowrap; } .mdi-content { border: 0; } .mdi-content section { scroll-margin-top: 8rem; } }
 
 /* Native route transitions preserve the persistent chrome while the page settles. */
-::view-transition-old(.page) { animation: page-out 180ms ease-out both; }
-::view-transition-new(.page) { animation: page-in 360ms var(--ease-glide) both; }
-@keyframes page-out { to { opacity: 0; } }
-@keyframes page-in { from { opacity: 0; } }
+::view-transition-group(root), ::view-transition-group(.page) { animation-duration: 0s; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-old(.page) { animation: page-out 170ms ease-in both; }
+::view-transition-new(.page) { animation: page-in 300ms ease-out 120ms both; }
+@keyframes page-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes page-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { ::view-transition-old(.page), ::view-transition-new(.page) { animation: none; } }
 
 /* The video reference keeps one logo and one set of links while two rows become one. */
@@ -481,13 +483,11 @@
 .site-nav-link:hover, .site-nav-link[aria-current] { color: var(--color-brand); }
 .site-nav-link::after { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: var(--color-brand-live); transform: scaleX(0); transform-origin: left; transition: transform var(--motion-glide) var(--ease-glide); }
 .site-nav-link:hover::after, .site-nav-link:focus-visible::after, .site-nav-link[aria-current]::after { transform: scaleX(1); }
-.site-login { position: absolute; top: 4.12rem; right: var(--spacing-gutter); display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; min-width: 7.3rem; padding: 0.4rem 1.3rem; overflow: hidden; border: 1px solid var(--color-brand); border-radius: 10rem; color: var(--color-brand); font-weight: 700; isolation: isolate; transition: top var(--motion-glide), color var(--motion-swift), transform var(--motion-swift); }
-.site-nav.is-compact .site-login { top: 0.52rem; }
+.site-login { position: absolute; top: 4.22rem; right: var(--spacing-gutter); display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; min-width: 6rem; padding: 0.3rem 1rem; overflow: hidden; border: 1px solid var(--color-brand); border-radius: 10rem; color: var(--color-brand); font-weight: 700; isolation: isolate; transition: top var(--motion-glide), color var(--motion-swift), transform var(--motion-swift); }
+.site-nav.is-compact .site-login { top: 0.7rem; }
 .site-login::after { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--color-brand-live); transform: translateY(102%); transition: transform var(--motion-glide) var(--ease-glide); }
 .site-login:hover { color: var(--color-surface); transform: translateY(-2px); }
 .site-login:hover::after { transform: translateY(0); }
-.site-nav-brand.is-spinning .site-nav-logo { animation: logo-turn 650ms var(--ease-glide); }
-@keyframes logo-turn { 50% { transform: rotate(-8deg) scale(1.07); } 100% { transform: rotate(360deg); } }
 .site-nav-menu { position: absolute; right: var(--spacing-gutter); top: 1rem; border: 1px solid var(--color-line); color: var(--color-ink); }
 .hero-action { position: relative; overflow: hidden; border-radius: 0.25rem; isolation: isolate; transition: transform var(--motion-swift), box-shadow var(--motion-glide); }
 .hero-action::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--color-brand); transform: translateY(101%); transition: transform var(--motion-glide) var(--ease-glide); }
@@ -510,13 +510,13 @@
 /* The definition cards follow the supplied staggered photo composition. */
 .triad-rail { align-items: start; }
 .triad-card { min-width: 0; background: var(--color-surface); }
-.triad-photo { position: relative; height: clamp(22rem, 34vw, 34rem); overflow: hidden; border-radius: 0.2rem; }
+.triad-photo { position: relative; height: clamp(17rem, 22vw, 22rem); overflow: hidden; border-radius: 0.2rem; }
 .triad-photo img { transition: transform var(--motion-glide) var(--ease-glide); }
 .triad-card:hover .triad-photo img { transform: scale(1.035); }
 .triad-number { position: absolute; top: 1rem; left: 1rem; min-width: 2.5rem; padding: 0.3rem 0.55rem; border-radius: 0.25rem; background: var(--color-surface); color: var(--color-brand); font-family: var(--font-mono); font-size: var(--text-fine); font-weight: 700; text-align: center; box-shadow: 0 2px 8px rgb(16 21 26 / 0.12); }
 .triad-copy { padding: 1.15rem 0 0; }
 @media (min-width: 768px) { .triad-card:nth-child(2) { margin-top: 4rem; } .triad-card:nth-child(3) { margin-top: 2rem; } }
-@media (max-width: 767px) { .triad-photo { height: min(55svh, 29rem); } .triad-copy { padding-bottom: 1.25rem; } }
+@media (max-width: 767px) { .triad-photo { height: min(38svh, 22rem); } .triad-copy { padding-bottom: 1.25rem; } }
 .triad-dots { display: flex; justify-content: center; align-items: center; gap: 0.55rem; margin-top: 1.25rem; }
 .triad-dots button { width: 0.5rem; height: 0.5rem; border-radius: 10rem; background: var(--color-line); transition: width var(--motion-swift), background var(--motion-swift); }
 .triad-dots button[aria-current] { width: 1.5rem; background: var(--color-brand-live); }
@@ -525,4 +525,4 @@
 .about-hero-image, .about-person { transition: transform var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide), border-color var(--motion-swift); }
 .about-hero-image img, .about-person img { transition: transform var(--motion-glide) var(--ease-glide); }
 @media (hover: hover) { .about-hero-image:hover, .about-person:hover { transform: translateY(-0.35rem); box-shadow: 0 0.9rem 1.7rem rgb(16 21 26 / 0.12); } .about-hero-image:hover img, .about-person:hover img { transform: scale(1.025); } }
-@media (prefers-reduced-motion: reduce) { .site-nav-brand.is-spinning .site-nav-logo { animation: none; } .triad-photo img, .about-hero-image, .about-person, .about-hero-image img, .about-person img { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .triad-photo img, .about-hero-image, .about-person, .about-hero-image img, .about-person img { transition: none; } }

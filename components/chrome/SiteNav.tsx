@@ -68,11 +68,7 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
   return (
     <header className={`site-nav sticky top-0 z-40 ${compact ? "is-compact" : ""}`}>
       <div className="site-nav-inner">
-        <Link href="/" className="site-nav-brand" aria-label="CDIE home" onClick={(event) => {
-          event.currentTarget.classList.remove("is-spinning");
-          void event.currentTarget.offsetWidth;
-          event.currentTarget.classList.add("is-spinning");
-        }}>
+        <Link href="/" className="site-nav-brand" aria-label="CDIE home">
           <Image
             src={logo.src}
             alt={logo.alt}
