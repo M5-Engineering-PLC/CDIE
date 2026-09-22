@@ -10,31 +10,13 @@ import { stubFeed } from "@/content/linkedin";
 
 import { CACHE_SECONDS, type StoreConfig } from "./config";
 import { parseCsv } from "./csv";
+import { deriveSyncedAt } from "./sync";
 
 export type StoreRead = {
   /** When the sync mechanism last ran. Null when the store cannot say. */
   syncedAt: string | null;
   rows: unknown[];
 };
-
-/*
-  lastSyncedAt has to mean "Make ran", not "a post exists", or a genuinely
-  quiet fortnight reads as a broken integration and the section hides itself
-  while nothing is wrong.
-
-  So a syncedAt column is honoured when the scenario writes one. Without it
-  there is no heartbeat and the newest post is the only evidence available;
-  docs/architecture/linkedin-api.md sets out the cost of adding the heartbeat.
-*/
-function deriveSyncedAt(rows: { syncedAt?: string; postedAt?: string }[]): string | null {
-  const stamps = rows
-    .map((row) => row.syncedAt || row.postedAt || "")
-    .map((value) => Date.parse(value))
-    .filter((value) => !Number.isNaN(value));
-
-  if (stamps.length === 0) return null;
-  return new Date(Math.max(...stamps)).toISOString();
-}
 
 async function readSheet(csvUrl: string): Promise<StoreRead> {
   const response = await fetch(csvUrl, {
