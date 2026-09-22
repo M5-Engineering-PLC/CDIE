@@ -467,8 +467,8 @@
 @media (prefers-reduced-motion: reduce) { ::view-transition-old(.page), ::view-transition-new(.page) { animation: none; } }
 
 /* The video reference keeps one logo and one set of links while two rows become one. */
-.site-nav { height: 7.35rem; width: 100%; background: rgb(255 255 255 / 0.96); border-bottom: 1px solid var(--color-line); box-shadow: 0 0.25rem 1.5rem rgb(16 21 26 / 0.08); backdrop-filter: blur(16px); transition: height var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide); }
-.site-nav.is-compact { height: 3.9rem; box-shadow: 0 0.5rem 1.5rem rgb(16 21 26 / 0.12); }
+.site-nav { height: 7.35rem; margin-bottom: 0; width: 100%; background: rgb(255 255 255 / 0.96); border-bottom: 1px solid var(--color-line); box-shadow: 0 0.25rem 1.5rem rgb(16 21 26 / 0.08); backdrop-filter: blur(16px); transition: height var(--motion-glide) var(--ease-glide), margin-bottom var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide); }
+.site-nav.is-compact { height: 3.9rem; margin-bottom: 3.45rem; box-shadow: 0 0.5rem 1.5rem rgb(16 21 26 / 0.12); }
 .site-nav-inner { position: relative; width: 100%; height: 100%; }
 .site-nav-brand { position: absolute; top: 0.1rem; left: 50%; display: flex; align-items: center; justify-content: center; height: 4rem; transform: translateX(-50%); transition: top var(--motion-glide) var(--ease-glide), left var(--motion-glide) var(--ease-glide), transform var(--motion-glide) var(--ease-glide), height var(--motion-glide) var(--ease-glide); }
 .site-nav-logo { display: block; width: auto; height: 3.85rem; transition: height var(--motion-glide) var(--ease-glide); }
@@ -505,7 +505,7 @@
 .sliding-toggle { position: relative; isolation: isolate; }
 .sliding-toggle-indicator { position: absolute; top: 0.125rem; left: 0; height: calc(100% - 0.25rem); border-radius: 10rem; background: var(--color-brand); transform: translateX(0); transition: transform var(--motion-glide) var(--ease-glide), width var(--motion-glide) var(--ease-glide); z-index: -1; pointer-events: none; }
 .sliding-toggle-button { position: relative; z-index: 1; }
-@media (max-width: 1023px) { .site-nav, .site-nav.is-compact { height: 4.4rem; } .site-nav-brand, .site-nav.is-compact .site-nav-brand { top: 0.45rem; left: var(--spacing-gutter); height: 3.5rem; transform: none; } .site-nav-logo, .site-nav.is-compact .site-nav-logo { height: 3.25rem; } .site-nav-links, .site-login { display: none; } }
+@media (max-width: 1023px) { .site-nav, .site-nav.is-compact { height: 4.4rem; margin-bottom: 0; } .site-nav-brand, .site-nav.is-compact .site-nav-brand { top: 0.45rem; left: var(--spacing-gutter); height: 3.5rem; transform: none; } .site-nav-logo, .site-nav.is-compact .site-nav-logo { height: 3.25rem; } .site-nav-links, .site-login { display: none; } }
 
 /* The definition cards follow the supplied staggered photo composition. */
 .triad-rail { align-items: start; }
@@ -523,12 +523,15 @@
 @media (min-width: 768px) { .triad-dots { display: none; } }
 
 .cdie-initial { color: var(--color-brand); font-size: 1.2em; font-weight: 800; }
-.cdie-mark-stage { perspective: 900px; }
-.cdie-mark { display: inline-block; transform-origin: left center; transform-style: preserve-3d; transition: transform 620ms var(--ease-glide), text-shadow 620ms var(--ease-glide); }
+.cdie-mark { display: inline-block; }
+.cdie-mark-letter { display: inline-block; transform-origin: center 70%; transition: transform 520ms var(--ease-glide); }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .cdie-mark-stage:hover .cdie-mark { transform: rotateY(-18deg) rotateX(5deg) skewY(-1deg) scale(1.025); text-shadow: 3px 3px 0 rgb(14 91 143 / 0.16), 6px 6px 0 rgb(14 91 143 / 0.08); }
+  .cdie-mark:hover .cdie-mark-letter:nth-child(1) { transform: translate(-0.04em, 0.07em) rotate(-25deg); }
+  .cdie-mark:hover .cdie-mark-letter:nth-child(2) { transform: translate(0.02em, -0.05em) rotate(20deg); }
+  .cdie-mark:hover .cdie-mark-letter:nth-child(3) { transform: translate(0.01em, 0.08em) rotate(-32deg); }
+  .cdie-mark:hover .cdie-mark-letter:nth-child(4) { transform: translate(0.04em, -0.04em) rotate(24deg); }
 }
-@media (prefers-reduced-motion: reduce) { .cdie-mark { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .cdie-mark-letter { transition: none; } }
 
 .about-hero-image, .about-person { transition: transform var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide), border-color var(--motion-swift); }
 .about-hero-image img, .about-person img { transition: transform var(--motion-glide) var(--ease-glide); }
