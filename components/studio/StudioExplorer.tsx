@@ -102,7 +102,7 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
           </div>
         </div>
 
-        <div className="order-2 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 bg-surface p-4 md:p-6 lg:order-2 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
+        <div className="order-2 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 bg-surface px-gutter py-5 md:p-6 lg:order-2 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
           <div className="flex min-w-0 flex-col gap-6">
             <StudioStage
               active={selected.modelGroup} open={roomOpen} tour={tour} viewOnly={viewOnly} atc={selected.atc} space={activeSpace}

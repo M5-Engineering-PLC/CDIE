@@ -31,14 +31,16 @@ test("the approved programme, partner, service, story and tour assets are presen
   for (const path of required) assert.equal(existsSync(new URL(`../${path}`, import.meta.url)), true, path);
 });
 
-test("studio explorer starts with a cinematic invitation and supports a lower-left minimised model", () => {
+test("studio explorer starts with a cinematic invitation and one 3D/photographs pill", () => {
   const explorer = read("components/studio/StudioExplorer.tsx");
   const stage = read("components/studio/StudioStage.tsx");
   assert.match(explorer, /StudioTourIntro/);
   assert.match(explorer, /scrollIntoView/);
-  assert.match(stage, /Minimise 3D tour/);
-  assert.match(stage, /Expand 3D tour/);
-  assert.match(stage, /bottom-4 left-4/);
+  // Enhancements 2026-09-22: the pill is the one view switch at every width,
+  // and the expand button is gone.
+  assert.match(stage, /StudioViewPill/);
+  assert.doesNotMatch(stage, /Expand 3D tour/);
+  assert.doesNotMatch(read("components/studio/StudioViewPill.tsx"), /md:hidden/);
 });
 
 test("footer exposes icon-labelled social destinations without inventing URLs", () => {

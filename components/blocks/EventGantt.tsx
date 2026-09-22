@@ -10,6 +10,8 @@
   upcoming ones are brand. An estimated date says so.
 */
 
+import { GanttViewport } from "./GanttViewport";
+
 export type GanttEvent = {
   id: string;
   title: string;
@@ -41,10 +43,14 @@ export function EventGantt({ items, from, to, today }: { items: GanttEvent[]; fr
     cursor.setUTCMonth(cursor.getUTCMonth() + 1);
   }
   const now = at(today);
+  // The latest event is the most recent one that has started by today.
+  const latestId = [...rows].reverse().find((event) => event.start <= today)?.id;
 
   return (
     <div>
-      <div aria-hidden="true" className="relative h-6 border-b border-line">
+      <GanttViewport>
+      <div aria-hidden="true" className="sticky top-0 z-20 h-7 border-b border-line bg-surface px-3 pt-1 sm:px-4">
+        <div className="relative h-full">
         {months.map((month) => (
           <span key={month.key} className="kicker absolute top-0 -translate-x-1/2 text-[0.625rem] sm:text-fine" style={{ left: `${month.left}%` }}>
             {month.label}
@@ -54,19 +60,27 @@ export function EventGantt({ items, from, to, today }: { items: GanttEvent[]; fr
         <span className="absolute top-0 -translate-x-1/2 bg-brand-live px-1 font-mono text-[0.625rem] uppercase leading-4 text-surface" style={{ left: `${now}%` }}>
           Today
         </span>
+        </div>
       </div>
-      <div className="relative">
-        {months.map((month) => (
-          <span key={month.key} aria-hidden="true" className="absolute inset-y-0 border-l border-line-soft" style={{ left: `${month.left}%` }} />
-        ))}
+      <div className="relative px-3 sm:px-4">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-3 right-3 sm:left-4 sm:right-4">
+          {months.map((month) => (
+            <span key={month.key} className="absolute inset-y-0 border-l border-line-soft" style={{ left: `${month.left}%` }} />
+          ))}
+        </div>
         <ol className="relative flex flex-col">
           {rows.map((event) => {
             const left = at(event.start);
             const width = Math.max(at(event.end ?? event.start) - left + (DAY / span) * 100, 0.9);
             const past = (event.end ?? event.start) < today;
             const date = `${event.estimated ? "c. " : ""}${event.end ? `${day(event.start)} – ${day(event.end)}` : day(event.start)}`;
+            const latest = event.id === latestId;
             return (
-              <li key={event.id} className="border-b border-line-soft py-2.5">
+              <li
+                key={event.id}
+                data-latest={latest ? "" : undefined}
+                className={`relative border-b border-line-soft py-2.5 ${latest ? "-mx-3 bg-brand/5 px-3 sm:-mx-4 sm:px-4" : ""}`}
+              >
                 <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 pr-2">
                   {event.link ? (
                     <a href={event.link} target="_blank" rel="noopener noreferrer" className="text-body font-medium text-ink transition-colors hover:text-brand">
@@ -77,11 +91,14 @@ export function EventGantt({ items, from, to, today }: { items: GanttEvent[]; fr
                   )}
                   <time dateTime={event.start} className="font-mono text-fine text-ink-3">{date}</time>
                   {event.kind ? <span className="hidden text-fine text-ink-3 sm:inline">{event.kind}</span> : null}
+                  {latest ? (
+                    <span className="bg-brand px-1.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-widest text-surface">Latest</span>
+                  ) : null}
                 </p>
                 <div className="relative mt-1.5 h-2.5">
                   <span aria-hidden="true" className="absolute -inset-y-1 border-l-2 border-brand-live/70" style={{ left: `${now}%` }} />
                   <span
-                    className={`absolute inset-y-0 rounded-full ${past ? "bg-ink-3/60" : "bg-brand"}`}
+                    className={`absolute inset-y-0 rounded-full ${latest ? "bg-brand-live" : past ? "bg-ink-3/60" : "bg-brand"}`}
                     style={{ left: `${left}%`, width: `${Math.min(width, 100 - left)}%` }}
                   />
                 </div>
@@ -90,6 +107,7 @@ export function EventGantt({ items, from, to, today }: { items: GanttEvent[]; fr
           })}
         </ol>
       </div>
+      </GanttViewport>
       {rows.every((event) => (event.end ?? event.start) < today) ? (
         <p className="mt-4 text-fine text-ink-3">No upcoming events are confirmed yet. New ones appear here as they are announced.</p>
       ) : null}

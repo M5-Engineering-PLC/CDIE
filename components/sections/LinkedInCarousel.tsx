@@ -82,9 +82,9 @@ export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy }: L
 
   return (
     <div className="flex flex-col gap-4">
-      <ul ref={rail} className="rail rail-glide gap-4 pb-3 sm:flex sm:snap-x sm:flex-row sm:overflow-x-auto">
-        {feed.posts.map((post) => (
-          <LinkedInPostCard key={post.id} post={post} />
+      <ul ref={rail} className="post-stack rail-glide sm:flex sm:snap-x sm:flex-row sm:gap-4 sm:overflow-x-auto sm:pb-3">
+        {feed.posts.map((post, index) => (
+          <LinkedInPostCard key={post.id} post={post} index={index} />
         ))}
       </ul>
       <p className="text-fine text-ink-3">{privacy}</p>

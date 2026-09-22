@@ -3,8 +3,6 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
-import { AtcRoomPlan } from "./AtcRoomPlan";
-import { RoomPlan } from "./RoomPlan";
 import { StudioCallout } from "./StudioCallout";
 import { StudioViewPill } from "./StudioViewPill";
 import type { AtcServiceId } from "./atc-3js";
@@ -91,17 +89,7 @@ export function StudioStage({
         <div className="relative min-h-48 overflow-hidden bg-ink md:min-h-[28rem]">
           <Image src={image} alt={imageAlt} fill sizes="(max-width: 1280px) 100vw, 70vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
-          <button
-            type="button" onClick={onOpen}
-            className="absolute bottom-4 left-4 hidden w-36 border md:block border-surface/50 bg-surface p-2 text-left shadow-lg transition hover:border-brand-live md:w-44"
-          >
-            {isAtc ? (
-              <AtcRoomPlan active={active as AtcServiceId | null} className="w-full" />
-            ) : (
-              <RoomPlan active={active as ServiceId | null} className="w-full" />
-            )}
-            <span className="mt-2 flex items-center justify-between text-fine font-medium text-brand">Expand 3D tour</span>
-          </button>
+          {/* Enhancements 2026-09-22: "remove the expand button". The pill above is the switch. */}
         </div>
       </div>
     );
@@ -127,11 +115,6 @@ export function StudioStage({
             ? "The room turns on its own and moves to whichever capability you choose. Illustrative and unmeasured."
             : "Drag to orbit, scroll to zoom, select a bench to jump to its capability. Illustrative and unmeasured."}
         </p>
-        <div className="flex gap-4">
-          <button type="button" onClick={onClose} className="text-fine font-medium text-brand underline-offset-4 hover:underline">
-            Minimise 3D tour
-          </button>
-        </div>
       </div>
     </div>
   );

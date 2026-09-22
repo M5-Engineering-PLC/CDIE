@@ -1,7 +1,8 @@
 "use client";
 
 // Enhancements 2026-09-22: "on mobile we just need one pill for 3d view and
-// photographs". Phone only; wider screens keep the plan thumbnail and links.
+// photographs". Later the same day: "replicate the mobile design studio pill
+// on desktop as well", so it is the one view switch at every width.
 
 export function StudioViewPill({ open, onOpen, onClose }: { open: boolean; onOpen: () => void; onClose: () => void }) {
   const options = [
@@ -9,7 +10,7 @@ export function StudioViewPill({ open, onOpen, onClose }: { open: boolean; onOpe
     { label: "Photographs", on: !open, act: onClose },
   ];
   return (
-    <div role="group" aria-label="Studio view" className="inline-flex self-start rounded-full border border-line p-0.5 md:hidden">
+    <div role="group" aria-label="Studio view" className="inline-flex self-start rounded-full border border-line p-0.5">
       {options.map((option) => (
         <button
           key={option.label}

@@ -12,11 +12,11 @@
   repost are not CDIE's, and a card that does not say so misattributes them.
 */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import type { LinkedInPost } from "@/content/linkedin";
 
-export function LinkedInPostCard({ post }: { post: LinkedInPost }) {
+export function LinkedInPostCard({ post, index = 0 }: { post: LinkedInPost; index?: number }) {
   const ref = useRef<HTMLLIElement | null>(null);
   const [embed, setEmbed] = useState(false);
 
@@ -42,12 +42,16 @@ export function LinkedInPostCard({ post }: { post: LinkedInPost }) {
     <li
       ref={ref}
       /*
-        "for mobile make them scrollable cards, video feed like": on a phone a
-        card fills the frame and the feed snaps down it one post at a time. From
-        sm it goes back to a row of fixed-width cards.
+        Enhancements 2026-09-22: "replicate the scroll on mobile feature on
+        hackcessible.co.ke for people page". On a phone each post sticks under
+        the header a few pixels lower than the last, the next one slides up
+        over it, and the one beneath settles back (.post-stack in
+        app/globals.css). From sm it is the row of fixed-width cards.
       */
-      className="flex h-[70vh] w-full shrink-0 snap-start flex-col border border-line bg-surface sm:h-[28rem] sm:w-[22rem]"
+      style={{ "--i": index } as CSSProperties}
+      className="shrink-0 snap-start sm:w-[22rem]"
     >
+      <div className="post-card flex h-[min(70svh,34rem)] w-full flex-col border border-line bg-surface sm:h-[28rem]">
       <p className="flex items-baseline justify-between gap-3 border-b border-line-soft px-4 py-2">
         <time dateTime={post.postedAt} className="font-mono text-fine text-ink-3">
           {new Date(post.postedAt).toLocaleDateString("en-GB", {
@@ -80,6 +84,7 @@ export function LinkedInPostCard({ post }: { post: LinkedInPost }) {
           </a>
         </div>
       )}
+      </div>
     </li>
   );
 }

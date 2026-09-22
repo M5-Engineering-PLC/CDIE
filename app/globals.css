@@ -307,6 +307,49 @@
 }
 
 /*
+  Enhancements 2026-09-22: the LinkedIn posts on a phone stack the way
+  hackcessible.co.ke's people page does. Each post is sticky under the header,
+  offset a few pixels by its index (--i, set on the item), so the next one
+  slides up over it; the post being covered shrinks and dims with the scroll.
+  Browsers without scroll-driven animation still get the stack, just not the
+  settle.
+*/
+@media (max-width: 639px) {
+  .post-stack {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2.5rem;
+  }
+
+  .post-stack > li {
+    position: sticky;
+    top: calc(5.25rem + var(--i, 0) * 0.5rem);
+    padding-bottom: 1rem;
+  }
+
+  .post-stack .post-card {
+    box-shadow: 0 1.25rem 3rem rgb(16 21 26 / 0.16);
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .post-stack .post-card {
+        animation: post-settle linear both;
+        animation-timeline: view();
+        animation-range: exit 10% exit 70%;
+      }
+    }
+  }
+}
+
+@keyframes post-settle {
+  to {
+    transform: scale(0.94);
+    opacity: 0.55;
+  }
+}
+
+/*
   Enhancements 2026-09-22, second round: "on mobile all cards, make sure it
   centers only one card and plays the cards in a continuous rotating loop".
   Below md every rail shows exactly one card, full width inside the gutter and
@@ -323,6 +366,14 @@
   .rail:not(.rail-pills) > *,
   .rail-glide > * {
     scroll-snap-align: center;
+  }
+
+  /* "add decent margins and center content on mobile so that it does not look
+     squeezed": a rail no longer bleeds to the screen edge, so its one card sits
+     centred between the same margins as the text above it. */
+  .rail:not(.rail-pills) {
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
   }
 }
 
