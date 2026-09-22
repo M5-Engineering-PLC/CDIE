@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 /*
   The single token declaration. Gate 1 of docs/BUILD_PLAN.md freezes this file.
@@ -89,6 +90,8 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
   }
 
   body {
@@ -400,6 +403,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *,
   *::before,
   *::after {
@@ -409,3 +413,85 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Beautify F05: original 380 × 500 photograph panels and full disclosure. */
+.capability-rail { display: flex; gap: 1.75rem; overflow-x: auto; overflow-y: hidden; padding: 1rem 0 1.75rem; scrollbar-width: none; cursor: grab; }
+.capability-rail::-webkit-scrollbar { display: none; }
+.capability-card { position: relative; flex: 0 0 23.75rem; width: 23.75rem; height: 31.25rem; overflow: hidden; border: 1px solid rgb(255 255 255 / 0.1); border-radius: 1rem; background: var(--color-ink); color: var(--color-surface); isolation: isolate; box-shadow: 0 0.75rem 2.25rem -0.75rem rgb(0 35 65 / 0.35); transition: transform var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide), border-color var(--motion-glide); }
+.capability-card:hover, .capability-card:focus-within, .capability-card.is-open { z-index: 2; transform: translateY(-0.5rem) scale(1.02); border-color: var(--color-brand-lift); box-shadow: 0 1.4rem 3.1rem -0.75rem rgb(0 45 85 / 0.55), 0 0 1.75rem rgb(11 120 192 / 0.35); }
+.capability-card.is-clone { pointer-events: none; }
+.capability-photo { position: absolute; inset: 0; }
+.capability-image { transition: transform var(--motion-scene) var(--ease-glide); }
+.capability-card:hover .capability-image, .capability-card:focus-within .capability-image, .capability-card.is-open .capability-image { transform: scale(1.06); }
+.capability-caption { position: absolute; inset: auto 0 0; z-index: 2; display: flex; align-items: end; justify-content: space-between; gap: 0.75rem; padding: 1.5rem; background: linear-gradient(transparent, rgb(6 18 28 / 0.45) 55%, rgb(6 18 28 / 0.92)); transition: opacity var(--motion-glide), transform var(--motion-glide); }
+.capability-caption h3 { font-family: var(--font-display); font-size: 1.375rem; line-height: 1.15; font-weight: 700; text-shadow: 0 2px 6px rgb(0 0 0 / 0.5); }
+.capability-toggle { display: inline-flex; flex: none; min-height: 2rem; align-items: center; justify-content: center; padding: 0.375rem 0.75rem; border: 1px solid rgb(255 255 255 / 0.35); border-radius: 10rem; background: rgb(255 255 255 / 0.2); color: var(--color-surface); font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; backdrop-filter: blur(8px); cursor: pointer; }
+.capability-detail { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: end; gap: 1rem; padding: 2rem 1.75rem; overflow-y: auto; background: linear-gradient(to top, rgb(0 35 65 / 0.98), rgb(0 42 78 / 0.92) 65%, rgb(0 42 78 / 0.6)); color: var(--color-surface); backdrop-filter: blur(10px); opacity: 0; visibility: hidden; transform: translateY(1.1rem); transition: opacity var(--motion-glide) var(--ease-glide), transform var(--motion-glide) var(--ease-glide), visibility var(--motion-glide); }
+.capability-detail h4 { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.18; }
+.capability-detail p { font-size: var(--text-body); line-height: 1.55; color: rgb(255 255 255 / 0.92); }
+.capability-card:hover .capability-caption, .capability-card:focus-within .capability-caption, .capability-card.is-open .capability-caption { opacity: 0; transform: translateY(0.6rem); }
+.capability-card:hover .capability-detail, .capability-card:focus-within .capability-detail, .capability-card.is-open .capability-detail { opacity: 1; visibility: visible; transform: none; }
+.capability-card.is-dismissed:hover .capability-detail, .capability-card.is-dismissed:focus-within .capability-detail { opacity: 0; visibility: hidden; }
+.capability-card.is-dismissed:hover .capability-caption, .capability-card.is-dismissed:focus-within .capability-caption { opacity: 1; transform: none; }
+.capability-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.5rem; }
+.capability-action { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.6rem 1rem; border-radius: 0.6rem; background: var(--color-surface); color: var(--color-brand); font-family: var(--font-display); font-size: 0.875rem; font-weight: 700; transition: background var(--motion-swift), color var(--motion-swift), box-shadow var(--motion-swift); }
+.capability-action:hover { background: var(--color-brand-lift); color: var(--color-surface); box-shadow: 0 0 1rem rgb(97 162 210 / 0.6); }
+.capability-close { padding: 0.6rem; color: var(--color-surface); cursor: pointer; }
+.capability-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
+.capability-controls > button { display: grid; width: 3rem; height: 3rem; flex: none; place-items: center; border: 1px solid var(--color-line); border-radius: 50%; background: var(--color-surface); color: var(--color-brand); box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 0.06); cursor: pointer; transition: background var(--motion-swift), color var(--motion-swift), transform var(--motion-swift); }
+.capability-controls > button:hover { background: var(--color-brand); color: var(--color-surface); transform: scale(1.08); }
+.capability-status { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.1rem; border: 1px solid var(--color-line-soft); border-radius: 10rem; background: var(--color-raise); color: var(--color-ink-2); font-family: var(--font-mono); font-size: 0.75rem; }
+.capability-status::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--color-brand-lift); box-shadow: 0 0 0.4rem var(--color-brand-lift); }
+@media (max-width: 480px) { .capability-card { flex-basis: min(88vw, 23.75rem); width: min(88vw, 23.75rem); height: min(31.25rem, 78svh); } .capability-status { font-size: 0.625rem; text-align: center; } }
+@media (max-width: 767px), (hover: none) { .capability-card:hover { transform: none; } .capability-card:not(.is-open):hover .capability-image { transform: none; } .capability-card:not(.is-open):hover .capability-caption, .capability-card:not(.is-open):focus-within .capability-caption { opacity: 1; transform: none; } .capability-card:not(.is-open):hover .capability-detail, .capability-card:not(.is-open):focus-within .capability-detail { display: none; } .capability-card.is-open { height: auto; min-height: 0; transform: none; background: var(--color-surface); } .capability-card.is-open .capability-photo { position: relative; height: 14rem; } .capability-card.is-open .capability-caption { top: 10rem; bottom: auto; opacity: 1; transform: none; } .capability-card.is-open .capability-detail { position: relative; display: flex; height: auto; padding: 1.5rem; background: var(--color-surface); color: var(--color-ink); opacity: 1; visibility: visible; transform: none; backdrop-filter: none; } .capability-card.is-open .capability-detail p, .capability-card.is-open .capability-close { color: var(--color-ink-2); } }
+
+/* MDI's sticky index shares the viewport with the long-form content. */
+.mdi-layout { display: grid; grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr); max-width: 90rem; margin-inline: auto; }
+.mdi-index { position: sticky; top: 5.75rem; align-self: start; max-height: calc(100svh - 5.75rem); overflow-y: auto; padding: 2.5rem 1rem 2rem var(--spacing-gutter); }
+.mdi-index ol { margin-top: 1.25rem; border-left: 1px solid var(--color-line); }
+.mdi-index a { display: flex; gap: 0.75rem; align-items: baseline; padding: 0.7rem 0.5rem 0.7rem 0.85rem; border-left: 2px solid transparent; margin-left: -1px; color: var(--color-ink-2); line-height: 1.3; }
+.mdi-index a span { font-family: var(--font-mono); font-size: var(--text-fine); color: var(--color-ink-3); }
+.mdi-index a:hover, .mdi-index a[aria-current] { border-color: var(--color-brand-live); color: var(--color-brand); background: var(--color-surface); }
+.mdi-content { min-width: 0; border-left: 1px solid var(--color-line-soft); }
+.mdi-content section { scroll-margin-top: 6.5rem; }
+.mdi-content .shell { max-width: 72rem; }
+@media (max-width: 767px) { .mdi-layout { display: block; } .mdi-index { z-index: 20; top: 4.7rem; max-height: none; padding: 0.4rem var(--spacing-gutter); background: var(--color-surface); border-bottom: 1px solid var(--color-line); } .mdi-index > p { display: none; } .mdi-index ol { display: flex; overflow-x: auto; gap: 0.5rem; margin: 0; border: 0; scrollbar-width: none; } .mdi-index li { flex: none; } .mdi-index a { margin: 0; padding: 0.55rem; border: 0; border-bottom: 2px solid transparent; white-space: nowrap; } .mdi-content { border: 0; } .mdi-content section { scroll-margin-top: 8rem; } }
+
+/* Native route transitions preserve the persistent chrome while the page settles. */
+::view-transition-old(.page) { animation: page-out 220ms ease-in both; }
+::view-transition-new(.page) { animation: page-in 420ms var(--ease-glide) both; }
+@keyframes page-out { to { opacity: 0; transform: translateY(-0.35rem); } }
+@keyframes page-in { from { opacity: 0; transform: translateY(0.7rem); } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-old(.page), ::view-transition-new(.page) { animation: none; } }
+
+/* The video reference keeps one logo and one set of links while two rows become one. */
+.site-nav { height: 9rem; width: 100%; background: rgb(255 255 255 / 0.96); border-bottom: 1px solid var(--color-line); box-shadow: 0 0.25rem 1.5rem rgb(16 21 26 / 0.08); backdrop-filter: blur(16px); transition: height var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide); }
+.site-nav.is-compact { height: 4.25rem; box-shadow: 0 0.5rem 1.5rem rgb(16 21 26 / 0.12); }
+.site-nav-inner { position: relative; width: 100%; height: 100%; }
+.site-nav-brand { position: absolute; top: 0.25rem; left: 50%; display: flex; align-items: center; justify-content: center; height: 5.5rem; transform: translateX(-50%); transition: top var(--motion-glide) var(--ease-glide), left var(--motion-glide) var(--ease-glide), transform var(--motion-glide) var(--ease-glide), height var(--motion-glide) var(--ease-glide); }
+.site-nav-logo { display: block; width: auto; height: 5.25rem; transition: height var(--motion-glide) var(--ease-glide); }
+.site-nav.is-compact .site-nav-brand { top: 0.45rem; left: var(--spacing-gutter); height: 3.25rem; transform: translateX(0); }
+.site-nav.is-compact .site-nav-logo { height: 3.1rem; }
+.site-nav-links { position: absolute; top: 5.8rem; left: 50%; transform: translateX(-50%); transition: top var(--motion-glide) var(--ease-glide), left var(--motion-glide) var(--ease-glide), transform var(--motion-glide) var(--ease-glide); }
+.site-nav-links ul { display: flex; align-items: center; justify-content: center; gap: 0.65rem; white-space: nowrap; }
+.site-nav.is-compact .site-nav-links { top: 0.85rem; left: clamp(9.5rem, 15vw, 13rem); transform: translateX(0); }
+.site-nav.is-compact .site-nav-links ul { gap: 0.2rem; }
+.site-nav-link { position: relative; display: inline-flex; align-items: center; min-height: 2.6rem; padding-inline: 0.75rem; color: var(--color-ink-2); font-weight: 600; transition: color var(--motion-swift), padding var(--motion-glide); }
+.site-nav.is-compact .site-nav-link { padding-inline: 0.5rem; }
+.site-nav-link:hover, .site-nav-link[aria-current] { color: var(--color-brand); }
+.site-nav-link::after { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: var(--color-brand-live); transform: scaleX(0); transform-origin: left; transition: transform var(--motion-glide) var(--ease-glide); }
+.site-nav-link:hover::after, .site-nav-link:focus-visible::after, .site-nav-link[aria-current]::after { transform: scaleX(1); }
+.site-login { position: absolute; top: 1.5rem; right: var(--spacing-gutter); display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.35rem 1.1rem; overflow: hidden; border: 1px solid var(--color-brand); border-radius: 10rem; color: var(--color-brand); font-weight: 700; isolation: isolate; transition: top var(--motion-glide), color var(--motion-swift), transform var(--motion-swift); }
+.site-nav.is-compact .site-login { top: 0.85rem; }
+.site-login::after { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--color-brand-live); transform: translateY(102%); transition: transform var(--motion-glide) var(--ease-glide); }
+.site-login:hover { color: var(--color-surface); transform: translateY(-2px); }
+.site-login:hover::after { transform: translateY(0); }
+.site-nav-menu { position: absolute; right: var(--spacing-gutter); top: 1rem; border: 1px solid var(--color-line); color: var(--color-ink); }
+.hero-action { position: relative; overflow: hidden; border-radius: 0.25rem; isolation: isolate; transition: transform var(--motion-swift), box-shadow var(--motion-glide); }
+.hero-action::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--color-brand); transform: translateY(101%); transition: transform var(--motion-glide) var(--ease-glide); }
+.hero-action:hover { color: var(--color-surface); transform: translateY(-3px); box-shadow: 0 0.75rem 1.75rem rgb(11 120 192 / 0.35); }
+.hero-action:hover::before { transform: translateY(0); }
+.sliding-toggle { position: relative; isolation: isolate; }
+.sliding-toggle-indicator { position: absolute; top: 0.125rem; left: 0; height: calc(100% - 0.25rem); border-radius: 10rem; background: var(--color-brand); transform: translateX(0); transition: transform var(--motion-glide) var(--ease-glide), width var(--motion-glide) var(--ease-glide); z-index: -1; pointer-events: none; }
+.sliding-toggle-button { position: relative; z-index: 1; }
+@media (max-width: 1023px) { .site-nav, .site-nav.is-compact { height: 4.75rem; } .site-nav-brand, .site-nav.is-compact .site-nav-brand { top: 0.5rem; left: var(--spacing-gutter); height: 3.75rem; transform: none; } .site-nav-logo, .site-nav.is-compact .site-nav-logo { height: 3.5rem; } .site-nav-links, .site-login { display: none; } }

@@ -1,89 +1,96 @@
 "use client";
 
-// Review R8: visual cards reveal supporting information and link to full pages.
-/*
-  Change request 2026-09-21, section 1. This card was the tallest repeated
-  thing on the site: a 4:3 picture over a text block held open to 16rem
-  whether or not the words filled it. On a phone the picture is 16:10 and the
-  block is only as tall as its contents. From md both go back to what they
-  were, because the floor is what keeps a row of cards level.
-
-  Change request 2026-09-21, second pass: "apply smoother transitions for all
-  carousels". The arrows glide the rail on the site's own duration and easing
-  through lib/motion.ts, rather than handing the move to the browser's much
-  shorter smooth-scroll curve. Change request, Home: "add hover effects; color
-  change to explore links" — the action shifts to brand-live when the pointer
-  is anywhere over the card, not only over the four words themselves.
-*/
-
+// Beautify F05: fixed-size photographic capability cards, disclosure and continuous rail.
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-
 import { glideBy } from "@/lib/motion";
-import { useRailRotation } from "@/lib/useRailRotation";
 
 export type VisualRailItem = {
-  id: string;
-  eyebrow: string;
-  title: string;
-  summary: string;
-  image: string;
-  alt: string;
-  href: string;
-  action: string;
+  id: string; eyebrow: string; title: string; summary: string;
+  image: string; alt: string; href: string; action: string;
 };
+
+function CapabilityCard({ item, open, dismissed, clone, onToggle, onClose }: {
+  item: VisualRailItem; open: boolean; dismissed?: boolean; clone?: boolean; onToggle?: () => void; onClose?: () => void;
+}) {
+  return (
+    <li className={`capability-card ${open ? "is-open" : ""} ${dismissed ? "is-dismissed" : ""} ${clone ? "is-clone" : ""}`} aria-hidden={clone || undefined}>
+      <div className="capability-photo">
+        <Image src={item.image} alt={clone ? "" : item.alt} fill sizes="(max-width: 480px) 88vw, 380px" className="capability-image object-cover" />
+      </div>
+      <div className="capability-caption">
+        <h3>{item.eyebrow}</h3>
+        {clone ? <span className="capability-toggle" aria-hidden="true">Explore +</span> : (
+          <button id={`cap-toggle-${item.id}`} type="button" className="capability-toggle" aria-label={`${open ? "Close" : "Show"} ${item.eyebrow} details`} aria-expanded={open} onClick={onToggle}>{open ? "Close −" : "Explore +"}</button>
+        )}
+      </div>
+      <div className="capability-detail">
+        <h4>{item.title}</h4>
+        <p>{item.summary}</p>
+        <div className="capability-actions">
+          {clone ? <span className="capability-action">{item.action}</span> : <Link href={item.href} className="capability-action group-hover:text-brand-live">{item.action}</Link>}
+          {!clone && <button type="button" className="capability-close" onClick={() => { onClose?.(); document.getElementById(`cap-toggle-${item.id}`)?.focus(); }}>Close</button>}
+        </div>
+      </div>
+    </li>
+  );
+}
 
 export function VisualCardRail({ items, label }: { items: VisualRailItem[]; label: string }) {
   const rail = useRef<HTMLUListElement>(null);
-  const [start, setStart] = useState(true);
-  const [end, setEnd] = useState(false);
-  useRailRotation(rail);
-  const measure = () => {
-    const node = rail.current;
-    if (!node) return;
-    setStart(node.scrollLeft <= 2);
-    setEnd(node.scrollLeft + node.clientWidth >= node.scrollWidth - 2);
-  };
+  const [open, setOpen] = useState<string | null>(null);
+  const [dismissed, setDismissed] = useState<string | null>(null);
+  const [inspecting, setInspecting] = useState(false);
+  const [manual, setManual] = useState(false);
 
   useEffect(() => {
-    measure();
     const node = rail.current;
-    if (!node) return;
-    const observer = new ResizeObserver(measure);
+    if (!node || manual || inspecting || open || items.length < 2 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    let last = 0;
+    const tick = (time: number) => {
+      const clone = node.children[items.length] as HTMLElement | undefined;
+      const first = node.firstElementChild as HTMLElement | null;
+      const loop = clone && first ? clone.offsetLeft - first.offsetLeft : 0;
+      if (last && loop && !document.hidden && node.dataset.visible === "true") {
+        node.scrollLeft += Math.min(time - last, 40) * 0.051;
+        if (node.scrollLeft >= loop) node.scrollLeft -= loop;
+      }
+      last = time;
+      frame = requestAnimationFrame(tick);
+    };
+    const observer = new IntersectionObserver(([entry]) => { node.dataset.visible = String(entry.isIntersecting); }, { threshold: 0.25 });
     observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+    frame = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); };
+  }, [items.length, inspecting, manual, open]);
 
   const move = (direction: -1 | 1) => {
     const node = rail.current;
-    if (!node) return;
-    const card = node.querySelector<HTMLElement>("li");
-    const gap = card?.nextElementSibling
-      ? (card.nextElementSibling as HTMLElement).offsetLeft - card.offsetLeft - card.offsetWidth
-      : 0;
-    glideBy(node, direction * ((card?.offsetWidth ?? node.clientWidth) + gap));
+    const first = node?.firstElementChild as HTMLElement | null;
+    const second = first?.nextElementSibling as HTMLElement | null;
+    const clone = node?.children[items.length] as HTMLElement | undefined;
+    if (!node || !first || !second || !clone) return;
+    const step = second.offsetLeft - first.offsetLeft;
+    const loop = clone.offsetLeft - first.offsetLeft;
+    setManual(true);
+    if (direction < 0 && node.scrollLeft < step) node.scrollLeft += loop;
+    if (direction > 0 && node.scrollLeft >= loop) node.scrollLeft -= loop;
+    glideBy(node, direction * step);
   };
 
   return (
-    <div>
-      <div className="mb-4 flex justify-end gap-2 md:mb-6">
-        <button type="button" aria-label={`Previous ${label}`} disabled={start} onClick={() => move(-1)} className="grid h-11 w-11 place-items-center border border-line bg-surface text-brand transition-colors hover:border-brand hover:bg-brand hover:text-surface disabled:opacity-30 disabled:hover:border-line disabled:hover:bg-surface disabled:hover:text-brand">←</button>
-        <button type="button" aria-label={`More ${label}`} disabled={end} onClick={() => move(1)} className="grid h-11 w-11 place-items-center border border-line bg-surface text-brand transition-colors hover:border-brand hover:bg-brand hover:text-surface disabled:opacity-30 disabled:hover:border-line disabled:hover:bg-surface disabled:hover:text-brand">→</button>
-      </div>
-      <ul ref={rail} onScroll={measure} aria-label={label} className="rail-glide grid auto-cols-[82%] grid-flow-col gap-5 overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:thin] sm:auto-cols-[46%] lg:auto-cols-[31%]">
-        {items.map((item) => (
-          <li key={item.id} className="card-hit group snap-start overflow-hidden border border-line bg-surface">
-            <div className="relative aspect-[16/10] overflow-hidden md:aspect-[4/3]"><Image src={item.image} alt={item.alt} fill sizes="(max-width: 768px) 82vw, 31vw" className="object-cover transition duration-500 group-hover:scale-105" /></div>
-            <div className="flex flex-col p-5 md:min-h-64 md:p-6">
-              <p className="kicker">{item.eyebrow}</p>
-              <h3 className="display mt-3 text-sub">{item.title}</h3>
-              <p className="trim-mobile mt-2 text-body leading-relaxed text-ink-2 md:mt-3">{item.summary}</p>
-              <Link href={item.href} className="stretch mt-auto pt-4 font-medium text-brand transition-colors group-hover:text-brand-live hover:text-brand-live md:pt-5">{item.action}</Link>
-            </div>
-          </li>
-        ))}
+    <div className="capability-gallery" onMouseEnter={() => setInspecting(true)} onMouseLeave={() => { setInspecting(false); setDismissed(null); }} onFocusCapture={() => setInspecting(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setInspecting(false); }} onKeyDown={(event) => { if (event.key === "Escape" && open) { setDismissed(open); setOpen(null); document.getElementById(`cap-toggle-${open}`)?.focus(); } }}>
+      <ul ref={rail} aria-label={label} className="capability-rail">
+        {items.map((item) => <CapabilityCard key={item.id} item={item} open={open === item.id} dismissed={dismissed === item.id} onToggle={() => { setDismissed(null); setOpen(open === item.id ? null : item.id); }} onClose={() => { setDismissed(item.id); setOpen(null); }} />)}
+        {items.map((item) => <CapabilityCard key={`copy-${item.id}`} item={item} open={false} clone />)}
       </ul>
+      <div className="capability-controls">
+        <button type="button" aria-label={`Previous ${label}`} onClick={() => move(-1)}>←</button>
+        <p className="capability-status" aria-live="off">{manual ? "Manual mode · Use arrows to browse" : inspecting || open ? "Paused · Inspect a capability" : "Auto-gliding · Hover card to inspect"}</p>
+        <button type="button" aria-label={`Next ${label}`} onClick={() => move(1)}>→</button>
+      </div>
     </div>
   );
 }
