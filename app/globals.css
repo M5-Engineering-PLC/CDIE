@@ -522,6 +522,14 @@
 .triad-dots button[aria-current] { width: 1.5rem; background: var(--color-brand-live); }
 @media (min-width: 768px) { .triad-dots { display: none; } }
 
+.cdie-initial { color: var(--color-brand); font-weight: 700; }
+.cdie-mark-stage { perspective: 900px; }
+.cdie-mark { display: inline-block; transform-origin: left center; transform-style: preserve-3d; transition: transform 620ms var(--ease-glide), text-shadow 620ms var(--ease-glide); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cdie-mark-stage:hover .cdie-mark { transform: rotateY(-18deg) rotateX(5deg) skewY(-1deg) scale(1.025); text-shadow: 3px 3px 0 rgb(14 91 143 / 0.16), 6px 6px 0 rgb(14 91 143 / 0.08); }
+}
+@media (prefers-reduced-motion: reduce) { .cdie-mark { transition: none; } }
+
 .about-hero-image, .about-person { transition: transform var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide), border-color var(--motion-swift); }
 .about-hero-image img, .about-person img { transition: transform var(--motion-glide) var(--ease-glide); }
 @media (hover: hover) { .about-hero-image:hover, .about-person:hover { transform: translateY(-0.35rem); box-shadow: 0 0.9rem 1.7rem rgb(16 21 26 / 0.12); } .about-hero-image:hover img, .about-person:hover img { transform: scale(1.025); } }

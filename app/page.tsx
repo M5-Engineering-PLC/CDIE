@@ -58,6 +58,10 @@ const serviceCards = capabilities.map((capability) => ({
   action: `Explore ${capability.name.toLowerCase()}`,
 }));
 
+const [descriptionBefore, ...descriptionAfter] = defineCdie.body.split(
+  "Centre for Design, Innovation & Engineering",
+);
+
 export default function HomePage() {
   return (
     <>
@@ -65,9 +69,16 @@ export default function HomePage() {
 
       <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
         <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:gap-16">
-          <p aria-hidden="true" className="display text-mega leading-none text-brand">C.D.I.E</p>
+          <div className="cdie-mark-stage self-center">
+            <p aria-hidden="true" className="cdie-mark display text-mega leading-none text-brand">C.D.I.E</p>
+          </div>
           <p className="max-w-[62ch] text-body leading-relaxed text-ink-2 md:text-lead">
-            {defineCdie.body}
+            {descriptionBefore}
+            <strong className="cdie-initial">C</strong>entre for{" "}
+            <strong className="cdie-initial">D</strong>esign,{" "}
+            <strong className="cdie-initial">I</strong>nnovation &amp;{" "}
+            <strong className="cdie-initial">E</strong>ngineering{" "}
+            {descriptionAfter.join("Centre for Design, Innovation & Engineering").trimStart()}
           </p>
         </div>
 
