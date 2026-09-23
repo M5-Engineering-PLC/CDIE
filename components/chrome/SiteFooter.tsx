@@ -18,6 +18,8 @@ export type SiteFooterProps = {
     phone: string;
     phoneHref: string;
     availability: string;
+    availabilityDays: string;
+    availabilityHours: string;
     campus: string;
   };
   name: string;
@@ -116,9 +118,12 @@ export function SiteFooter({
                 {contact.phone}
               </a>
             </li>
-            <li>{contact.availability}</li>
+            {/* changes-v2 item 7: the hours sit on their own line. */}
+            <li>{contact.availabilityDays}</li>
+            <li>{contact.availabilityHours}</li>
           </ul>
-          <ul className="mt-7 flex flex-wrap gap-3" aria-label="Social media">
+          {/* changes-v2 item 8: two icons per row on a phone. */}
+          <ul className="mt-7 grid w-fit grid-cols-2 gap-3 sm:flex sm:flex-wrap" aria-label="Social media">
             {socialAccounts.filter((account) => account.href).map((account) => (
               <li key={account.id}>
                 <a href={account.href} target="_blank" rel="noreferrer" aria-label={account.label} className="grid h-10 w-10 place-items-center rounded-full border border-surface/25 text-surface/75 transition hover:border-brand-lift hover:text-brand-lift">

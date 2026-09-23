@@ -94,7 +94,7 @@ export function ProgrammeHeroCarousel({
               <div className="scene-copy max-w-[42rem]">
                 <p className="kicker !text-brand-lift">{slide.eyebrow}</p>
                 <Heading className="display mt-3 text-title leading-none text-surface md:mt-5 md:text-mega">{slide.title}</Heading>
-                <p className="trim-mobile mt-4 max-w-[54ch] text-body leading-relaxed text-surface/80 md:mt-6 md:text-lead">{slide.summary}</p>
+                <p className="mt-4 max-w-[54ch] text-body leading-relaxed text-surface/80 md:mt-6 md:text-lead">{slide.summary}</p>
                 <Link href={slide.action.href} tabIndex={slideIndex === index ? 0 : -1} className="hero-action mt-5 inline-flex bg-brand-live px-5 py-3 font-medium text-surface md:mt-8 md:px-6 md:py-3.5">
                   {slide.action.label}
                 </Link>

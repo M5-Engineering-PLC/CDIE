@@ -4,9 +4,11 @@
 // A drop-in <ul> for rails that are otherwise pure CSS, so server components can
 // keep rendering their cards and still get the rotation.
 
-import { useRef, type ReactNode } from "react";
+import { Children, useRef, type ReactNode } from "react";
 
 import { useRailRotation } from "@/lib/useRailRotation";
+
+import { RailDots } from "./RailDots";
 
 export function AutoRail({
   className,
@@ -21,8 +23,11 @@ export function AutoRail({
   useRailRotation(rail);
 
   return (
-    <ul ref={rail} aria-label={label} className={`${className} rail-glide`}>
-      {children}
-    </ul>
+    <div>
+      <ul ref={rail} aria-label={label} className={`${className} rail-glide`}>
+        {children}
+      </ul>
+      <RailDots rail={rail} count={Children.count(children)} label={label ?? "cards"} />
+    </div>
   );
 }

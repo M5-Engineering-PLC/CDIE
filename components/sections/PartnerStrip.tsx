@@ -19,9 +19,11 @@ export function PartnerStrip() {
     <section aria-labelledby="partners-title" className="border-y border-line-soft bg-surface">
       <div className="shell band-y">
         <p id="partners-title" className="kicker text-center">Partners</p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:mt-9 md:gap-x-14 md:gap-y-9 md:justify-between">
+        {/* changes-v2 item 6: one per row on a phone, two by two from sm and
+            all four across from lg, so the row never breaks 1,1,2. */}
+        <div className="mt-6 grid grid-cols-1 items-center justify-items-center gap-x-10 gap-y-8 sm:grid-cols-2 md:mt-9 md:gap-x-14 lg:grid-cols-4">
           {partners.map((partner) => (
-            <div key={partner.src} className="grid h-14 min-w-32 place-items-center md:h-20 md:min-w-40">
+            <div key={partner.src} className="grid h-14 w-full place-items-center md:h-20">
               <Image src={partner.src} alt={partner.alt} width={partner.width} height={partner.height} unoptimized className="max-h-11 w-auto max-w-40 object-contain md:max-h-16 md:max-w-52" />
             </div>
           ))}

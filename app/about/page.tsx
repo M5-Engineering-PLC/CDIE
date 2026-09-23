@@ -41,12 +41,13 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  /* Enhancements 2026-09-22: staff added in the dashboard join the team, and a
-     profile without a portrait is not shown, so no empty frames appear. */
+  /* Enhancements 2026-09-22: staff added in the dashboard join the team. */
   const added = (await listItems("staff"))
     .filter((item) => item.image)
     .map((item) => ({ id: item.id, name: item.name, role: item.role, portrait: { src: item.image, alt: item.name, width: 600, height: 720 } }));
-  const team = [...people.filter((person) => person.portrait), ...added];
+  /* changes-v2, 2026-09-23: a colleague whose photograph has not arrived keeps
+     their card, with an empty frame where the portrait will go. */
+  const team = [...people, ...added];
 
   return (
     <>

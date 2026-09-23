@@ -141,7 +141,8 @@ export type CapabilityId =
   | "textiles"
   | "metalworking"
   | "woodworking"
-  | "laser-cutting";
+  | "laser-cutting"
+  | "casting-moulding";
 
 /*
   Change request 2026-09-21, section 4: "for now just use generic placeholders

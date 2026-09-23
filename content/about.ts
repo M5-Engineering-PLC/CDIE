@@ -120,13 +120,13 @@ export const people: Person[] = [
   {
     id: "stacy-awinja",
     name: "Stacy Awinja",
-    role: "CDIE Manager",
+    role: "Design Studio Manager",
     portrait: portrait("stacy-awinja", "Stacy Awinja"),
   },
   {
     id: "eubrea-mitchy-njeri",
     name: "Eubrea Mitchy Njeri",
-    role: "CDIE Assistant Manager",
+    role: "Assistant Design Studio Manager",
     portrait: portrait("eubrea-mitchy", "Eubrea Mitchy Njeri"),
   },
   {
@@ -140,6 +140,26 @@ export const people: Person[] = [
     name: "James Wambugu",
     role: "Assistant Administrator",
     portrait: portrait("james-wambugu", "James Wambugu", 600),
+  },
+  /*
+    changes-v2, 2026-09-23: three colleagues added by name and role. Their
+    photographs are to come, so each card carries an empty frame rather than
+    another person's picture or a stock portrait.
+  */
+  {
+    id: "antonius-waka",
+    name: "Antonius Waka",
+    role: "Catalyst Fellow",
+  },
+  {
+    id: "abigael-mwangi",
+    name: "Abigael Mwangi",
+    role: "Technical Assistant",
+  },
+  {
+    id: "salome",
+    name: "Salome",
+    role: "Technical Assistant",
   },
 ];
 

@@ -13,7 +13,7 @@ export function StudioDetail({ selected }: { selected: ExplorerCapability }) {
             : "No mapped area"}
       </p>
       <h3 className="display text-sub leading-snug">{selected.headline}</h3>
-      <p className="trim-mobile text-body leading-relaxed text-ink-2">{selected.body}</p>
+      <p className="text-body leading-relaxed text-ink-2">{selected.body}</p>
 
       {/*
         Two different silences, and they must not be confused. A capability at

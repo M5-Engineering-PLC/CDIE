@@ -49,6 +49,9 @@ export const contact = {
   phone: "+254 759 158 430",
   phoneHref: "tel:+254759158430",
   availability: "Monday to Friday, 8 am–5 pm",
+  // changes-v2 item 7: the footer prints the days and the hours on two lines.
+  availabilityDays: "Monday to Friday",
+  availabilityHours: "8 am–5 pm",
   campus: "Kenyatta University Main Campus, off Thika Superhighway, Exit 11.",
   buildingConfirmed: false,
   beforeYouTravel:

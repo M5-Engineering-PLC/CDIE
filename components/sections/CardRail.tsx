@@ -20,10 +20,12 @@
   shorter and differs between engines.
 */
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { glideBy } from "@/lib/motion";
 import { useRailRotation } from "@/lib/useRailRotation";
+
+import { RailDots } from "./RailDots";
 
 export type CardRailProps = {
   label: string;
@@ -74,6 +76,8 @@ export function CardRail({ label, children, columns = 3 }: CardRailProps) {
       >
         {children}
       </ul>
+
+      <RailDots rail={rail} count={Children.count(children)} label={label} />
 
       <div className="flex items-center gap-3 lg:hidden">
         <button

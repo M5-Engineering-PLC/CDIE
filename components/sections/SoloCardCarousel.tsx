@@ -33,15 +33,18 @@ const SWIPE_PX = 48;
 export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; label: string }) {
   const [index, setIndex] = useState(0);
   const down = useRef<number | null>(null);
+  const frame = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (items.length < 2) return;
-    const timer = window.setTimeout(
-      () => setIndex((current) => (current + 1) % items.length),
-      DWELL_MS,
-    );
-    return () => window.clearTimeout(timer);
-  }, [index, items.length]);
+    /* changes-v2 item 3: hovering or focusing the card holds it. The tick keeps
+       running and simply skips its turn, so the rotation resumes on leaving. */
+    const timer = window.setInterval(() => {
+      if (frame.current?.matches(":hover, :focus-within")) return;
+      setIndex((current) => (current + 1) % items.length);
+    }, DWELL_MS);
+    return () => window.clearInterval(timer);
+  }, [items.length]);
 
   const swipe = (end: number) => {
     const start = down.current;
@@ -57,6 +60,7 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
     <div
       aria-roledescription="carousel"
       aria-label={label}
+      ref={frame}
       className="mx-auto max-w-[46rem]"
       onPointerDown={(event) => { down.current = event.clientX; }}
       onPointerUp={(event) => swipe(event.clientX)}
@@ -70,20 +74,24 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
               aria-hidden={candidateIndex !== index}
               className={`scene absolute inset-0 ${candidateIndex === index ? "on" : ""}`}
             >
-              <Image
-                src={candidate.image}
-                alt={candidate.alt}
-                fill
-                sizes="(max-width: 768px) 100vw, 46rem"
-                className="object-cover"
-              />
+              {candidate.image ? (
+                <Image
+                  src={candidate.image}
+                  alt={candidate.alt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 46rem"
+                  className="object-cover"
+                />
+              ) : (
+                <span className="block h-full w-full bg-raise" aria-hidden="true" />
+              )}
             </div>
           ))}
         </div>
         <div key={item.id} className="settle flex flex-col gap-2 p-5 md:p-6">
           <p className="kicker">{item.eyebrow}</p>
           <h3 className="display text-sub">{item.title}</h3>
-          <p className="trim-mobile text-body leading-relaxed text-ink-2">{item.summary}</p>
+          <p className="text-body leading-relaxed text-ink-2">{item.summary}</p>
           <Link
             href={item.href}
             className="stretch pt-2 font-medium text-brand transition-colors hover:text-brand-live"
@@ -93,7 +101,7 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
         </div>
       </article>
 
-      <div className="mt-4 flex justify-center gap-2">
+      <div className="mt-4 flex items-center justify-center gap-2">
         {items.map((candidate, candidateIndex) => (
           <button
             key={candidate.id}
@@ -101,8 +109,9 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
             aria-label={candidate.title}
             aria-current={candidateIndex === index}
             onClick={() => setIndex(candidateIndex)}
-            className={`h-1.5 w-10 rounded-full transition-colors duration-500 hover:bg-brand-lift ${
-              candidateIndex === index ? "bg-brand" : "bg-line"
+            /* changes-v2 item 2: the active dot is larger and coloured. */
+            className={`rounded-full transition-all duration-500 ${
+              candidateIndex === index ? "h-3 w-3 bg-brand" : "h-2 w-2 bg-line hover:bg-brand-lift"
             }`}
           />
         ))}

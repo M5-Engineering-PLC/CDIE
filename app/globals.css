@@ -66,9 +66,9 @@
 
     - the band rhythm halves below the md breakpoint, via --band-y, which
       Section and every hero reads instead of a literal padding;
-    - .trim-mobile clamps a supporting paragraph to three lines on a phone and
-      releases it on a wider screen, so the words are still in the document and
-      still read by a screen reader. Nothing is deleted, only folded.
+    changes-v2, items 4, 12 and 14: "no broken sentences, write all paragraphs
+    in full". The .trim-mobile clamp is withdrawn; every paragraph reads in
+    full at every width.
   */
   --band-y: 1.75rem;
 
@@ -216,13 +216,6 @@
   */
   .band-y {
     padding-block: var(--band-y);
-  }
-
-  .trim-mobile {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
   }
 
   /*
@@ -385,11 +378,6 @@
     --band-y: 3.5rem;
   }
 
-  .trim-mobile {
-    display: block;
-    -webkit-line-clamp: none;
-    overflow: visible;
-  }
 }
 
 @keyframes hero-progress {

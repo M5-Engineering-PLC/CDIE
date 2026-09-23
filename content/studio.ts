@@ -192,7 +192,8 @@ export const capabilities: Capability[] = [
   },
   {
     id: "laser-cutting",
-    name: "Laser Cutting",
+    // changes-v2 item 5: CNC and laser engraving are listed as one service.
+    name: "CNC and Laser Engraving",
     space: "atc",
     headline: "Rapid 2D profiling and precision sheet prototyping.",
     body: "Positioned along the rear louvred window wall. The enclosed Blue Elephant CO2 laser cutter offers precision cutting and engraving across acrylic, MDF, plywood, cardboard, and technical textiles with active window exhaust.",
@@ -202,13 +203,30 @@ export const capabilities: Capability[] = [
       "Digital file preparation (.dxf, .ai, .svg) and Ruida DSP training",
       "Laser safety induction and exhaust extraction checklist",
     ],
-    enquiry: "Ask about laser cutting",
+    enquiry: "Ask about CNC and laser engraving",
     media: [],
     components: [
       { id: "co2-laser", name: "Enclosed laser cutting bed", note: "Enclosed cutting bed with safety interlock viewing canopy." },
       { id: "dsp-controller", name: "Digital controller keypad", note: "Digital speed, power and origin positioning keypad." },
       { id: "honeycomb-bed", name: "Honeycomb and knife bed", note: "Dual-surface cutting bed with active fume exhaust duct." },
     ],
+  },
+  /*
+    changes-v2 item 5: "empty card for casting and moulding, no description for
+    now". The card holds the name and nothing else: no photograph, no headline
+    and no equipment list, because none has been supplied.
+  */
+  {
+    id: "casting-moulding",
+    name: "Casting and Moulding",
+    space: "studio",
+    headline: "",
+    body: "",
+    modelGroup: null,
+    pending: ["A description of this area, its equipment and how to use it"],
+    enquiry: "Ask about casting and moulding",
+    media: [],
+    components: [],
   },
 ];
 

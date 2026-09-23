@@ -8,7 +8,9 @@ import { glideBy } from "@/lib/motion";
 
 export type VisualRailItem = {
   id: string; eyebrow: string; title: string; summary: string;
-  image: string; alt: string; href: string; action: string;
+  /* changes-v2 item 5: a service with no photograph yet keeps its card and
+     shows an empty frame rather than borrowing another area's picture. */
+  image?: string; alt: string; href: string; action: string;
 };
 
 function CapabilityCard({ item, open, dismissed, clone, onToggle, onClose }: {
@@ -17,7 +19,11 @@ function CapabilityCard({ item, open, dismissed, clone, onToggle, onClose }: {
   return (
     <li className={`capability-card ${open ? "is-open" : ""} ${dismissed ? "is-dismissed" : ""} ${clone ? "is-clone" : ""}`} aria-hidden={clone || undefined}>
       <div className="capability-photo">
-        <Image src={item.image} alt={clone ? "" : item.alt} fill sizes="(max-width: 480px) 88vw, 380px" className="capability-image object-cover" />
+        {item.image ? (
+          <Image src={item.image} alt={clone ? "" : item.alt} fill sizes="(max-width: 480px) 88vw, 380px" className="capability-image object-cover" />
+        ) : (
+          <span className="capability-image block h-full w-full bg-raise" aria-hidden="true" />
+        )}
       </div>
       <div className="capability-caption">
         <h3>{item.eyebrow}</h3>
