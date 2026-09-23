@@ -8,7 +8,7 @@ import { createDesignStudioModel, type StudioRuntime } from "./createDesignStudi
 import { createTourCamera } from "./tourCamera";
 import type { ServiceId } from "./studioLayout";
 
-export type StudioView = "isometric" | "top";
+export type StudioView = "isometric" | "top" | "printers" | "cabinets" | "chairs" | "textile";
 
 /*
   Change request 2026-09-21, section 4. Three capabilities the room did not have:
@@ -36,6 +36,22 @@ const views = {
   isometric: {
     position: new THREE.Vector3(-11.5, 10.1, -12.5),
     target: new THREE.Vector3(0.2, 0.55, 0.15),
+  },
+  printers: {
+    position: new THREE.Vector3(2.05, 2.7, 2.4),
+    target: new THREE.Vector3(2.05, 1.48, -3.1),
+  },
+  cabinets: {
+    position: new THREE.Vector3(1.5, 2.2, 0.5),
+    target: new THREE.Vector3(4.96, 0.7, 0),
+  },
+  chairs: {
+    position: new THREE.Vector3(0.1, 2.5, 2.7),
+    target: new THREE.Vector3(0, 0.65, 0),
+  },
+  textile: {
+    position: new THREE.Vector3(-1.6, 2.7, 1.45),
+    target: new THREE.Vector3(-4.8, 0.9, 0.8),
   },
   top: {
     position: new THREE.Vector3(0, 18.5, 0.01),
@@ -125,7 +141,7 @@ export function useDesignStudioScene({
     controls.target.copy(views.isometric.target);
     controls.enableDamping = true;
     controls.dampingFactor = 0.075;
-    controls.minDistance = 8;
+    controls.minDistance = 2;
     controls.maxDistance = 26;
     controls.maxPolarAngle = Math.PI * 0.49;
     controls.screenSpacePanning = true;
@@ -201,8 +217,12 @@ export function useDesignStudioScene({
         if (!(node instanceof THREE.Mesh)) return;
         node.geometry.dispose();
         const materials = Array.isArray(node.material) ? node.material : [node.material];
-        materials.forEach((material) => material.dispose());
+        materials.forEach((material) => {
+          if (material instanceof THREE.MeshBasicMaterial && material.map) material.map.dispose();
+          material.dispose();
+        });
       });
+      for (const texture of (model.userData.generatedTextures as THREE.Texture[] | undefined) ?? []) texture.dispose();
       ground.geometry.dispose();
       (ground.material as THREE.Material).dispose();
       renderer.dispose();

@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "lenis/dist/lenis.css";
+@import "../node_modules/lenis/dist/lenis.css";
 
 /*
   The single token declaration. Gate 1 of docs/BUILD_PLAN.md freezes this file.

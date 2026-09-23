@@ -41,7 +41,7 @@ export const spaces: Space[] = [
     name: "Graduate School",
     shortName: "Grad school",
     summary:
-      "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery. The room plan covers the main room; textile work is not placed in it, because nothing documents where it sits.",
+      "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery. The room plan shows these areas together, based on the studio video and photographs.",
     hasModel: true,
   },
   {
@@ -141,7 +141,7 @@ export const capabilities: Capability[] = [
     space: "studio",
     headline: "Design for the way a product meets the body.",
     body: "Explore fabric-based components, wearable concepts and upholstery with tools for sewing, cutting and working with textiles. This area brings material choice, fit and comfort into the prototyping process.",
-    modelGroup: null,
+    modelGroup: "textiles",
     pending: ["Equipment and materials", "Access, staff support and charges"],
     enquiry: "Ask about textile prototyping",
     media: [],

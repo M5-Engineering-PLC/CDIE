@@ -45,6 +45,7 @@ const CLOSE = { radius: 6.4, phi: 1.12 };
 */
 const CLOSE_UPS: Partial<Record<ServiceId, { aim: [number, number, number]; seat: [number, number, number] }>> = {
   design: { aim: [-2.45, 1.15, -3.12], seat: [-2.45, 1.55, -1.35] },
+  textiles: { aim: [-4.85, 1.15, 0.8], seat: [-1.6, 1.55, 1.45] },
 };
 
 /** Centre of a service group, cached: the geometry never moves. */

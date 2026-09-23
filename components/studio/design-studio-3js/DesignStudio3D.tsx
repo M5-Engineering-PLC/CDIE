@@ -79,7 +79,7 @@ export function DesignStudio3D({
 
       {interactive && !tour ? (
       <div className="absolute bottom-4 right-4 flex border border-line bg-surface p-1 shadow-sm" aria-label="Studio camera controls">
-        {(["isometric", "top"] as const).map((option) => (
+        {(["isometric", "top", "printers", "cabinets", "chairs", "textile"] as const).map((option) => (
           <button
             key={option}
             type="button"
@@ -89,7 +89,17 @@ export function DesignStudio3D({
               view === option ? "bg-brand text-surface" : "text-ink-2 hover:bg-raise"
             }`}
           >
-            {option === "isometric" ? "Isometric" : "Top view"}
+            {option === "isometric"
+              ? "Room"
+              : option === "top"
+                ? "Top view"
+                : option === "printers"
+                  ? "Printers"
+                  : option === "cabinets"
+                    ? "Cabinets"
+                    : option === "chairs"
+                      ? "Chairs"
+                      : "Sewing"}
           </button>
         ))}
       </div>
