@@ -13,9 +13,9 @@ export const dynamic = "force-dynamic";
 /** Where each kind shows up on the public site, so an editor knows what adding one does. */
 const shownOn: Record<string, string> = {
   newsletters: "Media page, Newsletters, alongside the published issues.",
-  events: "Media page, Events timeline.",
-  activities: "Media page, Events timeline, labelled as an activity.",
-  posts: "Media page, Events timeline, labelled as a post.",
+  events: "Media page, Events calendar.",
+  activities: "Media page, Events calendar, labelled as an activity.",
+  posts: "Media page, Events calendar, labelled as a post.",
   staff: "About page, Our team. Needs a portrait to appear.",
   cohorts: "MDI programme page, Success stories. Needs a photograph to appear.",
 };

@@ -2,21 +2,19 @@
 /*
   Final pass 2026-09-23: "preview elements in the dashboard as will be seen in
   the website". Each collection renders the way its page shows it: posts,
-  events and activities as a row of the Media events chart, newsletters as a
+  events and activities as a Media events calendar card, newsletters as a
   Media newsletter card, staff as an About team card, cohorts as an MDI
   success-story card. The markup mirrors those blocks; the images are plain img
   because a preview may be a local file that has not been uploaded yet.
 */
 
 import { CohortGrid } from "@/components/blocks/CohortGrid";
-import { EventGantt } from "@/components/blocks/EventGantt";
+import { EventCard } from "@/components/blocks/EventCard";
 import type { CollectionId } from "@/lib/admin/collections";
 
 export type PreviewValues = Record<string, string | undefined>;
 
 const LABEL: Partial<Record<CollectionId, string>> = { posts: "Post", events: "Event", activities: "Activity" };
-
-const shift = (iso: string, days: number) => new Date(Date.parse(iso) + days * 86_400_000).toISOString().slice(0, 10);
 
 function Frame({ where, children }: { where: string; children: React.ReactNode }) {
   return (
@@ -75,15 +73,16 @@ export function ItemPreview({ collection, values }: { collection: CollectionId; 
     );
   }
 
-  const start = v(collection === "posts" ? "date" : "start", new Date().toISOString().slice(0, 10));
+  const today = new Date().toISOString().slice(0, 10);
   return (
     <Frame where="Media, Events calendar">
-      <EventGantt
-        items={[{ id: "preview", title: v("title", "Title"), start, end: v("end") || undefined, kind: LABEL[collection], link: v("link") || undefined }]}
-        from={shift(start, -45)}
-        to={shift(v("end", start), 45)}
-        today={new Date().toISOString().slice(0, 10)}
-      />
+      <div className="max-w-sm">
+        <EventCard
+          event={{ id: "preview", title: v("title", "Title"), start: v(collection === "posts" ? "date" : "start", today), end: v("end") || undefined, venue: v("venue") || undefined, kind: LABEL[collection], link: v("link") || undefined, image: v("image") || undefined }}
+          today={today}
+          fallbackImage="/brand/cdie-logo.webp"
+        />
+      </div>
     </Frame>
   );
 }

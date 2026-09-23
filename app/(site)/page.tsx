@@ -50,6 +50,8 @@ const serviceImages: Record<string, string> = {
   woodworking: "/images/service-woodworking-1.jpeg",
   // Enhancements 2026-09-22: "for laser use the image titled summer program".
   "laser-cutting": "/images/cdie-summer-program-laser-cutting.jpg",
+  // 2026-09-23: "use this for casting and molding service".
+  "casting-moulding": "/images/service-casting-moulding-1.webp",
 };
 
 const serviceCards = capabilities.map((capability) => ({

@@ -9,8 +9,10 @@
 
   The priority card is the most recent post: it opens at the centre, in front
   and full size, with the others fanned behind it on either side. Each card is
-  a picture with a green panel laid over its lower half carrying the date, the
+  a picture with a blue panel laid over its lower half carrying the date, the
   title, the opening of the post and a Read More pill to the post on LinkedIn.
+  Revised 2026-09-23: the panel is CDIE blue, and the picture is the first
+  image of the post itself (lib/linkedin/image.ts).
   The arrows, a swipe, the side cards and the labelled tabs underneath all
   bring a card to the front. The geometry is .fan-* in app/globals.css.
 */

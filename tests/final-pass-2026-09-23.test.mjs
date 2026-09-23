@@ -23,7 +23,10 @@ test("the gallery wheel follows the hero directly", () => {
   const gallery = home.indexOf("<RadialGallery");
   assert.ok(hero > 0 && gallery > hero, "gallery after hero");
   assert.ok(gallery < home.indexOf("<Section"), "gallery before every other band");
-  assert.match(read("components/sections/RadialGallery.tsx"), /transform-origin|pin: true/);
+  // Revised: it turns on its own clock, never on the scroll.
+  const wheel = read("components/sections/RadialGallery.tsx");
+  assert.match(wheel, /requestAnimationFrame/);
+  assert.doesNotMatch(wheel, /ScrollTrigger|scrollTrigger/);
 });
 
 test("the innovate, convene, create cards carry no numbers", () => {
@@ -65,4 +68,23 @@ test("the Google Sheet is the dashboard's database and GitHub syncs from it", ()
   assert.match(workflow, /node scripts\/sync-cms\.mjs/);
   // an email address does not belong in a repository
   assert.match(read("scripts/sync-cms.mjs"), /subscriptions: \[\], enquiries: \[\]/);
+});
+
+test("revised: events calendar cards open on the three most recent events", () => {
+  const calendar = read("components/blocks/EventCalendar.tsx");
+  assert.match(calendar, /started - shown/);
+  assert.match(read("app/(site)/media/page.tsx"), /<EventCalendar/);
+  assert.match(read("app/globals.css"), /\.cal-track \{[^}]*transition: transform var\(--motion-scene\) var\(--ease-glide\)/);
+});
+
+test("revised: the community cards are CDIE blue and use the post's own picture", async () => {
+  const css = read("app/globals.css");
+  assert.match(css, /--fan-tone: var\(--color-brand\)/);
+  assert.doesNotMatch(css, /--color-moss\); --fan-deep/);
+  const { pickPostImage } = await import("../lib/linkedin/image.ts");
+  const post = '<meta property="og:image" content="https://media.licdn.com/dms/image/v2/X/feedshare-shrink_800/Y/0/1?e=1&amp;t=z">';
+  assert.equal(pickPostImage(post), "https://media.licdn.com/dms/image/v2/X/feedshare-shrink_800/Y/0/1?e=1&t=z");
+  const logo = '<meta property="og:image" content="https://media.licdn.com/dms/image/v2/X/company-logo_200_200/0/1">';
+  assert.equal(pickPostImage(logo), null);
+  assert.equal(pickPostImage('<meta property="og:image" content="https://evil.example/feedshare-x.jpg">'), null);
 });

@@ -213,8 +213,9 @@ export const capabilities: Capability[] = [
   },
   /*
     changes-v2 item 5: "empty card for casting and moulding, no description for
-    now". The card holds the name and nothing else: no photograph, no headline
-    and no equipment list, because none has been supplied.
+    now". The card holds the name and nothing else: no headline and no
+    equipment list, because none has been supplied. 2026-09-23: it now has a
+    photograph, supplied for this service (a clear resin cast of a hand).
   */
   {
     id: "casting-moulding",

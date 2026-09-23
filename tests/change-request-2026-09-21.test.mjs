@@ -165,7 +165,7 @@ test("Media leads with the calendar, and every event cites its source", () => {
   const newsletters = media.indexOf('id="newsletters"');
   const community = media.indexOf('id="community"');
   assert.ok(events > 0 && events < newsletters && newsletters < community, "calendar leads the page");
-  assert.match(media, /EventGantt/);
+  assert.match(media, /EventCalendar/);
   // Enhancements 2026-09-22: events come from the CDIE LinkedIn feed sheet, and
   // each one links to the post it was taken from.
   const programmes = read("content/programmes.ts");

@@ -5,12 +5,18 @@
   Final pass 2026-09-23: "Gallery should be placed immediately after the hero.
   The images will be in cards arranged as a circular slider as seen in Huge".
 
-  How the reference works, and how this does the same: every card sits in the
-  same grid cell and is rotated a fixed step about a point far below the band
-  (transform-origin 50% var(--radius)), so the cards lie on the rim of a wheel
-  much larger than the screen and only its top arc shows. The band pins while
-  the reader scrolls and the wheel turns under them, carrying each card across
-  the arc; the card at the crown is at full size and the rest ease back.
+  Revised the same day: "images should be larger and independent of the
+  scrolling feature. Ensure the images fill the screen similar to Huge. The
+  carousel should rotate automatically and endlessly, not influenced by the
+  user scrolling."
+
+  Every card is turned about a point far below the band (transform-origin
+  50% var(--radius)), so the cards lie on the rim of a wheel larger than the
+  screen and only its top arc shows. The wheel turns on its own clock: each
+  frame advances an angle, and each card's place on the rim is that angle plus
+  its own step, wrapped so a card leaving on the left comes back round on the
+  right, below the fold, where the jump cannot be seen. Scrolling does nothing
+  to it. It stops ticking while off screen or in a background tab.
 
   With reduced motion, or before the script runs, the same cards are a plain
   swipeable row. The geometry is .radial-* in app/globals.css.
@@ -18,12 +24,11 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export type GalleryPhoto = { id: string; src: string; alt: string; caption: string };
+
+/** Seconds for the wheel to carry one card across one step. */
+const SECONDS_PER_CARD = 3.2;
 
 export function RadialGallery({ eyebrow, title, photos }: { eyebrow: string; title: string; photos: readonly GalleryPhoto[] }) {
   const band = useRef<HTMLElement>(null);
@@ -33,45 +38,46 @@ export function RadialGallery({ eyebrow, title, photos }: { eyebrow: string; tit
     const section = band.current;
     const list = wheel.current;
     if (!section || !list || photos.length < 2) return;
-    const media = gsap.matchMedia();
-    media.add("(prefers-reduced-motion: no-preference)", () => {
-      section.dataset.wheel = "on";
-      const cards = [...list.children] as HTMLElement[];
-      const step = () => Number.parseFloat(getComputedStyle(list).getPropertyValue("--step")) || 14;
-      /* Card i sits at step * i. Turning the wheel from +1 step to -(n - 1)
-         steps brings each card over the crown in turn, the last one included. */
-      const settle = (turn: number) => {
-        cards.forEach((card, index) => {
-          const off = Math.min(Math.abs(turn + step() * index) / step(), 2);
-          card.style.setProperty("--near", String(1 - off / 2));
-        });
-      };
-      const state = { turn: step() };
-      settle(state.turn);
-      const tween = gsap.to(state, {
-        turn: () => -step() * (photos.length - 1),
-        ease: "none",
-        onUpdate: () => {
-          list.style.transform = `rotate(${state.turn}deg)`;
-          settle(state.turn);
-        },
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${window.innerHeight * photos.length * 0.45}`,
-          pin: true,
-          scrub: 0.8,
-          invalidateOnRefresh: true,
-        },
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    section.dataset.wheel = "on";
+    const cards = [...list.children] as HTMLElement[];
+    const step = () => Number.parseFloat(getComputedStyle(list).getPropertyValue("--step")) || 18;
+    let turn = 0;
+    let last = 0;
+    let visible = true;
+    let frame = 0;
+
+    const place = () => {
+      const s = step();
+      const span = s * cards.length;
+      cards.forEach((card, index) => {
+        // Position on the rim, wrapped into (-span/2, span/2] so the loop is endless.
+        let angle = (((index * s - turn) % span) + span) % span;
+        if (angle > span / 2) angle -= span;
+        card.style.transform = `rotate(${angle}deg)`;
+        card.style.setProperty("--near", String(Math.max(0, 1 - Math.abs(angle) / (s * 2))));
+        card.style.visibility = Math.abs(angle) > s * 3.2 ? "hidden" : "visible";
       });
-      return () => {
-        tween.scrollTrigger?.kill();
-        tween.kill();
-        delete section.dataset.wheel;
-        list.style.transform = "";
-      };
-    });
-    return () => media.revert();
+    };
+
+    const tick = (time: number) => {
+      if (last && visible && !document.hidden) turn += (Math.min(time - last, 64) / 1000) * (step() / SECONDS_PER_CARD);
+      last = time;
+      place();
+      frame = requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { rootMargin: "100px" });
+    observer.observe(section);
+    place();
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      delete section.dataset.wheel;
+      cards.forEach((card) => { card.style.transform = ""; card.style.visibility = ""; card.style.removeProperty("--near"); });
+    };
   }, [photos.length]);
 
   return (
@@ -82,11 +88,11 @@ export function RadialGallery({ eyebrow, title, photos }: { eyebrow: string; tit
       </div>
       <div className="radial-stage">
         <ul ref={wheel} className="radial-wheel">
-          {photos.map((photo, index) => (
-            <li key={photo.id} className="radial-card" style={{ "--card": index } as React.CSSProperties}>
+          {photos.map((photo) => (
+            <li key={photo.id} className="radial-card">
               <figure>
                 <div className="radial-photo">
-                  <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 768px) 60vw, 22rem" className="object-cover" />
+                  <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 768px) 80vw, 40vw" className="object-cover" />
                 </div>
                 <figcaption>{photo.caption}</figcaption>
               </figure>
