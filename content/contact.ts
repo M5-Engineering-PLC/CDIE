@@ -3,7 +3,7 @@
 // The map slot exists but stays empty until Lucid fork fk3, the address
 // conflict, is answered. Build plan decision D1.
 
-import type { Card, EnquiryTopic } from "./types";
+import type { Card, EnquiryTopic, Faq } from "./types";
 
 export const contactIntro = {
   headline: "Let’s talk about your next step.",
@@ -92,3 +92,20 @@ export const visit = {
   headline: "Find us at Kenyatta University.",
   pending: ["the building, the floor, parking and step-free access"],
 } as const;
+
+/*
+  FAQ vetting page, 23 September 2026: the questions and answers below are the
+  reviewed set from that page, classified onto the page each belongs to. Each
+  answer records that review as its confirmation, so FaqList publishes it
+  rather than the enquiry wording. Where a fact is still open the answer says
+  so plainly, instead of stating something no source supports.
+*/
+export const contactFaqs: Faq[] = [
+  {
+    id: "reach",
+    question: "How do I get in touch with CDIE?",
+    answer:
+      "Email ive@ku.ac.ke or call +254 759 158 430. The team is available Monday to Friday, 8 am to 5 pm. You can also use the contact form and choose the topic that fits your enquiry.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+];

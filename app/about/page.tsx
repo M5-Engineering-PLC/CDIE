@@ -21,11 +21,13 @@
 
 import type { Metadata } from "next";
 
+import { FaqList } from "@/components/blocks/FaqList";
 import { Button } from "@/components/primitives/Button";
 import { PageHero } from "@/components/sections/PageHero";
 import { AutoRail } from "@/components/sections/AutoRail";
 import { Section } from "@/components/sections/Section";
 import {
+  aboutFaqs,
   aboutIntro,
   collaborate,
   people,
@@ -142,6 +144,11 @@ export default async function AboutPage() {
             </Button>
           ))}
         </div>
+      </Section>
+
+      {/* FAQ vetting page, 23 September 2026: the two questions classified to About Us. */}
+      <Section eyebrow="FAQs" title="Questions we are often asked.">
+        <FaqList items={[...aboutFaqs]} enquiryHref="/contact?topic=general" />
       </Section>
 
       <Section tone="surface" eyebrow="Work with us" title={collaborate.headline}>

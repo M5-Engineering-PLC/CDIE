@@ -10,7 +10,7 @@
 // Lucid: a profile needs picture, name and designation. Nothing else required.
 // Person and cohort selections expand within this page; no child routes.
 
-import type { Card, Person } from "./types";
+import type { Card, Faq, Person } from "./types";
 
 export const aboutIntro = {
   headline: "Practical learning, with people at the centre.",
@@ -199,3 +199,27 @@ export const collaborate = {
 } as const;
 
 export const projectCards: Card[] = [];
+
+/*
+  FAQ vetting page, 23 September 2026: the questions and answers below are the
+  reviewed set from that page, classified onto the page each belongs to. Each
+  answer records that review as its confirmation, so FaqList publishes it
+  rather than the enquiry wording. Where a fact is still open the answer says
+  so plainly, instead of stating something no source supports.
+*/
+export const aboutFaqs: Faq[] = [
+  {
+    id: "ive",
+    question: "What is the difference between CDIE and Invention Education?",
+    answer:
+      "Invention Education (IvE) is the approach and the wider programme — learning through real problems at Kenyatta University. CDIE is the centre where that work happens: the design, engineering and prototyping home for IvE, and the base for the Medical Device Innovation master’s programme.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "partner",
+    question: "How can my organisation work with CDIE?",
+    answer:
+      "There are several ways to take part: speak to students as a guest, mentor an innovator, advise on the curriculum, suggest a project, or support the work through equipment, materials or funding. Tell us what you have in mind and we will find the right fit.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+];

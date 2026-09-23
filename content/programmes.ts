@@ -228,40 +228,111 @@ export const eventsCopy = {
   empty: "No upcoming events are listed at the moment. Contact us to ask what is planned.",
 } as const;
 
+/*
+  FAQ vetting page, 23 September 2026: the questions and answers below are the
+  reviewed set from that page, classified onto the page each belongs to. Each
+  answer records that review as its confirmation, so FaqList publishes it
+  rather than the enquiry wording. Where a fact is still open the answer says
+  so plainly, instead of stating something no source supports.
+*/
 export const programmeFaqs: Faq[] = [
   {
     id: "online",
     question: "Can I study online or at weekends?",
     answer:
-      "The programme is described as full-time and in person, with clinical and industry engagement forming part of the learning experience.",
-    confirmed: null,
+      "No. The M.Sc. runs full-time and in person at Kenyatta University over 18 months. Clinical immersion and industry engagement are part of the timetable, so attendance on site is expected.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "award",
+    question: "What qualification do I get, and how long does it take?",
+    answer:
+      "You graduate with an M.Sc. in Biomedical Engineering — Medical Device Innovation. The programme runs for 18 months, full-time and in person at Kenyatta University.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "who",
+    question: "Who is this programme for?",
+    answer:
+      "It is aimed at graduates with a strong science and mathematics foundation who want to apply those skills to healthcare challenges. Curiosity, teamwork and a willingness to learn through practical work matter as much as your technical background. Previous IvE cohorts have included both clinicians and engineers.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "entry",
+    question: "What are the entry requirements?",
+    answer:
+      "Exact degree, grade and other entry requirements are still being confirmed. Email ive@ku.ac.ke and the admissions team will send you the approved criteria.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "idea",
     question: "Do I need to arrive with a medical device idea?",
     answer:
-      "The programme teaches needs-finding and concept development. If you already have an idea, ask the team how it could fit within the programme’s project requirements.",
-    confirmed: null,
+      "No. The programme teaches needs-finding and concept development, so you will learn how to identify a problem worth solving. If you already have an idea, ask the team how it could fit within the programme’s project requirements.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "curriculum",
+    question: "What will I actually study?",
+    answer:
+      "The first stage builds foundations in clinical needs-finding, biomedical design, fabrication, entrepreneurship and communication. The second develops device design, regulatory strategy, quality systems, physiology, project management and quantitative methods. The final stage brings it together through advanced biomaterials, industry seminars and an M.Sc. project.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "studio",
     question: "Will I use the design studio?",
     answer:
-      "Studio-based prototyping supports the MDI learning experience. The team will explain access arrangements and equipment guidance.",
-    confirmed: null,
+      "Yes. Studio-based prototyping is part of the MDI learning experience, and the studio currently supports MDI-linked projects. Staff take you through induction and equipment guidance for each area before you use it.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "industry",
-    question: "Does the programme include industry experience?",
+    question: "Does the programme include industry or clinical experience?",
     answer:
-      "The source programme description includes a mandatory internship and opportunities to meet industry professionals. Confirm current placement arrangements with the programme team.",
-    confirmed: null,
+      "Yes. The programme description includes a mandatory internship, clinical immersion in hospitals and opportunities to meet healthcare and industry professionals. Confirm current placement arrangements with the programme team.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "apply",
     question: "When can I apply?",
-    answer: "Contact the team for current admissions information.",
-    confirmed: null,
+    answer:
+      "The next application window has not been announced yet. Email ive@ku.ac.ke to be told when applications open, or register your interest so the team can contact you.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "documents",
+    question: "What do I need to submit with my application?",
+    answer:
+      "The existing process asks for a CV, a motivation letter, recommendation letters and undergraduate transcripts. Shortlisted applicants are then invited to interview. Ask the team for the final document checklist before you submit.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "fees",
+    question: "What does it cost, and is funding available?",
+    answer:
+      "Tuition and scholarship details are being confirmed. Email ive@ku.ac.ke for current guidance on fees and any funding routes.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "grants",
+    question: "Does CDIE offer grants or funding to innovators?",
+    answer:
+      "Yes. Through the Invention Education programme, CDIE runs catalytic grants that innovators can apply for to support early prototyping. There are several funding cycles each year — sign up for the newsletter so you hear when a call opens.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "challenge",
+    question: "What is the Design Challenge, and can I take part?",
+    answer:
+      "The Design Challenge is a short, hands-on challenge where teams respond to a defined healthcare problem, build a prototype and present their thinking. Recent teams designed assistive devices to support caregivers. The brief, entry rules and next date are announced when a new round opens — ask the team to be notified.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "training",
+    question: "Do you run short courses or masterclasses?",
+    answer:
+      "Yes. CDIE runs focused sessions in design, making and medical device innovation alongside the master’s programme. Upcoming sessions, prerequisites and sign-up details are published when scheduled — contact the team to ask what is planned.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
 ];
 

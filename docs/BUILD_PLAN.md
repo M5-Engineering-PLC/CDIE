@@ -648,7 +648,7 @@ block Gate 0, together with the decisions this reading added.
 
 | Id | Question | Source | State |
 |---|---|---|---|
-| D1 | Which address is real: 2nd Floor Graduate School, or 1st Floor Chandaria Centre | Lucid fk3, fault F-04 | Open. Blocks the Contact page, the map and the visit copy. No default |
+| D1 | Which address is real: 2nd Floor Graduate School, or 1st Floor Chandaria Centre | Lucid fk3, fault F-04 | Settled 2026-09-23 on the FAQ vetting page: the Design Studio is on the 2nd floor of the Kenyatta University Graduate School. The studio FAQ says so. The Contact page visit copy and the map pin still need the same wording applied |
 | D2 | Do FAQs sit with their topic, or in one block under Contact | Lucid map against Actual Copy | Open. Recommend with the topic |
 | D3 | Where does the archive of nine event recaps live | Lucid fk0 | Open. Recommend Media, with dates and registration owned by Programmes |
 | D4 | Route cutover: the full remap at once, or a gradual wind-down | Lucid fk5 | Open. Recommend at once, with 301s for every retired route |

@@ -242,46 +242,96 @@ export const studioAccess = {
 } as const;
 
 /*
-  Change request 2026-09-21, second pass: "require manual input and
-  confirmation for all faqs". Every answer here is typed from the source by
-  hand and none has been confirmed by a named person, so none publishes. The
-  page renders the question with the enquiry wording until `confirmed` is
-  filled in. See the Faq type in content/types.ts.
+  FAQ vetting page, 23 September 2026: the questions and answers below are the
+  reviewed set from that page, classified onto the page each belongs to. Each
+  answer records that review as its confirmation, so FaqList publishes it
+  rather than the enquiry wording. Where a fact is still open the answer says
+  so plainly, instead of stating something no source supports.
 */
 export const studioFaqs: Faq[] = [
   {
     id: "who",
     question: "Who can use the studio?",
     answer:
-      "Current access supports MDI-linked projects. Ask the team about eligibility before planning a visit or equipment use.",
-    confirmed: null,
+      "The studio currently supports projects tied to the M.Sc. Medical Device Innovation programme. If you have a project or a collaboration in mind, contact the team to discuss how it might fit.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "external",
+    question: "I am not on the MDI programme. Will that change?",
+    answer:
+      "CDIE expects to widen its scope beyond the master’s programme in future. Changes to access are announced through the newsletter and our social channels, so sign up to hear when that happens.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "booking",
     question: "How do I book, and what does it cost?",
     answer:
-      "Contact the team with your project, the area you need and your preferred timing, and they will explain the current arrangements.",
-    confirmed: null,
+      "Contact the team with your project, the area you need and your preferred timing, and they will explain the current arrangements. Booking routes and any charges are still being confirmed.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "areas",
+    question: "What can I make in the studio?",
+    answer:
+      "The studio brings several areas together: design and CAD, electronics and signal processing, 3D printing, metalworking, textiles and upholstery, woodworking, and a co-working space for planning and discussion. Each area has staff support and its own induction.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "three-d-print",
+    question: "Can I get something 3D printed?",
+    answer:
+      "The studio has FDM and SLA printing to take a digital design to a physical model. File requirements, materials, turnaround and any charges depend on the machine and your project — ask the team before you prepare a file.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "materials",
+    question: "Do I bring my own materials?",
+    answer:
+      "Material supply varies by area and by project. Tell the team what you are planning to build and they will explain what the studio stocks and what you should bring.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "unfamiliar",
     question: "What if I have not used a tool before?",
-    answer: "Ask the CDIE staff member on duty for guidance before using unfamiliar equipment.",
-    confirmed: null,
+    answer:
+      "Ask the CDIE staff member on shift before using any equipment you are not familiar with. They will show you how to use it safely, and some areas require a safety induction first.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "emergency",
+    question: "There is an emergency in the studio. What should I do?",
+    answer:
+      "Notify the nearest CDIE staff member straight away. Make yourself familiar with where the first aid kits and fire extinguishers are kept before you start work, so you are ready if it happens.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "hours",
+    question: "When is the studio open?",
+    answer:
+      "The CDIE team is available Monday to Friday, 8 am to 5 pm. Hours for a particular area depend on staff cover, so contact the team before you plan a working session.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "suggest",
-    question: "Can I suggest a project for students?",
+    question: "Can I suggest a project for students to work on?",
     answer:
-      "Email ive@ku.ac.ke with a short description of the problem or project and your contact details.",
-    confirmed: null,
+      "Yes. Email ive@ku.ac.ke with a short description of the problem or project idea and your contact details, and the team will get back to you.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "tour",
+    question: "Can I visit or take a tour?",
+    answer:
+      "You can explore the studio through the virtual tour on this page. For an in-person visit, contact the team first so we can confirm a time and where to meet you.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "where",
-    question: "Where is the studio?",
+    question: "Where is the studio, and how do I get there?",
     answer:
-      "CDIE is at Kenyatta University’s main campus. Please contact the team before travelling so we can confirm where to meet you.",
-    confirmed: null,
+      "The Design Studio is on the 2nd floor of the Kenyatta University Graduate School, off Thika Superhighway at Exit 11. Please contact the team before travelling so we can confirm where to meet you.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
 ];
 

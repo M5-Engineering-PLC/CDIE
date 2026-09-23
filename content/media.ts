@@ -88,7 +88,29 @@ export const eventsPointer = {
   action: { label: "Explore programme events", href: "/programmes#events", live: true },
 } as const;
 
-export const mediaFaqs: Faq[] = [];
+/*
+  FAQ vetting page, 23 September 2026: the questions and answers below are the
+  reviewed set from that page, classified onto the page each belongs to. Each
+  answer records that review as its confirmation, so FaqList publishes it
+  rather than the enquiry wording. Where a fact is still open the answer says
+  so plainly, instead of stating something no source supports.
+*/
+export const mediaFaqs: Faq[] = [
+  {
+    id: "news",
+    question: "How do I keep up with what CDIE is doing?",
+    answer:
+      "Subscribe to the newsletter for programme news, project highlights and open funding calls. We also share updates on LinkedIn, Instagram and YouTube.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+  {
+    id: "events",
+    question: "Where can I find upcoming events?",
+    answer:
+      "Upcoming workshops, conversations and programme activities are listed on the events page under Programmes. If nothing is listed, contact us to ask what is planned.",
+    confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
+  },
+];
 
 export function getMediaItem(id: string): MediaItem | undefined {
   return mediaItems.find((item) => item.id === id);

@@ -10,10 +10,11 @@
 
 import type { Metadata } from "next";
 
+import { FaqList } from "@/components/blocks/FaqList";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
-import { contactIntro, defaultTopicId, enquiryTopics, form, visit } from "@/content/contact";
+import { contactFaqs, contactIntro, defaultTopicId, enquiryTopics, form, visit } from "@/content/contact";
 import { contact } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -81,6 +82,11 @@ export default async function ContactPage(props: PageProps<"/contact">) {
             <dd className="mt-2 text-lead text-ink-2">{contact.availability}</dd>
           </div>
         </dl>
+      </Section>
+
+      {/* FAQ vetting page, 23 September 2026: the question classified to Contact. */}
+      <Section eyebrow="FAQs" title="Before you write.">
+        <FaqList items={[...contactFaqs]} />
       </Section>
 
       <Section eyebrow="Visit us" title={visit.headline}>
