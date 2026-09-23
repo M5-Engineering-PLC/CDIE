@@ -31,7 +31,7 @@ export type ProgrammeHeroSlide = {
 
 /* Enhancements 2026-09-22: rotate slowly and never pause. Choosing a slide
    moves to it and the rotation carries on from there. */
-const ROTATION_MS = 9000;
+const ROTATION_MS = 12000;
 /** A drag shorter than this is a tap or a scroll, not a swipe. */
 const SWIPE_PX = 48;
 
@@ -44,6 +44,7 @@ export function ProgrammeHeroCarousel({
 }) {
   const Heading = headingLevel;
   const [index, setIndex] = useState(0);
+  const [inspecting, setInspecting] = useState(false);
   const down = useRef<number | null>(null);
   const go = useCallback(
     (next: number) => setIndex((next + slides.length) % slides.length),
@@ -51,9 +52,10 @@ export function ProgrammeHeroCarousel({
   );
 
   useEffect(() => {
+    if (inspecting || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setTimeout(() => go(index + 1), ROTATION_MS);
     return () => window.clearTimeout(timer);
-  }, [go, index]);
+  }, [go, index, inspecting]);
 
   const swipe = (end: number) => {
     const start = down.current;
@@ -67,6 +69,10 @@ export function ProgrammeHeroCarousel({
       aria-roledescription="carousel"
       aria-label="CDIE programmes"
       className="relative min-h-[22rem] touch-pan-y overflow-hidden bg-ink text-surface md:min-h-[44rem]"
+      onMouseEnter={() => setInspecting(true)}
+      onMouseLeave={() => setInspecting(false)}
+      onFocusCapture={() => setInspecting(true)}
+      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setInspecting(false); }}
       onPointerDown={(event) => { down.current = event.clientX; }}
       onPointerUp={(event) => swipe(event.clientX)}
       onPointerCancel={() => { down.current = null; }}
@@ -89,7 +95,7 @@ export function ProgrammeHeroCarousel({
                 <p className="kicker !text-brand-lift">{slide.eyebrow}</p>
                 <Heading className="display mt-3 text-title leading-none text-surface md:mt-5 md:text-mega">{slide.title}</Heading>
                 <p className="trim-mobile mt-4 max-w-[54ch] text-body leading-relaxed text-surface/80 md:mt-6 md:text-lead">{slide.summary}</p>
-                <Link href={slide.action.href} tabIndex={slideIndex === index ? 0 : -1} className="mt-5 inline-flex bg-brand-live px-5 py-3 font-medium text-surface transition hover:bg-brand md:mt-8 md:px-6 md:py-3.5">
+                <Link href={slide.action.href} tabIndex={slideIndex === index ? 0 : -1} className="hero-action mt-5 inline-flex bg-brand-live px-5 py-3 font-medium text-surface md:mt-8 md:px-6 md:py-3.5">
                   {slide.action.label}
                 </Link>
               </div>
@@ -111,7 +117,7 @@ export function ProgrammeHeroCarousel({
               onClick={() => setIndex(slideIndex)}
               className={`relative flex min-w-0 items-center py-4 text-left text-fine transition-colors md:py-5 ${slideIndex === index ? "text-surface" : "text-surface/55 hover:text-surface"}`}
             >
-              {slideIndex === index ? <span key={index} className="hero-progress absolute inset-x-0 top-0 h-0.5 bg-brand-lift" /> : null}
+              {slideIndex === index ? <span key={index} className="hero-progress absolute inset-x-0 top-0 h-0.5 bg-brand-lift" style={{ animationPlayState: inspecting ? "paused" : "running" }} /> : null}
               <span
                 aria-hidden="true"
                 className={`mx-1 h-1.5 w-full rounded-full transition-colors sm:hidden ${slideIndex === index ? "bg-brand-lift" : "bg-surface/30"}`}

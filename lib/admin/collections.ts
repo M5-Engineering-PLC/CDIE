@@ -50,7 +50,7 @@ export const collections: Collection[] = [
       { name: "issue", label: "Issue label", type: "text", required: true, hint: "For example: Issue 7" },
       { name: "title", label: "Title", type: "text", required: true },
       { name: "summary", label: "Summary", type: "textarea", required: true },
-      { name: "image", label: "Cover image", type: "image", required: true },
+      { name: "image", label: "Cover image", type: "image", required: true, hint: "Use a landscape photo at least 1200 pixels wide; avoid small thumbnails." },
       { name: "pdf", label: "Newsletter PDF", type: "pdf", required: true },
     ],
   },

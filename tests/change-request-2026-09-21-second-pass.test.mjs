@@ -12,11 +12,13 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf
 
 test("the bar is white, LOGIN has no pill, and Contact is in it", () => {
   // Enhancements 2026-09-22: "navbar-white", "remove pill on navbar".
+  /* The bar's colours moved into .site-nav in app/globals.css with the
+     navbar-transition work, so the white ground is asserted there. */
   const nav = read("components/chrome/SiteNav.tsx");
-  assert.match(nav, /bg-surface\/95/);
   assert.doesNotMatch(nav, /bg-brand\/95/);
-  assert.doesNotMatch(nav, /rounded-edge border border-surface\/50 bg-surface px-4/);
-  assert.match(nav, /hover:text-brand/);
+  const css = read("app/globals.css");
+  assert.match(css, /\.site-nav \{[^}]*background: rgb\(255 255 255/);
+  assert.match(css, /\.site-nav-link:hover[^{]*\{[^}]*color: var\(--color-brand\)/);
   assert.match(read("components/chrome/NavPanel.tsx"), /bg-surface lg:hidden/);
 
   const site = read("content/site.ts");

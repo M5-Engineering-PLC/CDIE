@@ -95,7 +95,7 @@ export function SiteFooter({
             {/* Enhancements 2026-09-22: LOGIN joins the pages list. */}
             {utility.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="text-body text-surface/70 no-underline hover:text-surface">
+                <a href={item.href} className="text-body font-semibold text-brand-lift no-underline hover:text-surface">
                   {item.label}
                 </a>
               </li>

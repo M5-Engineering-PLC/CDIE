@@ -8,8 +8,8 @@
 import type { Metadata } from "next";
 
 import { Button } from "@/components/primitives/Button";
-import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
+import { MdiSectionNav } from "@/components/sections/MdiSectionNav";
 import { Section } from "@/components/sections/Section";
 import { mdiSemesters } from "@/content/curriculum";
 import { CohortGrid } from "@/components/blocks/CohortGrid";
@@ -42,7 +42,10 @@ export default async function MdiPage() {
         <Button href="/contact?topic=admissions">Ask about the next intake</Button>
       </PageHero>
 
-      <Section eyebrow="Programme structure" title="What the programme commits you to.">
+      <div className="mdi-layout">
+      <MdiSectionNav />
+      <div className="mdi-content">
+      <Section id="structure" eyebrow="Programme structure" title="What the programme commits you to.">
         <dl className="grid gap-px bg-line md:grid-cols-2">
           {mdi.structure.map((row) => (
             <div key={row.label} className="bg-surface p-6">
@@ -51,8 +54,6 @@ export default async function MdiPage() {
             </div>
           ))}
         </dl>
-        <div className="mt-8 max-w-[62ch]">
-        </div>
         <div className="prose-body mt-10 max-w-[62ch] text-body leading-relaxed text-ink-2">
           {mdi.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
@@ -60,7 +61,7 @@ export default async function MdiPage() {
         </div>
       </Section>
 
-      <Section tone="surface" eyebrow="What you will learn" title="Five things you practise.">
+      <Section id="learning" tone="surface" eyebrow="What you will learn" title="Five things you practise.">
         <ul className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
           {mdi.learn.map((item) => (
             <li key={item.title} className="flex flex-col gap-2 bg-raise p-6">
@@ -77,7 +78,7 @@ export default async function MdiPage() {
         accordion per semester so the full curriculum is available without
         turning the page into a wall of course descriptions.
       */}
-      <Section eyebrow="Course outline" title="Three semesters, full-time.">
+      <Section id="curriculum" eyebrow="Course outline" title="Three semesters, full-time.">
         <div className="flex flex-col gap-px bg-line">
           {mdiSemesters.map((semester, index) => (
             <details
@@ -114,7 +115,7 @@ export default async function MdiPage() {
         </div>
       </Section>
 
-      <Section tone="surface" eyebrow="Applying" title={mdi.who.headline}>
+      <Section id="applying" tone="surface" eyebrow="Applying" title={mdi.who.headline}>
         <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{mdi.who.body}</p>
         <ul className="mt-6 flex max-w-[70ch] flex-col gap-3">
           {mdi.who.criteria.map((item) => (
@@ -126,11 +127,6 @@ export default async function MdiPage() {
         <p className="mt-6 max-w-[70ch] text-body leading-relaxed text-ink-2">
           {mdi.who.experience}
         </p>
-        {mdi.who.pending.length > 0 ? (
-          <div className="mt-6 max-w-[62ch]">
-            <Pending items={mdi.who.pending} />
-          </div>
-        ) : null}
 
         <h3 className="display mt-12 text-title">{mdi.applications.headline}</h3>
         <p className="mt-4 max-w-[62ch] text-body leading-relaxed text-ink-2">
@@ -139,8 +135,6 @@ export default async function MdiPage() {
         <p className="mt-3 max-w-[62ch] text-body leading-relaxed text-ink-2">
           {mdi.applications.process}
         </p>
-        <div className="mt-6 max-w-[62ch]">
-        </div>
         <div className="mt-6">
           <Button href={mdi.applications.action.href}>{mdi.applications.action.label}</Button>
         </div>
@@ -152,7 +146,7 @@ export default async function MdiPage() {
         title={mdiCohortsCopy.headline}
         standfirst={mdiCohortsCopy.body}
       >
-                {cohorts.length > 0 ? (
+        {cohorts.length > 0 ? (
           <CohortGrid items={cohorts} />
         ) : (
           <div className="border border-dashed border-line bg-surface p-8">
@@ -166,9 +160,11 @@ export default async function MdiPage() {
       <Section tone="surface" eyebrow="Talk to us" title="Ask us about the programme.">
         <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{mdi.applications.body}</p>
         <div className="mt-6">
-          <Button href={mdi.applications.action.href}>{mdi.applications.action.label}</Button>
+          <Button href="/contact?topic=admissions">Contact admissions</Button>
         </div>
       </Section>
+      </div>
+      </div>
     </>
   );
 }

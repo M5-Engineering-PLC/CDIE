@@ -37,6 +37,15 @@ export const newslettersCopy = {
   the opening of that issue's own front page, so nothing here goes beyond what
   the PDF itself says. Newest first.
 */
+const coverSizes = [
+  { width: 1800, height: 1200 },
+  { width: 1120, height: 747 },
+  { width: 1282, height: 855 },
+  { width: 832, height: 555 },
+  { width: 1196, height: 797 },
+  { width: 1280, height: 853 },
+] as const;
+
 const issue = (n: number, file: string, title: string, summary: string): MediaItem => ({
   id: `ive-newsletter-${n}`,
   kind: "newsletter",
@@ -44,7 +53,7 @@ const issue = (n: number, file: string, title: string, summary: string): MediaIt
   title,
   summary,
   external: `/newsletters/${file}`,
-  cover: { src: `/newsletters/issue${n}.webp`, alt: `Cover of the IvE newsletter, issue ${n}`, width: 211, height: 141 },
+  cover: { src: `/newsletters/issue${n}-photo.webp`, alt: `Photo from the IvE newsletter, issue ${n}`, ...coverSizes[n - 1] },
 });
 
 export const mediaItems: MediaItem[] = [
