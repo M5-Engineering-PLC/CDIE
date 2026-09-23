@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 const spaceShortName = new Map(spaces.map((space) => [space.id, space.shortName]));
+const spaceNames = new Map(spaces.map((space) => [space.id, space.name]));
 
 const studioImages: Record<string, string> = {
   design: "/images/service-design-2.jpg",
@@ -63,16 +64,25 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   components: capability.components,
 }));
 
+/* Final pass 2026-09-23: "switch the labelling of the cards". The workshop
+   area (Design and CAD, Electronics) is on the card at rest; the location it
+   sits in is what the card shows on hover. */
 const capabilityCards: VisualRailItem[] = capabilities.map((capability) => ({
   id: capability.id,
-  eyebrow: spaceShortName.get(capability.space) ?? capability.space,
-  title: capability.name,
+  eyebrow: capability.name,
+  title: spaceNames.get(capability.space) ?? capability.space,
   summary: capability.headline,
   image: studioImages[capability.id],
   alt: `${capability.name} at the CDIE Design Studio`,
   href: `/design-studio?service=${capability.id}`,
   action: "Explore in the room",
 }));
+
+/* Final pass 2026-09-23: "use only 5 relevant FAQs on each page". Access,
+   booking, first-time help, hours and directions: what a visitor needs before
+   coming in. The full vetted list stays in content/studio.ts. */
+const PAGE_FAQS = ["who", "booking", "unfamiliar", "hours", "where"];
+const pageFaqs = PAGE_FAQS.flatMap((id) => studioFaqs.filter((faq) => faq.id === id));
 
 export default async function DesignStudioPage(props: PageProps<"/design-studio">) {
   const query = await props.searchParams;
@@ -130,7 +140,7 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
               confirmation for all faqs". An unconfirmed answer sends the
               reader to the studio enquiry rather than publishing a sentence
               nobody has stood behind. */}
-          <FaqList items={[...studioFaqs]} enquiryHref="/contact?topic=studio" />
+          <FaqList items={pageFaqs} enquiryHref="/contact?topic=studio" />
         </div>
       </Section>
     </>

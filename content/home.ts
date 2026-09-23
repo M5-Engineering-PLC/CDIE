@@ -180,3 +180,27 @@ export const latestHighlights = [
     action: "Browse media",
   },
 ] as const;
+
+/*
+  Final pass 2026-09-23: "Gallery should be placed immediately after the hero.
+  The images will be in cards arranged as a circular slider". Every frame is a
+  CDIE photograph already on the site; each caption is the event or programme
+  the picture is filed under elsewhere, never a new claim.
+*/
+export const galleryCopy = {
+  eyebrow: "Gallery",
+  headline: "Life at the centre.",
+} as const;
+
+export const galleryPhotos = [
+  { id: "g-summer-launch", src: "/images/cdie-summer-program-2026-launch-original.jpg", alt: "Summer program participants and staff in a group photo outside CDIE", caption: "CDIE Summer Program 2026" },
+  { id: "g-showcase", src: "/images/cdie-mdi-cohort-1-semester-one-showcase.jpg", alt: "MDI student presenting at the end of semester showcase", caption: "MDI Cohort 1 showcase" },
+  { id: "g-cnc", src: "/images/cdie-summer-program-cnc-class-01.jpg", alt: "Participant operating a CNC machine", caption: "CNC machining" },
+  { id: "g-challenge", src: "/images/cdie-ive-design-challenge.jpg", alt: "Design challenge teams presenting their prototype", caption: "IvE MDI Design Challenge" },
+  { id: "g-needs", src: "/images/cdie-summer-program-needs-filtering.jpg", alt: "Participants working through needs filtering at tables", caption: "Needs filtering" },
+  { id: "g-advisory", src: "/images/cdie-advisory-board-meeting.jpg", alt: "Advisory board members standing together in front of a lettered wall", caption: "Advisory Board Meeting" },
+  { id: "g-soldering", src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board", caption: "Electronics" },
+  { id: "g-stakeholders", src: "/images/cdie-stakeholder-engagement-golden-tulip.jpg", alt: "Stakeholder engagement guests in a group photo between Invention Education banners", caption: "Stakeholder engagement" },
+  { id: "g-heart", src: "/images/cdie-3d-printing-heart-model-01.jpeg", alt: "3D printer finishing a model of a human heart", caption: "3D printing" },
+  { id: "g-cohort-2", src: "/images/cdie-mdi-cohort-2-orientation-01.jpg", alt: "Incoming MDI Cohort 2 students and staff in a group photo", caption: "MDI Cohort 2 orientation" },
+] as const;

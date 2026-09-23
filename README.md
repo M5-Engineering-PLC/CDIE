@@ -73,6 +73,23 @@ There is no authentication on `/admin`. Anyone who knows the URL can open it on
 a deployed environment, so nothing behind it may be private, and it stays
 free of anything that writes or reveals data until an access decision is made.
 
+### Where dashboard content lives
+
+The Google Sheet is the database. With `GOOGLE_SHEET_ID`,
+`GOOGLE_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_PRIVATE_KEY` set, every dashboard
+save is written to the sheet, one tab per section (created on first use), and
+the site reads from it. Share the sheet with the service account as an Editor.
+
+The workflow `.github/workflows/sync-cms.yml` pulls the sheet into
+`content/cms-snapshot.json` every hour, and straight away when the dashboard
+fires its `cms-updated` event (set `GITHUB_REPO` and `GITHUB_TOKEN`). The site
+falls back to that snapshot if the sheet cannot be reached. Subscriber emails
+and enquiry counts stay in the sheet and never reach the snapshot. The
+workflow needs the three Google values as repository secrets.
+
+Without a sheet, the dashboard writes a local file under `.data`, which suits a
+dev server only. Setup details are in `.env.example`.
+
 ## The two rules that matter most
 
 **Lucid is the source of truth for structure, the Actual Copy tab for words.**

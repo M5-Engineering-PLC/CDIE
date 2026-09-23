@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import { MonthBars, StatTile } from "@/components/admin/Analytics";
 import { collections } from "@/lib/admin/collections";
+import { githubConfigured } from "@/lib/admin/github";
+import { sheetsConfigured } from "@/lib/admin/sheets";
 import { listItems, readAnalytics } from "@/lib/admin/store";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +38,20 @@ export default async function AdminOverviewPage() {
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 p-6 md:p-10">
       <h1 className="text-head text-ink">Dashboard</h1>
+
+      {/* Final pass 2026-09-23: the Google Sheet is the database; say plainly whether it is connected. */}
+      <section className="grid gap-3 sm:grid-cols-2">
+        <p className={`border-l-2 bg-surface px-4 py-3 text-fine ${sheetsConfigured() ? "border-ok text-ink-2" : "border-flag text-flag-ink"}`}>
+          {sheetsConfigured()
+            ? "Google Sheet connected. Every save is written to the sheet, one tab per section."
+            : "Google Sheet not connected. Saves go to this server only; set GOOGLE_SHEET_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL and GOOGLE_PRIVATE_KEY."}
+        </p>
+        <p className={`border-l-2 bg-surface px-4 py-3 text-fine ${githubConfigured() ? "border-ok text-ink-2" : "border-line text-ink-3"}`}>
+          {githubConfigured()
+            ? "GitHub sync on. Each save asks the Sync dashboard content workflow to refresh the site snapshot."
+            : "GitHub sync off. The workflow still refreshes the snapshot every hour; set GITHUB_REPO and GITHUB_TOKEN to trigger it on save."}
+        </p>
+      </section>
 
       <section className="flex flex-col gap-4">
         <h2 className="kicker">Analytics</h2>

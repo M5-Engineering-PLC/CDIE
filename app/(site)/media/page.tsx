@@ -58,18 +58,18 @@ const shiftMonths = (iso: string, months: number) => {
 
 export default async function MediaPage() {
   /* Enhancements 2026-09-22: one timeline holds programme events plus the
-     events, upcoming activities and media items added in the admin dashboard. */
-  const [added, activities, media, addedIssues] = await Promise.all([
+     events, upcoming activities and posts added in the admin dashboard. */
+  const [added, activities, posts, addedIssues] = await Promise.all([
     listItems("events"),
     listItems("activities"),
-    listItems("media"),
+    listItems("posts"),
     listItems("newsletters"),
   ]);
   const calendarEvents: GanttEvent[] = [
     ...programmeEvents,
     ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, kind: "Event" })),
     ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, kind: "Activity" })),
-    ...media.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Media", link: item.link })),
+    ...posts.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Post", link: item.link })),
   ];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -174,6 +174,7 @@ export default async function MediaPage() {
           fallback={linkedInCopy.fallback}
           pageUrl={linkedInCopy.pageUrl}
           privacy={linkedInCopy.privacy}
+          fallbackImage="/brand/cdie-logo.webp"
         />
       </Section>
 

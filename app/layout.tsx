@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { ViewTransition } from "react";
 import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 
-import { SiteFooter } from "@/components/chrome/SiteFooter";
-import { SiteNav } from "@/components/chrome/SiteNav";
 import { SmoothScroll } from "@/components/chrome/SmoothScroll";
-import { SkipLink } from "@/components/chrome/SkipLink";
-import { contact, nav, site, socialAccounts, utilityLinks } from "@/content/site";
+import { site } from "@/content/site";
 
 import "./globals.css";
 
@@ -41,6 +37,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  /* The site chrome (nav, footer, skip link) lives in app/(site)/layout.tsx so
+     the admin dashboard can carry its own bar instead of the page links. */
   return (
     <html
       lang="en"
@@ -48,30 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body>
         <SmoothScroll />
-        <SkipLink />
-        <SiteNav
-          items={[...nav]}
-          utility={[...utilityLinks]}
-          name={site.name}
-          longName={site.longName}
-          institution={site.institution}
-          logo={site.logo}
-        />
-        <ViewTransition default="page"><main id="main">{children}</main></ViewTransition>
-        {/*
-          Change request 2026-09-21: Contact leaves the top bar but not the
-          site. The footer keeps it, so the route every enquiry resolves to is
-          still one click from any page.
-        */}
-        <SiteFooter
-          items={[...nav]}
-          utility={[...utilityLinks]}
-          contact={contact}
-          name={site.name}
-          longName={site.longName}
-          institution={site.institution}
-          socialAccounts={[...socialAccounts]}
-        />
+        {children}
       </body>
     </html>
   );

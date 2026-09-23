@@ -22,29 +22,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 import type { VisualRailItem } from "./VisualCardRail";
 
-/* Enhancements 2026-09-22: rotate slowly and never pause. */
-const DWELL_MS = 6000;
+/* Enhancements 2026-09-22: rotate slowly. The duration itself is the
+   .latest-progress animation in app/globals.css: the bar filling is what moves
+   the carousel on, so the two can never disagree. */
 const SWIPE_PX = 48;
 
 export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; label: string }) {
   const [index, setIndex] = useState(0);
+  const [holding, setHolding] = useState(false);
+  /* Reduced motion collapses every animation to an instant, which would make
+     the bar race through the cards; with it on, the reader moves them. */
+  const still = useReducedMotion();
   const down = useRef<number | null>(null);
-  const frame = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (items.length < 2) return;
-    /* changes-v2 item 3: hovering or focusing the card holds it. The tick keeps
-       running and simply skips its turn, so the rotation resumes on leaving. */
-    const timer = window.setInterval(() => {
-      if (frame.current?.matches(":hover, :focus-within")) return;
-      setIndex((current) => (current + 1) % items.length);
-    }, DWELL_MS);
-    return () => window.clearInterval(timer);
-  }, [items.length]);
 
   const swipe = (end: number) => {
     const start = down.current;
@@ -60,11 +55,14 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
     <div
       aria-roledescription="carousel"
       aria-label={label}
-      ref={frame}
       className="mx-auto max-w-[46rem]"
       onPointerDown={(event) => { down.current = event.clientX; }}
       onPointerUp={(event) => swipe(event.clientX)}
       onPointerCancel={() => { down.current = null; }}
+      onMouseEnter={() => setHolding(true)}
+      onMouseLeave={() => setHolding(false)}
+      onFocusCapture={() => setHolding(true)}
+      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setHolding(false); }}
     >
       <article className="card-hit overflow-hidden border border-line bg-surface">
         <div className="relative aspect-[16/10] overflow-hidden">
@@ -101,7 +99,11 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
         </div>
       </article>
 
-      <div className="mt-4 flex items-center justify-center gap-2">
+      {/* Final pass 2026-09-23: "change it to a progress bar similar to the
+          one at the hero". One segment per card: the ones already seen are
+          full, the current one fills while it is on screen, and pressing a
+          segment goes to that card. Hovering the card holds the bar. */}
+      <div className="mt-5 flex items-center gap-2" role="group" aria-label={`${label} progress`}>
         {items.map((candidate, candidateIndex) => (
           <button
             key={candidate.id}
@@ -109,11 +111,20 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
             aria-label={candidate.title}
             aria-current={candidateIndex === index}
             onClick={() => setIndex(candidateIndex)}
-            /* changes-v2 item 2: the active dot is larger and coloured. */
-            className={`rounded-full transition-all duration-500 ${
-              candidateIndex === index ? "h-3 w-3 bg-brand" : "h-2 w-2 bg-line hover:bg-brand-lift"
-            }`}
-          />
+            className="group relative h-6 flex-1"
+          >
+            <span className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-line transition-colors group-hover:bg-brand-lift/40">
+              {candidateIndex < index ? <span className="absolute inset-0 bg-brand" /> : null}
+              {candidateIndex === index ? (
+                <span
+                  key={index}
+                  className="latest-progress absolute inset-0 bg-brand"
+                  style={{ animationPlayState: holding || still ? "paused" : "running" }}
+                  onAnimationEnd={() => { if (!still) setIndex((index + 1) % items.length); }}
+                />
+              ) : null}
+            </span>
+          </button>
         ))}
       </div>
     </div>

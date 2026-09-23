@@ -4,9 +4,6 @@
   Lucid: Media > LinkedIn.
   Mechanism: docs/architecture/CDIE_Website_LinkedIn_Integration_Handoff_2026-09-11.md.
 
-  CSS scroll-snap, no library: native swipe, inertia, keyboard and screen-reader
-  behaviour come from the browser, and there is no dependency to keep updated.
-
   Change request 2026-09-21, section 5, "lets implement the listening feature".
 
   The page is static and revalidates on a timer, which means a reader who left
@@ -17,10 +14,9 @@
   replacing three good posts with nothing because of a blip would be worse than
   showing the three.
 
-  Change request 2026-09-21, second pass: "apply smoother transitions for all
-  carousels". This one is scrolled, never stepped, so what it needed was
-  scroll-smooth: a keyboard or an anchor now eases the band along instead of
-  jumping it. The reduced-motion rule in app/globals.css turns that off.
+  Final pass 2026-09-23: the posts are drawn as the fanned green cards of
+  LinkedInFan rather than a row of embeds. This file keeps the feed current;
+  that one draws it.
 */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -29,9 +25,8 @@ import type { LinkedInPost } from "@/content/linkedin";
 import { isStale } from "@/content/linkedin";
 import { fetchLinkedInFeed } from "@/lib/linkedin/client";
 import { CACHE_SECONDS, RECENT_POSTS } from "@/lib/linkedin/config";
-import { useRailRotation } from "@/lib/useRailRotation";
 
-import { LinkedInPostCard } from "./LinkedInPostCard";
+import { LinkedInFan } from "./LinkedInFan";
 
 export type LinkedInCarouselProps = {
   posts: LinkedInPost[];
@@ -39,16 +34,16 @@ export type LinkedInCarouselProps = {
   fallback: string;
   pageUrl: string | null;
   privacy: string;
+  /** shown on a card whose post has no picture of its own */
+  fallbackImage: string;
 };
 
-export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy }: LinkedInCarouselProps) {
+export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy, fallbackImage }: LinkedInCarouselProps) {
   const [feed, setFeed] = useState({ posts, stale });
   /* Null until the first check. The server render has no clock to read and
      reading one during render is not pure, so the window opens on the first
      time the tab is hidden and shown again. */
   const checked = useRef<number | null>(null);
-  const rail = useRef<HTMLUListElement>(null);
-  useRailRotation(rail);
 
   const listen = useCallback(async () => {
     if (document.visibilityState !== "visible") return;
@@ -82,12 +77,8 @@ export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy }: L
 
   return (
     <div className="flex flex-col gap-4">
-      <ul ref={rail} className="post-stack rail-glide sm:flex sm:snap-x sm:flex-row sm:gap-4 sm:overflow-x-auto sm:pb-3">
-        {feed.posts.map((post, index) => (
-          <LinkedInPostCard key={post.id} post={post} index={index} />
-        ))}
-      </ul>
-      <p className="text-fine text-ink-3">{privacy}</p>
+      <LinkedInFan posts={feed.posts} fallbackImage={fallbackImage} />
+      {privacy ? <p className="text-fine text-ink-3">{privacy}</p> : null}
     </div>
   );
 }

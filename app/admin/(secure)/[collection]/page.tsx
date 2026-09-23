@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { deleteItem } from "@/app/admin/actions";
 import { ItemForm } from "@/components/admin/ItemForm";
+import { ItemPreview } from "@/components/admin/ItemPreview";
 import { collectionById } from "@/lib/admin/collections";
 import { listItems } from "@/lib/admin/store";
 
@@ -14,7 +15,7 @@ const shownOn: Record<string, string> = {
   newsletters: "Media page, Newsletters, alongside the published issues.",
   events: "Media page, Events timeline.",
   activities: "Media page, Events timeline, labelled as an activity.",
-  media: "Media page, Events timeline, labelled as media.",
+  posts: "Media page, Events timeline, labelled as a post.",
   staff: "About page, Our team. Needs a portrait to appear.",
   cohorts: "MDI programme page, Success stories. Needs a photograph to appear.",
 };
@@ -26,7 +27,7 @@ export default async function CollectionPage(props: PageProps<"/admin/[collectio
   const items = await listItems(collection.id);
 
   return (
-    <main className="mx-auto grid max-w-5xl gap-10 p-6 md:p-10 lg:grid-cols-[22rem_minmax(0,1fr)]">
+    <main className="mx-auto flex max-w-6xl flex-col gap-10 p-6 md:p-10">
       <section className="flex flex-col gap-4">
         <h1 className="text-head text-ink">{collection.label}</h1>
         <p className="text-fine text-ink-3">Shown on: {shownOn[collection.id]}</p>
@@ -41,7 +42,8 @@ export default async function CollectionPage(props: PageProps<"/admin/[collectio
           {items.map((item) => {
             const image = item.image;
             return (
-              <li key={item.id} className="flex items-center gap-4 border border-line bg-surface p-3">
+              <li key={item.id} className="border border-line bg-surface">
+                <div className="flex items-center gap-4 p-3">
                 {image ? (
                   // eslint-disable-next-line @next/next/no-img-element -- uploads are served by a route, not optimised
                   <img src={image} alt="" className="h-14 w-20 shrink-0 object-cover" />
@@ -60,6 +62,13 @@ export default async function CollectionPage(props: PageProps<"/admin/[collectio
                   <input type="hidden" name="id" value={item.id} />
                   <button type="submit" className="text-fine text-ink-3 hover:text-brand">Remove</button>
                 </form>
+                </div>
+                <details className="border-t border-line-soft">
+                  <summary className="cursor-pointer px-3 py-2 text-fine text-brand">Preview on the site</summary>
+                  <div className="p-3 pt-0">
+                    <ItemPreview collection={collection.id} values={item} />
+                  </div>
+                </details>
               </li>
             );
           })}

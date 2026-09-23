@@ -1,7 +1,7 @@
 /*
   The content the admin dashboard manages, and the fields each kind carries.
 
-  Enhancements 2026-09-22, Dashboard: "media, newsletter, event, upcoming
+  Enhancements 2026-09-22, Dashboard: "posts, newsletter, event, upcoming
   activity, staff, cohorts". One definition drives the form, the list and the
   store, so adding a field is an edit here and nowhere else.
 */
@@ -16,7 +16,7 @@ export type Field = {
   hint?: string;
 };
 
-export type CollectionId = "media" | "newsletters" | "events" | "activities" | "staff" | "cohorts";
+export type CollectionId = "posts" | "newsletters" | "events" | "activities" | "staff" | "cohorts";
 
 export type Collection = {
   id: CollectionId;
@@ -28,10 +28,12 @@ export type Collection = {
 };
 
 export const collections: Collection[] = [
+  /* Final pass 2026-09-23: "change Media section to 'Posts'; all mentions of
+     Media". The store reads records saved under the old "media" key as posts. */
   {
-    id: "media",
-    label: "Media",
-    singular: "media item",
+    id: "posts",
+    label: "Posts",
+    singular: "post",
     titleField: "title",
     fields: [
       { name: "title", label: "Title", type: "text", required: true },

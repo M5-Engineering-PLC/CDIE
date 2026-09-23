@@ -46,11 +46,12 @@ test("every carousel eases rather than cuts", () => {
   assert.match(read("components/sections/Carousel.tsx"), /"settle"/);
   assert.match(read("components/sections/SoloCardCarousel.tsx"), /settle flex flex-col/);
   // the scrolled one eases its own scrolling
-  assert.match(read("components/sections/LinkedInCarousel.tsx"), /scroll-smooth/);
+  // Final pass 2026-09-23: the LinkedIn band is a fan whose cards glide on --motion-scene.
+  assert.match(css, /\.fan-card \{[^}]*transition: transform var\(--motion-scene\)/);
 });
 
 test("What CDIE is is the lettering again, with no button under it", () => {
-  const home = read("app/page.tsx");
+  const home = read("app/(site)/page.tsx");
   assert.match(home, /C\.D\.I\.E/);
   assert.doesNotMatch(home, /defineCdie\.image/);
   assert.doesNotMatch(home, /defineCdie\.action/);
@@ -81,11 +82,11 @@ test("the programme carousel reads the client's five names", () => {
     "Catalyst grants",
     "Training and masterclasses",
   ]);
-  assert.match(read("app/programmes/page.tsx"), /eyebrow: opportunity\.carouselTitle/);
+  assert.match(read("app/(site)/programmes/page.tsx"), /eyebrow: opportunity\.carouselTitle/);
 });
 
 test("the questions band is FAQs and carries no subtitle", () => {
-  const page = read("app/programmes/page.tsx");
+  const page = read("app/(site)/programmes/page.tsx");
   assert.match(page, /<Section tone="surface" eyebrow="FAQs">/);
   assert.doesNotMatch(page, /Before you enquire/);
 });
@@ -109,7 +110,7 @@ test("no FAQ answer publishes without a named confirmation", () => {
 });
 
 test("About Us opens with a picture and has no cohorts band", () => {
-  const page = read("app/about/page.tsx");
+  const page = read("app/(site)/about/page.tsx");
   assert.match(page, /image=\{aboutIntro\.image\}/);
   assert.doesNotMatch(page, /id="cohorts"/);
   assert.doesNotMatch(page, /cohortsPointer/);
