@@ -4,7 +4,7 @@
   Copied unchanged so the website and the prototype cannot drift.
 
   The room is illustrative and unmeasured: normalised to 10.8 x 7.4 x 3.2
-  from a hand sketch and three wall photographs. isMeasured stays false
+  from a hand sketch, room photographs, and IMG_0926.MOV. isMeasured stays false
   until a measured plan exists.
 */
 
@@ -14,7 +14,8 @@ export type ServiceId =
   | 'design'
   | 'co-working'
   | 'three-d-printing'
-  | 'electronics';
+  | 'electronics'
+  | 'textiles';
 
 export type TableLayout = {
   id: string;
@@ -53,6 +54,7 @@ export const requiredStationIds = [
   'air-conditioner',
   'window-run',
   'electronics-window',
+  'textile-stations',
 ] as const;
 
 export const studioLayout: StudioLayout = {
@@ -96,6 +98,14 @@ export const studioLayout: StudioLayout = {
       position: [4.96, 0.52, 0.35],
       size: [0.78, 1.04, 5.15],
       rotationY: 0,
+    },
+    {
+      id: 'textile-stations',
+      label: 'Textile sewing stations',
+      service: 'textiles',
+      position: [-4.85, 0.75, 0.775],
+      size: [0.8, 1.5, 3.1],
+      rotationY: Math.PI / 2,
     },
     {
       id: 'teacher-station',

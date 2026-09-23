@@ -103,7 +103,14 @@ export function StudioStage({
         {isAtc ? (
           <Atc3D active={active as AtcServiceId | null} onSelect={(s) => onSelect(s)} tour={tour} interactive={!viewOnly} />
         ) : (
-          <DesignStudio3D active={active as ServiceId | null} onSelect={(s) => onSelect(s)} tour={tour} interactive={!viewOnly} />
+          <DesignStudio3D
+            key={name}
+            active={active as ServiceId | null}
+            onSelect={(s) => onSelect(s)}
+            initialView={name === "Textiles and upholstery" ? "textile" : "isometric"}
+            tour={tour}
+            interactive={!viewOnly}
+          />
         )}
         <StudioCallout show={tour || isAtc} name={name} spaceName={spaceName} headline={headline} step={step} of={of} />
       </div>
