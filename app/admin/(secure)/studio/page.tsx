@@ -16,6 +16,7 @@ const studioImages: Record<string, string> = {
   textiles: "/images/service-textile-2.jpg",
   woodworking: "/images/service-woodworking-1.jpeg",
   "laser-cutting": "/images/cdie-summer-program-laser-cutting.jpg",
+  "casting-moulding": "/images/service-casting-moulding-1.webp",
 };
 
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({

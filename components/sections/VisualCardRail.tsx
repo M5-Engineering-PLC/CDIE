@@ -25,12 +25,15 @@ function CapabilityCard({ item, open, dismissed, clone, onToggle, onClose }: {
           <span className="capability-image block h-full w-full bg-raise" aria-hidden="true" />
         )}
       </div>
+      {/* Final pass 2026-09-23: "remove the 'Explore +' button in the studio
+          cards". The label alone sits on the card; the whole card is the
+          control that opens it, so a phone (no hover) can still reach it. */}
       <div className="capability-caption">
         <h3>{item.eyebrow}</h3>
-        {clone ? <span className="capability-toggle" aria-hidden="true">Explore +</span> : (
-          <button id={`cap-toggle-${item.id}`} type="button" className="capability-toggle" aria-label={`${open ? "Close" : "Show"} ${item.eyebrow} details`} aria-expanded={open} onClick={onToggle}>{open ? "Close −" : "Explore +"}</button>
-        )}
       </div>
+      {clone ? null : (
+        <button id={`cap-toggle-${item.id}`} type="button" className="capability-hit" aria-label={`${open ? "Close" : "Show"} ${item.eyebrow} details`} aria-expanded={open} onClick={onToggle} />
+      )}
       <div className="capability-detail">
         <h4>{item.title}</h4>
         <p>{item.summary}</p>
@@ -92,9 +95,9 @@ export function VisualCardRail({ items, label }: { items: VisualRailItem[]; labe
         {items.map((item) => <CapabilityCard key={item.id} item={item} open={open === item.id} dismissed={dismissed === item.id} onToggle={() => { setDismissed(null); setOpen(open === item.id ? null : item.id); }} onClose={() => { setDismissed(item.id); setOpen(null); }} />)}
         {items.map((item) => <CapabilityCard key={`copy-${item.id}`} item={item} open={false} clone />)}
       </ul>
+      {/* Final pass 2026-09-23: "remove the instructions in the pill". */}
       <div className="capability-controls">
         <button type="button" aria-label={`Previous ${label}`} onClick={() => move(-1)}>←</button>
-        <p className="capability-status" aria-live="off">{manual ? "Manual mode · Use arrows to browse" : inspecting || open ? "Paused · Inspect a capability" : "Auto-gliding · Hover card to inspect"}</p>
         <button type="button" aria-label={`Next ${label}`} onClick={() => move(1)}>→</button>
       </div>
     </div>

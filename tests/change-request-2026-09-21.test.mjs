@@ -64,17 +64,20 @@ test("the landing carousel drops its counters and answers a swipe", () => {
   asserted in change-request-2026-09-21-second-pass.test.mjs.
 */
 test("What CDIE is gives each of its three words a picture", () => {
-  assert.match(read("app/page.tsx"), /TriadRail/);
+  assert.match(read("app/(site)/page.tsx"), /TriadRail/);
   assert.match(read("content/home.ts"), /image: "\/images\//);
   // a rail on a phone, a grid from md, with no JavaScript either side
   assert.match(read("components/sections/TriadRail.tsx"), /rail[\s\S]*md:grid-cols-3/);
 });
 
 test("Our latest shows one card and rotates slowly without pausing", () => {
+  // Final pass 2026-09-23: a progress bar like the hero's times the card, and
+  // hovering holds the bar rather than skipping a tick.
   const solo = read("components/sections/SoloCardCarousel.tsx");
-  assert.match(solo, /DWELL_MS = 6000/);
-  assert.doesNotMatch(solo, /onMouseEnter|setHeld/);
-  assert.match(read("app/page.tsx"), /SoloCardCarousel/);
+  assert.match(solo, /latest-progress/);
+  assert.match(solo, /onAnimationEnd/);
+  assert.match(read("app/globals.css"), /\.latest-progress \{[^}]*6s linear/);
+  assert.match(read("app/(site)/page.tsx"), /SoloCardCarousel/);
 });
 
 test("the Ask the team chip is gone but the real states survive", () => {
@@ -86,11 +89,13 @@ test("the Ask the team chip is gone but the real states survive", () => {
 });
 
 test("how learning works is one route, and Open X became Read more", () => {
-  const page = read("app/programmes/page.tsx");
-  assert.match(page, /SnakeRoute/);
+  const page = read("app/(site)/programmes/page.tsx");
+  // Final pass 2026-09-23: the landing's stages pin and play one at a time.
+  assert.match(page, /StageScroll/);
+  assert.match(read("components/sections/StageScroll.tsx"), /pin: true/);
   assert.match(page, /Read more/);
   assert.doesNotMatch(page, /Open \{opportunity\.title\}/);
-  assert.match(read("app/programmes/invention-education/page.tsx"), /SnakeRoute/);
+  assert.match(read("app/(site)/programmes/invention-education/page.tsx"), /SnakeRoute/);
 });
 
 test("programme photographs follow the image matching sheet, and Catalyst has none", () => {
@@ -102,7 +107,7 @@ test("programme photographs follow the image matching sheet, and Catalyst has no
   // changes-v2, 2026-09-23: the placeholder tag is gone with the other
   // developer-facing markers, so there is no flag left to assert.
   assert.doesNotMatch(read("components/blocks/PlaceholderPhoto.tsx"), /Placeholder image/);
-  assert.doesNotMatch(read("app/programmes/page.tsx"), /"catalyst-grants": \{ src/);
+  assert.doesNotMatch(read("app/(site)/programmes/page.tsx"), /"catalyst-grants": \{ src/);
 });
 
 test("the studio hero is a background at every width, not a stacked column", () => {
@@ -125,7 +130,7 @@ test("the tour turns the room, walks the capabilities and calls each one out", (
 
 test("an ATC capability switches the stage instead of lighting another room", () => {
   assert.match(read("components/studio/StudioStage.tsx"), /if \(atc\)/);
-  assert.match(read("app/design-studio/page.tsx"), /atc: capability\.space === "atc"/);
+  assert.match(read("app/(site)/design-studio/page.tsx"), /atc: capability\.space === "atc"/);
 });
 
 test("component tiles name only what the source names, and claim no photograph", () => {
@@ -155,12 +160,12 @@ test("nothing in components/studio imports from content/", () => {
 });
 
 test("Media leads with the calendar, and every event cites its source", () => {
-  const media = read("app/media/page.tsx");
+  const media = read("app/(site)/media/page.tsx");
   const events = media.indexOf('id="events"');
   const newsletters = media.indexOf('id="newsletters"');
   const community = media.indexOf('id="community"');
   assert.ok(events > 0 && events < newsletters && newsletters < community, "calendar leads the page");
-  assert.match(media, /EventGantt/);
+  assert.match(media, /EventCalendar/);
   // Enhancements 2026-09-22: events come from the CDIE LinkedIn feed sheet, and
   // each one links to the post it was taken from.
   const programmes = read("content/programmes.ts");
@@ -172,9 +177,10 @@ test("Media leads with the calendar, and every event cites its source", () => {
 
 test("the community band shows three posts, labels reposts and listens", () => {
   assert.match(read("lib/linkedin/config.ts"), /RECENT_POSTS = 3/);
-  assert.match(read("app/media/page.tsx"), /slice\(0, RECENT_POSTS\)/);
+  assert.match(read("app/(site)/media/page.tsx"), /slice\(0, RECENT_POSTS\)/);
   assert.match(read("content/linkedin.ts"), /repost: boolean/);
-  assert.match(read("components/sections/LinkedInPostCard.tsx"), /Repost/);
+  assert.match(read("components/sections/LinkedInFan.tsx"), /Repost/);
+  assert.match(read("components/sections/LinkedInFan.tsx"), /Read More/);
   const carousel = read("components/sections/LinkedInCarousel.tsx");
   assert.match(carousel, /visibilitychange/);
   // a blip that empties the store must not empty a good band

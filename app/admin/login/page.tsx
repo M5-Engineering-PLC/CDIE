@@ -2,13 +2,17 @@
 
 import { redirect } from "next/navigation";
 
+import { AdminBar } from "@/components/admin/AdminBar";
 import { LoginForm } from "@/components/admin/LoginForm";
+import { site } from "@/content/site";
 import { adminConfigured, isAdmin } from "@/lib/admin/auth";
 
 export default async function AdminLoginPage() {
   if (await isAdmin()) redirect("/admin");
 
   return (
+    <>
+    <AdminBar logo={site.logo} />
     <main className="mx-auto flex max-w-sm flex-col gap-5 p-10">
       <h1 className="text-head text-ink">Sign in</h1>
       {adminConfigured() ? (
@@ -20,5 +24,6 @@ export default async function AdminLoginPage() {
         </p>
       )}
     </main>
+    </>
   );
 }

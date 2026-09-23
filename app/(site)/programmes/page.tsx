@@ -11,7 +11,7 @@ import { PlaceholderPhoto } from "@/components/blocks/PlaceholderPhoto";
 import { AutoRail } from "@/components/sections/AutoRail";
 import { ProgrammeHeroCarousel, type ProgrammeHeroSlide } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
-import { SnakeRoute } from "@/components/sections/SnakeRoute";
+import { StageScroll, type ScrollStage } from "@/components/sections/StageScroll";
 import {
   events,
   eventsCopy,
@@ -74,6 +74,23 @@ const heroSlides: ProgrammeHeroSlide[] = opportunities
     action: { label: `Explore ${opportunity.title}`, href: opportunity.href },
   }));
 
+/* Final pass 2026-09-23: each stage carries a CDIE photograph of that stage
+   being practised, all of them already captioned elsewhere on the site. */
+const stageImages: Record<string, { src: string; alt: string }> = {
+  understand: { src: "/images/cdie-summer-program-needs-filtering.jpg", alt: "Participants working through needs filtering at tables" },
+  develop: { src: "/images/cdie-design-challenge-pitch.jpg", alt: "Design challenge team presenting a slide to an audience" },
+  build: { src: "/images/cdie-summer-program-cnc-class-01.jpg", alt: "Participant operating a CNC machine" },
+  explain: { src: "/images/cdie-mdi-cohort-1-semester-one-showcase.jpg", alt: "MDI student presenting at the end of semester showcase" },
+};
+
+const scrollStages: ScrollStage[] = learningStages.map((stage) => ({ ...stage, image: stageImages[stage.id] }));
+
+/* Final pass 2026-09-23: "use only 5 relevant FAQs on each page". The full
+   vetted list stays in content/programmes.ts; this page asks the five that
+   cover every programme on it rather than the MSc alone. */
+const PAGE_FAQS = ["apply", "fees", "grants", "challenge", "training"];
+const pageFaqs = PAGE_FAQS.flatMap((id) => programmeFaqs.filter((faq) => faq.id === id));
+
 export const metadata: Metadata = {
   title: "Programmes",
   description: programmesLanding.standfirst,
@@ -86,17 +103,16 @@ export default function ProgrammesPage() {
       <ProgrammeHeroCarousel slides={heroSlides} />
 
       {/*
-        Change request 2026-09-21, section 3: the four stages are stations on
-        one route rather than four boxes side by side, so the order they run in
-        is visible before a word is read.
+        Final pass 2026-09-23: the four stages pin and play one at a time as the
+        reader scrolls, then the page carries on. It replaces the snake route,
+        which showed the order but not the movement between stages.
       */}
-      <Section
+      <StageScroll
         eyebrow="How learning works"
         title="Understand the need, then build something you can test."
         standfirst="Four stages, in order. Each one is a habit you practise rather than a box you tick."
-      >
-        <SnakeRoute stages={learningStages} />
-      </Section>
+        stages={scrollStages}
+      />
 
       <Section
         tone="surface"
@@ -189,7 +205,7 @@ export default function ProgrammesPage() {
         enquiry wording instead.
       */}
       <Section tone="surface" eyebrow="FAQs">
-        <FaqList items={[...programmeFaqs]} enquiryHref="/contact?topic=admissions" />
+        <FaqList items={pageFaqs} enquiryHref="/contact?topic=admissions" />
         <div className="mt-8">
           <Button href="/contact?topic=admissions">Ask about the next intake</Button>
         </div>

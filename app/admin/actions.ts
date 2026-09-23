@@ -3,12 +3,12 @@
 // Server actions for the admin dashboard. Every one that changes data checks
 // the session first: an action is a public endpoint whether or not a page links to it.
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { endSession, passwordMatches, requireAdmin, startSession } from "@/lib/admin/auth";
 import { collectionById, type CollectionId } from "@/lib/admin/collections";
-import { addItem, removeItem, saveUpload } from "@/lib/admin/store";
+import { addItem, CMS_TAG, removeItem, saveUpload } from "@/lib/admin/store";
 
 const IMAGE = /^image\/(jpeg|png|webp|gif|avif)$/;
 
@@ -45,7 +45,13 @@ export async function createItem(_: string | null, form: FormData): Promise<stri
   }
   if (fields.end && fields.start && fields.end < fields.start) return "The end date is before the start date.";
 
-  await addItem(collection.id, fields);
+  try {
+    await addItem(collection.id, fields);
+  } catch (error) {
+    console.error("[admin] save failed", error);
+    return "The Google Sheet did not accept that. Nothing was saved; try again in a moment.";
+  }
+  updateTag(CMS_TAG);
   revalidatePath("/", "layout");
   return null;
 }
@@ -55,5 +61,6 @@ export async function deleteItem(form: FormData) {
   const collection = collectionById(String(form.get("collection")));
   if (!collection) return;
   await removeItem(collection.id as CollectionId, String(form.get("id")));
+  updateTag(CMS_TAG);
   revalidatePath("/", "layout");
 }

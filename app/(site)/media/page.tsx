@@ -3,7 +3,7 @@
 
 import type { Metadata } from "next";
 
-import { EventGantt, type GanttEvent } from "@/components/blocks/EventGantt";
+import { EventCalendar, type CalendarCardEvent } from "@/components/blocks/EventCalendar";
 import { FaqList } from "@/components/blocks/FaqList";
 import { NewsletterGrid, type NewsletterCardItem } from "@/components/blocks/NewsletterGrid";
 import { Button } from "@/components/primitives/Button";
@@ -20,6 +20,7 @@ import {
 import { events, eventsCopy } from "@/content/programmes";
 import { listItems } from "@/lib/admin/store";
 import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
+import { fetchPostImage } from "@/lib/linkedin/image";
 
 export const metadata: Metadata = {
   title: "Media",
@@ -40,37 +41,40 @@ export const revalidate = 600;
   The events calendar leads the page. Programmes owns every event record; this
   is a second view of the same list, so the two cannot drift.
 */
-const programmeEvents: GanttEvent[] = events.map((event) => ({
+const programmeEvents: CalendarCardEvent[] = events.map((event) => ({
   id: event.id,
   title: event.title,
   start: event.start,
   end: event.end,
   kind: event.kind,
+  venue: event.venue,
   estimated: event.estimated,
   link: event.link,
+  image: event.image,
 }));
 
-const shiftMonths = (iso: string, months: number) => {
-  const date = new Date(iso);
-  date.setUTCMonth(date.getUTCMonth() + months);
-  return date.toISOString().slice(0, 10);
-};
+/* Revised 2026-09-23: an event with no photograph of its own takes the first
+   picture of the LinkedIn post it is filed from, when that post has one. */
+const withPostImage = (event: CalendarCardEvent) =>
+  event.image || !event.link?.startsWith("https://www.linkedin.com/")
+    ? Promise.resolve(event)
+    : fetchPostImage(event.link).then((image) => (image ? { ...event, image } : event));
 
 export default async function MediaPage() {
   /* Enhancements 2026-09-22: one timeline holds programme events plus the
-     events, upcoming activities and media items added in the admin dashboard. */
-  const [added, activities, media, addedIssues] = await Promise.all([
+     events, upcoming activities and posts added in the admin dashboard. */
+  const [added, activities, posts, addedIssues] = await Promise.all([
     listItems("events"),
     listItems("activities"),
-    listItems("media"),
+    listItems("posts"),
     listItems("newsletters"),
   ]);
-  const calendarEvents: GanttEvent[] = [
+  const calendarEvents: CalendarCardEvent[] = await Promise.all([
     ...programmeEvents,
-    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, kind: "Event" })),
-    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, kind: "Activity" })),
-    ...media.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Media", link: item.link })),
-  ];
+    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Event", image: item.image })),
+    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Activity", image: item.image })),
+    ...posts.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Post", link: item.link, image: item.image })),
+  ].map(withPostImage));
   const today = new Date().toISOString().slice(0, 10);
 
   const newsletters = mediaItems.filter((item) => item.kind === "newsletter");
@@ -131,7 +135,9 @@ export default async function MediaPage() {
           </div>
         ) : (
           <>
-            <EventGantt items={calendarEvents} from={shiftMonths(today, -6)} to={shiftMonths(today, 3)} today={today} />
+            {/* Revised 2026-09-23: calendar cards after gt-world-challenge.com,
+                opening on the three most recent events. */}
+            <EventCalendar items={calendarEvents} today={today} fallbackImage="/brand/cdie-logo.webp" />
           </>
         )}
       </Section>
@@ -174,6 +180,7 @@ export default async function MediaPage() {
           fallback={linkedInCopy.fallback}
           pageUrl={linkedInCopy.pageUrl}
           privacy={linkedInCopy.privacy}
+          fallbackImage="/brand/cdie-logo.webp"
         />
       </Section>
 

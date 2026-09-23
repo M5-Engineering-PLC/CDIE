@@ -17,17 +17,23 @@
 
   Our latest still shows one card at a time and moves on after three seconds
   unless the reader is holding it.
+
+  Final pass 2026-09-23: a gallery wheel sits directly under the hero; the
+  studio cards lose their Explore button and the pill of instructions; Our
+  latest counts down on a progress bar like the hero's; the innovate, convene,
+  create cards lose their numbers.
 */
 
 import type { Metadata } from "next";
 
 import { PartnerStrip } from "@/components/sections/PartnerStrip";
 import { ProgrammeHeroCarousel } from "@/components/sections/ProgrammeHeroCarousel";
+import { RadialGallery } from "@/components/sections/RadialGallery";
 import { Section } from "@/components/sections/Section";
 import { SoloCardCarousel } from "@/components/sections/SoloCardCarousel";
 import { TriadRail } from "@/components/sections/TriadRail";
 import { VisualCardRail } from "@/components/sections/VisualCardRail";
-import { defineCdie, homeHero, latestCopy, latestHighlights, programmeHeroSlides, servicesCopy } from "@/content/home";
+import { defineCdie, galleryCopy, galleryPhotos, homeHero, latestCopy, latestHighlights, programmeHeroSlides, servicesCopy } from "@/content/home";
 import { capabilities } from "@/content/studio";
 
 export const metadata: Metadata = {
@@ -44,6 +50,8 @@ const serviceImages: Record<string, string> = {
   woodworking: "/images/service-woodworking-1.jpeg",
   // Enhancements 2026-09-22: "for laser use the image titled summer program".
   "laser-cutting": "/images/cdie-summer-program-laser-cutting.jpg",
+  // 2026-09-23: "use this for casting and molding service".
+  "casting-moulding": "/images/service-casting-moulding-1.webp",
 };
 
 const serviceCards = capabilities.map((capability) => ({
@@ -66,6 +74,9 @@ export default function HomePage() {
   return (
     <>
       <ProgrammeHeroCarousel slides={[...programmeHeroSlides]} />
+
+      {/* Final pass 2026-09-23: the gallery follows the hero directly. */}
+      <RadialGallery eyebrow={galleryCopy.eyebrow} title={galleryCopy.headline} photos={galleryPhotos} />
 
       <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
         <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:gap-16">

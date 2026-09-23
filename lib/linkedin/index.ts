@@ -19,6 +19,7 @@ import type { LinkedInFeed } from "@/content/linkedin";
 import { readStoreConfig } from "./config";
 import { EMPTY_FEED } from "./client";
 import { buildFeed } from "./feed";
+import { fetchPostImage } from "./image";
 import { readStore } from "./store";
 
 export { CACHE_SECONDS, MAX_POSTS, RECENT_POSTS } from "./config";
@@ -30,7 +31,17 @@ export type { LinkedInFeed, LinkedInPost } from "@/content/linkedin";
 export async function getLinkedInFeed(): Promise<LinkedInFeed> {
   try {
     const config = readStoreConfig();
-    return buildFeed(await readStore(config));
+    const feed = buildFeed(await readStore(config));
+    /* A post's own picture: the sheet's image column when it has one, else
+       the first image on the post itself. */
+    const posts = await Promise.all(
+      feed.posts.map(async (post) => {
+        if (post.image) return post;
+        const image = await fetchPostImage(post.permalink);
+        return image ? { ...post, image } : post;
+      }),
+    );
+    return { ...feed, posts };
   } catch (error) {
     console.error("[linkedin] feed read failed", error);
     return EMPTY_FEED;

@@ -5,7 +5,7 @@ import test from "node:test";
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("homepage opens with the three-programme visual carousel", () => {
-  const page = read("app/page.tsx");
+  const page = read("app/(site)/page.tsx");
   assert.match(page, /ProgrammeHeroCarousel/);
   assert.match(page, /PartnerStrip/);
   assert.match(page, /VisualCardRail/);
