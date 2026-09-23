@@ -157,12 +157,10 @@ the sides, so the label follows her; /design-studio is a public URL and the page
 covers both sides, so it stays. Recorded as R9 in the Lucid update note, which
 is where Lucid gets corrected.
 
-One consequence worth stating, because it is the kind of thing that rots
-quietly. Textiles is now Graduate School but still has no documented position in
-the room, so the explorer's unplaced-capability message can no longer say the
-capability is held at the ATC. It says nothing documents where the capability
-sits, which is the true statement for all three unplaced ones and stays true
-whichever side they belong to.
+The 23 September room video, `IMG_0926.MOV`, shows two sewing stations below
+the high window in the Graduate School room. The model places textiles there.
+The video gives no measurements, so the room size and station spacing remain
+illustrative. Metalworking and woodworking still have no documented position.
 
 The source of R9, and of the other four review items numbered R10 to R13, is a
 machine transcript of poor quality in which speaker attribution is unreliable.
@@ -573,8 +571,8 @@ Exit test:
 ### Gate 5 — The studio
 
 Work: mount `createDesignStudioModel()` behind a poster and a loading state.
-Wire the four modelled capabilities to the detail panel. Build the honest path
-for the three that have no mapped area.
+Wire the mapped capabilities to the detail panel. Build the honest path for
+capabilities that have no mapped area.
 
 Exit test:
 - The page reads and navigates fully before the model loads, and if it never
@@ -582,8 +580,10 @@ Exit test:
 - Every hotspot has an equivalent labelled HTML button.
 - Selecting a capability moves the list, the highlight, the media and the panel
   together, and writes `?service=` to the URL.
-- Metalworking, textiles and woodworking present photographs and text, with no
-  invented position in the room and no drawn second space.
+- Textile stations appear below the high window in the Graduate School room.
+  Their dimensions and spacing remain illustrative.
+- Metalworking and woodworking present photographs and text, with no invented
+  position in the room and no drawn second space.
 - The viewer releases geometry, materials and textures when it unmounts, and
   stops animating off screen.
 - Reduced motion selects without camera travel.

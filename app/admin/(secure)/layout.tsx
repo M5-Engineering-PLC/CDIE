@@ -13,7 +13,11 @@ export default async function SecureLayout({ children }: { children: React.React
     <>
       <AdminBar
         logo={site.logo}
-        links={[{ href: "/admin", label: "Overview" }, ...collections.map((collection) => ({ href: `/admin/${collection.id}`, label: collection.label }))]}
+        links={[
+          { href: "/admin", label: "Overview" },
+          { href: "/admin/studio", label: "Design Studio" },
+          ...collections.map((collection) => ({ href: `/admin/${collection.id}`, label: collection.label })),
+        ]}
         signOut={AUTH_ENABLED ? (
           <form action={logout}>
             <button type="submit" className="text-fine font-medium text-brand hover:text-brand-live">Sign out</button>

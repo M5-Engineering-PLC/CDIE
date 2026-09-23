@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 
 import { studioLayout, type ServiceId } from './studioLayout';
+import { createTextileStations } from './createTextileStations';
+import { createBambuEnclosed, createBambuOpen, createFilamentUnit, createPrusaPrinter } from './realisticProps';
 
 type MaterialKey =
   | 'floor'
@@ -14,7 +16,9 @@ type MaterialKey =
   | 'blue'
   | 'glass'
   | 'orange'
-  | 'red';
+  | 'red'
+  | 'darkWood'
+  | 'fabric';
 
 export type StudioRuntime = {
   nodes: Record<string, THREE.Object3D>;
@@ -23,9 +27,9 @@ export type StudioRuntime = {
 };
 
 const palette: Record<MaterialKey, THREE.MeshStandardMaterial> = {
-  floor: new THREE.MeshStandardMaterial({ color: 0xd8d4c8, roughness: 0.78 }),
-  wall: new THREE.MeshStandardMaterial({ color: 0xddd4c5, roughness: 0.88 }),
-  wood: new THREE.MeshStandardMaterial({ color: 0xc99b69, roughness: 0.48 }),
+  floor: new THREE.MeshStandardMaterial({ color: 0xece8db, roughness: 0.29, metalness: 0.02 }),
+  wall: new THREE.MeshStandardMaterial({ color: 0xe7e4d9, roughness: 0.84 }),
+  wood: new THREE.MeshStandardMaterial({ color: 0xc7a27e, roughness: 0.48 }),
   charcoal: new THREE.MeshStandardMaterial({ color: 0x30383a, roughness: 0.56, metalness: 0.06 }),
   yellow: new THREE.MeshStandardMaterial({ color: 0xf2c316, roughness: 0.42 }),
   screen: new THREE.MeshStandardMaterial({ color: 0x10191e, roughness: 0.18, metalness: 0.12 }),
@@ -35,8 +39,32 @@ const palette: Record<MaterialKey, THREE.MeshStandardMaterial> = {
   glass: new THREE.MeshStandardMaterial({ color: 0x8fb7c9, roughness: 0.16, metalness: 0.06, transparent: true, opacity: 0.48 }),
   orange: new THREE.MeshStandardMaterial({ color: 0xf07c22, roughness: 0.4 }),
   red: new THREE.MeshStandardMaterial({ color: 0xc23b2a, roughness: 0.5 }),
+  darkWood: new THREE.MeshStandardMaterial({ color: 0x77452f, roughness: 0.46 }),
+  fabric: new THREE.MeshStandardMaterial({ color: 0x767d7d, roughness: 0.91 }),
 };
 
+function createWoodGrain(): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 512;
+  const context = canvas.getContext('2d');
+  if (!context) return null;
+  context.fillStyle = '#e4dbce';
+  context.fillRect(0, 0, 256, 512);
+  for (let x = 0; x < 256; x += 1) {
+    const wave = Math.sin(x * 0.11) * 3 + Math.sin(x * 0.031) * 8;
+    const value = 185 + Math.floor(26 * Math.sin(x * 0.42 + wave) + 13 * Math.sin(x * 0.08));
+    context.fillStyle = `rgba(73, 40, 23, ${Math.max(0.015, (220 - value) / 450)})`;
+    context.fillRect(x, 0, 1, 512);
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(2, 1);
+  texture.anisotropy = 4;
+  return texture;
+}
 function prepareMesh(mesh: THREE.Mesh, service?: ServiceId): THREE.Mesh {
   mesh.castShadow = true;
   mesh.receiveShadow = true;
@@ -199,6 +227,9 @@ function createElectronicsWindow(): THREE.Group {
     window.add(box(`electronics-window-pane-${index + 1}`, [0.045, 1.28, 1.12], [x, y, z], 'glass'));
     window.add(box(`electronics-window-mullion-${index + 1}`, [0.08, 1.36, 0.055], [x - 0.01, y, z - 0.6], 'metal'));
   }
+  for (let band = 0; band < 8; band += 1) {
+    window.add(box(`electronics-zebra-blind-${band + 1}`, [0.025, 0.075, 4.85], [x - 0.065, 1.55 + band * 0.14, 0], 'fabric'));
+  }
   window.add(box('electronics-window-top-frame', [0.08, 0.08, 4.9], [x, 2.73, 0], 'metal'));
   window.add(box('electronics-window-sill', [0.16, 0.08, 4.9], [x - 0.03, 1.37, 0], 'whiteboard'));
   return window;
@@ -226,11 +257,36 @@ function createStool(name: string, x: number, z: number): THREE.Group {
   const stool = new THREE.Group();
   stool.name = name;
   stool.position.set(x, 0, z);
-  stool.add(cylinder(`${name}-seat`, 0.29, 0.09, [0, 0.66, 0], 'charcoal', 'co-working', 28));
+  const cushion = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.085, 10, 34, Math.PI * 1.55), palette.charcoal.clone());
+  cushion.name = `${name}-open-back-cushion`;
+  cushion.position.set(0, 0.91, -0.1);
+  cushion.rotation.x = -0.22;
+  cushion.castShadow = true;
+  cushion.userData.service = 'co-working';
+  stool.add(cushion);
+  stool.add(cylinder(`${name}-seat`, 0.27, 0.09, [0, 0.67, 0], 'charcoal', 'co-working', 36));
   stool.add(cylinder(`${name}-stem`, 0.035, 0.55, [0, 0.37, 0], 'metal', 'co-working', 14));
-  stool.add(cylinder(`${name}-base`, 0.23, 0.035, [0, 0.08, 0], 'metal', 'co-working', 24));
+  stool.add(cylinder(`${name}-base`, 0.23, 0.035, [0, 0.08, 0], 'metal', 'co-working', 32));
   markService(stool, 'co-working');
   return stool;
+}
+
+function createFabricChair(name: string, x: number, z: number): THREE.Group {
+  const chair = new THREE.Group();
+  chair.name = name;
+  chair.position.set(x, 0, z);
+  chair.add(box(`${name}-seat`, [0.45, 0.11, 0.44], [0, 0.58, 0], 'fabric', 'co-working'));
+  const back = box(`${name}-back`, [0.46, 0.47, 0.09], [0, 0.91, -0.2], 'fabric', 'co-working');
+  back.rotation.x = -0.1;
+  chair.add(back);
+  chair.add(cylinder(`${name}-stem`, 0.035, 0.48, [0, 0.32, 0], 'charcoal', 'co-working'));
+  for (let i = 0; i < 5; i += 1) {
+    const foot = box(`${name}-foot-${i}`, [0.04, 0.035, 0.25], [0, 0.09, 0.12], 'charcoal', 'co-working');
+    foot.rotation.y = i * Math.PI * 2 / 5;
+    chair.add(foot);
+  }
+  markService(chair, 'co-working');
+  return chair;
 }
 
 function createComputer(name: string, x: number, z: number, rotationY = 0): THREE.Group {
@@ -256,57 +312,21 @@ function createComputerStations(): THREE.Group {
   return station;
 }
 
-function createPrusaPrinter(name: string, x: number, y: number, z: number): THREE.Group {
-  const printer = new THREE.Group();
-  printer.name = name;
-  printer.position.set(x, y, z);
-  printer.add(box(`${name}-base-frame`, [0.7, 0.06, 0.58], [0, 0.05, 0], 'charcoal', 'three-d-printing'));
-  printer.add(box(`${name}-upright-left`, [0.055, 0.74, 0.055], [-0.29, 0.4, -0.22], 'charcoal', 'three-d-printing'));
-  printer.add(box(`${name}-upright-right`, [0.055, 0.74, 0.055], [0.29, 0.4, -0.22], 'charcoal', 'three-d-printing'));
-  printer.add(box(`${name}-top-frame`, [0.66, 0.055, 0.08], [0, 0.76, -0.22], 'charcoal', 'three-d-printing'));
-  printer.add(box(`${name}-build-plate`, [0.48, 0.035, 0.42], [0, 0.14, 0], 'metal', 'three-d-printing'));
-  printer.add(box(`${name}-gantry`, [0.62, 0.045, 0.045], [0, 0.55, -0.18], 'metal', 'three-d-printing'));
-  printer.add(box(`${name}-extruder`, [0.14, 0.13, 0.12], [0.08, 0.49, -0.12], 'orange', 'three-d-printing'));
-  printer.add(cylinder(`${name}-print`, 0.12, 0.12, [0, 0.22, 0], 'blue', 'three-d-printing', 24));
-  const spool = cylinder(`${name}-filament-spool`, 0.13, 0.1, [0.15, 0.94, -0.2], 'orange', 'three-d-printing', 24);
-  spool.rotation.z = Math.PI / 2;
-  printer.add(spool);
-  markService(printer, 'three-d-printing');
-  return printer;
-}
-
-function createBambuPrinter(name: string, x: number, y: number, z: number): THREE.Group {
-  const printer = new THREE.Group();
-  printer.name = name;
-  printer.position.set(x, y, z);
-  printer.add(box(`${name}-base`, [0.72, 0.09, 0.62], [0, 0.05, 0], 'whiteboard', 'three-d-printing'));
-  printer.add(box(`${name}-roof`, [0.72, 0.08, 0.62], [0, 0.74, 0], 'whiteboard', 'three-d-printing'));
-  for (const [index, xOffset] of [-0.33, 0.33].entries()) {
-    printer.add(box(`${name}-front-post-${index + 1}`, [0.055, 0.64, 0.055], [xOffset, 0.4, 0.28], 'charcoal', 'three-d-printing'));
-    printer.add(box(`${name}-rear-post-${index + 1}`, [0.055, 0.64, 0.055], [xOffset, 0.4, -0.28], 'charcoal', 'three-d-printing'));
-  }
-  printer.add(box(`${name}-front-glass`, [0.6, 0.58, 0.025], [0, 0.42, 0.3], 'glass', 'three-d-printing'));
-  printer.add(box(`${name}-side-glass`, [0.025, 0.58, 0.5], [-0.35, 0.42, 0], 'glass', 'three-d-printing'));
-  printer.add(box(`${name}-build-plate`, [0.46, 0.035, 0.4], [0, 0.17, 0], 'charcoal', 'three-d-printing'));
-  printer.add(box(`${name}-toolhead`, [0.15, 0.12, 0.14], [0.08, 0.52, 0], 'charcoal', 'three-d-printing'));
-  printer.add(cylinder(`${name}-print`, 0.11, 0.16, [0, 0.27, 0], 'orange', 'three-d-printing', 24));
-  printer.add(box(`${name}-touchscreen`, [0.18, 0.13, 0.025], [0.24, 0.61, 0.33], 'screen', 'three-d-printing'));
-  markService(printer, 'three-d-printing');
-  return printer;
-}
-
 function createPrinterStation(): THREE.Group {
   const station = new THREE.Group();
   station.name = '3d-printer-station';
-  station.add(box('printer-counter', [3.2, 0.1, 0.82], [2.05, 0.82, -3.1], 'wood', 'three-d-printing'));
-  station.add(box('printer-counter-base', [3.1, 0.76, 0.58], [2.05, 0.4, -3.26], 'charcoal', 'three-d-printing'));
-  station.add(box('printer-upper-shelf', [3.2, 0.09, 0.82], [2.05, 1.77, -3.1], 'wood', 'three-d-printing'));
-  station.add(box('printer-rack-left', [0.08, 1.0, 0.68], [0.49, 1.32, -3.18], 'charcoal', 'three-d-printing'));
-  station.add(box('printer-rack-right', [0.08, 1.0, 0.68], [3.61, 1.32, -3.18], 'charcoal', 'three-d-printing'));
-  [1.15, 2.05, 2.95].forEach((x, index) => {
-    station.add(createBambuPrinter(`bambu-printer-${index + 1}`, x, 0.88, -3.08));
-    station.add(createPrusaPrinter(`prusa-printer-${index + 1}`, x, 1.82, -3.08));
-  });
+  station.add(box('printer-lower-shelf', [3.45, 0.1, 0.86], [2.05, 0.78, -3.1], 'wood', 'three-d-printing'));
+  station.add(box('printer-upper-shelf', [3.45, 0.1, 0.86], [2.05, 1.8, -3.1], 'wood', 'three-d-printing'));
+  for (const x of [0.37, 3.73]) {
+    station.add(box(`printer-rack-post-${x}`, [0.055, 1.78, 0.06], [x, 0.95, -3.42], 'charcoal', 'three-d-printing'));
+    station.add(box(`printer-rack-front-post-${x}`, [0.055, 1.78, 0.06], [x, 0.95, -2.78], 'charcoal', 'three-d-printing'));
+  }
+  for (const [index, x] of [1.02, 2.05, 3.08].entries()) {
+    station.add(createPrusaPrinter(`prusa-printer-${index + 1}`, x, 1.86, -3.1));
+  }
+  station.add(createBambuOpen('bambu-open-printer', 1.02, 0.84, -3.1));
+  station.add(createBambuEnclosed('bambu-enclosed-printer', 2.05, 0.84, -3.1));
+  station.add(createFilamentUnit('bambu-filament-unit', 3.08, 0.84, -3.1));
   markService(station, 'three-d-printing');
   return station;
 }
@@ -316,21 +336,13 @@ function createElectronicsCupboards(): THREE.Group {
   run.name = 'electronics-cupboards';
   const zValues = [-1.95, -0.65, 0.65, 1.95];
   for (const [index, z] of zValues.entries()) {
-    run.add(box(`cupboard-${index + 1}`, [0.66, 0.78, 1.16], [4.96, 0.43, z], 'charcoal', 'electronics'));
-    run.add(box(`cupboard-seam-${index + 1}`, [0.02, 0.58, 0.03], [4.6, 0.46, z], 'metal', 'electronics'));
-    run.add(box(`cupboard-handle-${index + 1}`, [0.035, 0.06, 0.24], [4.58, 0.58, z], 'metal', 'electronics'));
+    run.add(box(`cupboard-${index + 1}`, [0.66, 0.78, 1.16], [4.96, 0.43, z], 'darkWood', 'electronics'));
+    run.add(box(`cupboard-door-left-${index + 1}`, [0.026, 0.67, 0.51], [4.6, 0.43, z - 0.28], 'darkWood', 'electronics'));
+    run.add(box(`cupboard-door-right-${index + 1}`, [0.026, 0.67, 0.51], [4.6, 0.43, z + 0.28], 'darkWood', 'electronics'));
+    run.add(box(`cupboard-handle-left-${index + 1}`, [0.025, 0.025, 0.16], [4.57, 0.64, z - 0.13], 'metal', 'electronics'));
+    run.add(box(`cupboard-handle-right-${index + 1}`, [0.025, 0.025, 0.16], [4.57, 0.64, z + 0.13], 'metal', 'electronics'));
   }
   run.add(box('electronics-worktop', [0.78, 0.1, 5.18], [4.96, 0.87, 0], 'wood', 'electronics'));
-  run.add(box('electronics-shelf-low', [0.34, 0.08, 4.75], [5.13, 1.16, 0], 'wood', 'electronics'));
-
-  [-1.7, 0, 1.7].forEach((z, index) => {
-    run.add(box(`shelf-yellow-bin-${index + 1}`, [0.3, 0.22, 0.48], [4.92, 1.31, z], 'yellow', 'electronics'));
-  });
-  [-1.25, 0.25, 1.35].forEach((z, index) => {
-    const instrument = box(`bench-instrument-${index + 1}`, [0.32, 0.28, 0.45], [4.55, 1.06, z], index === 1 ? 'blue' : 'charcoal', 'electronics');
-    run.add(instrument);
-    run.add(box(`instrument-screen-${index + 1}`, [0.025, 0.14, 0.22], [4.37, 1.08, z], 'screen', 'electronics'));
-  });
   markService(run, 'electronics');
   return run;
 }
@@ -384,12 +396,19 @@ function createTeacherStation(): THREE.Group {
 export function createDesignStudioModel(): THREE.Group {
   const root = new THREE.Group();
   root.name = 'cdie-design-studio';
+  const grain = createWoodGrain();
+  if (grain) {
+    palette.wood.map = grain;
+    palette.darkWood.map = grain;
+    root.userData.generatedTextures = [grain];
+  }
 
   const services: StudioRuntime['services'] = {
     design: new THREE.Group(),
     'co-working': new THREE.Group(),
     'three-d-printing': new THREE.Group(),
     electronics: new THREE.Group(),
+    textiles: new THREE.Group(),
   };
   for (const [id, group] of Object.entries(services)) {
     group.name = `service-${id}`;
@@ -404,6 +423,9 @@ export function createDesignStudioModel(): THREE.Group {
   services.design.add(createDoor(), createComputerStations(), createPresentationWall(), createTeacherStation());
   services['three-d-printing'].add(createPrinterStation());
   services.electronics.add(createElectronicsCupboards());
+  const textileStations = createTextileStations();
+  markService(textileStations, 'textiles');
+  services.textiles.add(textileStations);
 
   for (const tableData of studioLayout.tables) {
     const table = createWorktable(tableData.id, tableData.number, tableData.x, tableData.z);
@@ -414,7 +436,9 @@ export function createDesignStudioModel(): THREE.Group {
       [tableData.x, tableData.z + 0.78],
     ] as const;
     stoolPositions.forEach(([x, z], index) => {
-      services['co-working'].add(createStool(`${tableData.id}-stool-${index + 1}`, x, z));
+      services['co-working'].add(index === 2 && tableData.number % 2 === 0
+        ? createFabricChair(`${tableData.id}-fabric-chair-${index + 1}`, x, z)
+        : createStool(`${tableData.id}-stool-${index + 1}`, x, z));
     });
   }
 
@@ -428,6 +452,6 @@ export function createDesignStudioModel(): THREE.Group {
   const runtime: StudioRuntime = { nodes, services, selectable };
   root.userData.sculptRuntime = runtime;
   root.userData.approximate = true;
-  root.userData.sourceAuthority = 'user-supplied-floorplan-and-room-photos';
+  root.userData.sourceAuthority = 'user-supplied-floorplan-room-photos-and-IMG_0926.MOV';
   return root;
 }
