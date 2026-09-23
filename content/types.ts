@@ -228,6 +228,21 @@ export type Person = {
   portrait?: Figure;
 };
 
+/*
+  changes-v2, 2026-09-23: a graduand on the MDI success-stories band. A quote is
+  deliberately absent from this type's required fields: it belongs to the person
+  and publishes only with their written consent.
+*/
+export type Graduand = {
+  id: string;
+  name: string;
+  cohort: string;
+  image: string;
+  alt: string;
+  linkedin?: string;
+  quote?: string;
+};
+
 export type Cohort = {
   id: string;
   year: string;

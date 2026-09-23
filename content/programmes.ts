@@ -28,7 +28,14 @@
     named person confirms the wording and the date is recorded.
 */
 
-import type { CalendarEvent, Cohort, Faq, LearningStage, Opportunity } from "./types";
+import type {
+  CalendarEvent,
+  Cohort,
+  Faq,
+  Graduand,
+  LearningStage,
+  Opportunity,
+} from "./types";
 
 export const programmesLanding = {
   headline: "Learn by working on problems that matter.",
@@ -479,6 +486,31 @@ export const training = {
   only once it is confirmed.
 */
 export const mdiCohorts: Cohort[] = [];
+
+/*
+  changes-v2, 2026-09-23: the first two MDI Cohort 1 graduands, with the
+  photographs and LinkedIn profiles supplied by the team. No quote is published
+  for either: a person's words need their written consent, and none has been
+  supplied. Name, cohort and their own profile link are what the sources give.
+*/
+export const mdiGraduands: Graduand[] = [
+  {
+    id: "ernest-bwogi",
+    name: "Ernest Bwogi",
+    cohort: "Cohort 1, MDI",
+    image: "/cohorts/ernest-bwogi.webp",
+    alt: "Ernest Bwogi in a UCT MedTech jacket in a corridor",
+    linkedin: "https://www.linkedin.com/in/ernest-bwogi-683a90267/",
+  },
+  {
+    id: "janiffer-nyambura",
+    name: "Janiffer Nyambura",
+    cohort: "Cohort 1, MDI",
+    image: "/cohorts/janiffer-nyambura.webp",
+    alt: "Janiffer Nyambura speaking into a microphone at the WIBEK conference",
+    linkedin: "https://www.linkedin.com/in/janiffer-nyambura-g-e-827620153/",
+  },
+];
 
 /*
   Change request 2026-09-13, section 6.2: "Our cohorts" describes an internal

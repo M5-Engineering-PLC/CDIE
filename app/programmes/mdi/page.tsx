@@ -13,7 +13,8 @@ import { MdiSectionNav } from "@/components/sections/MdiSectionNav";
 import { Section } from "@/components/sections/Section";
 import { mdiSemesters } from "@/content/curriculum";
 import { CohortGrid } from "@/components/blocks/CohortGrid";
-import { mdi, mdiCohortsCopy } from "@/content/programmes";
+import { StoryGrid, type StoryCardItem } from "@/components/blocks/StoryGrid";
+import { mdi, mdiCohortsCopy, mdiGraduands } from "@/content/programmes";
 import { listItems } from "@/lib/admin/store";
 
 export const metadata: Metadata = {
@@ -30,6 +31,16 @@ export default async function MdiPage() {
   const cohorts = (await listItems("cohorts"))
     .filter((item) => item.image)
     .map((item) => ({ id: item.id, name: item.name, programme: item.programme, year: item.year, summary: item.summary, image: item.image }));
+
+  const graduands: StoryCardItem[] = mdiGraduands.map((person) => ({
+    id: person.id,
+    name: person.name,
+    cohort: person.cohort,
+    quote: person.quote,
+    image: person.image,
+    alt: person.alt,
+    socials: [{ platform: "linkedin" as const, href: person.linkedin }],
+  }));
 
   return (
     <>
@@ -146,7 +157,11 @@ export default async function MdiPage() {
         title={mdiCohortsCopy.headline}
         standfirst={mdiCohortsCopy.body}
       >
-        {cohorts.length > 0 ? (
+        {/* changes-v2, 2026-09-23: the graduands supplied by the team lead the
+            band; cohorts added in the dashboard follow. */}
+        {graduands.length > 0 ? (
+          <StoryGrid items={graduands} />
+        ) : cohorts.length > 0 ? (
           <CohortGrid items={cohorts} />
         ) : (
           <div className="border border-dashed border-line bg-surface p-8">

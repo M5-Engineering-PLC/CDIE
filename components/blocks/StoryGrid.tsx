@@ -18,7 +18,8 @@ export type StoryCardItem = {
   id: string;
   name: string;
   cohort: string;
-  quote: string;
+  /** the person's own words, published only with their written consent */
+  quote?: string;
   image: string;
   alt: string;
   socials: { platform: "linkedin" | "instagram" | "x"; href?: string }[];
@@ -55,9 +56,11 @@ export function StoryGrid({ items }: { items: StoryCardItem[] }) {
             />
           </div>
           <div className="flex flex-1 flex-col gap-3 p-6">
-            <blockquote className="border-l-2 border-brand-lift pl-4 text-body leading-relaxed text-ink-2">
-              {story.quote}
-            </blockquote>
+            {story.quote ? (
+              <blockquote className="border-l-2 border-brand-lift pl-4 text-body leading-relaxed text-ink-2">
+                {story.quote}
+              </blockquote>
+            ) : null}
             <div className="mt-auto pt-3">
               <p className="text-lead text-ink">{story.name}</p>
               <p className="text-fine text-ink-3">{story.cohort}</p>
