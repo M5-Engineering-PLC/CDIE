@@ -84,7 +84,11 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
 
   return (
     <>
-      <StudioExplorer capabilities={explorerCapabilities} initialId={initialId} />
+      <StudioExplorer
+        capabilities={explorerCapabilities}
+        initialId={initialId}
+        intro={{ headline: studioIntro.tourHeadline, standfirst: studioIntro.tourStandfirst }}
+      />
 
       {/*
         Change request 2026-09-13, section 3.1. The explorer shows one
@@ -107,9 +111,6 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
             <li key={space.id} className="flex flex-col gap-2 bg-surface p-5 md:gap-3 md:p-6">
               <div className="flex items-center gap-3">
                 <h3 className="display text-sub">{space.name}</h3>
-                <span className="font-mono text-[0.625rem] uppercase tracking-widest text-ink-3">
-                  {space.hasModel ? "Room model" : "Photographs only"}
-                </span>
               </div>
               <p className="hidden text-body leading-relaxed text-ink-2 md:block">{space.summary}</p>
             </li>

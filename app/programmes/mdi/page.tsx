@@ -11,13 +11,10 @@ import { Button } from "@/components/primitives/Button";
 import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
-import { StoryGrid } from "@/components/blocks/StoryGrid";
-import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { mdiSemesters } from "@/content/curriculum";
 import { CohortGrid } from "@/components/blocks/CohortGrid";
-import { mdi, mdiCohorts, mdiCohortsCopy } from "@/content/programmes";
+import { mdi, mdiCohortsCopy } from "@/content/programmes";
 import { listItems } from "@/lib/admin/store";
-import { SHOW_SAMPLE_CONTENT, sampleStories } from "@/content/samples";
 
 export const metadata: Metadata = {
   title: "Medical Device Innovation",
@@ -55,7 +52,6 @@ export default async function MdiPage() {
           ))}
         </dl>
         <div className="mt-8 max-w-[62ch]">
-          <Pending items={mdi.structurePending} />
         </div>
         <div className="prose-body mt-10 max-w-[62ch] text-body leading-relaxed text-ink-2">
           {mdi.body.map((paragraph) => (
@@ -144,7 +140,6 @@ export default async function MdiPage() {
           {mdi.applications.process}
         </p>
         <div className="mt-6 max-w-[62ch]">
-          <Pending items={mdi.applications.pending} />
         </div>
         <div className="mt-6">
           <Button href={mdi.applications.action.href}>{mdi.applications.action.label}</Button>
@@ -157,35 +152,22 @@ export default async function MdiPage() {
         title={mdiCohortsCopy.headline}
         standfirst={mdiCohortsCopy.body}
       >
-        {/*
-          Change request 2026-09-13, section 6.2. mdiCohorts is empty by policy.
-          Sample graduates render behind the flag so the card can be reviewed;
-          their social links are deliberately absent, because a quote and a link
-          about a real person need that person's written consent.
-        */}
-        {cohorts.length > 0 ? (
+                {cohorts.length > 0 ? (
           <CohortGrid items={cohorts} />
-        ) : mdiCohorts.length === 0 && !SHOW_SAMPLE_CONTENT ? (
+        ) : (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[54ch] text-lead text-ink-2">{mdiCohortsCopy.empty}</p>
           </div>
-        ) : (
-          <>
-            {mdiCohorts.length === 0 ? <SampleNotice what="graduate stories" /> : null}
-            <StoryGrid items={sampleStories} />
-          </>
         )}
       </Section>
 
-      <Section tone="surface" eyebrow="Fees and funding" title={mdi.fees.headline}>
-        <div className="max-w-[62ch]">
-          <Pending items={mdi.fees.pending} />
+      {/* changes-v2, 2026-09-23: the fees and funding band is withdrawn until
+          the figures are confirmed; the page closes on the contact action. */}
+      <Section tone="surface" eyebrow="Talk to us" title="Ask us about the programme.">
+        <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">{mdi.applications.body}</p>
+        <div className="mt-6">
+          <Button href={mdi.applications.action.href}>{mdi.applications.action.label}</Button>
         </div>
-        <p className="mt-5 max-w-[62ch] text-body text-ink-2">{mdi.fees.guidance}</p>
-        <p className="mt-3 max-w-[62ch] text-body text-ink-2">
-          Ask the admissions team about scholarships, funding and any teaching or research
-          role attached to the programme.
-        </p>
       </Section>
     </>
   );

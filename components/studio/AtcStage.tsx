@@ -58,10 +58,6 @@ export function AtcStage({ active, open, onSelect, onClose, onOpen }: AtcStagePr
     <div className="flex min-w-0 flex-col gap-3">
       <Atc3D active={active} onSelect={onSelect} />
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <p className="max-w-[56ch] text-fine text-ink-3">
-          Drag to orbit, scroll to zoom, select equipment to jump to its capability.
-          Toggle badges or container roll-up shutter in the toolbar.
-        </p>
         <button
           type="button"
           onClick={onClose}

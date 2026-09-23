@@ -99,7 +99,9 @@ test("programme photographs follow the image matching sheet, and Catalyst has no
   const programmes = read("content/programmes.ts");
   const catalyst = programmes.slice(programmes.indexOf('id: "catalyst-grants"'), programmes.indexOf('id: "training"'));
   assert.doesNotMatch(catalyst, /src: "/);
-  assert.match(read("app/programmes/page.tsx"), /standingIn=\{false\}/);
+  // changes-v2, 2026-09-23: the placeholder tag is gone with the other
+  // developer-facing markers, so there is no flag left to assert.
+  assert.doesNotMatch(read("components/blocks/PlaceholderPhoto.tsx"), /Placeholder image/);
   assert.doesNotMatch(read("app/programmes/page.tsx"), /"catalyst-grants": \{ src/);
 });
 

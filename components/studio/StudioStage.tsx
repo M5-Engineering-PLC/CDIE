@@ -107,15 +107,6 @@ export function StudioStage({
         )}
         <StudioCallout show={tour || isAtc} name={name} spaceName={spaceName} headline={headline} step={step} of={of} />
       </div>
-      <div className="hidden flex-wrap items-baseline justify-between gap-3 md:flex">
-        <p className="max-w-[52ch] text-fine text-ink-3">
-          {isAtc
-            ? "Drag to orbit, scroll to zoom, select equipment to jump to its capability. Non-selected equipment becomes transparent."
-            : viewOnly
-            ? "The room turns on its own and moves to whichever capability you choose. Illustrative and unmeasured."
-            : "Drag to orbit, scroll to zoom, select a bench to jump to its capability. Illustrative and unmeasured."}
-        </p>
-      </div>
     </div>
   );
 }

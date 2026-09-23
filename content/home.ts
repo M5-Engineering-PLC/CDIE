@@ -144,7 +144,8 @@ export const servicesCopy = {
 
 export const latestCopy = {
   eyebrow: "Our latest",
-  headline: "What has been happening at the centre.",
+  // Actual Copy, HOME > Latest from CDIE.
+  headline: "Meet the people, projects and conversations shaping life at the centre.",
 } as const;
 
 export const latestHighlights = [

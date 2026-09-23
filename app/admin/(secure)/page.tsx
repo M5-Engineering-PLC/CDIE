@@ -10,10 +10,6 @@ export const dynamic = "force-dynamic";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-const tools = [
-  { href: "/admin/models/design-studio", name: "Design Studio model", note: "design-studio-3js, illustrative" },
-  { href: "/admin/models/atc", name: "ATC workshop model", note: "atc-3js, illustrative" },
-];
 
 const daysAgo = (days: number) => new Date(Date.now() - days * DAY_MS).toISOString();
 
@@ -82,19 +78,6 @@ export default async function AdminOverviewPage() {
         </ul>
       </section>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="kicker">Model lab</h2>
-        <ul className="flex flex-col gap-2">
-          {tools.map((tool) => (
-            <li key={tool.href}>
-              <Link href={tool.href} className="block border border-line px-4 py-3">
-                <span className="block text-body text-ink">{tool.name}</span>
-                <span className="block text-fine text-ink-3">{tool.note}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </main>
   );
 }

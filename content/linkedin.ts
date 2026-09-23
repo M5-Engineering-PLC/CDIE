@@ -93,5 +93,6 @@ export const linkedInCopy = {
   fallback: "See the latest from CDIE on LinkedIn.",
   /** shown once the account URL is confirmed; see decision D17 and the copy note */
   pageUrl: null as string | null,
-  privacy: "Opening a post loads LinkedIn's embed, which sets LinkedIn's cookies.",
+  // changes-v2, 2026-09-23: the embed note is not website copy.
+  privacy: "",
 } as const;

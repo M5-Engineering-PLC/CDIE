@@ -8,7 +8,6 @@ import { Button } from "@/components/primitives/Button";
 import { EventGrid, type EventCardItem } from "@/components/blocks/EventGrid";
 import { FaqList } from "@/components/blocks/FaqList";
 import { PlaceholderPhoto } from "@/components/blocks/PlaceholderPhoto";
-import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { AutoRail } from "@/components/sections/AutoRail";
 import { ProgrammeHeroCarousel, type ProgrammeHeroSlide } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
@@ -21,7 +20,6 @@ import {
   programmeFaqs,
   programmesLanding,
 } from "@/content/programmes";
-import { SHOW_SAMPLE_CONTENT, sampleEvents } from "@/content/samples";
 
 /*
   Enhancements 2026-09-22: "on programmes just have the most recent 3 events".
@@ -104,7 +102,6 @@ export default function ProgrammesPage() {
         tone="surface"
         eyebrow="Opportunities"
         title="Find the one that fits where you are."
-        standfirst="Each has its own page with what it asks of you and what to do next."
       >
         {/*
           Change request 2026-09-13, section 4.2. A three-up grid made five
@@ -126,7 +123,6 @@ export default function ProgrammesPage() {
             >
               {opportunity.image ? (
                 <PlaceholderPhoto
-                  standingIn={false}
                   src={opportunity.image.src}
                   alt={opportunity.image.alt}
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -163,13 +159,7 @@ export default function ProgrammesPage() {
         title={eventsCopy.headline}
         standfirst={eventsCopy.standfirst}
       >
-        {/*
-          Change request 2026-09-13, section 4.3. The real list is empty by
-          policy: content/programmes.ts refuses to invent an event. Sample cards
-          render only so the band can be reviewed, and they are flagged as
-          sample above. Turn SHOW_SAMPLE_CONTENT off to see what ships today.
-        */}
-        {events.length === 0 && !SHOW_SAMPLE_CONTENT ? (
+                {eventCards.length === 0 ? (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[52ch] text-lead text-ink-2">{eventsCopy.empty}</p>
             <div className="mt-5">
@@ -180,8 +170,7 @@ export default function ProgrammesPage() {
           </div>
         ) : (
           <>
-            {events.length === 0 ? <SampleNotice what="events" /> : null}
-            <EventGrid items={events.length === 0 ? sampleEvents : eventCards} />
+            <EventGrid items={eventCards} />
             <div className="mt-8">
               <Button href="/media#events" tone="outline">
                 See the full events calendar

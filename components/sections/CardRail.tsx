@@ -94,7 +94,6 @@ export function CardRail({ label, children, columns = 3 }: CardRailProps) {
           <span aria-hidden="true">→</span>
           <span className="sr-only">Scroll {label} forward</span>
         </button>
-        <p className="font-mono text-fine text-ink-3">Swipe for more</p>
       </div>
     </div>
   );

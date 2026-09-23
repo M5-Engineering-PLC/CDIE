@@ -16,11 +16,13 @@ export type { ExplorerCapability, ExplorerComponent, UnifiedServiceId } from "./
 export type StudioExplorerProps = {
   capabilities: ExplorerCapability[];
   initialId: string;
+  /** Actual Copy, DESIGN STUDIO > Virtual tour */
+  intro: { headline: string; standfirst: string };
 };
 
 const STEP_MS = 7000;
 
-export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps) {
+export function StudioExplorer({ capabilities, initialId, intro }: StudioExplorerProps) {
   const [selectedId, setSelectedId] = useState(initialId);
   const [roomOpen, setRoomOpen] = useState(false);
   const [tour, setTour] = useState(false);
@@ -87,7 +89,7 @@ export function StudioExplorer({ capabilities, initialId }: StudioExplorerProps)
 
   return (
     <div className="overflow-hidden border border-line bg-surface">
-      <StudioTourIntro onStart={startTour} />
+      <StudioTourIntro onStart={startTour} headline={intro.headline} standfirst={intro.standfirst} />
       <div id="studio-room" className="grid scroll-mt-20 grid-cols-[minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]">
         <div className="order-1 border-y border-line bg-raise py-4 lg:order-1 lg:border-y-0 lg:border-r lg:py-5">
           <div className="flex items-center justify-between px-5 pb-3">

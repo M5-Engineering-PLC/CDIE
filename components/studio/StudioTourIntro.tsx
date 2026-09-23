@@ -22,7 +22,14 @@
 
 import Image from "next/image";
 
-export function StudioTourIntro({ onStart }: { onStart: () => void }) {
+export type StudioTourIntroProps = {
+  onStart: () => void;
+  /** Actual Copy, DESIGN STUDIO > Virtual tour. Passed in; this file holds no copy. */
+  headline: string;
+  standfirst: string;
+};
+
+export function StudioTourIntro({ onStart, headline, standfirst }: StudioTourIntroProps) {
   return (
     <section className="relative isolate overflow-hidden bg-ink text-surface">
       <Image
@@ -47,10 +54,10 @@ export function StudioTourIntro({ onStart }: { onStart: () => void }) {
         <div className="max-w-[36rem]">
           <p className="kicker !text-brand-lift">Design Studio / Virtual tour</p>
           <h1 className="display mt-3 text-head leading-none text-surface md:mt-5 md:text-mega">
-            Step inside CDIE.
+            {headline}
           </h1>
           <p className="mt-4 max-w-[42ch] text-body text-surface/85 md:mt-6 md:text-lead">
-            Meet the spaces. Explore the tools. See where ideas take shape.
+            {standfirst}
           </p>
           <button
             type="button"

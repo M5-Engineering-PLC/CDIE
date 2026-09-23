@@ -10,7 +10,6 @@
 
 import type { Metadata } from "next";
 
-import { Pending } from "@/components/primitives/Pending";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
@@ -59,7 +58,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
         />
       </Section>
 
-      <Section tone="surface" eyebrow="Other ways to reach us" title="Email and phone reach the same team.">
+      <Section tone="surface" eyebrow="Other ways to reach us" title="Reach the team for any enquiries.">
         <dl className="grid gap-px bg-line md:grid-cols-3">
           <div className="bg-raise p-6">
             <dt className="kicker">Email</dt>
@@ -89,9 +88,6 @@ export default async function ContactPage(props: PageProps<"/contact">) {
         <p className="mt-4 max-w-[54ch] text-lead leading-relaxed text-ink">
           {contact.beforeYouTravel}
         </p>
-        <div className="mt-8 max-w-[54ch]">
-          <Pending items={visit.pending} label="Ask us before you travel" />
-        </div>
       </Section>
     </>
   );

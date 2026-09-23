@@ -63,9 +63,7 @@ export function NewsletterGrid({ items }: { items: NewsletterCardItem[] }) {
                 >
                   Read this issue →<span className="sr-only"> (PDF, opens in a new tab)</span>
                 </a>
-              ) : (
-                <span className="text-fine text-ink-3">Link to be confirmed</span>
-              )}
+              ) : null}
             </div>
           </div>
         </li>

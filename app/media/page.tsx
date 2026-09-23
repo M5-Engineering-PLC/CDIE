@@ -6,7 +6,6 @@ import type { Metadata } from "next";
 import { EventGantt, type GanttEvent } from "@/components/blocks/EventGantt";
 import { FaqList } from "@/components/blocks/FaqList";
 import { NewsletterGrid, type NewsletterCardItem } from "@/components/blocks/NewsletterGrid";
-import { SampleNotice } from "@/components/blocks/SampleNotice";
 import { Button } from "@/components/primitives/Button";
 import { LinkedInCarousel } from "@/components/sections/LinkedInCarousel";
 import { NewsletterSignup } from "@/components/sections/NewsletterSignup";
@@ -19,7 +18,6 @@ import {
   newslettersCopy,
 } from "@/content/media";
 import { events, eventsCopy } from "@/content/programmes";
-import { SHOW_SAMPLE_CONTENT, sampleEvents, sampleNewsletters } from "@/content/samples";
 import { listItems } from "@/lib/admin/store";
 import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
 
@@ -39,17 +37,8 @@ export const metadata: Metadata = {
 export const revalidate = 600;
 
 /*
-  Change request 2026-09-21, section 5: the events calendar leads the page.
-
-  Programmes still owns every event record; this is a second view of the same
-  list, so the two cannot drift. The list is empty by policy — content/
-  programmes.ts refuses to invent an event, and no confirmed record has been
-  supplied — so what ships today is the empty state. Sample bars render behind
-  SHOW_SAMPLE_CONTENT purely so the band can be reviewed, flagged as sample
-  above, exactly as the events band on Programmes already does.
-
-  See docs/BUILD_PLAN.md section 3.2 for why the calendar could not be
-  populated from the CDIE LinkedIn account in this pass.
+  The events calendar leads the page. Programmes owns every event record; this
+  is a second view of the same list, so the two cannot drift.
 */
 const programmeEvents: GanttEvent[] = events.map((event) => ({
   id: event.id,
@@ -131,7 +120,7 @@ export default async function MediaPage() {
         title={eventsCopy.headline}
         standfirst={eventsCopy.standfirst}
       >
-        {calendarEvents.length === 0 && !SHOW_SAMPLE_CONTENT ? (
+        {calendarEvents.length === 0 ? (
           <div className="border border-dashed border-line bg-surface p-6 md:p-8">
             <p className="max-w-[52ch] text-lead text-ink-2">{eventsCopy.empty}</p>
             <div className="mt-5">
@@ -142,8 +131,7 @@ export default async function MediaPage() {
           </div>
         ) : (
           <>
-            {calendarEvents.length === 0 ? <SampleNotice what="events" /> : null}
-            <EventGantt items={calendarEvents.length === 0 ? sampleEvents : calendarEvents} from={shiftMonths(today, -6)} to={shiftMonths(today, 3)} today={today} />
+            <EventGantt items={calendarEvents} from={shiftMonths(today, -6)} to={shiftMonths(today, 3)} today={today} />
           </>
         )}
       </Section>
@@ -154,15 +142,10 @@ export default async function MediaPage() {
         title={newslettersCopy.headline}
         standfirst={newslettersCopy.standfirst}
       >
-        {/*
-          Change request 2026-09-13, section 5.2. mediaItems is empty by policy,
-          so sample issues render behind a flag purely to review the card. The
-          real path below runs unchanged the moment issues are published.
-        */}
-        <div className="mb-8">
+                <div className="mb-8">
           <NewsletterSignup />
         </div>
-        {newsletterCards.length === 0 && !SHOW_SAMPLE_CONTENT ? (
+        {newsletterCards.length === 0 ? (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[52ch] text-lead text-ink-2">{newslettersCopy.empty}</p>
             <div className="mt-5">
@@ -173,10 +156,7 @@ export default async function MediaPage() {
           </div>
         ) : (
           <>
-            {newsletterCards.length === 0 ? <SampleNotice what="newsletter issues" /> : null}
-            <NewsletterGrid
-              items={newsletterCards.length === 0 ? sampleNewsletters : newsletterCards}
-            />
+            <NewsletterGrid items={newsletterCards} />
           </>
         )}
       </Section>
