@@ -142,24 +142,28 @@ export const people: Person[] = [
     portrait: portrait("james-wambugu", "James Wambugu", 600),
   },
   /*
-    changes-v2, 2026-09-23: three colleagues added by name and role. Their
-    photographs are to come, so each card carries an empty frame rather than
-    another person's picture or a stock portrait.
+    changes-v2, 2026-09-23: three colleagues added by name and role, with the
+    portraits supplied the same day. Anthonius Waka's and Abigael Mwangi's
+    photographs came at their own small size and are used as supplied rather
+    than enlarged; Salome Njoroge's was cropped from a wider frame.
   */
   {
     id: "antonius-waka",
-    name: "Antonius Waka",
+    name: "Anthonius Waka",
     role: "Catalyst Fellow",
+    portrait: { src: "/team/team-antonius-waka.webp", alt: "Anthonius Waka", width: 263, height: 312 },
   },
   {
     id: "abigael-mwangi",
     name: "Abigael Mwangi",
     role: "Technical Assistant",
+    portrait: { src: "/team/team-abigael-mwangi.webp", alt: "Abigael Mwangi", width: 255, height: 303 },
   },
   {
-    id: "salome",
-    name: "Salome",
+    id: "salome-njoroge",
+    name: "Salome Njoroge",
     role: "Technical Assistant",
+    portrait: portrait("salome-njoroge", "Salome Njoroge"),
   },
 ];
 
