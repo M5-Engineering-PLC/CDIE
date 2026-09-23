@@ -92,7 +92,11 @@ export function StageScroll({ eyebrow, title, standfirst, stages }: {
     return () => media.revert();
   }, [stages.length]);
 
+  // The wrapper div is what React inserts and removes. pin: true wraps the
+  // section in a .pin-spacer, so without a React-owned parent around it,
+  // leaving the page throws removeChild and the whole route crashes.
   return (
+    <div>
     <section ref={band} aria-label={eyebrow} className="stage-band">
       <header className="shell stage-head">
         <p className="kicker">{eyebrow}</p>
@@ -121,5 +125,6 @@ export function StageScroll({ eyebrow, title, standfirst, stages }: {
         ))}
       </div>
     </section>
+    </div>
   );
 }
