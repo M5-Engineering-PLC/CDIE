@@ -27,13 +27,13 @@ const spaceNames = new Map(spaces.map((space) => [space.id, space.name]));
 const studioImages: Record<string, string> = {
   design: "/images/service-design-2.jpg",
   electronics: "/images/service-electronics-1.jpg",
-  "three-d-printing": "/images/service-3dprinting-1.jpg",
+  "three-d-printing": "/images/cdie-3d-printers.jpg",
   "co-working": "/images/service-coworking-1.jpg",
   metalworking: "/images/service-metalworking-1.jpeg",
-  textiles: "/images/service-textile-2.jpg",
+  textiles: "/images/cdie-textiles-sewing.jpg",
   woodworking: "/images/service-woodworking-1.jpeg",
-  // Enhancements 2026-09-22: "for laser use the image titled summer program".
-  "laser-cutting": "/images/cdie-summer-program-laser-cutting.jpg",
+  // 2026-09-23: studio photographs supplied for 3D printers, textiles and laser engraving.
+  "laser-cutting": "/images/cdie-laser-engraving-machine.jpg",
   // 2026-09-23: "use this for casting and molding service".
   "casting-moulding": "/images/service-casting-moulding-1.webp",
 };

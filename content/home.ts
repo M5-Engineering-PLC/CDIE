@@ -193,14 +193,15 @@ export const galleryCopy = {
 } as const;
 
 export const galleryPhotos = [
-  { id: "g-summer-launch", src: "/images/cdie-summer-program-2026-launch-original.jpg", alt: "Summer program participants and staff in a group photo outside CDIE", caption: "CDIE Summer Program 2026" },
-  { id: "g-showcase", src: "/images/cdie-mdi-cohort-1-semester-one-showcase.jpg", alt: "MDI student presenting at the end of semester showcase", caption: "MDI Cohort 1 showcase" },
-  { id: "g-cnc", src: "/images/cdie-summer-program-cnc-class-01.jpg", alt: "Participant operating a CNC machine", caption: "CNC machining" },
-  { id: "g-challenge", src: "/images/cdie-ive-design-challenge.jpg", alt: "Design challenge teams presenting their prototype", caption: "IvE MDI Design Challenge" },
-  { id: "g-needs", src: "/images/cdie-summer-program-needs-filtering.jpg", alt: "Participants working through needs filtering at tables", caption: "Needs filtering" },
-  { id: "g-advisory", src: "/images/cdie-advisory-board-meeting.jpg", alt: "Advisory board members standing together in front of a lettered wall", caption: "Advisory Board Meeting" },
-  { id: "g-soldering", src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board", caption: "Electronics" },
+  // 2026-09-23: the ten frames and their order are the ones CDIE supplied for the gallery.
+  { id: "g-metalwork", src: "/images/service-metalworking-1.jpeg", alt: "Student in a welding helmet grinding metal as sparks fly", caption: "Metalworking" },
+  { id: "g-coworking", src: "/images/service-coworking-1.jpg", alt: "Students seated at desks in a bright seminar room while a speaker presents", caption: "Co-working space" },
+  { id: "g-woodwork", src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw", caption: "Woodworking" },
+  { id: "g-wibek", src: "/images/cdie-wibek-2026-conference-07.jpg", alt: "Women holding a gift bag and a microphone on stage beside event banners", caption: "WIBEK 2026 Conference" },
+  { id: "g-cnc", src: "/images/cdie-summer-program-cnc-class-04.jpg", alt: "Participant in gloves setting up a CNC machine", caption: "CDIE Summer Program 2026" },
   { id: "g-stakeholders", src: "/images/cdie-stakeholder-engagement-golden-tulip.jpg", alt: "Stakeholder engagement guests in a group photo between Invention Education banners", caption: "Stakeholder engagement" },
-  { id: "g-heart", src: "/images/cdie-3d-printing-heart-model-01.jpeg", alt: "3D printer finishing a model of a human heart", caption: "3D printing" },
+  { id: "g-faculty", src: "/images/cdie-meet-the-faculty-kenneth-iloka.jpg", alt: "Faculty member showing a resin 3D printer to visiting guests", caption: "Meet the faculty" },
+  { id: "g-prototyping-lab", src: "/images/cdie-mdi-woodworking-prototyping-lab.jpg", alt: "Students in safety goggles and overalls gathered around a mitre saw", caption: "MDI prototyping lab" },
   { id: "g-cohort-2", src: "/images/cdie-mdi-cohort-2-orientation-01.jpg", alt: "Incoming MDI Cohort 2 students and staff in a group photo", caption: "MDI Cohort 2 orientation" },
+  { id: "g-celebration", src: "/images/cdie-mdi-cohort-1-semester-one-celebration-group.jpg", alt: "MSc cohort and guests at an evening celebration", caption: "MDI Cohort 1 semester one celebration" },
 ] as const;

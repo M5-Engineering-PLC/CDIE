@@ -144,7 +144,13 @@ export const opportunities: Opportunity[] = [
       "Award amount",
       "Assessment criteria and application deadline",
     ],
-    // Image matching sheet P4/P9: no photograph shows a Catalyst grant, so none is used.
+    // 2026-09-23: photograph supplied by CDIE for the Catalyst grant slot.
+    image: {
+      src: "/images/cdie-catalyst-grant-presentation.jpg",
+      alt: "Presenter addressing a seated audience in a CDIE seminar room",
+      width: 1600,
+      height: 1200,
+    },
   },
   {
     id: "training",
@@ -455,6 +461,48 @@ export const designChallenge = {
   past: "Explore previous challenge briefs and the work developed by participating teams.",
   action: { label: "Ask about the Design Challenge", href: "/contact?topic=design-challenge", live: true },
 } as const;
+
+/*
+  2026-09-23: "list the call and the winning teams photos, sections dated such
+  as Design Challenge 2026: Neonatal and maternal care". The facts are the ones
+  printed on the call CDIE supplied; nothing beyond the flyer is stated. Newest
+  edition first; add a record here for each new challenge.
+*/
+export const designChallengeEditions = [
+  {
+    id: "design-challenge-2026",
+    year: "2026",
+    theme: "Maternal and neonatal care",
+    brief:
+      "Teams submitted projects geared towards solving challenges in maternal and neonatal health. The most innovative projects will represent Kenya in the Regional Design Competition, which brings together innovators across the continent.",
+    facts: [
+      { label: "Dates", value: "14–18 September 2026" },
+      { label: "Pitch presentation", value: "18 September 2026" },
+      { label: "Time", value: "10:00am–5:00pm" },
+      { label: "Venue", value: "Centre for Design, Innovation & Engineering, Graduate School, Kenyatta University" },
+    ],
+    call: {
+      src: "/images/cdie-design-challenge-2026-call.webp",
+      alt: "IvE Design Challenge call for maternal and neonatal care, 14 to 18 September 2026",
+      width: 800,
+      height: 800,
+    },
+    winners: [
+      {
+        src: "/images/cdie-design-challenge-2026-winners-01.webp",
+        alt: "Winning team members holding certificates beside CDIE staff and guests",
+        width: 800,
+        height: 533,
+      },
+      {
+        src: "/images/cdie-design-challenge-2026-winners-02.webp",
+        alt: "Second group of winners holding certificates beside CDIE staff and guests",
+        width: 800,
+        height: 533,
+      },
+    ],
+  },
+] as const;
 
 export const catalystGrants = {
   headline: "Give an early idea room to develop.",

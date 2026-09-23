@@ -146,7 +146,7 @@ export const capabilities: Capability[] = [
     enquiry: "Ask about textile prototyping",
     media: [],
     components: [
-      { id: "sewing", name: "Sewing", note: "Making up fabric-based components." },
+      { id: "sewing", name: "Sewing", note: "Making up fabric-based components.", image: "/images/cdie-textiles-sewing.jpg", alt: "Student working at an industrial sewing machine in the textiles area" },
       { id: "cutting", name: "Cutting", note: "Preparing material for a wearable or upholstered part." },
       { id: "upholstery", name: "Upholstery", note: "Working on the surfaces a product presents to the body." },
     ],
@@ -185,7 +185,7 @@ export const capabilities: Capability[] = [
     enquiry: "Ask about woodworking",
     media: [],
     components: [
-      { id: "cnc-router", name: "Three-axis CNC routing bed", note: "Vacuum bed, water-cooled spindle, stepper gantry." },
+      { id: "cnc-router", name: "Three-axis CNC routing bed", note: "Vacuum bed, water-cooled spindle, stepper gantry.", image: "/images/cdie-cnc-milling-router.jpg", alt: "Yellow Blue Elephant ELECNC1212 CNC router inside the workshop container" },
       { id: "operator-station", name: "CAD and CAM workstation", note: "Dedicated terminal with toolpath control and preview." },
       { id: "dust-extraction", name: "Dust extraction system", note: "High-vacuum swarf collector over spindle head." },
     ],
@@ -206,7 +206,7 @@ export const capabilities: Capability[] = [
     enquiry: "Ask about CNC and laser engraving",
     media: [],
     components: [
-      { id: "co2-laser", name: "Enclosed laser cutting bed", note: "Enclosed cutting bed with safety interlock viewing canopy." },
+      { id: "co2-laser", name: "Enclosed laser cutting bed", note: "Enclosed cutting bed with safety interlock viewing canopy.", image: "/images/cdie-laser-engraving-machine.jpg", alt: "Enclosed Blue Elephant laser engraving machine beside the louvred window wall" },
       { id: "dsp-controller", name: "Digital controller keypad", note: "Digital speed, power and origin positioning keypad." },
       { id: "honeycomb-bed", name: "Honeycomb and knife bed", note: "Dual-surface cutting bed with active fume exhaust duct." },
     ],
