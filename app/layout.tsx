@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { ViewTransition } from "react";
 import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 
 import { SiteFooter } from "@/components/chrome/SiteFooter";
 import { SiteNav } from "@/components/chrome/SiteNav";
+import { SmoothScroll } from "@/components/chrome/SmoothScroll";
 import { SkipLink } from "@/components/chrome/SkipLink";
 import { contact, nav, site, socialAccounts, utilityLinks } from "@/content/site";
 
@@ -45,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${archivo.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
       <body>
+        <SmoothScroll />
         <SkipLink />
         <SiteNav
           items={[...nav]}
@@ -54,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           institution={site.institution}
           logo={site.logo}
         />
-        <main id="main">{children}</main>
+        <ViewTransition default="page"><main id="main">{children}</main></ViewTransition>
         {/*
           Change request 2026-09-21: Contact leaves the top bar but not the
           site. The footer keeps it, so the route every enquiry resolves to is

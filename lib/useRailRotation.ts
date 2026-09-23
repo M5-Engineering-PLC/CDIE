@@ -22,6 +22,7 @@ export function useRailRotation(rail: RefObject<HTMLElement | null>, every = ROT
     const timer = window.setInterval(() => {
       const node = rail.current;
       if (!node) return;
+      if (node.matches(":hover, :focus-within")) return;
       const limit = node.scrollWidth - node.clientWidth;
       if (limit <= 2) return;
       if (node.scrollLeft >= limit - 2) {

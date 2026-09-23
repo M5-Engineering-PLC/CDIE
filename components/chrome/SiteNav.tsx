@@ -3,17 +3,7 @@
 // Review R1/R2: the logo is Home; visible links start at Programmes and end in
 // LOGIN. Decision R2, 2026-09-11: the studio login joins the bar as its last
 // item. The logo is the home link, so no wordmark sits beside it.
-/*
-  Change request 2026-09-21, second pass: "revert navbar back to cobalt blue".
-  The white bar is withdrawn. The bar is solid brand again, the logo keeps the
-  white plate that carries it against that ground, and the current page is full
-  white against 70%, the step that holds contrast where brand-lift would not.
-  The hamburger and the self-closing panel stay as the first pass left them.
-  Enhancements 2026-09-22: "navbar-white", "remove pill on navbar", "keep
-  hover feature on navbar". The bar is white again, the logo needs no plate on
-  it, and LOGIN is a plain link like the others: no filled or outlined pill.
-  Every link keeps its colour step on hover.
-*/
+// Navbar transition reference: fixes/navbar_transtition.mp4, full two-row to single row.
 
 import Image from "next/image";
 import Link from "next/link";
@@ -34,19 +24,22 @@ export type SiteNavProps = {
   logo: { src: string; alt: string; width: number; height: number };
 };
 
-export function SiteNav({ items, utility, longName, institution, logo }: SiteNavProps) {
+export function SiteNav({ items, utility, logo }: SiteNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    const update = () => setCompact(window.scrollY > 72);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
 
   const isCurrent = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    Boolean(pathname && (href === "/" ? pathname === "/" : pathname.startsWith(href)));
 
-  /*
-    A navigation closes the panel: the reader has arrived, so the menu is
-    spent. Adjusted during render rather than in an effect, which is React's
-    own answer for state that derives from a prop change and avoids the
-    cascading second render an effect would cost.
-  */
+  // Close the mobile panel when the route changes.
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
     setLastPath(pathname);
@@ -73,64 +66,51 @@ export function SiteNav({ items, utility, longName, institution, logo }: SiteNav
   const login = utility[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 text-ink backdrop-blur">
-      <div className="shell flex items-center justify-between gap-6 py-2">
-        <Link href="/" className="flex items-center gap-3 py-1" aria-label="CDIE home">
+    <header className={`site-nav sticky top-0 z-40 ${compact ? "is-compact" : ""}`}>
+      <div className="site-nav-inner">
+        <Link href="/" className="site-nav-brand" aria-label="CDIE home">
           <Image
             src={logo.src}
             alt={logo.alt}
             width={logo.width}
             height={logo.height}
             priority
-            className="h-12 w-auto md:h-14"
+            className="site-nav-logo"
           />
-          <span className="hidden border-l border-line pl-3 text-fine leading-tight text-ink-2 2xl:block">
-            {institution}
-            <br />
-            {longName}
-          </span>
         </Link>
 
-        <div className="hidden items-center gap-7 lg:flex">
-          <nav aria-label="Main">
-            <ul className="flex items-center gap-7">
+        <nav aria-label="Main" className="site-nav-links">
+            <ul>
               {items.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     aria-current={isCurrent(item.href) ? "page" : undefined}
-                    /* Change request 2026-09-13, section 2.2: the current page
-                       is signalled by colour, not a rule under the word. On
-                       the white bar that step is brand against ink-2. */
-                    className={`text-body transition-colors ${
-                      isCurrent(item.href)
-                        ? "font-medium text-brand"
-                        : "text-ink-2 hover:text-brand"
-                    }`}
+                    /* Current page keeps the cobalt colour and underline. */
+                    className="site-nav-link"
                   >
                     {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </nav>
+        </nav>
 
-          {login ? (
+        {login ? (
             <a
               href={login.href}
-              className="text-body font-semibold tracking-wide text-ink-2 transition-colors hover:text-brand"
+              className="site-login"
             >
               {login.label}
             </a>
-          ) : null}
-        </div>
+        ) : null}
 
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="grid h-10 w-10 place-items-center rounded-edge border border-line text-ink lg:hidden"
+          className="site-nav-menu grid h-10 w-10 place-items-center lg:hidden"
         >
           <MenuIcon open={open} />
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>

@@ -18,6 +18,7 @@ export type PageHeroProps = {
     measure instead of stretching to meet the picture.
   */
   image?: { src: string; alt: string };
+  mediaClassName?: string;
   /** an embedded map in place of the photograph (Contact) */
   map?: { src: string; title: string; href: string };
 };
@@ -29,6 +30,7 @@ export function PageHero({
   crumbs,
   children,
   image,
+  mediaClassName = "",
   map,
 }: PageHeroProps) {
   const media = Boolean(image || map);
@@ -58,7 +60,7 @@ export function PageHero({
         <p className="kicker">{eyebrow}</p>
         <h1 className="display mt-3 max-w-[18ch] text-title md:mt-4 md:text-hero">{headline}</h1>
         {standfirst ? (
-          <p className="trim-mobile mt-4 max-w-[58ch] text-lead leading-relaxed text-ink-2 md:mt-6">
+          <p className="mt-4 max-w-[58ch] text-lead leading-relaxed text-ink-2 md:mt-6">
             {standfirst}
           </p>
         ) : null}
@@ -84,7 +86,7 @@ export function PageHero({
             </figcaption>
           </figure>
         ) : image ? (
-          <div className="relative aspect-[16/10] overflow-hidden border border-line md:aspect-[5/4]">
+          <div className={`relative aspect-[16/10] overflow-hidden border border-line md:aspect-[5/4] ${mediaClassName}`}>
             <Image
               src={image.src}
               alt={image.alt}
