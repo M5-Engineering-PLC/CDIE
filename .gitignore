@@ -19,10 +19,6 @@
 
 # production
 /build
-/.open-next/
-/.wrangler/
-/cloudflare-env.d.ts
-.dev.vars*
 
 # misc
 .DS_Store
