@@ -83,10 +83,10 @@ export const opportunities: Opportunity[] = [
     topic: "invention-education",
     pending: [],
     image: {
-      src: "/images/cdie-summer-program-needs-filtering.jpg",
-      alt: "Participants working through needs filtering at tables",
-      width: 1600,
-      height: 1000,
+      src: "/images/hero-workshop-1.jpg",
+      alt: "A small team reviews notes together during a design workshop",
+      width: 2560,
+      height: 1707,
     },
   },
   {

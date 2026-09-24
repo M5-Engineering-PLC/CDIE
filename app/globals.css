@@ -515,34 +515,37 @@
 .radial-band[data-wheel="on"] .radial-card { grid-area: 1 / 1; transform-origin: 50% var(--radius); will-change: transform; }
 @media (min-width: 768px) { .radial-band { --card-w: min(42vw, 32rem, calc((100svh - 17rem) * 0.8)); --radius: calc(var(--card-w) * 3.4); --step: 18; } }
 
-/*
-  Final pass 2026-09-23: the Programmes stages, components/sections/StageScroll.tsx.
-  Unpinned it is a grid. Pinned, the band is one screen tall and the stages sit
-  on a horizontal track padded so each one can stop at the centre.
-*/
-.stage-band { --panel-w: min(86vw, 58rem); position: relative; overflow: hidden; border-bottom: 1px solid var(--color-line-soft); background: var(--color-paper); }
+/* Programmes learning stages: one panel remains open; pointer, focus and tap choose it. */
+.stage-band { overflow: hidden; border-bottom: 1px solid var(--color-line-soft); background: var(--color-paper); }
 .stage-head { padding-top: var(--band-y); }
-.stage-track { display: grid; gap: 1.25rem; padding: 2rem var(--spacing-gutter) var(--band-y); }
-.stage-panel { display: grid; overflow: hidden; border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-surface); box-shadow: 0 1.25rem 3rem -1.5rem rgb(0 35 65 / 0.3); }
-.stage-photo { position: relative; min-height: 12rem; overflow: hidden; background: var(--color-raise); }
-.stage-copy { display: flex; flex-direction: column; justify-content: center; gap: 1rem; padding: 1.5rem; }
-.stage-count { font-family: var(--font-mono); font-size: var(--text-fine); letter-spacing: 0.08em; color: var(--color-brand); }
-.stage-progress { display: none; }
-@media (min-width: 768px) {
-  .stage-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .stage-panel { grid-template-columns: 1fr 1fr; min-height: 22rem; }
-  .stage-copy { padding: 2.5rem; }
+.stage-track { display: flex; flex-direction: column; gap: 0.4rem; padding: 2rem var(--spacing-gutter) var(--band-y); }
+.stage-panel { position: relative; flex: 0 0 5rem; min-height: 0; overflow: hidden; border-radius: 0.55rem; background: var(--color-ink); color: var(--color-surface); isolation: isolate; transition: flex-basis var(--motion-rail) var(--ease-glide), flex-grow var(--motion-rail) var(--ease-glide); }
+.stage-panel[data-active="true"] { flex-basis: 24rem; }
+.stage-photo, .stage-shade, .stage-pick { position: absolute; inset: 0; }
+.stage-photo img { object-position: center; filter: blur(8px) saturate(0.55) brightness(0.7); transform: scale(1.08); transition: filter var(--motion-rail) var(--ease-glide), transform var(--motion-rail) var(--ease-glide); }
+.stage-panel[data-active="true"] .stage-photo img { filter: none; transform: scale(1.025); }
+.stage-shade { z-index: 1; background: rgb(6 18 28 / 0.28); pointer-events: none; transition: background var(--motion-glide) var(--ease-glide); }
+.stage-panel[data-active="true"] .stage-shade { background: linear-gradient(to top, rgb(6 18 28 / 0.88), rgb(6 18 28 / 0.28) 62%, rgb(6 18 28 / 0.12)); }
+.stage-closed, .stage-copy { position: absolute; z-index: 2; pointer-events: none; }
+.stage-closed { inset: 0; display: flex; align-items: center; gap: 1rem; padding: 1.25rem; opacity: 1; transition: opacity var(--motion-swift) var(--ease-glide) 380ms; }
+.stage-panel[data-active="true"] .stage-closed { opacity: 0; transition: none; }
+.stage-closed-title { font-family: var(--font-display); font-size: var(--text-lead); font-weight: 800; line-height: 1.2; text-shadow: 0 1px 8px rgb(0 0 0 / 0.7); }
+.stage-copy { inset: auto 0 0; display: flex; width: 100%; flex-direction: column; gap: 0.65rem; padding: 2rem; opacity: 0; visibility: hidden; transform: translateY(0.5rem); }
+.stage-panel[data-active="true"] .stage-copy { opacity: 1; visibility: visible; transform: translateY(0); transition: opacity var(--motion-swift) var(--ease-glide) 300ms, transform var(--motion-swift) var(--ease-glide) 300ms; }
+.stage-count { font-family: var(--font-mono); font-size: var(--text-fine); letter-spacing: 0.08em; color: var(--color-surface); }
+.stage-title { font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.05; }
+.stage-body { max-width: 46ch; font-size: var(--text-lead); line-height: 1.5; }
+.stage-pick { z-index: 3; width: 100%; cursor: pointer; }
+.stage-pick:focus-visible { outline: 3px solid var(--color-brand-lift); outline-offset: -6px; }
+@media (min-width: 900px) {
+  .stage-track { flex-direction: row; height: clamp(28rem, 48vw, 38rem); gap: 0.5rem; }
+  .stage-panel { flex: 1 1 0; min-width: 0; }
+  .stage-panel[data-active="true"] { flex: 5 1 0; }
+  .stage-closed { align-items: flex-start; flex-direction: column; justify-content: space-between; padding: 1.5rem 1rem; }
+  .stage-closed-title { writing-mode: vertical-rl; transform: rotate(180deg); font-size: clamp(1rem, 1.4vw, 1.35rem); white-space: nowrap; }
+  .stage-copy { width: min(36rem, calc((100vw - 2 * var(--spacing-gutter)) * 0.53)); padding: 2.5rem; }
 }
-.stage-band[data-pinned="on"] { display: flex; flex-direction: column; height: 100svh; }
-.stage-band[data-pinned="on"] .stage-track { display: flex; flex: 1; align-items: stretch; gap: 2rem; width: max-content; min-height: 0; padding: 1.5rem calc((100vw - var(--panel-w)) / 2) 1rem; perspective: 1400px; will-change: transform; }
-.stage-band[data-pinned="on"] .stage-panel { flex: 0 0 var(--panel-w); width: var(--panel-w); grid-template-rows: 2fr 3fr; max-height: 36rem; align-self: center; height: 100%; }
-.stage-band[data-pinned="on"] .stage-progress { display: flex; gap: 0.5rem; padding: 0 var(--spacing-gutter) 1.5rem; max-width: 80rem; margin: 0 auto; width: 100%; }
-.stage-progress span { flex: 1; padding-top: 0.6rem; border-top: 3px solid var(--color-line); font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3); transition: border-color var(--motion-glide), color var(--motion-glide); }
-.stage-progress span.is-on { border-color: var(--color-brand); color: var(--color-ink); }
-@media (min-width: 768px) {
-  .stage-band[data-pinned="on"] .stage-panel { grid-template-rows: none; grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 767px) { .stage-progress span { font-size: 0; } }
+@media (prefers-reduced-motion: reduce) { .stage-panel, .stage-photo img, .stage-shade, .stage-closed, .stage-copy { transition: none; } }
 
 /*
   Final pass 2026-09-23: the Media LinkedIn fan, components/sections/LinkedInFan.tsx,

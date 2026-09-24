@@ -88,22 +88,23 @@ test("the Ask the team chip is gone but the real states survive", () => {
   assert.match(kicker, /Opening soon/);
 });
 
-test("how learning works is one route, and Open X became Read more", () => {
+test("how learning works stays on one route, and Open X became Read more", () => {
   const page = read("app/(site)/programmes/page.tsx");
-  // Final pass 2026-09-23: the landing's stages pin and play one at a time.
-  assert.match(page, /StageScroll/);
-  assert.match(read("components/sections/StageScroll.tsx"), /pin: true/);
+  const accordion = read("components/sections/StageAccordion.tsx");
+  assert.match(page, /StageAccordion/);
+  assert.match(accordion, /onPointerMove/);
+  assert.match(accordion, /aria-expanded=\{isActive\}/);
+  assert.doesNotMatch(accordion, /ScrollTrigger|pin: true/);
   assert.match(page, /Read more/);
   assert.doesNotMatch(page, /Open \{opportunity\.title\}/);
   assert.match(read("app/(site)/programmes/invention-education/page.tsx"), /SnakeRoute/);
 });
 
-test("programme photographs follow the image matching sheet, and Catalyst has none", () => {
-  // Image matching sheet 2026-09-22: each programme has its own photograph, so
-  // the placeholder tag is off. P4/P9: no photograph shows a Catalyst grant.
+test("programme photographs follow the latest supplied assets", () => {
+  // CDIE supplied a Catalyst presentation photograph on 2026-09-23.
   const programmes = read("content/programmes.ts");
   const catalyst = programmes.slice(programmes.indexOf('id: "catalyst-grants"'), programmes.indexOf('id: "training"'));
-  assert.doesNotMatch(catalyst, /src: "/);
+  assert.match(catalyst, /cdie-catalyst-grant-presentation\.jpg/);
   // changes-v2, 2026-09-23: the placeholder tag is gone with the other
   // developer-facing markers, so there is no flag left to assert.
   assert.doesNotMatch(read("components/blocks/PlaceholderPhoto.tsx"), /Placeholder image/);

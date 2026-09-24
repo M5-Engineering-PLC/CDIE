@@ -2,8 +2,8 @@
 
 // Review: smooth page movement, using the Lenis reference from thoughts.txt.
 /*
-  Final pass 2026-09-23: the pinned scroll sections (the Home gallery, the
-  Programmes stages) run on GSAP ScrollTrigger. Lenis moves the page on its own
+  Final pass 2026-09-23: pinned scroll sections run on GSAP ScrollTrigger.
+  Lenis moves the page on its own
   frame, so ScrollTrigger has to hear every Lenis scroll and both have to tick
   on the same clock, or a pinned section drifts a frame behind the page.
 */

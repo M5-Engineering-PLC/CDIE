@@ -11,7 +11,7 @@ import { PlaceholderPhoto } from "@/components/blocks/PlaceholderPhoto";
 import { AutoRail } from "@/components/sections/AutoRail";
 import { ProgrammeHeroCarousel, type ProgrammeHeroSlide } from "@/components/sections/ProgrammeHeroCarousel";
 import { Section } from "@/components/sections/Section";
-import { StageScroll, type ScrollStage } from "@/components/sections/StageScroll";
+import { StageAccordion, type LearningStagePanel } from "@/components/sections/StageAccordion";
 import {
   events,
   eventsCopy,
@@ -78,13 +78,13 @@ const heroSlides: ProgrammeHeroSlide[] = opportunities
 /* Final pass 2026-09-23: each stage carries a CDIE photograph of that stage
    being practised, all of them already captioned elsewhere on the site. */
 const stageImages: Record<string, { src: string; alt: string }> = {
-  understand: { src: "/images/cdie-summer-program-needs-filtering.jpg", alt: "Participants working through needs filtering at tables" },
+  understand: { src: "/images/hero-workshop-1.jpg", alt: "A small team reviews notes together during a design workshop" },
   develop: { src: "/images/cdie-design-challenge-pitch.jpg", alt: "Design challenge team presenting a slide to an audience" },
   build: { src: "/images/cdie-summer-program-cnc-class-01.jpg", alt: "Participant operating a CNC machine" },
   explain: { src: "/images/cdie-mdi-cohort-1-semester-one-showcase.jpg", alt: "MDI student presenting at the end of semester showcase" },
 };
 
-const scrollStages: ScrollStage[] = learningStages.map((stage) => ({ ...stage, image: stageImages[stage.id] }));
+const accordionStages: LearningStagePanel[] = learningStages.map((stage) => ({ ...stage, image: stageImages[stage.id] }));
 
 /* Final pass 2026-09-23: "use only 5 relevant FAQs on each page". The full
    vetted list stays in content/programmes.ts; this page asks the five that
@@ -104,16 +104,12 @@ export default function ProgrammesPage() {
 
       <ProgrammeHeroCarousel slides={heroSlides} />
 
-      {/*
-        Final pass 2026-09-23: the four stages pin and play one at a time as the
-        reader scrolls, then the page carries on. It replaces the snake route,
-        which showed the order but not the movement between stages.
-      */}
-      <StageScroll
+      {/* The four learning stages expand on hover or focus, independently of scrolling. */}
+      <StageAccordion
         eyebrow="How learning works"
         title="Understand the need, then build something you can test."
         standfirst="Four stages, in order. Each one is a habit you practise rather than a box you tick."
-        stages={scrollStages}
+        stages={accordionStages}
       />
 
       <Section
