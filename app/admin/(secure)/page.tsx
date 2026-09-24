@@ -12,13 +12,6 @@ export const dynamic = "force-dynamic";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-// 2026-09-23: the interactive tour stays on the dashboard, so every studio
-// surface is one click from the overview.
-const tools = [
-  { href: "/admin/studio", name: "Design Studio tour", note: "The public explorer and guided tour, read-only" },
-  { href: "/admin/models/design-studio", name: "Design Studio model", note: "design-studio-3js: tour, interactive and station controls" },
-  { href: "/admin/models/atc", name: "ATC workshop model", note: "atc-3js: tour, interactive and station controls" },
-];
 
 const daysAgo = (days: number) => new Date(Date.now() - days * DAY_MS).toISOString();
 
@@ -101,19 +94,6 @@ export default async function AdminOverviewPage() {
         </ul>
       </section>
 
-      <section className="flex flex-col gap-4">
-        <h2 className="kicker">Studio tour and models</h2>
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {tools.map((tool) => (
-            <li key={tool.href}>
-              <Link href={tool.href} className="flex h-full flex-col gap-1 border border-line bg-surface px-4 py-3 transition-colors hover:border-brand">
-                <span className="text-body text-ink">{tool.name}</span>
-                <span className="text-fine text-ink-3">{tool.note}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </main>
   );
 }
