@@ -97,6 +97,8 @@ export function RoomPlan({ active, className = "" }: RoomPlanProps) {
 
       {rects.map((rect) => {
         const on = active !== null && rect.service === active;
+        // The casting shelf sits under the 3D printing rack; drawn only when lit.
+        if (rect.service === "casting-moulding" && !on) return null;
         return (
           <rect
             key={rect.key}

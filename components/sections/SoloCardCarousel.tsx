@@ -18,6 +18,10 @@
   same frame, which is the cut the first pass was trying to remove. The copy
   now rises in with .settle on the same token, and the dots ease rather than
   step.
+
+  2026-09-24: "resize card to be smaller to fit full page". From tablet width
+  the photograph and the words sit side by side, so the whole card, picture
+  and copy together, fits on one screen.
 */
 
 import Image from "next/image";
@@ -55,7 +59,7 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
     <div
       aria-roledescription="carousel"
       aria-label={label}
-      className="mx-auto max-w-[46rem]"
+      className="mx-auto max-w-[46rem] md:max-w-[58rem]"
       onPointerDown={(event) => { down.current = event.clientX; }}
       onPointerUp={(event) => swipe(event.clientX)}
       onPointerCancel={() => { down.current = null; }}
@@ -64,8 +68,8 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
       onFocusCapture={() => setHolding(true)}
       onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setHolding(false); }}
     >
-      <article className="card-hit overflow-hidden border border-line bg-surface">
-        <div className="relative aspect-[16/10] overflow-hidden">
+      <article className="card-hit overflow-hidden border border-line bg-surface md:grid md:grid-cols-[1.15fr_1fr]">
+        <div className="relative aspect-[16/10] overflow-hidden md:aspect-auto md:min-h-[19rem]">
           {items.map((candidate, candidateIndex) => (
             <div
               key={candidate.id}
@@ -77,7 +81,7 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
                   src={candidate.image}
                   alt={candidate.alt}
                   fill
-                  sizes="(max-width: 768px) 100vw, 46rem"
+                  sizes="(max-width: 768px) 100vw, 31rem"
                   className="object-cover"
                 />
               ) : (
@@ -86,7 +90,7 @@ export function SoloCardCarousel({ items, label }: { items: VisualRailItem[]; la
             </div>
           ))}
         </div>
-        <div key={item.id} className="settle flex flex-col gap-2 p-5 md:p-6">
+        <div key={item.id} className="settle flex flex-col justify-center gap-2 p-5 md:p-7">
           <p className="kicker">{item.eyebrow}</p>
           <h3 className="display text-sub">{item.title}</h3>
           <p className="text-body leading-relaxed text-ink-2">{item.summary}</p>

@@ -72,7 +72,7 @@ function setSelection(runtime: StudioRuntime, active: ServiceId | null) {
           material.userData.baseEmissive = material.emissive.getHex();
           material.userData.baseEmissiveIntensity = material.emissiveIntensity;
         }
-        const selected = active === id;
+        const selected = active === id || (active !== null && node.userData.alsoService === active);
         const muted = active !== null && !selected;
         material.transparent = muted || material.userData.baseTransparent;
         material.opacity = muted ? 0.24 : material.userData.baseOpacity;

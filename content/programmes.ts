@@ -260,7 +260,7 @@ export const programmeFaqs: Faq[] = [
     id: "award",
     question: "What qualification do I get, and how long does it take?",
     answer:
-      "You graduate with an M.Sc. in Biomedical Engineering — Medical Device Innovation. The programme runs for 18 months, full-time and in person at Kenyatta University.",
+      "You graduate with an M.Sc. in Biomedical Engineering – Medical Device Innovation. The programme runs for 18 months, full-time and in person at Kenyatta University.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
@@ -330,21 +330,21 @@ export const programmeFaqs: Faq[] = [
     id: "grants",
     question: "Does CDIE offer grants or funding to innovators?",
     answer:
-      "Yes. Through the Invention Education programme, CDIE runs catalytic grants that innovators can apply for to support early prototyping. There are several funding cycles each year — sign up for the newsletter so you hear when a call opens.",
+      "Yes. Through the Invention Education programme, CDIE runs catalytic grants that innovators can apply for to support early prototyping. There are several funding cycles each year. Sign up for the newsletter so you hear when a call opens.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "challenge",
     question: "What is the Design Challenge, and can I take part?",
     answer:
-      "The Design Challenge is a short, hands-on challenge where teams respond to a defined healthcare problem, build a prototype and present their thinking. Recent teams designed assistive devices to support caregivers. The brief, entry rules and next date are announced when a new round opens — ask the team to be notified.",
+      "The Design Challenge is a short, hands-on challenge where teams respond to a defined healthcare problem, build a prototype and present their thinking. Recent teams designed assistive devices to support caregivers. The brief, entry rules and next date are announced when a new round opens. Ask the team to be notified.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "training",
     question: "Do you run short courses or masterclasses?",
     answer:
-      "Yes. CDIE runs focused sessions in design, making and medical device innovation alongside the master’s programme. Upcoming sessions, prerequisites and sign-up details are published when scheduled — contact the team to ask what is planned.",
+      "Yes. CDIE runs focused sessions in design, making and medical device innovation alongside the master’s programme. Upcoming sessions, prerequisites and sign-up details are published when scheduled. Contact the team to ask what is planned.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
 ];

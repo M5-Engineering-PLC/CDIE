@@ -386,17 +386,20 @@
 .capability-detail p { font-size: var(--text-body); line-height: 1.55; color: rgb(255 255 255 / 0.92); }
 .capability-card:hover .capability-caption, .capability-card:focus-within .capability-caption, .capability-card.is-open .capability-caption { opacity: 0; transform: translateY(0.6rem); }
 .capability-card:hover .capability-detail, .capability-card:focus-within .capability-detail, .capability-card.is-open .capability-detail { opacity: 1; visibility: visible; transform: none; }
-.capability-card.is-dismissed:hover .capability-detail, .capability-card.is-dismissed:focus-within .capability-detail { opacity: 0; visibility: hidden; }
-.capability-card.is-dismissed:hover .capability-caption, .capability-card.is-dismissed:focus-within .capability-caption { opacity: 1; transform: none; }
 .capability-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.5rem; }
 .capability-action { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.6rem 1rem; border-radius: 0.6rem; background: var(--color-surface); color: var(--color-brand); font-family: var(--font-display); font-size: 0.875rem; font-weight: 700; transition: background var(--motion-swift), color var(--motion-swift), box-shadow var(--motion-swift); }
 .capability-action:hover { background: var(--color-brand-lift); color: var(--color-surface); box-shadow: 0 0 1rem rgb(97 162 210 / 0.6); }
-.capability-close { padding: 0.6rem; color: var(--color-surface); cursor: pointer; }
-.capability-controls { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
-.capability-controls > button { display: grid; width: 3rem; height: 3rem; flex: none; place-items: center; border: 1px solid var(--color-line); border-radius: 50%; background: var(--color-surface); color: var(--color-brand); box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 0.06); cursor: pointer; transition: background var(--motion-swift), color var(--motion-swift), transform var(--motion-swift); }
-.capability-controls > button:hover { background: var(--color-brand); color: var(--color-surface); transform: scale(1.08); }
+/* 2026-09-24: centred dots replace the arrows; the active dot stretches like the triad's. */
+.capability-dots { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.35rem; margin-top: 1.25rem; }
+.capability-dots button { position: relative; width: 0.55rem; height: 0.55rem; border-radius: 10rem; background: var(--color-line); cursor: pointer; transition: width var(--motion-swift), background var(--motion-swift); }
+.capability-dots button::before { content: ""; position: absolute; inset: -0.55rem -0.3rem; }
+.capability-dots button:hover { background: var(--color-brand-lift); }
+.capability-dots button[aria-current] { width: 1.6rem; background: var(--color-brand-live); }
+.capability-rail { user-select: none; }
+.capability-rail:active { cursor: grabbing; }
+.capability-rail img { -webkit-user-drag: none; }
 @media (max-width: 480px) { .capability-card { flex-basis: min(88vw, 23.75rem); width: min(88vw, 23.75rem); height: min(31.25rem, 78svh); } }
-@media (max-width: 767px), (hover: none) { .capability-card:hover { transform: none; } .capability-card:not(.is-open):hover .capability-image { transform: none; } .capability-card:not(.is-open):hover .capability-caption, .capability-card:not(.is-open):focus-within .capability-caption { opacity: 1; transform: none; } .capability-card:not(.is-open):hover .capability-detail, .capability-card:not(.is-open):focus-within .capability-detail { display: none; } .capability-card.is-open { height: auto; min-height: 0; transform: none; background: var(--color-surface); } .capability-card.is-open .capability-photo { position: relative; height: 14rem; } .capability-card.is-open .capability-caption { top: 10rem; bottom: auto; opacity: 1; transform: none; } .capability-card.is-open .capability-detail { position: relative; display: flex; height: auto; padding: 1.5rem; background: var(--color-surface); color: var(--color-ink); opacity: 1; visibility: visible; transform: none; backdrop-filter: none; } .capability-card.is-open .capability-detail p, .capability-card.is-open .capability-close { color: var(--color-ink-2); } }
+@media (max-width: 767px), (hover: none) { .capability-card:hover { transform: none; } .capability-card:not(.is-open):hover .capability-image { transform: none; } .capability-card:not(.is-open):hover .capability-caption, .capability-card:not(.is-open):focus-within .capability-caption { opacity: 1; transform: none; } .capability-card:not(.is-open):hover .capability-detail, .capability-card:not(.is-open):focus-within .capability-detail { display: none; } .capability-card.is-open { height: auto; min-height: 0; transform: none; background: var(--color-surface); } .capability-card.is-open .capability-photo { position: relative; height: 14rem; } .capability-card.is-open .capability-caption { top: 10rem; bottom: auto; opacity: 1; transform: none; } .capability-card.is-open .capability-detail { position: relative; display: flex; height: auto; padding: 1.5rem; background: var(--color-surface); color: var(--color-ink); opacity: 1; visibility: visible; transform: none; backdrop-filter: none; } .capability-card.is-open .capability-detail p { color: var(--color-ink-2); } }
 
 /* MDI's sticky index shares the viewport with the long-form content. */
 .mdi-layout { display: grid; grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr); max-width: 90rem; margin-inline: auto; }

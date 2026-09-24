@@ -315,7 +315,11 @@ function createComputerStations(): THREE.Group {
 function createPrinterStation(): THREE.Group {
   const station = new THREE.Group();
   station.name = '3d-printer-station';
-  station.add(box('printer-lower-shelf', [3.45, 0.1, 0.86], [2.05, 0.78, -3.1], 'wood', 'three-d-printing'));
+  /* 2026-09-24: casting and moulding shares the rack's lowest shelf. */
+  const lowerShelf = new THREE.Group();
+  lowerShelf.name = 'printer-lower-shelf-bay';
+  lowerShelf.add(box('printer-lower-shelf', [3.45, 0.1, 0.86], [2.05, 0.78, -3.1], 'wood', 'three-d-printing'));
+  station.add(lowerShelf);
   station.add(box('printer-upper-shelf', [3.45, 0.1, 0.86], [2.05, 1.8, -3.1], 'wood', 'three-d-printing'));
   for (const x of [0.37, 3.73]) {
     station.add(box(`printer-rack-post-${x}`, [0.055, 1.78, 0.06], [x, 0.95, -3.42], 'charcoal', 'three-d-printing'));
@@ -324,10 +328,13 @@ function createPrinterStation(): THREE.Group {
   for (const [index, x] of [1.02, 2.05, 3.08].entries()) {
     station.add(createPrusaPrinter(`prusa-printer-${index + 1}`, x, 1.86, -3.1));
   }
-  station.add(createBambuOpen('bambu-open-printer', 1.02, 0.84, -3.1));
-  station.add(createBambuEnclosed('bambu-enclosed-printer', 2.05, 0.84, -3.1));
-  station.add(createFilamentUnit('bambu-filament-unit', 3.08, 0.84, -3.1));
+  lowerShelf.add(createBambuOpen('bambu-open-printer', 1.02, 0.84, -3.1));
+  lowerShelf.add(createBambuEnclosed('bambu-enclosed-printer', 2.05, 0.84, -3.1));
+  lowerShelf.add(createFilamentUnit('bambu-filament-unit', 3.08, 0.84, -3.1));
   markService(station, 'three-d-printing');
+  lowerShelf.traverse((node) => {
+    node.userData.alsoService = 'casting-moulding';
+  });
   return station;
 }
 
@@ -409,7 +416,11 @@ export function createDesignStudioModel(): THREE.Group {
     'three-d-printing': new THREE.Group(),
     electronics: new THREE.Group(),
     textiles: new THREE.Group(),
+    // Holds no meshes of its own: it lights the 3D printing rack's lowest
+    // shelf (userData.alsoService), so the camera centre is set here.
+    'casting-moulding': new THREE.Group(),
   };
+  services['casting-moulding'].userData.centre = new THREE.Vector3(2.05, 1.1, -3.1);
   for (const [id, group] of Object.entries(services)) {
     group.name = `service-${id}`;
     group.userData.service = id;

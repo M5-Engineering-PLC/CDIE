@@ -37,7 +37,8 @@ test("every carousel eases rather than cuts", () => {
   const motion = read("lib/motion.ts");
   assert.match(motion, /--motion-rail/);
   assert.match(motion, /prefers-reduced-motion/);
-  for (const path of ["components/sections/VisualCardRail.tsx", "components/sections/CardRail.tsx"]) {
+  // 2026-09-24: the capability rail's motion lives in its hook, useLoopRail.
+  for (const path of ["components/sections/useLoopRail.ts", "components/sections/CardRail.tsx"]) {
     assert.match(read(path), /glideBy/, path);
     assert.doesNotMatch(read(path), /behavior: "smooth"/, path);
   }

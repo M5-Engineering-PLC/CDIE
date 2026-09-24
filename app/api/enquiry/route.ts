@@ -87,7 +87,7 @@ export async function POST(request: Request) {
         from,
         to: [process.env.ENQUIRY_TO || DEFAULT_TO],
         reply_to: payload.email,
-        subject: `Website enquiry: ${payload.reason || "general"} — ${payload.name}`,
+        subject: `Website enquiry: ${payload.reason || "general"}; ${payload.name}`,
         text: lines.join("\n"),
       }),
     });

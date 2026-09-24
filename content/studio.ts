@@ -216,6 +216,8 @@ export const capabilities: Capability[] = [
     now". The card holds the name and nothing else: no headline and no
     equipment list, because none has been supplied. 2026-09-23: it now has a
     photograph, supplied for this service (a clear resin cast of a hand).
+    2026-09-24: casting and moulding sits on the lowest shelf of the 3D printing
+    rack, so it lights that shelf in the room rather than leaving the plan unlit.
   */
   {
     id: "casting-moulding",
@@ -223,7 +225,7 @@ export const capabilities: Capability[] = [
     space: "studio",
     headline: "",
     body: "",
-    modelGroup: null,
+    modelGroup: "casting-moulding",
     pending: ["A description of this area, its equipment and how to use it"],
     enquiry: "Ask about casting and moulding",
     media: [],
@@ -282,7 +284,7 @@ export const studioFaqs: Faq[] = [
     id: "three-d-print",
     question: "Can I get something 3D printed?",
     answer:
-      "The studio has FDM and SLA printing to take a digital design to a physical model. File requirements, materials, turnaround and any charges depend on the machine and your project — ask the team before you prepare a file.",
+      "The studio has FDM and SLA printing to take a digital design to a physical model. File requirements, materials, turnaround and any charges depend on the machine and your project; ask the team before you prepare a file.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
