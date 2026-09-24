@@ -175,7 +175,6 @@ export default async function MediaPage() {
         tone="surface"
         eyebrow="From our community"
         title={linkedInCopy.headline}
-        standfirst={linkedInCopy.standfirst}
       >
         <LinkedInCarousel
           posts={recent}

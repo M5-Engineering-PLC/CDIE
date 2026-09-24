@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { MapEmbed } from "@/components/blocks/MapEmbed";
+
 export type Crumb = { label: string; href: string };
 
 export type PageHeroProps = {
@@ -21,8 +23,10 @@ export type PageHeroProps = {
   /** 2026-09-24: a portrait poster is shown whole, at its own proportions, not cropped. */
   poster?: boolean;
   mediaClassName?: string;
-  /** an embedded map in place of the photograph (Contact) */
+  /** an embedded map in place of the photograph */
   map?: { src: string; title: string; href: string };
+  /** 2026-09-24: any content in the media column, such as Contact's form */
+  aside?: ReactNode;
 };
 
 export function PageHero({
@@ -35,8 +39,9 @@ export function PageHero({
   poster = false,
   mediaClassName = "",
   map,
+  aside,
 }: PageHeroProps) {
-  const media = Boolean(image || map);
+  const media = Boolean(image || map || aside);
   return (
     <section className="border-b border-line bg-surface">
       <div
@@ -70,24 +75,10 @@ export function PageHero({
         {children ? <div className="mt-5 flex flex-wrap gap-3 md:mt-8">{children}</div> : null}
         </div>
 
-        {map ? (
-          <figure className="flex flex-col gap-2">
-            <div className="relative aspect-[4/3] overflow-hidden border border-line md:aspect-[5/4]">
-              <iframe
-                src={map.src}
-                title={map.title}
-                loading="eager"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-                className="absolute inset-0 h-full w-full border-0"
-              />
-            </div>
-            <figcaption>
-              <a href={map.href} target="_blank" rel="noopener noreferrer" className="text-fine font-medium text-brand hover:text-brand-live">
-                Open the full map
-              </a>
-            </figcaption>
-          </figure>
+        {aside ? (
+          <div>{aside}</div>
+        ) : map ? (
+          <MapEmbed {...map} />
         ) : image ? (
           <div className={`relative overflow-hidden border border-line ${poster ? "mx-auto aspect-[1280/1810] w-full max-w-[22rem] md:max-w-[24rem]" : "aspect-[16/10] md:aspect-[5/4]"} ${mediaClassName}`}>
             <Image

@@ -562,14 +562,15 @@
 .fan-stage { position: relative; display: grid; place-items: center; min-height: 34rem; overflow-x: clip; padding: 1rem 0; }
 .fan-card { grid-area: 1 / 1; position: relative; width: var(--fan-w); height: 32rem; overflow: hidden; border-radius: 1.25rem; background: var(--color-surface); box-shadow: 0 1.5rem 3rem -1rem rgb(16 21 26 / 0.35); z-index: calc(10 - var(--depth)); opacity: clamp(0, calc(2 - var(--depth)), 1); filter: saturate(calc(1 - var(--depth) * 0.25)) brightness(calc(1 - var(--depth) * 0.08)); transform: translateX(calc(var(--offset) * 64%)) translateY(calc(var(--depth) * 1.5rem)) scale(calc(1 - var(--depth) * 0.14)) rotate(calc(var(--offset) * 2.5deg)); transition: transform var(--motion-scene) var(--ease-glide), opacity var(--motion-glide), filter var(--motion-glide); }
 .fan-pick { position: absolute; inset: 0; z-index: 5; cursor: pointer; }
-.fan-photo { position: absolute; inset: 0 0 42%; background: var(--color-raise); }
+/* 2026-09-24: "increase image coverage area on the cards". */
+.fan-photo { position: absolute; inset: 0 0 38%; background: var(--color-raise); }
 .fan-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-scene) var(--ease-glide); }
 .fan-photo img[data-mark] { object-fit: contain; padding: 2.5rem 3rem 3.5rem; background: var(--color-surface); }
 .fan-card[data-front]:hover .fan-photo img:not([data-mark]) { transform: scale(1.05); }
-.fan-panel { position: absolute; inset: auto 0 0; display: flex; min-height: 56%; flex-direction: column; align-items: center; gap: 0.6rem; padding: 1.5rem 1.5rem 1.75rem; border-radius: 1rem 1rem 0 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--fan-tone) 92%, transparent), var(--fan-deep)); color: var(--color-surface); text-align: center; backdrop-filter: blur(6px); }
+.fan-panel { position: absolute; inset: auto 0 0; display: flex; min-height: 44%; flex-direction: column; align-items: center; gap: 0.6rem; padding: 1.5rem 1.5rem 1.75rem; border-radius: 1rem 1rem 0 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--fan-tone) 92%, transparent), var(--fan-deep)); color: var(--color-surface); text-align: center; backdrop-filter: blur(6px); }
 .fan-kicker { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in oklab, var(--fan-tone) 35%, var(--color-surface)); }
 .fan-title { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-family: var(--font-display); font-size: 1.375rem; font-weight: 700; line-height: 1.2; }
-.fan-summary { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; font-size: var(--text-fine); line-height: 1.55; color: rgb(255 255 255 / 0.88); }
+.fan-summary { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: var(--text-fine); line-height: 1.55; color: rgb(255 255 255 / 0.88); }
 .fan-more { margin-top: auto; padding: 0.7rem 1.6rem; border-radius: 10rem; background: var(--color-surface); color: var(--fan-deep); font-family: var(--font-display); font-size: 0.9375rem; font-weight: 700; box-shadow: 0 0.5rem 1.25rem -0.5rem rgb(0 0 0 / 0.4); transition: background var(--motion-swift), color var(--motion-swift), transform var(--motion-swift); }
 .fan-more:hover, .fan-more:focus-visible { background: color-mix(in oklab, var(--fan-tone) 20%, var(--color-surface)); transform: translateY(-2px); }
 .fan-arrow { position: absolute; top: 50%; z-index: 20; display: grid; width: 3rem; height: 3rem; place-items: center; border-radius: 50%; background: var(--fan-tone); color: var(--color-surface); box-shadow: 0 0.5rem 1.25rem -0.4rem rgb(16 21 26 / 0.5); transform: translateY(-50%); cursor: pointer; transition: background var(--motion-swift), transform var(--motion-swift); }
@@ -594,7 +595,8 @@
 .cal-track { display: flex; gap: var(--cal-gap); transform: translateX(calc(var(--pos) * -1 * ((100% - (var(--per) - 1) * var(--cal-gap)) / var(--per) + var(--cal-gap)))); transition: transform var(--motion-scene) var(--ease-glide); }
 .cal-slot { flex: 0 0 calc((100% - (var(--per) - 1) * var(--cal-gap)) / var(--per)); transform: scale(calc(1 - var(--depth, 0) * 0.08)); opacity: calc(1 - var(--depth, 0) * 0.45); transition: transform var(--motion-scene) var(--ease-glide), opacity var(--motion-glide); }
 .cal-card { display: flex; height: 100%; flex-direction: column; overflow: hidden; border-radius: 0.75rem; background: linear-gradient(to bottom, color-mix(in oklab, var(--color-ink) 88%, var(--color-brand)), var(--color-ink)); color: var(--color-surface); box-shadow: 0 1.25rem 2.5rem -1.25rem rgb(16 21 26 / 0.45); }
-.cal-photo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--color-surface); }
+/* 2026-09-24: the photograph takes more of the card. */
+.cal-photo { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-surface); }
 .cal-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-scene) var(--ease-glide); }
 .cal-photo img[data-mark] { object-fit: contain; padding: 1.5rem 2rem 2.5rem; }
 .cal-card:hover .cal-photo img:not([data-mark]) { transform: scale(1.05); }
@@ -610,11 +612,11 @@
 .cal-details { display: flex; flex: 1; flex-direction: column; gap: 0.4rem; padding: 1rem 1.25rem 1.25rem; }
 .cal-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.01em; }
 .cal-sub { font-size: var(--text-fine); color: rgb(255 255 255 / 0.78); }
-.cal-note { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--color-brand-lift); }
-.cal-footer { border-top: 1px solid rgb(255 255 255 / 0.12); padding: 0.9rem 1.25rem; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.cal-footer a { font-weight: 600; color: var(--color-surface); transition: color var(--motion-swift); }
-.cal-footer a:hover { color: var(--color-brand-lift); }
-.cal-footer span { color: rgb(255 255 255 / 0.55); }
+/* 2026-09-24: "replace event info link with Read More, make it a button"; the pill matches From our community. */
+.cal-footer { display: flex; justify-content: center; padding: 0 1.25rem 1.4rem; }
+.cal-more { padding: 0.7rem 1.6rem; border-radius: 10rem; background: var(--color-surface); color: var(--color-brand); font-family: var(--font-display); font-size: 0.9375rem; font-weight: 700; box-shadow: 0 0.5rem 1.25rem -0.5rem rgb(0 0 0 / 0.4); transition: background var(--motion-swift), color var(--motion-swift), transform var(--motion-swift); }
+.cal-more:hover, .cal-more:focus-visible { background: color-mix(in oklab, var(--color-brand) 20%, var(--color-surface)); color: var(--color-brand); transform: translateY(-2px); }
+.cal-footer span { padding: 0.7rem 0; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.55); }
 .cal-controls { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; }
 .cal-count { margin-right: auto; font-family: var(--font-mono); font-size: var(--text-fine); color: var(--color-ink-3); }
 .cal-arrow { display: grid; width: 3rem; height: 3rem; place-items: center; border-radius: 50%; background: var(--color-brand); color: var(--color-surface); cursor: pointer; transition: background var(--motion-swift), transform var(--motion-swift), opacity var(--motion-swift); }

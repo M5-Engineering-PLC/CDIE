@@ -14,7 +14,7 @@
   trackpad scroll and the keyboard move the window one card at a time, and
   cards leaving it shrink and fade on the same curve as the LinkedIn fan.
   Card anatomy follows the reference: photograph, a date block overlapping
-  it, a type tag, the title, a supporting line and an Event info footer.
+  it, a type tag, the title, a supporting line and a Read More button.
   The geometry is .cal-* in app/globals.css.
 */
 

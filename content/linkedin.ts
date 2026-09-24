@@ -101,7 +101,6 @@ export const stubFeed: LinkedInFeed = {
 
 export const linkedInCopy = {
   headline: "From our community",
-  standfirst: "The three most recent posts from the CDIE account, reposts included.",
   fallback: "See the latest from CDIE on LinkedIn.",
   /** shown once the account URL is confirmed; see decision D17 and the copy note */
   pageUrl: null as string | null,

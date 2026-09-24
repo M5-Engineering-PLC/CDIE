@@ -2,7 +2,7 @@
 /*
   Photograph on top; the date block overlaps its lower edge with the start
   and, where the event runs longer than a day, the end; the event type as a
-  tag; the title; the venue, or the programme line; and an Event info footer
+  tag; the title; the venue, or the programme line; and a Read More button (2026-09-24)
   that opens the post the record comes from. A date the source only estimates
   says so. Images are plain img because some are LinkedIn URLs.
 */
@@ -60,12 +60,11 @@ export function EventCard({ event, today, fallbackImage, focusable = true }: {
       <div className="cal-details">
         <h3 className="cal-title">{event.title}</h3>
         {event.venue || (upcoming && event.kind) ? <p className="cal-sub">{event.venue ?? event.kind}</p> : null}
-        {event.estimated ? <p className="cal-note">Date approximate</p> : null}
       </div>
       <div className="cal-footer">
         {event.link ? (
-          <a href={event.link} target="_blank" rel="noreferrer" tabIndex={focusable ? 0 : -1}>
-            Event info<span className="sr-only"> for {event.title} (opens in a new tab)</span>
+          <a href={event.link} target="_blank" rel="noreferrer" tabIndex={focusable ? 0 : -1} className="cal-more">
+            Read More<span className="sr-only"> for {event.title} (opens in a new tab)</span>
           </a>
         ) : (
           <span>CDIE event</span>
