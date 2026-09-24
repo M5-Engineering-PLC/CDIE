@@ -14,6 +14,7 @@ export default async function SecureLayout({ children }: { children: React.React
       <nav aria-label="Dashboard" className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-line px-6 py-3">
         <Link href="/admin" className="text-fine text-ink-2 hover:text-brand">Overview</Link>
         <Link href="/admin/studio" className="text-fine text-ink-2 hover:text-brand">Design Studio</Link>
+        <Link href="/admin/labs" className="text-fine text-ink-2 hover:text-brand">Labs</Link>
         {collections.map((collection) => (
           <Link key={collection.id} href={`/admin/${collection.id}`} className="text-fine text-ink-2 hover:text-brand">
             {collection.label}
