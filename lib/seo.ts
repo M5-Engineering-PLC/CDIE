@@ -9,11 +9,19 @@
 
 import type { Metadata } from "next";
 
-export const siteUrl = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
-    "https://cdie.co.ke",
-);
+/* A value set without its scheme ("cdie.co.ke") or mistyped must not stop the
+   build, so it is given https:// and, failing that, the fallback is used. */
+function resolveSiteUrl() {
+  const fallback = "https://cdie.co.ke";
+  const raw = (process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || "").trim();
+  try {
+    return new URL(raw ? (/^https?:\/\//i.test(raw) ? raw : `https://${raw}`) : fallback);
+  } catch {
+    return new URL(fallback);
+  }
+}
+
+export const siteUrl = resolveSiteUrl();
 
 export const siteName = "CDIE";
 export const siteTitle = `${siteName} | Centre for Design, Innovation & Engineering`;
