@@ -8,11 +8,13 @@ import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { training, getOpportunity } from "@/content/programmes";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Masterclasses and training",
   description: training.standfirst,
-};
+  path: "/programmes/training",
+});
 
 const crumbs = [
   { label: "Programmes", href: "/programmes" },

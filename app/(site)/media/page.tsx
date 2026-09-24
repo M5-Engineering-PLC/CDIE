@@ -21,11 +21,14 @@ import { events, eventsCopy } from "@/content/programmes";
 import { listItems } from "@/lib/admin/store";
 import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
 import { fetchPostImage } from "@/lib/linkedin/image";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Media",
   description: mediaLanding.standfirst,
-};
+  path: "/media",
+  image: { src: "/images/cdie-mdi-cohort-1-semester-one-celebration-speech.jpg", alt: "Speaker at a podium between Invention Education banners" },
+});
 
 /*
   The page stays static and refreshes on a timer. Without this the feed would be

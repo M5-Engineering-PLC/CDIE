@@ -20,6 +20,7 @@ import {
   programmeFaqs,
   programmesLanding,
 } from "@/content/programmes";
+import { pageMetadata } from "@/lib/seo";
 
 /*
   Enhancements 2026-09-22: "on programmes just have the most recent 3 events".
@@ -91,10 +92,11 @@ const scrollStages: ScrollStage[] = learningStages.map((stage) => ({ ...stage, i
 const PAGE_FAQS = ["apply", "fees", "grants", "challenge", "training"];
 const pageFaqs = PAGE_FAQS.flatMap((id) => programmeFaqs.filter((faq) => faq.id === id));
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Programmes",
   description: programmesLanding.standfirst,
-};
+  path: "/programmes",
+});
 
 export default function ProgrammesPage() {
   return (

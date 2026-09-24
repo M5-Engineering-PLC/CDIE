@@ -8,11 +8,13 @@ import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { catalystGrants, getOpportunity } from "@/content/programmes";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Catalyst grants",
   description: catalystGrants.standfirst,
-};
+  path: "/programmes/catalyst-grants",
+});
 
 const crumbs = [
   { label: "Programmes", href: "/programmes" },

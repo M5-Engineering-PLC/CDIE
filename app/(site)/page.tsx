@@ -35,10 +35,12 @@ import { TriadRail } from "@/components/sections/TriadRail";
 import { VisualCardRail } from "@/components/sections/VisualCardRail";
 import { defineCdie, galleryCopy, galleryPhotos, homeHero, latestCopy, latestHighlights, programmeHeroSlides, servicesCopy } from "@/content/home";
 import { capabilities } from "@/content/studio";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   description: homeHero.standfirst,
-};
+  path: "/",
+});
 
 const serviceImages: Record<string, string> = {
   design: "/images/service-design-2.jpg",

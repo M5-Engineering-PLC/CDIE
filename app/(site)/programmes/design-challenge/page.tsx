@@ -9,11 +9,13 @@ import { ChallengeEdition } from "@/components/sections/ChallengeEdition";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { designChallenge, designChallengeEditions, getOpportunity } from "@/content/programmes";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Design Challenge",
   description: designChallenge.standfirst,
-};
+  path: "/programmes/design-challenge",
+});
 
 const crumbs = [
   { label: "Programmes", href: "/programmes" },

@@ -11,11 +11,14 @@ import { Section } from "@/components/sections/Section";
 import { InlineFigure } from "@/components/blocks/InlineFigure";
 import { SnakeRoute } from "@/components/sections/SnakeRoute";
 import { inventionEducation, learningStages } from "@/content/programmes";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Invention Education",
   description: inventionEducation.standfirst,
-};
+  path: "/programmes/invention-education",
+  image: { src: "/images/cdie-summer-program-clinical-immersion-group.jpg", alt: "Summer programme participants in scrubs outside a hospital" },
+});
 
 const crumbs = [
   { label: "Programmes", href: "/programmes" },

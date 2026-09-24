@@ -15,11 +15,14 @@ import {
   studioFaqs,
   studioIntro,
 } from "@/content/studio";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Design Studio",
   description: studioIntro.tourStandfirst,
-};
+  path: "/design-studio",
+  image: { src: "/images/service-design-2.jpg", alt: "Design work in the CDIE studio" },
+});
 
 const spaceShortName = new Map(spaces.map((space) => [space.id, space.shortName]));
 const spaceNames = new Map(spaces.map((space) => [space.id, space.name]));

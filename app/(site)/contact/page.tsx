@@ -16,11 +16,13 @@ import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { contactFaqs, contactIntro, defaultTopicId, enquiryTopics, form, visit } from "@/content/contact";
 import { contact } from "@/content/site";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: contactIntro.standfirst,
-};
+  path: "/contact",
+});
 
 export default async function ContactPage(props: PageProps<"/contact">) {
   const query = await props.searchParams;

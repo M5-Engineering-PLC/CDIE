@@ -16,11 +16,13 @@ import { CohortGrid } from "@/components/blocks/CohortGrid";
 import { StoryGrid, type StoryCardItem } from "@/components/blocks/StoryGrid";
 import { mdi, mdiCohortsCopy, mdiGraduands } from "@/content/programmes";
 import { listItems } from "@/lib/admin/store";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Medical Device Innovation",
   description: mdi.standfirst,
-};
+  path: "/programmes/mdi",
+});
 
 const crumbs = [
   { label: "Programmes", href: "/programmes" },

@@ -36,11 +36,14 @@ import {
   workYouCanSee,
 } from "@/content/about";
 import { listItems } from "@/lib/admin/store";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About Us",
   description: aboutIntro.standfirst,
-};
+  path: "/about",
+  image: aboutIntro.image,
+});
 
 export default async function AboutPage() {
   /* Enhancements 2026-09-22: staff added in the dashboard join the team. */

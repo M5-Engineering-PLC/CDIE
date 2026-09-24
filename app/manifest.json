@@ -1,0 +1,30 @@
+{
+  "name": "CDIE | Centre for Design, Innovation & Engineering",
+  "short_name": "CDIE",
+  "description": "The Centre for Design, Innovation & Engineering brings hands-on learning and medical device prototyping together at Kenyatta University.",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon0.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#00508f",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
