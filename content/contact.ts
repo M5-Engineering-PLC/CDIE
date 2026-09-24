@@ -25,7 +25,7 @@ export const contactIntro = {
 export const enquiryTopics: EnquiryTopic[] = [
   { id: "admissions", label: "Programmes and admissions" },
   { id: "invention-education", label: "Invention Education" },
-  { id: "design-challenge", label: "Design Challenge" },
+  { id: "design-challenge", label: "Design Challenges" },
   { id: "catalyst-grants", label: "Catalyst grants" },
   { id: "training", label: "Masterclasses and training" },
   { id: "studio", label: "Studio access and project support" },

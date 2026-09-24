@@ -43,19 +43,20 @@ export function StoryGrid({ items }: { items: StoryCardItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <ul className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
+    // 2026-09-24: no empty third slot; the cards sit centred at a size that fits the screen.
+    <ul className="flex flex-wrap justify-center gap-6">
       {items.map((story) => (
-        <li key={story.id} className="flex flex-col bg-raise">
-          <div className="relative aspect-[5/6] overflow-hidden">
+        <li key={story.id} className="flex w-full flex-col border border-line bg-raise sm:w-[calc(50%-0.75rem)] lg:w-[17rem]">
+          <div className="relative aspect-square overflow-hidden">
             <Image
               src={story.image}
               alt={story.alt}
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 17rem"
+              className="object-cover object-[center_20%]"
             />
           </div>
-          <div className="flex flex-1 flex-col gap-3 p-6">
+          <div className="flex flex-1 flex-col gap-3 p-5">
             {story.quote ? (
               <blockquote className="border-l-2 border-brand-lift pl-4 text-body leading-relaxed text-ink-2">
                 {story.quote}

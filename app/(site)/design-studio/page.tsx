@@ -46,11 +46,12 @@ const studioImages: Record<string, string> = {
 const countWord = (n: number) =>
   ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][n] ?? String(n);
 
+// 2026-09-24: "invert horizontally the images order".
 const workshopPhotos = [
-  { src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw" },
-  { src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board" },
-  { src: "/images/cdie-studio-laptop-working-session.jpg", alt: "Students gathered around a laptop at a studio bench" },
   { src: "/images/cdie-3d-printing-heart-model-01.jpeg", alt: "3D printer finishing a model of a human heart" },
+  { src: "/images/cdie-studio-laptop-working-session.jpg", alt: "Students gathered around a laptop at a studio bench" },
+  { src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board" },
+  { src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw" },
 ];
 
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({

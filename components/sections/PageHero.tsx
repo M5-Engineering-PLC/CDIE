@@ -18,6 +18,8 @@ export type PageHeroProps = {
     measure instead of stretching to meet the picture.
   */
   image?: { src: string; alt: string };
+  /** 2026-09-24: a portrait poster is shown whole, at its own proportions, not cropped. */
+  poster?: boolean;
   mediaClassName?: string;
   /** an embedded map in place of the photograph (Contact) */
   map?: { src: string; title: string; href: string };
@@ -30,6 +32,7 @@ export function PageHero({
   crumbs,
   children,
   image,
+  poster = false,
   mediaClassName = "",
   map,
 }: PageHeroProps) {
@@ -86,7 +89,7 @@ export function PageHero({
             </figcaption>
           </figure>
         ) : image ? (
-          <div className={`relative aspect-[16/10] overflow-hidden border border-line md:aspect-[5/4] ${mediaClassName}`}>
+          <div className={`relative overflow-hidden border border-line ${poster ? "mx-auto aspect-[1280/1810] w-full max-w-[22rem] md:max-w-[24rem]" : "aspect-[16/10] md:aspect-[5/4]"} ${mediaClassName}`}>
             <Image
               src={image.src}
               alt={image.alt}

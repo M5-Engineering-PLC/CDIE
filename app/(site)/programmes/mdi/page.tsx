@@ -24,6 +24,9 @@ export const metadata: Metadata = pageMetadata({
   path: "/programmes/mdi",
 });
 
+// 2026-09-24: the cohort photograph supplied for this page's hero.
+const heroImage = { src: "/images/cdie-mdi-cohort-gala-group.webp", alt: "Group photograph at a formal evening event beside an Invention Education banner" };
+
 const crumbs = [
   { label: "Programmes", href: "/programmes" },
   { label: "Medical Device Innovation", href: "/programmes/mdi" },
@@ -51,6 +54,7 @@ export default async function MdiPage() {
         headline={mdi.headline}
         standfirst={mdi.standfirst}
         crumbs={crumbs}
+        image={heroImage}
       >
         <Button href="/contact?topic=admissions">Ask about the next intake</Button>
       </PageHero>
@@ -75,9 +79,10 @@ export default async function MdiPage() {
       </Section>
 
       <Section id="learning" tone="surface" eyebrow="What you will learn" title="Five things you practise.">
-        <ul className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
+        {/* 2026-09-24: no empty sixth cell; a short last row sits centred. */}
+        <ul className="flex flex-wrap justify-center gap-4">
           {mdi.learn.map((item) => (
-            <li key={item.title} className="flex flex-col gap-2 bg-raise p-6">
+            <li key={item.title} className="flex w-full flex-col gap-2 border border-line bg-raise p-6 md:w-[calc(50%-0.5rem)] lg:w-[calc((100%-2rem)/3)]">
               <h3 className="display text-sub leading-snug">{item.title}</h3>
               <p className="text-body leading-relaxed text-ink-2">{item.body}</p>
             </li>
@@ -93,10 +98,10 @@ export default async function MdiPage() {
       */}
       <Section id="curriculum" eyebrow="Course outline" title="Three semesters, full-time.">
         <div className="flex flex-col gap-px bg-line">
-          {mdiSemesters.map((semester, index) => (
+          {mdiSemesters.map((semester) => (
+            // 2026-09-24: every semester starts closed and opens on a tap.
             <details
               key={semester.id}
-              open={index === 0}
               className="group bg-raise open:bg-surface"
             >
               <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 p-6 transition-colors hover:text-brand [&::-webkit-details-marker]:hidden">

@@ -41,7 +41,7 @@ export const spaces: Space[] = [
     name: "Graduate School",
     shortName: "Grad school",
     summary:
-      "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery. The room plan shows these areas together, based on the studio video and photographs.",
+      "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery.",
     hasModel: true,
   },
   {
@@ -49,7 +49,7 @@ export const spaces: Space[] = [
     name: "ATC",
     shortName: "ATC",
     summary:
-      "Engineering & Prototyping Workshop: CNC machining, laser cutting, metal fabrication, and tool storage inside and alongside the shipping container.",
+      "Engineering & Prototyping Workshop: CNC machining, laser cutting, metal fabrication, and tool storage.",
     hasModel: true,
   },
 ];

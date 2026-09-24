@@ -109,9 +109,10 @@ export const opportunities: Opportunity[] = [
   },
   {
     id: "design-challenge",
-    title: "Design Challenge",
+    // 2026-09-24: "Change all Design challenge titles to Design Challenges".
+    title: "Design Challenges",
     kind: "Challenge",
-    carouselTitle: "Design challenges",
+    carouselTitle: "Design Challenges",
     summary:
       "A real challenge. A chance to make something useful. Work with others to explore a practical response to a defined problem.",
     status: "enquire",
@@ -459,7 +460,7 @@ export const designChallenge = {
   standfirst:
     "Bring your curiosity and work with others to explore a practical response to a defined problem. The design challenge is an opportunity to learn through making, explain your thinking and develop an idea through feedback.",
   past: "Explore previous challenge briefs and the work developed by participating teams.",
-  action: { label: "Ask about the Design Challenge", href: "/contact?topic=design-challenge", live: true },
+  action: { label: "Ask about the Design Challenges", href: "/contact?topic=design-challenge", live: true },
 } as const;
 
 /*
@@ -518,6 +519,52 @@ export const catalystGrants = {
   action: { label: "Ask about Catalyst grants", href: "/contact?topic=catalyst-grants", live: true },
 } as const;
 
+/*
+  2026-09-24: "replace what is settled section with More details on the grant
+  and gallery of grant beneficiaries". Every fact below is from CDIE's own posts
+  of 16 May 2025: the Catalyst Grant call for proposals (and its poster) and the
+  Catalyst Grant event. They are published as that call, dated, so nothing here
+  reads as the terms of a call that has not opened. This supersedes decision D5
+  at the client's request.
+*/
+export const catalystCall = {
+  hero: {
+    src: "/images/cdie-catalyst-grant-call-poster.jpg",
+    alt: "Catalyst Grant call for proposals poster listing the project criteria and funding available",
+  },
+  eyebrow: "The May 2025 call",
+  headline: "Seed funding for hardware that answers a healthcare need.",
+  intro:
+    "The Catalyst Grant supports people building a hardware solution to a critical healthcare challenge, with seed funding to bring the project to life. Applications to the May 2025 call were reviewed on a rolling basis and submitted online.",
+  criteria: [
+    "Innovation and originality",
+    "Technical feasibility and prototyping plans",
+    "Sustainability and long-term impact",
+    "Relevance to healthcare and problem significance",
+  ],
+  awards: [
+    { label: "Student grant", value: "Up to $1,000", note: "Open to all Kenyan university students" },
+    { label: "Lecturer and postgraduate grant", value: "Up to $2,500", note: "Open to lecturers and postgraduate students" },
+  ],
+} as const;
+
+export const catalystGallery = {
+  eyebrow: "Grant beneficiaries",
+  headline: "Prototypes, presented.",
+  body: "At the Catalyst Grant event in May 2025, participants presented their prototypes and networked with peers and industry leaders.",
+  photos: [
+    { src: "/images/cdie-catalyst-grant-presentation.jpg", alt: "Presenter addressing a seated audience in a CDIE seminar room" },
+  ],
+} as const;
+
+export const catalystFollow = {
+  eyebrow: "Next call",
+  headline: "Hear when the next call opens.",
+  body: "Follow us on LinkedIn to hear when the next call opens, or write to the team about a project you are building.",
+  linkedIn: "Follow us on LinkedIn for the next call",
+  contact: "Talk to the team about your project",
+} as const;
+
 export const training = {
   headline: "Make time to learn a practical skill.",
   standfirst:
@@ -568,7 +615,7 @@ export const mdiGraduands: Graduand[] = [
 export const mdiCohortsCopy = {
   headline: "Success stories",
   standfirst: "Meet the people taking their ideas forward.",
-  body: "Where graduates of the programme have taken their work, in their own words.",
+  body: "What our graduates say about the program.",
   empty: "Graduate stories are published once each person has confirmed their words and given consent. Ask the team about a particular cohort or project.",
 } as const;
 

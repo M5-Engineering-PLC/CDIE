@@ -9,21 +9,23 @@ import { ChallengeEdition } from "@/components/sections/ChallengeEdition";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { designChallenge, designChallengeEditions, getOpportunity } from "@/content/programmes";
+import { socialAccounts } from "@/content/site";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Design Challenge",
+  title: "Design Challenges",
   description: designChallenge.standfirst,
   path: "/programmes/design-challenge",
 });
 
 const crumbs = [
   { label: "Programmes", href: "/programmes" },
-  { label: "Design Challenge", href: "/programmes/design-challenge" },
+  { label: "Design Challenges", href: "/programmes/design-challenge" },
 ];
 
 export default function DesignChallengePage() {
   const opportunity = getOpportunity("design-challenge");
+  const linkedIn = socialAccounts.find((account) => account.id === "linkedin");
 
   return (
     <>
@@ -47,10 +49,14 @@ export default function DesignChallengePage() {
         <div className="mt-8 max-w-[62ch]">
           <Pending items={opportunity?.pending ?? []} />
         </div>
-        <p className="mt-6 max-w-[62ch] text-fine text-ink-3">
-          No date, figure or requirement is published until the team confirms the current
-          call. Ask and you will get the real answer rather than an out-of-date page.
-        </p>
+        {/* 2026-09-24: the disclaimer gives way to a pointer to where calls are announced. */}
+        {linkedIn?.href ? (
+          <div className="mt-8">
+            <Button href={linkedIn.href} external>
+              Follow us on LinkedIn for the next challenge
+            </Button>
+          </div>
+        ) : null}
       </Section>
     </>
   );

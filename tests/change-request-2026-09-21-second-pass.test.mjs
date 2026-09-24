@@ -79,7 +79,7 @@ test("the programme carousel reads the client's five names", () => {
   assert.deepEqual(names, [
     "Invention education",
     "MSc MDI",
-    "Design challenges",
+    "Design Challenges",
     "Catalyst grants",
     "Training and masterclasses",
   ]);
