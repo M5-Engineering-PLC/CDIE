@@ -16,6 +16,8 @@ export default async function SecureLayout({ children }: { children: React.React
         links={[
           { href: "/admin", label: "Overview" },
           { href: "/admin/studio", label: "Design Studio" },
+          { href: "/admin/models/design-studio", label: "Studio model" },
+          { href: "/admin/models/atc", label: "ATC model" },
           ...collections.map((collection) => ({ href: `/admin/${collection.id}`, label: collection.label })),
         ]}
         signOut={AUTH_ENABLED ? (
