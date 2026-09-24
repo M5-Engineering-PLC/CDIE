@@ -73,7 +73,7 @@ export function PageHero({
               <iframe
                 src={map.src}
                 title={map.title}
-                loading="lazy"
+                loading="eager"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
                 className="absolute inset-0 h-full w-full border-0"

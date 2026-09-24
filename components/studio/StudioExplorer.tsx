@@ -9,6 +9,7 @@ import { StudioRailThumb } from "./StudioRailThumb";
 import { StudioStage } from "./StudioStage";
 import { StudioTourIntro } from "./StudioTourIntro";
 import type { ExplorerCapability, UnifiedServiceId } from "./explorerModel";
+import { useStudio3DWarmup } from "./useStudio3DWarmup";
 import { useViewOnly } from "./useViewOnly";
 
 export type { ExplorerCapability, ExplorerComponent, UnifiedServiceId } from "./explorerModel";
@@ -30,6 +31,7 @@ export function StudioExplorer({ capabilities, initialId, intro }: StudioExplore
 
   const index = Math.max(0, capabilities.findIndex((item) => item.id === selectedId));
   const selected = capabilities[index] ?? capabilities[0];
+  useStudio3DWarmup(Boolean(selected?.atc));
   const [activeSpace, setActiveSpace] = useState<"studio" | "atc">(selected?.space ?? "studio");
 
   // Follow the selected capability into its space, adjusted during render
