@@ -13,11 +13,18 @@
     place behind the image. The classes are .scene and .scene-copy in
     app/globals.css, so the timing is a token and not a number in here.
   - The band is half as tall on a phone, per section 1.
+
+  Daily note 2026-09-25: the action button leaves the slide. Pressing a
+  programme on the strip and then reaching up for "Discover" was two taps for
+  one intent, so the strip entry for the slide in focus is now the link itself,
+  carrying that slide's action label. The other entries stay buttons that bring
+  their slide into focus.
 */
 
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { ProgrammeHeroStrip } from "./ProgrammeHeroStrip";
 
 export type ProgrammeHeroSlide = {
   id: string;
@@ -95,38 +102,13 @@ export function ProgrammeHeroCarousel({
                 <p className="kicker !text-brand-lift">{slide.eyebrow}</p>
                 <Heading className="display mt-3 text-title leading-none text-surface md:mt-5 md:text-mega">{slide.title}</Heading>
                 <p className="mt-4 max-w-[54ch] text-body leading-relaxed text-surface/80 md:mt-6 md:text-lead">{slide.summary}</p>
-                <Link href={slide.action.href} tabIndex={slideIndex === index ? 0 : -1} className="hero-action mt-5 inline-flex bg-brand-live px-5 py-3 font-medium text-surface md:mt-8 md:px-6 md:py-3.5">
-                  {slide.action.label}
-                </Link>
               </div>
             </div>
           </div>
         </div>
       ))}
 
-      <div className="absolute inset-x-0 bottom-0 z-10 border-t border-surface/20 bg-ink/60 backdrop-blur-md">
-        <div
-          className="shell grid"
-          style={{ gridTemplateColumns: `repeat(${slides.length}, minmax(0, 1fr))` }}
-        >
-          {slides.map((slide, slideIndex) => (
-            <button
-              key={slide.id}
-              type="button"
-              aria-current={slideIndex === index}
-              onClick={() => setIndex(slideIndex)}
-              className={`relative flex min-w-0 items-center py-4 text-left text-fine transition-colors md:py-5 ${slideIndex === index ? "text-surface" : "text-surface/55 hover:text-surface"}`}
-            >
-              {slideIndex === index ? <span key={index} className="hero-progress absolute inset-x-0 top-0 h-0.5 bg-brand-lift" style={{ animationPlayState: inspecting ? "paused" : "running" }} /> : null}
-              <span
-                aria-hidden="true"
-                className={`mx-1 h-1.5 w-full rounded-full transition-colors sm:hidden ${slideIndex === index ? "bg-brand-lift" : "bg-surface/30"}`}
-              />
-              <span className="hidden truncate sm:block">{slide.eyebrow}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+      <ProgrammeHeroStrip slides={slides} index={index} inspecting={inspecting} onSelect={setIndex} />
     </section>
   );
 }
