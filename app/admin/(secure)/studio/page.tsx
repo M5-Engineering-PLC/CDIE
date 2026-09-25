@@ -1,4 +1,4 @@
-// Admin review surface for the same read-only Design Studio tour used by the public page.
+// Admin review surface for interactive review of the same Design Studio model used by the public page.
 
 import { StudioExplorer, type ExplorerCapability } from "@/components/studio/StudioExplorer";
 import { capabilities, defaultCapabilityId, spaces, studioIntro } from "@/content/studio";
@@ -47,16 +47,18 @@ export default async function AdminStudioPage(props: PageProps<"/admin/studio">)
   return (
     <main className="mx-auto flex max-w-[90rem] flex-col gap-6 p-6 md:p-10">
       <header className="flex flex-col gap-2">
-        <p className="kicker">Read-only review</p>
+        <p className="kicker">Interactive review</p>
         <h1 className="text-head text-ink">Design Studio</h1>
         <p className="max-w-[68ch] text-body leading-relaxed text-ink-2">
-          This view uses the same tour and room model as the public Design Studio page. It has no content editing controls.
+          Explore the room model, change views, and select equipment areas. This review page does not publish changes to the public website.
         </p>
       </header>
       <StudioExplorer
         capabilities={explorerCapabilities}
         initialId={initialId}
         intro={{ headline: studioIntro.tourHeadline, standfirst: studioIntro.tourStandfirst }}
+        interactiveMode
+        showIntro={false}
       />
     </main>
   );

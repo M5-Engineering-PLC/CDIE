@@ -1,5 +1,7 @@
 "use client";
 
+/* Source: user-supplied ATC floor plan and room videos. */
+
 /*
   CDIE ATC Prototyping Workshop Stage.
   Closed, it renders the lightweight 2D SVG plan (AtcRoomPlan).
@@ -38,7 +40,7 @@ export function AtcStage({ active, open, onSelect, onClose, onOpen }: AtcStagePr
         <AtcRoomPlan active={active} />
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <p className="text-fine text-ink-3">
-            Illustrative layout of the ATC Engineering & Prototyping Workshop based on site video captures and schematics.
+            Illustrative plan based on your hand-drawn plan and room videos. Room dimensions are estimates.
           </p>
           {onOpen ? (
             <button
@@ -58,6 +60,9 @@ export function AtcStage({ active, open, onSelect, onClose, onOpen }: AtcStagePr
     <div className="flex min-w-0 flex-col gap-3">
       <Atc3D active={active} onSelect={onSelect} />
       <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <p className="text-fine text-ink-3">
+          Illustrative room model based on your floor plan and videos. Room dimensions are estimates.
+        </p>
         <button
           type="button"
           onClick={onClose}

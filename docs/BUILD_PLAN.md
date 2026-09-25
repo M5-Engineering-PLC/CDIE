@@ -162,6 +162,22 @@ the high window in the Graduate School room. The model places textiles there.
 The video gives no measurements, so the room size and station spacing remain
 illustrative. Metalworking and woodworking still have no documented position.
 
+The new ATC upload contains four room videos and four still images. The PNG plan
+opens in portrait orientation. A counter-clockwise turn makes its labels
+readable. It marks two metalworking benches on one side, two woodworking
+stations opposite them, and a laser station near one end. The plan gives no
+room measurements.
+
+The videos show green steel supports, high grid windows, a corrugated roof,
+blue storage bays, open tool shelves, and work tables. `IMG_0938.MP4` shows the
+Blue Elephant name and ELECNC1212 label on the woodworking router. The plan names
+a laser station but gives no make or model. The ATC model follows these areas
+and keeps its room footprint illustrative.
+
+The user asked to retain the blue shipping-container cutaway from the prior ATC
+model. The model keeps its previous position and proportions. Its dimensions
+remain illustrative because the supplied plan does not measure the container.
+
 The source of R9, and of the other four review items numbered R10 to R13, is a
 machine transcript of poor quality in which speaker attribution is unreliable.
 The corrections pass lives with the meeting record outside this repository. Do
