@@ -150,6 +150,26 @@ export async function appendRow(tab: string, row: SheetRow): Promise<void> {
   });
 }
 
+/**
+ * Merges `patch` into the first row whose `key` column equals `value`.
+ * Returns false when the tab, the column or the row is not there.
+ */
+export async function updateRow(tab: string, key: string, value: string, patch: SheetRow): Promise<boolean> {
+  const header = await ensureTab(tab, [...Object.keys(patch)]);
+  const values = (await call<{ values?: string[][] }>(`/values/${range(tab)}`, { cache: "no-store" })).values ?? [];
+  const column = header.indexOf(key);
+  if (column < 0) return false;
+  const index = values.findIndex((record, position) => position > 0 && record[column] === value);
+  if (index < 0) return false;
+  const current = Object.fromEntries(header.map((name, position) => [name, values[index]?.[position] ?? ""]));
+  const merged = { ...current, ...patch };
+  await call(`/values/${range(tab, `A${index + 1}`)}?valueInputOption=RAW`, {
+    method: "PUT",
+    body: JSON.stringify({ values: [header.map((name) => merged[name] ?? "")] }),
+  });
+  return true;
+}
+
 /** Deletes every row whose `key` column equals `value`. */
 export async function deleteRows(tab: string, key: string, value: string): Promise<number> {
   const sheet = (await tabs()).find((item) => item.properties.title === tab);

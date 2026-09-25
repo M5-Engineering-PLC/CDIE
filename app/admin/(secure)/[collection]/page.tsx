@@ -5,8 +5,9 @@ import { notFound } from "next/navigation";
 import { deleteItem } from "@/app/admin/actions";
 import { ItemForm } from "@/components/admin/ItemForm";
 import { ItemPreview } from "@/components/admin/ItemPreview";
+import { SendIssue } from "@/components/admin/SendIssue";
 import { collectionById } from "@/lib/admin/collections";
-import { listItems } from "@/lib/admin/store";
+import { listItems, listSubscribers } from "@/lib/admin/store";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,8 @@ export default async function CollectionPage(props: PageProps<"/admin/[collectio
   const collection = collectionById(id);
   if (!collection) notFound();
   const items = await listItems(collection.id);
+  // The newsletter is the one collection that can be posted to the list.
+  const subscribers = collection.id === "newsletters" ? (await listSubscribers("confirmed")).length : 0;
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-10 p-6 md:p-10">
@@ -63,6 +66,9 @@ export default async function CollectionPage(props: PageProps<"/admin/[collectio
                   <button type="submit" className="text-fine text-ink-3 hover:text-brand">Remove</button>
                 </form>
                 </div>
+                {collection.id === "newsletters" ? (
+                  <SendIssue id={item.id} subscribers={subscribers} sentAt={item.sentAt} sentCount={item.sentCount} />
+                ) : null}
                 <details className="border-t border-line-soft">
                   <summary className="cursor-pointer px-3 py-2 text-fine text-brand">Preview on the site</summary>
                   <div className="p-3 pt-0">
