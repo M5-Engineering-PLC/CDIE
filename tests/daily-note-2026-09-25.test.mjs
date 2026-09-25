@@ -9,12 +9,45 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf
 
 const enquiry = { name: "A", email: "a@example.org", reason: "general", message: "Hello" };
 
-test("the hero action lives in the strip, not on the slide", () => {
+test("the hero keeps its original mechanism: the action button on the slide", () => {
   const carousel = read("components/sections/ProgrammeHeroCarousel.tsx");
-  assert.doesNotMatch(carousel, /hero-action/);
-  const strip = read("components/sections/ProgrammeHeroStrip.tsx");
-  assert.match(strip, /href=\{slide\.action\.href\}/);
-  assert.match(strip, /\{slide\.action\.label\}/);
+  assert.match(carousel, /hero-action/);
+  assert.match(carousel, /href=\{slide\.action\.href\}/);
+  assert.doesNotMatch(carousel, /ProgrammeHeroStrip/);
+});
+
+test("studio photographs show whole, each frame at its own ratio, one row on desktop", () => {
+  const strip = read("components/studio/StudioPhotoStrip.tsx");
+  assert.match(strip, /aspectRatio: `\$\{photo\.width\} \/ \$\{photo\.height\}`/);
+  assert.match(strip, /flexGrow: photo\.width \/ photo\.height/);
+  assert.match(strip, /sm:flex-nowrap/);
+  assert.match(strip, /object-contain/);
+  assert.doesNotMatch(strip, /object-cover/);
+  const stage = read("components/studio/StudioStage.tsx");
+  assert.match(stage, /imageSize/);
+  assert.match(stage, /object-contain/);
+  assert.match(read("components/studio/explorerModel.ts"), /media: readonly \{ src: string; alt: string; width: number; height: number \}\[\]/);
+});
+
+test("the stool back is a level semicircle on posts", () => {
+  const model = read("components/studio/design-studio-3js/createDesignStudioModel.ts");
+  assert.match(model, /TorusGeometry\(0\.24, 0\.03, 10, 40, Math\.PI\)/);
+  assert.match(model, /back\.rotation\.x = -Math\.PI \/ 2/);
+  assert.match(model, /back-post-/);
+  assert.doesNotMatch(model, /open-back-cushion/);
+});
+
+test("electronics has an instrument bench on worktable 1 and focuses there", () => {
+  const bench = read("components/studio/design-studio-3js/createElectronicsBench.ts");
+  for (const name of ["oscilloscope", "signal-generator", "bench-power-supply"]) assert.match(bench, new RegExp(name));
+  assert.match(bench, /const SERVICE = 'electronics'/);
+  const model = read("components/studio/design-studio-3js/createDesignStudioModel.ts");
+  assert.match(model, /services\.electronics\.add\(createElectronicsCupboards\(\), createElectronicsBench\(\)\)/);
+  assert.match(model, /services\.electronics\.userData\.centre = new THREE\.Vector3\(\.\.\.electronicsBenchFocus\)/);
+  assert.match(read("components/studio/design-studio-3js/tourCamera.ts"), /electronics: \{ aim: \[1\.45/);
+  for (const path of ["components/studio/studioLayout.ts", "components/studio/design-studio-3js/studioLayout.ts"]) {
+    assert.match(read(path), /id: 'electronics-bench'/);
+  }
 });
 
 test("with no provider configured the enquiry is not sent and says so", async () => {
@@ -92,6 +125,9 @@ test("textiles leads with the orange-shirt photograph and every capability has m
 test("the moulding shelf is part of the model and owned by casting and moulding", () => {
   const shelf = read("components/studio/design-studio-3js/createMouldingShelf.ts");
   assert.match(shelf, /moulding-device/);
+  assert.match(shelf, /yellow-enclosure-device/);
+  assert.match(shelf, /'yellow', SERVICE/);
+  assert.match(read("components/studio/design-studio-3js/realisticProps.ts"), /\| 'yellow'/);
   assert.match(shelf, /const SERVICE = 'casting-moulding'/);
   assert.match(read("components/studio/design-studio-3js/createDesignStudioModel.ts"), /services\['casting-moulding'\]\.add\(createMouldingShelf\(\)\)/);
 });
@@ -103,4 +139,22 @@ test("CI runs the checks AGENTS.md names", () => {
   for (const step of ["npm ci", "npm run lint", "npm run typecheck", "npm test", "npm run build"]) {
     assert.match(ci, new RegExp(step.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+});
+
+test("the Drive folder's call posters and photographs sit on their pages", () => {
+  const programmes = read("content/programmes.ts");
+  assert.match(programmes, /summer-programme-call\.jpg/);
+  assert.match(programmes, /design-challenge-assistive-care-call\.jpg/);
+  assert.match(programmes, /training-call\.jpg/);
+  for (let n = 1; n <= 7; n += 1) assert.match(programmes, new RegExp(`summer-programme-${n}\\.jpg`));
+  for (let n = 1; n <= 4; n += 1) assert.match(programmes, new RegExp(`design-challenge-assistive-care-${n}\\.jpg`));
+  for (let n = 1; n <= 3; n += 1) assert.match(programmes, new RegExp(`training-${n}\\.jpg`));
+  assert.match(programmes, /theme: "Assistive devices"/);
+  assert.match(programmes, /value: "23–27 March 2026"/);
+  assert.match(programmes, /value: "11–29 May 2026"/);
+  assert.match(read("app/(site)/programmes/summer-programme/page.tsx"), /call=\{edition\.call\}/);
+  const training = read("app/(site)/programmes/training/page.tsx");
+  assert.match(training, /<ProgrammeGallery/);
+  assert.match(training, /call=\{trainingCall\}/);
+  assert.match(read("docs/BUILD_PLAN.md"), /Conflict C-10, 2026-09-25/);
 });

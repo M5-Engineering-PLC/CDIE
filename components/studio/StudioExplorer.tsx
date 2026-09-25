@@ -128,7 +128,8 @@ export function StudioExplorer({
             <StudioStage
               active={selected.modelGroup} open={roomOpen} tour={tour} viewOnly={viewOnly} atc={selected.atc} space={activeSpace}
               name={selected.name} spaceName={selected.spaceName} headline={selected.headline} step={index + 1} of={capabilities.length}
-              image={selected.image} imageAlt={selected.media[0]?.alt ?? `${selected.name} at the CDIE Design Studio`} onSelect={selectByModelGroup}
+              image={selected.image} imageAlt={selected.media[0]?.alt ?? `${selected.name} at the CDIE Design Studio`} imageSize={selected.media[0]}
+              onSelect={selectByModelGroup}
               onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={openRoom}
               onSwitchSpace={handleSwitchSpace}
             />

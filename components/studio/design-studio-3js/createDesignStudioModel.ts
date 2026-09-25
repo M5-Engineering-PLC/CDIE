@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { studioLayout, type ServiceId } from './studioLayout';
+import { createElectronicsBench, electronicsBenchFocus } from './createElectronicsBench';
 import { createMouldingShelf } from './createMouldingShelf';
 import { createTextileStations } from './createTextileStations';
 import { createBambuEnclosed, createBambuOpen, createFilamentUnit, createPrusaPrinter } from './realisticProps';
@@ -258,13 +259,20 @@ function createStool(name: string, x: number, z: number): THREE.Group {
   const stool = new THREE.Group();
   stool.name = name;
   stool.position.set(x, 0, z);
-  const cushion = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.085, 10, 34, Math.PI * 1.55), palette.charcoal.clone());
-  cushion.name = `${name}-open-back-cushion`;
-  cushion.position.set(0, 0.91, -0.1);
-  cushion.rotation.x = -0.22;
-  cushion.castShadow = true;
-  cushion.userData.service = 'co-working';
-  stool.add(cushion);
+  /* Follow-up 2026-09-25: "the chairs should be a full semicircle arc, not
+     hanging". The back is a level half-ring around the rear of the seat,
+     held up by three posts, rather than a tilted part-ring floating behind it. */
+  const back = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.03, 10, 40, Math.PI), palette.charcoal.clone());
+  back.name = `${name}-semicircle-back`;
+  back.position.set(0, 0.98, 0);
+  back.rotation.x = -Math.PI / 2;
+  back.castShadow = true;
+  back.userData.service = 'co-working';
+  stool.add(back);
+  const posts: readonly [number, number][] = [[0.24, 0], [-0.24, 0], [0, -0.24]];
+  posts.forEach(([px, pz], index) => {
+    stool.add(cylinder(`${name}-back-post-${index + 1}`, 0.014, 0.28, [px, 0.84, pz], 'metal', 'co-working', 10));
+  });
   stool.add(cylinder(`${name}-seat`, 0.27, 0.09, [0, 0.67, 0], 'charcoal', 'co-working', 36));
   stool.add(cylinder(`${name}-stem`, 0.035, 0.55, [0, 0.37, 0], 'metal', 'co-working', 14));
   stool.add(cylinder(`${name}-base`, 0.23, 0.035, [0, 0.08, 0], 'metal', 'co-working', 32));
@@ -422,6 +430,9 @@ export function createDesignStudioModel(): THREE.Group {
     'casting-moulding': new THREE.Group(),
   };
   services['casting-moulding'].userData.centre = new THREE.Vector3(2.05, 0.6, -3.1);
+  /* Follow-up 2026-09-25: electronics focuses on the instrument bench
+     (createElectronicsBench), not on the cupboard run along the east wall. */
+  services.electronics.userData.centre = new THREE.Vector3(...electronicsBenchFocus);
   for (const [id, group] of Object.entries(services)) {
     group.name = `service-${id}`;
     group.userData.service = id;
@@ -435,7 +446,7 @@ export function createDesignStudioModel(): THREE.Group {
   services.design.add(createDoor(), createComputerStations(), createPresentationWall(), createTeacherStation());
   services['three-d-printing'].add(createPrinterStation());
   services['casting-moulding'].add(createMouldingShelf());
-  services.electronics.add(createElectronicsCupboards());
+  services.electronics.add(createElectronicsCupboards(), createElectronicsBench());
   const textileStations = createTextileStations();
   markService(textileStations, 'textiles');
   services.textiles.add(textileStations);

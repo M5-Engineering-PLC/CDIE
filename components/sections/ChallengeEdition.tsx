@@ -75,7 +75,7 @@ export function ChallengeEdition({
 
           <div className="flex min-w-0 flex-col gap-6">
             <h3 className="kicker">{galleryTitle}</h3>
-            <ul className="grid gap-4">
+            <ul className={`grid gap-4 ${winners.length > 2 ? "sm:grid-cols-2" : ""}`}>
               {winners.map((photo) => (
                 <li key={photo.src} className="overflow-hidden border border-line bg-raise">
                   <Image

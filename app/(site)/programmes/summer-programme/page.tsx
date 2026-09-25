@@ -51,6 +51,7 @@ export default function SummerProgrammePage() {
           theme={edition.theme}
           brief={edition.brief}
           facts={edition.facts}
+          call={edition.call}
           link={edition.link}
           winners={edition.photos}
           label="Summer Programme"

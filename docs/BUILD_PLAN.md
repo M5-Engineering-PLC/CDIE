@@ -400,6 +400,19 @@ accept a photograph and render without one until it arrives. The full list with
 owners is in the meeting record.
 
 
+#### Conflict C-10, 2026-09-25. The summer programme call poster and the feed sheet disagree on dates
+
+The CDIE LinkedIn feed sheet marks the 2026 summer programme dates as
+estimated, May to June 2026, and the earlier draft of the page said "four
+weeks". The call poster CDIE published (shared by Drive on 25 September) says
+11 to 29 May 2026, a three-week programme, with a participant cost of Ksh
+7,000 sponsored up to 90 percent. The poster is CDIE's own call, so the page
+now carries its dates, cost and eligibility, and the headline says three
+weeks. The poster is dated to that one edition; the next edition stays
+pending. The same folder gave the assistive devices design challenge its
+call poster, which fixes that edition to 23 to 27 March 2026 and names the
+theme "assistive devices" rather than "assistive care".
+
 ## 4. Target architecture
 
 Stack:

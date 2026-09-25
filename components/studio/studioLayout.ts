@@ -103,6 +103,16 @@ export const studioLayout: StudioLayout = {
       rotationY: 0,
     },
     {
+      id: 'electronics-bench',
+      label: 'Electronics bench',
+      service: 'electronics',
+      /* 2026-09-25: worktable 1 carries the oscilloscope, signal generator and
+         bench power supply; the electronics focus sits here. */
+      position: [1.45, 1.05, -1.4],
+      size: [1.6, 0.2, 0.4],
+      rotationY: 0,
+    },
+    {
       id: 'electronics-cupboards',
       label: 'Electronics cupboards',
       service: 'electronics',
