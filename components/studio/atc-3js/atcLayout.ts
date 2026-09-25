@@ -1,15 +1,15 @@
 export type Vec3Tuple = readonly [number, number, number];
 
 export type AtcServiceId =
-  | 'woodworking'
-  | 'tooling-storage'
-  | 'laser-cutting'
-  | 'metalworking'
-  | 'facility-access';
+  | "woodworking"
+  | "tooling-storage"
+  | "laser-cutting"
+  | "metalworking"
+  | "facility-access";
 
 export type AtcStationLayout = {
   id: string;
-  number?: 1 | 2 | 3 | 4 | 5;
+  number?: 1 | 2 | 3 | 4;
   label: string;
   service: AtcServiceId;
   position: Vec3Tuple;
@@ -25,70 +25,51 @@ export type AtcLayout = {
 };
 
 export const requiredAtcStationIds = [
-  'metalworking-bench-a',
-  'metalworking-bench-b',
-  'woodworking-cnc',
-  'woodworking-assembly',
-  'laser-cutter',
+  "metalworking",
+  "woodworking",
+  "laser-cutting",
+  "tooling-storage",
 ] as const;
 
 export const atcLayout: AtcLayout = {
-  room: { width: 12.8, depth: 8.8, height: 4.15 },
-  // Retained from the prior ATC room model. These dimensions are illustrative.
-  container: { position: [-4.4, 0, -0.2], size: [3.4, 2.4, 6.4] },
+  room: { width: 12.8, depth: 8.8, height: 2.8 },
+  container: { position: [-4.4, 0, -0.2], size: [3.4, 2.5, 6.4] },
   isMeasured: false,
   stations: [
     {
-      id: 'metalworking-bench-a',
+      id: "metalworking",
       number: 1,
-      label: 'Metalworking bench 1',
-      service: 'metalworking',
-      position: [-3.55, 0.48, -1.65],
-      size: [2.65, 0.96, 1.16],
+      label: "Metalworking (Workbenches & Tooling)",
+      service: "metalworking",
+      position: [1.2, 0.88, 1.4],
+      size: [3.8, 0.9, 3.2],
       rotationY: 0,
     },
     {
-      id: 'metalworking-bench-b',
+      id: "woodworking",
       number: 2,
-      label: 'Metalworking bench 2',
-      service: 'metalworking',
-      position: [-3.55, 0.48, 1.25],
-      size: [2.65, 0.96, 1.16],
+      label: "Woodworking (CNC Router & Workstation)",
+      service: "woodworking",
+      position: [-4.0, 0.88, 0.8],
+      size: [2.2, 1.4, 2.8],
       rotationY: 0,
     },
     {
-      id: 'woodworking-cnc',
+      id: "laser-cutting",
       number: 3,
-      label: 'Woodworking CNC router',
-      service: 'woodworking',
-      position: [2.55, 0.78, 0.25],
-      size: [4.8, 1.56, 2.9],
+      label: "Laser Cutting (Blue Elephant CO2)",
+      service: "laser-cutting",
+      position: [2.2, 0.88, -2.9],
+      size: [2.2, 1.1, 1.5],
       rotationY: 0,
     },
     {
-      id: 'woodworking-assembly',
+      id: "tooling-storage",
       number: 4,
-      label: 'Woodworking assembly table',
-      service: 'woodworking',
-      position: [3.5, 0.76, 3.05],
-      size: [2.7, 0.92, 1.15],
-      rotationY: 0,
-    },
-    {
-      id: 'laser-cutter',
-      number: 5,
-      label: 'Laser cutting station',
-      service: 'laser-cutting',
-      position: [4.65, 0.74, -2.72],
-      size: [1.95, 1.48, 1.7],
-      rotationY: 0,
-    },
-    {
-      id: 'tool-storage',
-      label: 'Tool storage and blue work bays',
-      service: 'tooling-storage',
-      position: [-2.25, 1.3, -3.58],
-      size: [6.55, 2.6, 1.18],
+      label: "Tools & Storage Racks",
+      service: "tooling-storage",
+      position: [-4.8, 1.2, -0.6],
+      size: [0.6, 2.2, 5.0],
       rotationY: 0,
     },
   ],

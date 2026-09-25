@@ -24,38 +24,66 @@ type SceneOptions = {
 
 const views: Record<AtcView, { position: THREE.Vector3; target: THREE.Vector3 }> = {
   isometric: {
-    position: new THREE.Vector3(13, 9.2, 12.5),
-    target: new THREE.Vector3(0, 1.3, 0),
+    position: new THREE.Vector3(12.5, 10.5, 12.5),
+    target: new THREE.Vector3(0, 0.4, 0),
   },
   top: {
-    position: new THREE.Vector3(0.001, 19, 0.001),
+    position: new THREE.Vector3(0.001, 18, 0.001),
     target: new THREE.Vector3(0, 0, 0),
   },
 };
 
 function setSelection(runtime: AtcRuntime, active: AtcServiceId | null) {
-  for (const [id, group] of Object.entries(runtime.services) as [AtcServiceId, THREE.Group][]) {
-    group.traverse((node) => {
-      if (!(node instanceof THREE.Mesh)) return;
-      const materials = Array.isArray(node.material) ? node.material : [node.material];
-      for (const material of materials) {
-        if (!(material instanceof THREE.MeshStandardMaterial)) continue;
-        if (material.userData.baseOpacity === undefined) {
-          material.userData.baseOpacity = material.opacity;
-          material.userData.baseTransparent = material.transparent;
-          material.userData.baseEmissive = material.emissive.getHex();
-          material.userData.baseEmissiveIntensity = material.emissiveIntensity;
-        }
-        const selected = active === id || (active === 'metalworking' && id === 'tooling-storage');
-        const muted = active !== null && !selected;
-        material.transparent = muted || material.userData.baseTransparent;
-        material.opacity = muted ? 0.28 : material.userData.baseOpacity;
-        material.depthWrite = !muted;
-        material.emissive.setHex(selected ? 0x0b78c0 : material.userData.baseEmissive);
-        material.emissiveIntensity = selected ? 0.2 : material.userData.baseEmissiveIntensity;
+  runtime.root.traverse((node) => {
+    if (!(node instanceof THREE.Mesh)) return;
+    const materials = Array.isArray(node.material) ? node.material : [node.material];
+    for (const material of materials) {
+      if (!(material instanceof THREE.MeshStandardMaterial)) continue;
+      if (material.userData.baseOpacity === undefined) {
+        material.userData.baseOpacity = material.opacity;
+        material.userData.baseTransparent = material.transparent;
+        material.userData.baseEmissive = material.emissive.getHex();
+        material.userData.baseEmissiveIntensity = material.emissiveIntensity;
       }
-    });
-  }
+
+      if (active === null) {
+        // No selection: restore all objects to original opacity and visibility
+        material.transparent = material.userData.baseTransparent;
+        material.opacity = material.userData.baseOpacity;
+        material.depthWrite = true;
+        material.emissive.setHex(material.userData.baseEmissive);
+        material.emissiveIntensity = material.userData.baseEmissiveIntensity;
+      } else {
+        // Determine if node or any ancestor belongs to the active station
+        let service = node.userData.service as AtcServiceId | undefined;
+        let parent = node.parent;
+        while (!service && parent && parent !== runtime.root) {
+          if (parent.userData.service) {
+            service = parent.userData.service as AtcServiceId;
+          }
+          parent = parent.parent;
+        }
+
+        const isSelected = service === active;
+
+        if (isSelected) {
+          // Selected station: fully solid and visible with natural materials, NO blue highlight
+          material.transparent = material.userData.baseTransparent;
+          material.opacity = material.userData.baseOpacity;
+          material.depthWrite = true;
+          material.emissive.setHex(material.userData.baseEmissive);
+          material.emissiveIntensity = material.userData.baseEmissiveIntensity;
+        } else {
+          // The rest of the space becomes transparent so the selected station is prominent
+          material.transparent = true;
+          material.opacity = 0.08;
+          material.depthWrite = false;
+          material.emissive.setHex(0x000000);
+          material.emissiveIntensity = 0;
+        }
+      }
+    }
+  });
 }
 
 export function useAtcScene({
@@ -64,7 +92,7 @@ export function useAtcScene({
   view,
   tour = false,
   interactive = true,
-  showLabels = false,
+  showLabels = true,
   onSelect,
   onReady,
   onError,
@@ -105,14 +133,14 @@ export function useAtcScene({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.14;
+    renderer.toneMappingExposure = 1.08;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xdce2df);
+    scene.background = new THREE.Color(0xf1f5f9);
 
-    const camera = new THREE.PerspectiveCamera(39, 1, 0.1, 90);
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 80);
     camera.position.copy(views.isometric.position);
     cameraRef.current = camera;
 
@@ -126,32 +154,30 @@ export function useAtcScene({
     controls.screenSpacePanning = true;
     controlsRef.current = controls;
 
-    // Diffuse daylight enters through the high workshop windows.
-    scene.add(new THREE.HemisphereLight(0xf5f7f2, 0x747d78, 1.55));
+    // Studio Lighting Rig
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xdfe7ec, 1.3));
 
-    const sunLight = new THREE.DirectionalLight(0xfff0d7, 2.8);
-    sunLight.position.set(-8, 13, 10);
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 2.4);
+    sunLight.position.set(12, 16, 12);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.set(2048, 2048);
-    sunLight.shadow.bias = -0.00035;
-    sunLight.shadow.normalBias = 0.025;
+    sunLight.shadow.bias = -0.0004;
+    sunLight.shadow.normalBias = 0.02;
     scene.add(sunLight);
 
-    const fillLight = new THREE.DirectionalLight(0xe1eff5, 1.05);
-    fillLight.position.set(8, 7, -9);
+    const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.8);
+    fillLight.position.set(-10, 12, -8);
     scene.add(fillLight);
 
-    const warmShopLight = new THREE.PointLight(0xffe3b1, 22, 10, 2);
-    warmShopLight.position.set(-2.8, 3.35, 0.4);
-    scene.add(warmShopLight);
-    const coolShopLight = new THREE.PointLight(0xdcecff, 16, 9, 2);
-    coolShopLight.position.set(3.1, 3.2, -1.4);
-    scene.add(coolShopLight);
+    // Warm interior light inside the shipping container booth
+    const containerInteriorLight = new THREE.PointLight(0xfff3db, 16, 8, 2);
+    containerInteriorLight.position.set(-4.0, 2.1, 0.2);
+    scene.add(containerInteriorLight);
 
     // Ground shadow receiver
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(36, 36),
-      new THREE.ShadowMaterial({ color: 0x26302d, opacity: 0.14 }),
+      new THREE.ShadowMaterial({ color: 0x334155, opacity: 0.12 }),
     );
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -0.11;
@@ -163,6 +189,8 @@ export function useAtcScene({
     const runtime = model.userData.sculptRuntime as AtcRuntime;
     runtimeRef.current = runtime;
     scene.add(model);
+
+    runtime.setLabelsVisible(showLabels);
 
     const resize = () => {
       const bounds = canvas.getBoundingClientRect();
@@ -249,6 +277,6 @@ export function useAtcScene({
   }, [tour, view]);
 
   return {
-    toggleRoof: () => runtimeRef.current?.toggleRoof(),
+    toggleShutter: () => runtimeRef.current?.toggleShutter(),
   };
 }

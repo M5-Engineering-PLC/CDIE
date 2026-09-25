@@ -1,50 +1,39 @@
-# CDIE ATC workshop model
+# CDIE ATC Prototyping Workshop Three.js Package
 
-Status: Illustrative room model based on the supplied ATC floor plan, four room videos, and four still images.
+Status: Hyper-realistic compact workshop model based on site video captures, ground-truth photos, and workshop schematic.
 
-## Reference evidence
+This directory is the self-contained React and Three.js package for the CDIE ATC (Appropriate Technology Centre) Engineering and Prototyping Workshop floor plan.
 
-The hand-drawn plan places two metalworking benches on one side. It places two woodworking stations across the work aisle and a laser station near one end.
+## Overview
 
-The room videos show green steel supports, high grid windows, a corrugated roof, blue storage bays, open tool shelves, and work tables. The prior ATC model also showed a blue shipping-container cutaway.
+- **Dimensions**: Compact 12.8m × 8.8m footprint with clean low cutaway perimeter walls (no green overhead framing).
+- **Blue Shipping Container**: Positioned on the left side with concrete foundation curb, corrugation, white louvered ventilation frame, and animated roll-up shutter (`toggleShutter`).
+- **Equipment & Storage inside Container**:
+  - Blue Elephant ELECNC1212 3-axis CNC router on tubular steel stand, yellow chassis, T-slot vacuum bed, gantry cable carrier, and extraction hose.
+  - Dedicated CNC operator workstation desk beside the router with 3-drawer unit, widescreen LCD displaying NCStudio toolpath graphics, keyboard, mouse, and stool.
+  - 4-tier heavy-duty steel shelving along the container rear wall packed with Total turquoise and yellow tool cases, WD-40 spray cans, hardware bins, and safety signs.
+- **Main Open Workshop Floor**:
+  - Blue Elephant CO2 laser cutter against the rear slatted window wall with tinted glass canopy, honeycomb bed, diamond logo, and exhaust duct.
+  - Twin fabrication workbenches in the center foreground:
+    - Workbench 1: TOTAL swivel bench vice clamping a steel square tube, yellow TOTAL MMA inverter arc welder with cooling fan grill, angle grinder, and stools.
+    - Workbench 2: Parallel assembly bench with cordless drill, machinist square, caliper, and hardware tray.
+    - Staging table: Plywood sheet and bar clamps.
+  - Double entrance access gates on the right wall.
+- **Visual Style**: Clean studio presentation background (`#f1f5f9`), procedural terrazzo speckled concrete floor, procedural hardwood grain, and numbered station badges (1–4).
 
-The video `IMG_0938.MP4` shows the Blue Elephant name and ELECNC1212 label on the woodworking router. The plan names a laser station but does not identify a laser make or model.
+## Public Props
 
-The plan has no room measurements. The model uses a 12.8 by 8.8 unit footprint as an on-screen estimate.
+- `active`: highlighted station service id (`metalworking`, `woodworking`, `laser-cutting`, `tooling-storage`, `facility-access`), or `null`.
+- `onSelect`: callback when user clicks equipment in the 3D scene.
+- `className`: optional CSS classes for the container.
+- `initialView`: `isometric` or `top`.
 
-## Model details
+## Runtime Handles
 
-- The room has an open cutaway side, a concrete floor, green steel framing, high windows, and optional corrugated roof panels.
-- The retained blue shipping-container tool shed has the same illustrative position and dimensions as the prior model. It has an open side for the cutaway view.
-- The floor plan shows two metalworking benches inside the container cutaway, a Blue Elephant router, a woodworking table, a laser station, and tool storage.
-- The router has painted panels, steel rails, a spindle, dust hose, control screen, and brand label.
-- The generic laser model carries no maker name because the supplied media does not identify its model.
-- Concrete and wood use generated surface textures. Equipment uses separate painted metal, steel, glass, and rubber materials.
-- The station markers start hidden. The room view controls can show the markers or roof panels.
-
-## Use the viewer
-
-```tsx
-"use client";
-
-import { useState } from "react";
-import { Atc3D, type AtcServiceId } from "@/components/studio/atc-3js";
-
-export function AtcModelExample() {
-  const [active, setActive] = useState<AtcServiceId | null>(null);
-  return <Atc3D active={active} onSelect={setActive} />;
-}
-```
-
-## Viewer controls
-
-- `active` highlights one workshop area.
-- `onSelect` receives the area id when a visitor selects equipment.
-- `className` adds classes to the viewer frame.
-- `initialView` selects `isometric` or `top`.
-- `tour` turns on the guided camera orbit.
-- `interactive` enables pointer controls and selection.
-
-`createAtcModel()` returns a Three.js group. The group stores the runtime handles in `userData.sculptRuntime`.
-
-The runtime exposes the named objects, service groups, selectable meshes, station markers, and roof toggle. It also tracks generated textures for cleanup.
+`createAtcModel()` returns the reusable `THREE.Group`. The returned group exposes runtime handles via `group.userData.sculptRuntime`:
+- `nodes`: dictionary of named 3D objects
+- `services`: dictionary of grouped meshes per service
+- `selectable`: raycast-enabled interactive meshes
+- `sprites`: numbered station badge sprites (1–4)
+- `toggleShutter()`: opens/closes the container roll-up shutter
+- `setLabelsVisible(boolean)`: toggles 3D badge visibility
