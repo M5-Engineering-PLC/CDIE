@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./lib/legacy-redirects";
 
 /*
   Daily note 2026-09-25, "security and standard web practices". Response
@@ -24,6 +25,9 @@ const nextConfig: NextConfig = {
   // The admin dashboard uploads photographs through server actions.
   experimental: {
     serverActions: { bodySizeLimit: "8mb" },
+  },
+  async redirects() {
+    return legacyRedirects;
   },
   async headers() {
     return [
