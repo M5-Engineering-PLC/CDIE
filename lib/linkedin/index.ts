@@ -21,6 +21,7 @@ import { EMPTY_FEED } from "./client";
 import { buildFeed } from "./feed";
 import { fetchPostImage } from "./image";
 import { rowsFromLinks } from "./links";
+import { fetchPublicPosts } from "./public";
 import { readStore } from "./store";
 
 export { CACHE_SECONDS, MAX_POSTS, RECENT_POSTS } from "./config";
@@ -35,10 +36,12 @@ export type { LinkedInFeed, LinkedInPost } from "@/content/linkedin";
 export async function getLinkedInFeed(pasted: Parameters<typeof rowsFromLinks>[0] = []): Promise<LinkedInFeed> {
   try {
     const config = readStoreConfig();
-    const read = await readStore(config);
-    const manual = rowsFromLinks(pasted);
+    const [read, published] = await Promise.all([readStore(config), fetchPublicPosts()]);
+    /* The page's public posts come first: LinkedIn's own date and text win
+       over a hand-kept copy. Either source present keeps the band current. */
+    const extra = [...published, ...rowsFromLinks(pasted)];
     const feed = buildFeed(
-      manual.length ? { rows: [...manual, ...read.rows], syncedAt: new Date().toISOString() } : read,
+      extra.length ? { rows: [...extra, ...read.rows], syncedAt: new Date().toISOString() } : read,
     );
     /* A post's own picture: the sheet's image column when it has one, else
        the first image on the post itself. */
