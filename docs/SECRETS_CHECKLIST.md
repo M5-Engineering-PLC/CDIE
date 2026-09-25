@@ -28,6 +28,7 @@ kept in step with this file.
 | Yes | `ADMIN_AUTH=on` and `ADMIN_PASSWORD` | Sign-in on `/admin`. Without both, the dashboard is open to anyone with the address (2026-09-22 decision, no login for now) | CDIE studio manager | Vercel |
 | No | `ADMIN_SECRET` | Signs the admin session cookie. Defaults to the password; set it so the password can change without signing everyone out | Deployer | Vercel |
 | Yes | One of the three contact-form providers below | The contact form actually sends. Until one is set the form shows the team's address instead | Ive (the receiving inbox) | Vercel |
+| Yes | Resend, or the Apps Script pair `ENQUIRY_WEBHOOK_URL` and `ENQUIRY_WEBHOOK_SECRET` | The newsletter sends: confirmation links on sign-up and issues from the dashboard. Web3Forms cannot do this, it delivers to one inbox only. Until one is set, sign-ups are recorded and told so, and the send panel says what to set | Ive | Vercel |
 | Yes | `GOOGLE_SHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY` | The dashboard writes to and reads from the Google Sheet | Owner of the CDIE website Drive folder | Vercel and GitHub Actions secrets |
 | No | `GITHUB_REPO`, `GITHUB_TOKEN` | A dashboard save triggers the snapshot workflow at once and uploads are committed to `public/uploads` | Repository admin | Vercel |
 | Yes | `LINKEDIN_SHEET_CSV_URL` | The Media page reads the CDIE LinkedIn feed sheet instead of the stub | Owner of the sheet | Vercel |
@@ -61,24 +62,36 @@ the form and emails it to itself.
 2. Replace the contents of `Code.gs` with:
 
 ```js
+// Contact form: mails the account itself, with reply-to set to the visitor.
+// Newsletter: mails the address in "to", but only when the request carries the
+// secret stored in this project's script properties (WEBHOOK_SECRET), so the
+// web app cannot be used as an open relay by anyone who finds its address.
 function doPost(e) {
   var data = JSON.parse(e.postData.contents);
-  MailApp.sendEmail({
-    to: Session.getEffectiveUser().getEmail(),
-    replyTo: data.email,
+  var secret = PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET");
+  var trusted = secret && data.secret === secret;
+  var message = {
+    to: trusted && data.to ? data.to : Session.getEffectiveUser().getEmail(),
     subject: data.subject,
     body: data.text
-  });
+  };
+  if (data.email) message.replyTo = data.email;
+  if (trusted && data.html) message.htmlBody = data.html;
+  MailApp.sendEmail(message);
   return ContentService.createTextOutput(JSON.stringify({ ok: true }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 ```
 
-3. Deploy, New deployment, type Web app. Execute as: Me. Who has access:
+3. Project Settings, Script Properties: add `WEBHOOK_SECRET` with a long
+   random value. Set the same value as `ENQUIRY_WEBHOOK_SECRET` in Vercel.
+   The newsletter needs it; the contact form works without it.
+4. Deploy, New deployment, type Web app. Execute as: Me. Who has access:
    Anyone. Authorise when asked.
-4. Copy the web app URL (it starts with `https://script.google.com/macros/`)
+5. Copy the web app URL (it starts with `https://script.google.com/macros/`)
    and set it as `ENQUIRY_WEBHOOK_URL` in Vercel.
-5. Send a test through the site's contact form.
+6. Send a test through the site's contact form, then a test issue from the
+   dashboard's newsletter send panel.
 
 Limits: 100 emails a day on a consumer Gmail account. The route refuses any
 address that is not on script.google.com, so a mistyped variable cannot turn
