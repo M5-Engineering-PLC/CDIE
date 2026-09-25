@@ -26,6 +26,7 @@ import { Button } from "@/components/primitives/Button";
 import { PageHero } from "@/components/sections/PageHero";
 import { AutoRail } from "@/components/sections/AutoRail";
 import { Section } from "@/components/sections/Section";
+import { UbriaEasterEgg } from "@/components/sections/UbriaEasterEgg";
 import {
   aboutFaqs,
   aboutIntro,
@@ -103,9 +104,11 @@ export default async function AboutPage() {
             {team.map((person) => (
               <li
                 key={person.id}
-                className="about-person flex flex-col overflow-hidden border border-line bg-surface hover:border-brand-lift"
+                className="about-person relative flex flex-col overflow-hidden border border-line bg-surface hover:border-brand-lift"
               >
-                {person.portrait ? (
+                {person.id === "eubrea-mitchy-njeri" && person.portrait ? (
+                  <UbriaEasterEgg portrait={person.portrait} />
+                ) : person.portrait ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     src={person.portrait.src}

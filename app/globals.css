@@ -493,6 +493,14 @@
 @media (hover: hover) { .about-hero-image:hover, .about-person:hover { transform: translateY(-0.35rem); box-shadow: 0 0.9rem 1.7rem rgb(16 21 26 / 0.12); } .about-hero-image:hover img, .about-person:hover img { transform: scale(1.025); } }
 @media (prefers-reduced-motion: reduce) { .triad-photo img, .about-hero-image, .about-person, .about-hero-image img, .about-person img { transition: none; } }
 
+/* About Us: Eubrea portrait video stays within the staff card. */
+.ubria-portrait-trigger { display: block; width: 100%; cursor: pointer; touch-action: manipulation; }
+.ubria-portrait-trigger:focus-visible { outline: 3px solid var(--color-brand-live); outline-offset: -3px; }
+.ubria-video-overlay { position: absolute; inset: 0; z-index: 3; overflow: hidden; background: var(--color-ink); }
+.ubria-video { display: block; width: 100%; height: 100%; object-fit: contain; }
+.ubria-video-close { position: absolute; top: .5rem; right: .5rem; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--color-ink); color: var(--color-surface); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.ubria-video-close:focus-visible { outline: 3px solid var(--color-surface); outline-offset: 2px; }
+
 /*
   Final pass 2026-09-23: the Home gallery wheel, components/sections/RadialGallery.tsx.
   Unwired (no script, or reduced motion) it is a swipeable row. With the wheel
