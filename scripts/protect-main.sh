@@ -11,6 +11,7 @@
 # repository ruleset, so an admin token is the only way short of a GitHub App.
 
 set -euo pipefail
+export GH_PAGER=cat
 REPO="${REPO:-M5-Engineering-PLC/CDIE}"
 
 existing="$(gh api "repos/$REPO/rulesets" --jq '.[] | select(.name == "Protect main") | .id')"

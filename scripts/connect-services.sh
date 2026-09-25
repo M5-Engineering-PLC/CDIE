@@ -17,6 +17,7 @@
 #   - a Web3Forms access key for the contact form (Enter to skip)
 
 set -euo pipefail
+export GH_PAGER=cat
 
 KEY_FILE="${1:-}"
 REPO="${REPO:-M5-Engineering-PLC/CDIE}"
