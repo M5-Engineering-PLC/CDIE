@@ -114,10 +114,14 @@ the ones above.
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` runs lint, route type generation, typecheck, the
-tests and a production build on every pull request and on `main`. It needs no
-secrets: without them the build serves the stub LinkedIn feed and the committed
-content snapshot, which is what a preview should do.
+`docs/ci/ci.yml` runs lint, route type generation, typecheck, the tests and a
+production build on every pull request and on `main`. It needs no secrets:
+without them the build serves the stub LinkedIn feed and the committed content
+snapshot, which is what a preview should do.
+
+It lives under `docs/ci` because the credential this branch was pushed with
+lacks GitHub's `workflow` scope. One step, by anyone with write access from
+their own machine: copy it to `.github/workflows/ci.yml` and push.
 
 ## Deployment
 
