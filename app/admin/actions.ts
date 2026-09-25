@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 import { endSession, passwordMatches, requireAdmin, startSession } from "@/lib/admin/auth";
 import { collectionById, type CollectionId } from "@/lib/admin/collections";
 import { addItem, CMS_TAG, listItems, listSubscribers, removeItem, saveUpload, updateItem } from "@/lib/admin/store";
-import { emailConfigured, sendBatch, sendEmail } from "@/lib/email";
+import { EMAIL_SETUP_HINT, emailConfigured, sendBatch, sendEmail } from "@/lib/email";
 import { issueEmail } from "@/lib/newsletter";
 
 const IMAGE = /^image\/(jpeg|png|webp|gif|avif)$/;
@@ -77,7 +77,7 @@ export async function deleteItem(form: FormData) {
 */
 export async function sendIssue(_: string | null, form: FormData): Promise<string | null> {
   await requireAdmin();
-  if (!emailConfigured()) return "Sending is not configured: set RESEND_API_KEY and ENQUIRY_FROM on the server.";
+  if (!emailConfigured()) return EMAIL_SETUP_HINT;
 
   const id = String(form.get("id"));
   const test = String(form.get("mode")) === "test";
