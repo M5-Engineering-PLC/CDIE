@@ -36,7 +36,7 @@ export function UbriaEasterEgg({ portrait }: { portrait: Portrait }) {
         ref={triggerRef}
         type="button"
         className="ubria-portrait-trigger"
-        aria-label="Double click Eubrea Mitchy Njeri's portrait for a surprise"
+        aria-label="Double click Eubrea Mitchy Njer's portrait for a surprise"
         onDoubleClick={() => setPlaying(true)}
         onPointerUp={(event) => {
           if (event.pointerType !== "touch") return;

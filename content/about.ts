@@ -75,10 +75,8 @@ export const workYouCanSee = {
   The previous site's theme-demo profiles are deliberately absent and must never
   be ported. Gate 6 tests for their absence.
 
-  An incomplete entry is omitted rather than shown as a placeholder. Two open
-  items, neither of which blocks publication:
-  - "Eubrea Mitchy Njeri" was read from the page, not from HR records. Confirm
-    the spelling against HR before this goes to print anywhere.
+  An incomplete entry is omitted rather than shown as a placeholder. One open
+  item, which does not block publication:
   - Jacqueline Muitungu has a duplicate post on the live site, F-17. Reclaim the
     clean slug during migration.
 
@@ -125,9 +123,9 @@ export const people: Person[] = [
   },
   {
     id: "eubrea-mitchy-njeri",
-    name: "Eubrea Mitchy Njeri",
+    name: "Eubrea Mitchy Njer",
     role: "Assistant Design Studio Manager",
-    portrait: portrait("eubrea-mitchy", "Eubrea Mitchy Njeri"),
+    portrait: portrait("eubrea-mitchy", "Eubrea Mitchy Njer"),
   },
   {
     id: "jacqueline-muitungu",
