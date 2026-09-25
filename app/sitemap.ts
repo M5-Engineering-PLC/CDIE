@@ -11,6 +11,7 @@ const routes = [
   "/programmes/design-challenge",
   "/programmes/catalyst-grants",
   "/programmes/training",
+  "/programmes/summer-programme",
   "/design-studio",
   "/media",
   "/about",

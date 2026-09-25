@@ -253,6 +253,20 @@ What unblocks it: a named person at CDIE reads each answer and confirms it. The
 confirmation goes into the record as `confirmed: { by, on, source }` and that
 answer publishes immediately, one question at a time. Nothing else changes.
 
+#### Conflict C-09, 2026-09-25. A Summer Programme page that Lucid does not draw
+
+The daily note of 25 September asks for a summer programme page under
+Programmes, populated from CDIE's LinkedIn posts and the events list, and
+built like the Design Challenge page. The Lucid IA has no such page.
+
+The page is built at `/programmes/summer-programme` and listed among the
+opportunities, because the client asked for it in writing. Every fact on it is
+lifted from CDIE's own posts as kept in the CDIE LinkedIn feed sheet, with the
+dates stated to the month because the sheet marks them estimated. The next
+edition's dates, eligibility, fees and application route are `pending`.
+
+What settles it: the Lucid map gains the page, or the client withdraws it.
+
 ### 3.3 Review feedback of 11 September, and where it collides with Lucid
 
 Three review documents arrived on 11 September: a UX and structure revision

@@ -28,6 +28,7 @@ export const enquiryTopics: EnquiryTopic[] = [
   { id: "design-challenge", label: "Design Challenges" },
   { id: "catalyst-grants", label: "Catalyst grants" },
   { id: "training", label: "Masterclasses and training" },
+  { id: "summer-programme", label: "Summer Programme" },
   { id: "studio", label: "Studio access and project support" },
   { id: "events", label: "Events and training" },
   { id: "partnerships", label: "Partnerships" },
