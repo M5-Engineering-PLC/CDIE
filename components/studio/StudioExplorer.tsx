@@ -20,15 +20,26 @@ export type StudioExplorerProps = {
   initialId: string;
   /** Actual Copy, DESIGN STUDIO > Virtual tour */
   intro: { headline: string; standfirst: string };
+  /** Start with the 3D model open and keep direct camera controls enabled. */
+  interactiveMode?: boolean;
+  /** Hide the public tour invitation when this explorer sits inside admin. */
+  showIntro?: boolean;
 };
 
 const STEP_MS = 7000;
 
-export function StudioExplorer({ capabilities, initialId, intro }: StudioExplorerProps) {
+export function StudioExplorer({
+  capabilities,
+  initialId,
+  intro,
+  interactiveMode = false,
+  showIntro = true,
+}: StudioExplorerProps) {
   const [selectedId, setSelectedId] = useState(initialId);
-  const [roomOpen, setRoomOpen] = useState(false);
+  const [roomOpen, setRoomOpen] = useState(interactiveMode);
   const [tour, setTour] = useState(false);
-  const viewOnly = useViewOnly();
+  const deviceViewOnly = useViewOnly();
+  const viewOnly = interactiveMode ? false : deviceViewOnly;
 
   const index = Math.max(0, capabilities.findIndex((item) => item.id === selectedId));
   const selected = capabilities[index] ?? capabilities[0];
@@ -49,6 +60,11 @@ export function StudioExplorer({ capabilities, initialId, intro }: StudioExplore
     window.requestAnimationFrame(() => {
       document.getElementById("studio-room")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  };
+
+  const openRoom = () => {
+    setRoomOpen(true);
+    setTour(!interactiveMode);
   };
 
   useEffect(() => {
@@ -92,7 +108,7 @@ export function StudioExplorer({ capabilities, initialId, intro }: StudioExplore
 
   return (
     <div className="overflow-hidden border border-line bg-surface">
-      <StudioTourIntro onStart={startTour} headline={intro.headline} standfirst={intro.standfirst} />
+      {showIntro ? <StudioTourIntro onStart={startTour} headline={intro.headline} standfirst={intro.standfirst} /> : null}
       <div id="studio-room" className="grid scroll-mt-20 grid-cols-[minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]">
         <div className="order-1 border-y border-line bg-raise py-4 lg:order-1 lg:border-y-0 lg:border-r lg:py-5">
           <div className="flex items-center justify-between px-5 pb-3">
@@ -103,7 +119,7 @@ export function StudioExplorer({ capabilities, initialId, intro }: StudioExplore
           </div>
           <StudioCapabilityList items={capabilities} selectedId={selected.id} onSelect={setSelectedId} />
           <div className="hidden lg:block">
-            <StudioRailThumb active={selected.modelGroup} open={roomOpen} space={activeSpace} onOpen={() => { setRoomOpen(true); setTour(true); }} />
+            <StudioRailThumb active={selected.modelGroup} open={roomOpen} space={activeSpace} onOpen={openRoom} />
           </div>
         </div>
 
@@ -113,7 +129,7 @@ export function StudioExplorer({ capabilities, initialId, intro }: StudioExplore
               active={selected.modelGroup} open={roomOpen} tour={tour} viewOnly={viewOnly} atc={selected.atc} space={activeSpace}
               name={selected.name} spaceName={selected.spaceName} headline={selected.headline} step={index + 1} of={capabilities.length}
               image={selected.image} imageAlt={selected.media[0]?.alt ?? `${selected.name} at the CDIE Design Studio`} onSelect={selectByModelGroup}
-              onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={() => { setRoomOpen(true); setTour(true); }}
+              onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={openRoom}
               onSwitchSpace={handleSwitchSpace}
             />
             <StudioPhotoStrip photos={selected.media} capabilityName={selected.name} />
