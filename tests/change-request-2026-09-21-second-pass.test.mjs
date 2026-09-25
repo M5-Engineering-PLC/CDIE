@@ -76,13 +76,16 @@ test("an explore link answers a pointer", () => {
 test("the programme carousel reads the client's five names", () => {
   const programmes = read("content/programmes.ts");
   const names = [...programmes.matchAll(/carouselTitle: "([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(names, [
+  // Daily note 2026-09-25 added the Summer Programme as an opportunity. It has
+  // no carousel photograph, so the strip still reads the client's five names.
+  assert.deepEqual(names.filter((name) => name !== "Summer programme"), [
     "Invention education",
     "MSc MDI",
     "Design Challenges",
     "Catalyst grants",
     "Training and masterclasses",
   ]);
+  assert.doesNotMatch(read("app/(site)/programmes/page.tsx"), /"summer-programme": \{ src/);
   assert.match(read("app/(site)/programmes/page.tsx"), /eyebrow: opportunity\.carouselTitle/);
 });
 

@@ -31,7 +31,8 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   pending: capability.pending,
   enquiry: capability.enquiry,
   enquiryHref: "/contact?topic=studio",
-  image: studioImages[capability.id],
+  image: capability.media[0]?.src ?? studioImages[capability.id],
+  media: capability.media,
   components: capability.components,
 }));
 

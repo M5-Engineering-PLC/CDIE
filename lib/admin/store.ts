@@ -23,11 +23,32 @@ import snapshot from "@/content/cms-snapshot.json";
 
 import { collections, type CollectionId } from "./collections";
 import { commitUpload, notifyContentChanged } from "./github";
-import { appendRow, deleteRows, readTabs, sheetsConfigured, type SheetRow } from "./sheets";
+import { appendRow, deleteRows, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
 
 export type Item = { id: string; createdAt: string } & Record<string, string>;
 
-export type Subscription = { email: string; at: string };
+/*
+  2026-09-25: the newsletter list. A sign-up from the website starts "pending"
+  and becomes "confirmed" only when the reader opens the link we email them
+  (double opt-in), which keeps typos and other people's addresses off the list.
+  Rows written before this change carry no status; they count as confirmed,
+  the decision taken with the team on 25 September.
+
+  `token` is the secret in the confirm and unsubscribe links. It is per
+  subscriber and never shown on a page.
+*/
+export type SubscriptionStatus = "pending" | "confirmed" | "unsubscribed";
+
+export type Subscription = {
+  email: string;
+  at: string;
+  status?: SubscriptionStatus;
+  token?: string;
+  confirmedAt?: string;
+};
+
+/** A row with no status predates double opt-in and counts as confirmed. */
+export const subscriptionStatus = (entry: Subscription): SubscriptionStatus => entry.status ?? "confirmed";
 export type EnquiryRecord = { reason: string; at: string };
 
 type Data = {
@@ -77,7 +98,13 @@ function fromRows(rows: Record<string, SheetRow[]>): Data {
   }
   return {
     items,
-    subscriptions: (rows.subscriptions ?? []).map((row) => ({ email: row.email, at: row.at })),
+    subscriptions: (rows.subscriptions ?? []).map((row) => ({
+      email: row.email,
+      at: row.at,
+      status: (row.status || undefined) as SubscriptionStatus | undefined,
+      token: row.token || undefined,
+      confirmedAt: row.confirmedAt || undefined,
+    })),
     enquiries: (rows.enquiries ?? []).map((row) => ({ reason: row.reason, at: row.at })),
   };
 }
@@ -146,15 +173,70 @@ export async function saveUpload(file: File): Promise<string> {
   return `/api/uploads/${name}`;
 }
 
-export async function recordSubscription(email: string) {
+/*
+  Records a sign-up and hands back what the page should say. An address already
+  on the list is never duplicated: a confirmed one is told so, and a pending one
+  gets its confirmation link sent again rather than a second row.
+*/
+export async function recordSubscription(email: string): Promise<{
+  outcome: "created" | "pending" | "confirmed";
+  token: string;
+}> {
   const data = await load();
-  if (data.subscriptions.some((entry) => entry.email === email)) return false;
-  const entry = { email, at: new Date().toISOString() };
-  if (sheetsConfigured()) await appendRow("subscriptions", entry);
+  const existing = data.subscriptions.find((entry) => entry.email === email);
+  if (existing && subscriptionStatus(existing) === "confirmed") {
+    return { outcome: "confirmed", token: existing.token ?? "" };
+  }
+  if (existing) return { outcome: "pending", token: existing.token ?? "" };
+
+  const entry: Subscription = {
+    email,
+    at: new Date().toISOString(),
+    status: "pending",
+    token: randomUUID(),
+  };
+  if (sheetsConfigured()) await appendRow("subscriptions", entry as unknown as SheetRow);
   await updateLocal((local) => {
     if (!local.subscriptions.some((item) => item.email === email)) local.subscriptions.push(entry);
   });
-  return true;
+  return { outcome: "created", token: entry.token as string };
+}
+
+async function setSubscription(token: string, patch: Partial<Subscription>): Promise<Subscription | null> {
+  const data = await load();
+  const entry = data.subscriptions.find((item) => item.token === token);
+  if (!entry) return null;
+  if (sheetsConfigured()) await updateRow("subscriptions", "token", token, patch as SheetRow);
+  await updateLocal((local) => {
+    const row = local.subscriptions.find((item) => item.token === token);
+    if (row) Object.assign(row, patch);
+  });
+  return { ...entry, ...patch };
+}
+
+/** Turns a pending sign-up into a subscriber. Returns null for an unknown token. */
+export async function confirmSubscription(token: string) {
+  return setSubscription(token, { status: "confirmed", confirmedAt: new Date().toISOString() });
+}
+
+/** Takes an address off the list without deleting the record. */
+export async function unsubscribe(token: string) {
+  return setSubscription(token, { status: "unsubscribed" });
+}
+
+/** Everyone the newsletter goes to, in the order they joined. */
+export async function listSubscribers(status: SubscriptionStatus = "confirmed") {
+  const data = await load();
+  return data.subscriptions.filter((entry) => subscriptionStatus(entry) === status);
+}
+
+/** Merges fields into one saved record, for example a newsletter's send record. */
+export async function updateItem(collection: CollectionId, id: string, patch: Record<string, string>) {
+  if (sheetsConfigured()) await updateRow(collection, "id", id, patch);
+  await updateLocal((data) => {
+    const item = (data.items[collection] ?? []).find((entry) => entry.id === id);
+    if (item) Object.assign(item, patch);
+  });
 }
 
 export async function recordEnquiry(reason: string) {

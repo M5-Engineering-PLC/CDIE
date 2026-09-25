@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export type PropMaterial = 'black' | 'dark' | 'orange' | 'white' | 'steel' | 'glass' | 'screen' | 'red' | 'spool' | 'wood';
+export type PropMaterial = 'black' | 'dark' | 'orange' | 'white' | 'steel' | 'glass' | 'screen' | 'red' | 'spool' | 'wood' | 'yellow';
 
 const materials: Record<PropMaterial, THREE.MeshStandardMaterial> = {
   black: new THREE.MeshStandardMaterial({ color: 0x151719, roughness: 0.48, metalness: 0.08 }),
@@ -13,6 +13,7 @@ const materials: Record<PropMaterial, THREE.MeshStandardMaterial> = {
   red: new THREE.MeshStandardMaterial({ color: 0xa72827, roughness: 0.38 }),
   spool: new THREE.MeshStandardMaterial({ color: 0x282b30, roughness: 0.56 }),
   wood: new THREE.MeshStandardMaterial({ color: 0xb49270, roughness: 0.52 }),
+  yellow: new THREE.MeshStandardMaterial({ color: 0xf2c316, roughness: 0.42 }),
 };
 
 export function propBox(name: string, size: [number, number, number], position: [number, number, number], material: PropMaterial, service?: string): THREE.Mesh {

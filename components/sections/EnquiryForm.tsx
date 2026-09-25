@@ -76,7 +76,7 @@ export function EnquiryForm({
   }
 
   return (
-    <form className="flex max-w-[42rem] flex-col gap-5" onSubmit={onSubmit}>
+    <form className="relative flex max-w-[42rem] flex-col gap-5" onSubmit={onSubmit}>
       <div className="grid gap-5 md:grid-cols-2">
         <label className="flex flex-col gap-2">
           <span className="kicker">{labels.name}</span>
@@ -85,6 +85,15 @@ export function EnquiryForm({
         <label className="flex flex-col gap-2">
           <span className="kicker">{labels.email}</span>
           <input type="email" name="email" autoComplete="email" required className={field} />
+        </label>
+      </div>
+
+      {/* 2026-09-25: the honeypot. Hidden from people and assistive technology;
+          a bot that fills every field fills this one and is quietly dropped. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Leave this field empty
+          <input type="text" name="company_website" tabIndex={-1} autoComplete="off" defaultValue="" />
         </label>
       </div>
 

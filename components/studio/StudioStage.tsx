@@ -40,6 +40,8 @@ export type StudioStageProps = {
   of: number;
   image: string;
   imageAlt: string;
+  /** the cover's own size: the frame takes its shape so the whole photograph shows */
+  imageSize?: { width: number; height: number };
   onSelect: (service: UnifiedServiceId) => void;
   onClose: () => void;
   onOpen: () => void;
@@ -48,7 +50,7 @@ export type StudioStageProps = {
 
 export function StudioStage({
   active, open, tour, viewOnly, atc, space, name, spaceName, headline,
-  step, of, image, imageAlt, onSelect, onClose, onOpen, onSwitchSpace,
+  step, of, image, imageAlt, imageSize, onSelect, onClose, onOpen, onSwitchSpace,
 }: StudioStageProps) {
   const isAtc = space === "atc" || atc;
 
@@ -87,8 +89,13 @@ export function StudioStage({
       <div className="flex min-w-0 flex-col gap-3">
         {toggleBar}
         {viewPill}
-        <div className="relative min-h-48 overflow-hidden bg-ink md:min-h-[28rem]">
-          <Image src={image} alt={imageAlt} fill sizes="(max-width: 1280px) 100vw, 70vw" className="object-cover" />
+        {/* Follow-up 2026-09-25: the frame follows the photograph's own ratio
+            and the image is contained, never cropped. */}
+        <div
+          className="relative max-h-[36rem] min-h-48 overflow-hidden bg-ink"
+          style={imageSize ? { aspectRatio: `${imageSize.width} / ${imageSize.height}` } : undefined}
+        >
+          <Image src={image} alt={imageAlt} fill sizes="(max-width: 1280px) 100vw, 70vw" className="object-contain" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
           {/* Enhancements 2026-09-22: "remove the expand button". The pill above is the switch. */}
         </div>

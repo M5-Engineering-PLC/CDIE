@@ -9,6 +9,14 @@ import type { Capability, Faq, Space } from "./types";
   Change request 2026-09-21, section 4: "for now just use generic placeholders
   for different components within any specific service".
 
+  Daily note 2026-09-25: "for design studio photographs, we can have several
+  photos featured, i.e for textiles use mololu in an orange shirt but also can
+  show other images on the same service". `media` now carries every photograph
+  of an area; the first is the one on the stage and the card. Alt text says
+  only what is in the frame. The cover for electronics is to be the photograph
+  of someone at the Voltera PCB printer; no such photograph has been supplied
+  yet, so the soldering bench leads until it is.
+
   Each capability lists the things it actually covers, so the tour can show
   what sits behind one highlighted station. Every name below is lifted from
   that capability's own `body` in this file, which is the Actual Copy tab's
@@ -74,7 +82,10 @@ export const capabilities: Capability[] = [
       "Design-support scope",
     ],
     enquiry: "Ask about design support",
-    media: [],
+    media: [
+      { src: "/images/service-design-2.jpg", alt: "Design work in the CDIE studio", width: 2560, height: 1707 },
+      { src: "/images/hero-workshop-1.jpg", alt: "A small team reviews notes together during a design workshop", width: 2560, height: 1707 },
+    ],
     components: [
       { id: "sketching", name: "Sketching tools", note: "Where a concept starts, before it reaches a screen." },
       { id: "cad-workstations", name: "CAD workstations", note: "Workstations for computer-aided design." },
@@ -93,7 +104,10 @@ export const capabilities: Capability[] = [
       "Staff support, induction, access arrangements and any charges",
     ],
     enquiry: "Ask about electronics support",
-    media: [],
+    media: [
+      { src: "/images/service-electronics-1.jpg", alt: "Two students at a bench soldering with a helping-hands clamp beside a breadboard", width: 2560, height: 1438 },
+      { src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board", width: 973, height: 1015 },
+    ],
     components: [
       { id: "circuit-software", name: "Circuit-design software", note: "For laying out and checking a circuit before it is built." },
       { id: "microcontrollers", name: "Microcontrollers", note: "The programmable part of a prototype." },
@@ -112,7 +126,11 @@ export const capabilities: Capability[] = [
       "Turnaround, charges and booking eligibility",
     ],
     enquiry: "Ask about 3D printing",
-    media: [],
+    media: [
+      { src: "/images/cdie-3d-printers.jpg", alt: "3D printers on the studio rack", width: 1600, height: 1200 },
+      { src: "/images/cdie-3d-printing-heart-model-01.jpeg", alt: "3D printer finishing a model of a human heart", width: 1112, height: 1600 },
+      { src: "/images/cdie-meet-the-faculty-kenneth-iloka.jpg", alt: "Faculty member showing a resin 3D printer to visiting guests", width: 606, height: 607 },
+    ],
     components: [
       { id: "fdm", name: "FDM printing", note: "Building a part up in layers of filament." },
       { id: "sla", name: "SLA printing", note: "Resin printing where the detail matters more than the speed." },
@@ -129,7 +147,10 @@ export const capabilities: Capability[] = [
       "Desk capacity, opening hours, booking arrangements and included facilities",
     ],
     enquiry: "Ask about the workspace",
-    media: [],
+    media: [
+      { src: "/images/service-coworking-1.jpg", alt: "Students seated at desks in a bright seminar room while a speaker presents", width: 2345, height: 1564 },
+      { src: "/images/cdie-studio-laptop-working-session.jpg", alt: "Students gathered around a laptop at a studio bench", width: 1280, height: 963 },
+    ],
     components: [
       { id: "desks", name: "Co-working desks", note: "Room to work alongside other teams." },
       { id: "brainstorming", name: "Brainstorming space", note: "For comparing ideas and planning the next step." },
@@ -144,7 +165,11 @@ export const capabilities: Capability[] = [
     modelGroup: "textiles",
     pending: ["Equipment and materials", "Access, staff support and charges"],
     enquiry: "Ask about textile prototyping",
-    media: [],
+    media: [
+      { src: "/images/service-textile-2.jpg", alt: "Student in an orange jacket sewing maroon fabric at an industrial sewing machine, beside a mannequin in scrubs", width: 2560, height: 1707 },
+      { src: "/images/service-textile-1.jpg", alt: "Industrial sewing machine stitching patterned trim onto maroon fabric", width: 2560, height: 1707 },
+      { src: "/images/cdie-textiles-sewing.jpg", alt: "Student working at an industrial sewing machine in the textiles area", width: 1600, height: 1200 },
+    ],
     components: [
       { id: "sewing", name: "Sewing", note: "Making up fabric-based components.", image: "/images/cdie-textiles-sewing.jpg", alt: "Student working at an industrial sewing machine in the textiles area" },
       { id: "cutting", name: "Cutting", note: "Preparing material for a wearable or upholstered part." },
@@ -163,7 +188,10 @@ export const capabilities: Capability[] = [
       "Safety induction, supervision, access rules and charges",
     ],
     enquiry: "Ask about metalworking",
-    media: [],
+    media: [
+      { src: "/images/service-metalworking-1.jpeg", alt: "Student in a welding helmet grinding metal as sparks fly", width: 960, height: 1280 },
+      { src: "/images/cdie-metalwork-welding.jpg", alt: "Trainee welding a frame while others watch", width: 1024, height: 683 },
+    ],
     components: [
       { id: "fabrication", name: "Heavy-duty fabrication benches", note: "Welding, mechanical assembly, electronics and staging tables." },
       { id: "vice", name: "Heavy-duty swivel bench vice", note: "Cast steel vice with anvil for cutting, filing and bending." },
@@ -183,7 +211,11 @@ export const capabilities: Capability[] = [
       "Safety induction, supervision, access rules and charges",
     ],
     enquiry: "Ask about woodworking",
-    media: [],
+    media: [
+      { src: "/images/service-woodworking-1.jpeg", alt: "Woodworking in the ATC workshop", width: 1280, height: 960 },
+      { src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw", width: 1024, height: 683 },
+      { src: "/images/cdie-mdi-woodworking-prototyping-lab.jpg", alt: "Students in safety goggles and overalls gathered around a mitre saw", width: 480, height: 640 },
+    ],
     components: [
       { id: "cnc-router", name: "Three-axis CNC routing bed", note: "Vacuum bed, water-cooled spindle, stepper gantry.", image: "/images/cdie-cnc-milling-router.jpg", alt: "Yellow Blue Elephant ELECNC1212 CNC router inside the workshop container" },
       { id: "operator-station", name: "CAD and CAM workstation", note: "Dedicated terminal with toolpath control and preview." },
@@ -204,7 +236,10 @@ export const capabilities: Capability[] = [
       "Laser safety induction and exhaust extraction checklist",
     ],
     enquiry: "Ask about CNC and laser engraving",
-    media: [],
+    media: [
+      { src: "/images/cdie-laser-engraving-machine.jpg", alt: "Enclosed Blue Elephant laser engraving machine beside the louvred window wall", width: 1600, height: 1200 },
+      { src: "/images/cdie-summer-program-laser-cutting.jpg", alt: "Students gathered around a laser cutter watching a job run", width: 2045, height: 1536 },
+    ],
     components: [
       { id: "co2-laser", name: "Enclosed laser cutting bed", note: "Enclosed cutting bed with safety interlock viewing canopy.", image: "/images/cdie-laser-engraving-machine.jpg", alt: "Enclosed Blue Elephant laser engraving machine beside the louvred window wall" },
       { id: "dsp-controller", name: "Digital controller keypad", note: "Digital speed, power and origin positioning keypad." },
@@ -228,7 +263,9 @@ export const capabilities: Capability[] = [
     modelGroup: "casting-moulding",
     pending: ["A description of this area, its equipment and how to use it"],
     enquiry: "Ask about casting and moulding",
-    media: [],
+    media: [
+      { src: "/images/service-casting-moulding-1.webp", alt: "A clear resin cast of a hand", width: 960, height: 1280 },
+    ],
     components: [],
   },
 ];

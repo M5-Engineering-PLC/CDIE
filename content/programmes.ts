@@ -153,6 +153,34 @@ export const opportunities: Opportunity[] = [
       height: 1200,
     },
   },
+  /*
+    Daily note 2026-09-25: "Lets add summer programs: fetch some info from
+    cdie's linkedin and from the events, populate the page just like design
+    challenges". Not in the Lucid IA; recorded as conflict C-09 in
+    docs/BUILD_PLAN.md section 3.2. Every fact is from CDIE's own posts in the
+    CDIE LinkedIn feed sheet (Event Posts tab, event EV27).
+  */
+  {
+    id: "summer-programme",
+    title: "Summer Programme",
+    kind: "Short course",
+    carouselTitle: "Summer programme",
+    summary:
+      "A residential run through the Invention Education cycle: clinical immersion, needs filtering, workshop classes and a final presentation of what was built.",
+    status: "enquire",
+    href: "/programmes/summer-programme",
+    topic: "summer-programme",
+    pending: [
+      "Next edition dates, eligibility and how to apply",
+      "Fees, accommodation and what is included",
+    ],
+    image: {
+      src: "/images/cdie-summer-program-cnc-class-04.jpg",
+      alt: "Participant in gloves setting up a CNC machine",
+      width: 800,
+      height: 600,
+    },
+  },
   {
     id: "training",
     title: "Masterclasses and training",
@@ -503,6 +531,134 @@ export const designChallengeEditions = [
       },
     ],
   },
+  /*
+    Daily note 2026-09-25: "for design challenges, highlight the last design
+    challenge as well, so neonatal and accessibility challenges". The previous
+    edition is the assistive care challenge of March 2026. Its facts come from
+    the CDIE LinkedIn feed sheet (event EV17, dates marked estimated there, so
+    only the month is stated) and the FAQ vetting page of 23 September, which
+    records that recent teams designed assistive devices to support caregivers.
+    No call flyer for it is in the repository, so the section carries the facts
+    alone.
+  */
+  {
+    id: "design-challenge-2026-assistive-care",
+    year: "2026",
+    theme: "Assistive devices",
+    brief:
+      "Teams worked through a defined problem to a prototype and a pitch over one week at CDIE, developing solutions to real-world challenges affecting the differently abled, from mobility aids to devices that support caregivers.",
+    facts: [
+      { label: "Dates", value: "23–27 March 2026" },
+      { label: "Format", value: "One-week challenge for MDI participants, ending in a pitch presentation" },
+      { label: "Venue", value: "Centre for Design, Innovation & Engineering, Graduate School, Kenyatta University" },
+    ],
+    /* 2026-09-25, from the Drive folder the client shared: the call poster and
+       four photographs of the week, named for the page they belong to. */
+    call: {
+      src: "/images/programmes/design-challenge-assistive-care-call.jpg",
+      alt: "IvE Medical Device Innovation Design Challenge call on assistive devices, 23 to 27 March 2026",
+      width: 800,
+      height: 800,
+    },
+    link: {
+      label: "Read the post on LinkedIn",
+      href: "https://www.linkedin.com/feed/update/urn:li:activity:7443959708895375360/",
+    },
+    winners: [
+      { src: "/images/programmes/design-challenge-assistive-care-1.jpg", alt: "First-place team of three receiving their envelope from a CDIE staff member", width: 2048, height: 1536 },
+      { src: "/images/programmes/design-challenge-assistive-care-2.jpg", alt: "Second-place team of four holding their envelope in front of the Invention Education banner", width: 2048, height: 1536 },
+      { src: "/images/programmes/design-challenge-assistive-care-4.jpg", alt: "Third-place team of four holding their envelope in front of the CDIE and Invention Education banners", width: 2048, height: 1536 },
+      { src: "/images/programmes/design-challenge-assistive-care-3.jpg", alt: "A team pitching a reclining wheelchair concept beside two wheelchairs, with a slide on structural integrity", width: 2048, height: 1536 },
+      { src: "/images/cdie-design-challenge-awards.jpg", alt: "Design challenge winners receiving their award", width: 800, height: 600 },
+      { src: "/images/cdie-design-challenge-pitch.jpg", alt: "Design challenge team presenting a slide to an audience", width: 2048, height: 1536 },
+    ],
+  },
+] as const;
+
+export const summerProgramme = {
+  headline: "Three weeks. One problem. Something you can show.",
+  standfirst:
+    "The summer programme takes a cohort through the Invention Education cycle in one stretch: understand a need in a clinical setting, filter it, build in the workshop and present what you made.",
+  action: { label: "Ask about the Summer Programme", href: "/contact?topic=summer-programme", live: true },
+} as const;
+
+/*
+  The 2026 edition, from CDIE's posts as kept in the CDIE LinkedIn feed sheet:
+  the launch (welcomed 17 innovators), clinical immersions at two hospitals,
+  needs filtering, a CNC machine class, a day of guest lectures, and the
+  closing presentations by students from universities in Kenya, Nigeria and the
+  USA. The sheet marks the dates as estimated, so only the months are stated.
+  Newest edition first; add a record here for each new programme.
+*/
+export const summerProgrammeEditions = [
+  {
+    id: "summer-programme-2026",
+    year: "2026",
+    theme: "Medical device innovation",
+    brief:
+      "Seventeen innovators from universities in Kenya, Nigeria and the USA joined CDIE at Kenyatta University. After clinical immersions in two hospitals they filtered the needs they had seen, took workshop classes and presented their research and medical-device demos at the close.",
+    facts: [
+      { label: "Dates", value: "11–29 May 2026" },
+      { label: "Cohort", value: "17 participants from universities in Kenya, Nigeria and the USA" },
+      { label: "Who applied", value: "Recent graduates and students who had completed coursework in a science or engineering degree" },
+      { label: "Cost to the participant", value: "Ksh 7,000, with sponsorship of up to 90 percent covering transport, prototyping materials, meals and accommodation" },
+      { label: "Clinical immersion", value: "Two hospitals, followed by needs filtering" },
+      { label: "Workshop", value: "CNC machine class, guest lectures and prototyping in the studio" },
+      { label: "Close", value: "Research presentations and medical-device demos" },
+    ],
+    /* 2026-09-25, from the Drive folder the client shared: the call poster,
+       which gives the dates, the cost and who could apply, and seven
+       photographs of the programme. */
+    call: {
+      src: "/images/programmes/summer-programme-call.jpg",
+      alt: "Medical Device Innovation Summer Program call, 11 to 29 May 2026 at Kenyatta University, with dates, cost and who should apply",
+      width: 800,
+      height: 1131,
+    },
+    link: {
+      label: "Read the closing post on LinkedIn",
+      href: "https://www.linkedin.com/feed/update/urn:li:activity:7470557914076831745/",
+    },
+    photos: [
+      { src: "/images/programmes/summer-programme-6.jpg", alt: "The summer programme cohort standing together outside between the Invention Education and CDIE banners", width: 800, height: 600 },
+      { src: "/images/programmes/summer-programme-1.jpg", alt: "Participants holding laser-engraved wooden signs for the CDIE boardroom, classroom and main office", width: 2045, height: 1536 },
+      { src: "/images/programmes/summer-programme-2.jpg", alt: "A participant guiding fabric through a sewing machine in the textiles class", width: 2045, height: 1536 },
+      { src: "/images/programmes/summer-programme-3.jpg", alt: "Three participants threading a sewing machine together", width: 2045, height: 1536 },
+      { src: "/images/programmes/summer-programme-4.jpg", alt: "Two participants testing a circuit with a multimeter beside an infant training mannequin", width: 2045, height: 1536 },
+      { src: "/images/programmes/summer-programme-5.jpg", alt: "Two participants wiring a breadboard prototype at the electronics bench", width: 2045, height: 1536 },
+      { src: "/images/programmes/summer-programme-7.jpg", alt: "Participants listening in class with notebooks open", width: 2045, height: 1536 },
+      {
+        src: "/images/events/cdie-summer-program-2026-launch.jpg",
+        alt: "The 2026 summer programme cohort and staff in a group photo between Invention Education and CDIE banners",
+        width: 800,
+        height: 600,
+      },
+      {
+        src: "/images/cdie-summer-program-clinical-immersion-group.jpg",
+        alt: "Summer programme participants in scrubs outside a hospital",
+        width: 1393,
+        height: 731,
+      },
+      {
+        src: "/images/cdie-summer-program-needs-filtering.jpg",
+        alt: "Participants working through needs filtering at tables",
+        width: 480,
+        height: 640,
+      },
+      {
+        src: "/images/cdie-summer-program-cnc-class-01.jpg",
+        alt: "Participant operating a CNC machine",
+        width: 800,
+        height: 600,
+      },
+      {
+        src: "/images/cdie-summer-program-laser-cutting.jpg",
+        alt: "Students gathered around a laser cutter watching a job run",
+        width: 2045,
+        height: 1536,
+      },
+    ],
+  },
 ] as const;
 
 export const catalystGrants = {
@@ -564,6 +720,26 @@ export const catalystFollow = {
   linkedIn: "Follow us on LinkedIn for the next call",
   contact: "Talk to the team about your project",
 } as const;
+
+/*
+  2026-09-25, from the Drive folder the client shared. The call poster invites
+  input on class schedules, courses offered and pricing; it confirms no date,
+  course or fee, so the pending list above stays as it is. The photographs
+  show masterclass sessions at the ATC workshop: a metalwork demonstration at
+  the bench and a welding demonstration outside.
+*/
+export const trainingCall = {
+  src: "/images/programmes/training-call.jpg",
+  alt: "Design Studio Training Programs poster: masterclasses and prototyping workshops, inviting input on class schedules, courses offered and pricing",
+  width: 800,
+  height: 800,
+} as const;
+
+export const trainingPhotos = [
+  { src: "/images/programmes/training-1.jpg", alt: "An instructor demonstrating at a metalwork bench while participants in CDIE coats watch", width: 1600, height: 1200 },
+  { src: "/images/programmes/training-2.jpg", alt: "Participants in safety goggles gathered around a bench of measuring and marking tools", width: 1600, height: 1200 },
+  { src: "/images/programmes/training-3.jpg", alt: "Participants in welding helmets watching an arc welding demonstration outside the workshop", width: 1600, height: 1200 },
+] as const;
 
 export const training = {
   headline: "Make time to learn a practical skill.",
