@@ -5,7 +5,7 @@ import test from "node:test";
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("homepage opens with the three-programme visual carousel", () => {
-  const page = read("app/page.tsx");
+  const page = read("app/(site)/page.tsx");
   assert.match(page, /ProgrammeHeroCarousel/);
   assert.match(page, /PartnerStrip/);
   assert.match(page, /VisualCardRail/);
@@ -78,8 +78,12 @@ test("the studio's two sides are Graduate School and ATC, and textiles sits with
   assert.doesNotMatch(atc, /textiles/i);
 });
 
-test("an unplaced capability says nothing is documented rather than naming the ATC", () => {
+// 2026-09-24: casting and moulding maps onto the 3D printing rack's lowest
+// shelf, and the "No mapped area" notice is withdrawn.
+test("casting and moulding lights the lowest printer shelf, with no unmapped notice", () => {
   const detail = read("components/studio/StudioDetail.tsx");
-  assert.match(detail, /Nothing documents where/);
+  assert.doesNotMatch(detail, /Nothing documents where|No mapped area/);
   assert.doesNotMatch(detail, /held at the ATC/);
+  assert.match(read("content/studio.ts"), /modelGroup: "casting-moulding"/);
+  assert.match(read("components/studio/design-studio-3js/createDesignStudioModel.ts"), /alsoService = 'casting-moulding'/);
 });

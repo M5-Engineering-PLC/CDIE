@@ -210,6 +210,12 @@
     animation: hero-progress 12s linear forwards;
   }
 
+  /* Our latest: the bar that moves the card on. Final pass 2026-09-23. */
+  .latest-progress {
+    transform-origin: left;
+    animation: hero-progress 6s linear forwards;
+  }
+
   /*
     The one vertical rhythm. Every band reads --band-y rather than declaring a
     padding of its own, so the mobile halving above is a single edit.
@@ -302,48 +308,8 @@
   }
 }
 
-/*
-  Enhancements 2026-09-22: the LinkedIn posts on a phone stack the way
-  hackcessible.co.ke's people page does. Each post is sticky under the header,
-  offset a few pixels by its index (--i, set on the item), so the next one
-  slides up over it; the post being covered shrinks and dims with the scroll.
-  Browsers without scroll-driven animation still get the stack, just not the
-  settle.
-*/
-@media (max-width: 639px) {
-  .post-stack {
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 2.5rem;
-  }
 
-  .post-stack > li {
-    position: sticky;
-    top: calc(5.25rem + var(--i, 0) * 0.5rem);
-    padding-bottom: 1rem;
-  }
 
-  .post-stack .post-card {
-    box-shadow: 0 1.25rem 3rem rgb(16 21 26 / 0.16);
-  }
-
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .post-stack .post-card {
-        animation: post-settle linear both;
-        animation-timeline: view();
-        animation-range: exit 10% exit 70%;
-      }
-    }
-  }
-}
-
-@keyframes post-settle {
-  to {
-    transform: scale(0.94);
-    opacity: 0.55;
-  }
-}
 
 /*
   Enhancements 2026-09-22, second round: "on mobile all cards, make sure it
@@ -413,25 +379,27 @@
 .capability-card:hover .capability-image, .capability-card:focus-within .capability-image, .capability-card.is-open .capability-image { transform: scale(1.06); }
 .capability-caption { position: absolute; inset: auto 0 0; z-index: 2; display: flex; align-items: end; justify-content: space-between; gap: 0.75rem; padding: 1.5rem; background: linear-gradient(transparent, rgb(6 18 28 / 0.45) 55%, rgb(6 18 28 / 0.92)); transition: opacity var(--motion-glide), transform var(--motion-glide); }
 .capability-caption h3 { font-family: var(--font-display); font-size: 1.375rem; line-height: 1.15; font-weight: 700; text-shadow: 0 2px 6px rgb(0 0 0 / 0.5); }
-.capability-toggle { display: inline-flex; flex: none; min-height: 2rem; align-items: center; justify-content: center; padding: 0.375rem 0.75rem; border: 1px solid rgb(255 255 255 / 0.35); border-radius: 10rem; background: rgb(255 255 255 / 0.2); color: var(--color-surface); font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; backdrop-filter: blur(8px); cursor: pointer; }
+.capability-hit { position: absolute; inset: 0; z-index: 2; cursor: pointer; border-radius: inherit; }
+.capability-hit:focus-visible { outline: 2px solid var(--color-brand-lift); outline-offset: -4px; }
 .capability-detail { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: end; gap: 1rem; padding: 2rem 1.75rem; overflow-y: auto; background: linear-gradient(to top, rgb(0 35 65 / 0.98), rgb(0 42 78 / 0.92) 65%, rgb(0 42 78 / 0.6)); color: var(--color-surface); backdrop-filter: blur(10px); opacity: 0; visibility: hidden; transform: translateY(1.1rem); transition: opacity var(--motion-glide) var(--ease-glide), transform var(--motion-glide) var(--ease-glide), visibility var(--motion-glide); }
 .capability-detail h4 { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.18; }
 .capability-detail p { font-size: var(--text-body); line-height: 1.55; color: rgb(255 255 255 / 0.92); }
 .capability-card:hover .capability-caption, .capability-card:focus-within .capability-caption, .capability-card.is-open .capability-caption { opacity: 0; transform: translateY(0.6rem); }
 .capability-card:hover .capability-detail, .capability-card:focus-within .capability-detail, .capability-card.is-open .capability-detail { opacity: 1; visibility: visible; transform: none; }
-.capability-card.is-dismissed:hover .capability-detail, .capability-card.is-dismissed:focus-within .capability-detail { opacity: 0; visibility: hidden; }
-.capability-card.is-dismissed:hover .capability-caption, .capability-card.is-dismissed:focus-within .capability-caption { opacity: 1; transform: none; }
 .capability-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.5rem; }
 .capability-action { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.6rem 1rem; border-radius: 0.6rem; background: var(--color-surface); color: var(--color-brand); font-family: var(--font-display); font-size: 0.875rem; font-weight: 700; transition: background var(--motion-swift), color var(--motion-swift), box-shadow var(--motion-swift); }
 .capability-action:hover { background: var(--color-brand-lift); color: var(--color-surface); box-shadow: 0 0 1rem rgb(97 162 210 / 0.6); }
-.capability-close { padding: 0.6rem; color: var(--color-surface); cursor: pointer; }
-.capability-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
-.capability-controls > button { display: grid; width: 3rem; height: 3rem; flex: none; place-items: center; border: 1px solid var(--color-line); border-radius: 50%; background: var(--color-surface); color: var(--color-brand); box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 0.06); cursor: pointer; transition: background var(--motion-swift), color var(--motion-swift), transform var(--motion-swift); }
-.capability-controls > button:hover { background: var(--color-brand); color: var(--color-surface); transform: scale(1.08); }
-.capability-status { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.1rem; border: 1px solid var(--color-line-soft); border-radius: 10rem; background: var(--color-raise); color: var(--color-ink-2); font-family: var(--font-mono); font-size: 0.75rem; }
-.capability-status::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--color-brand-lift); box-shadow: 0 0 0.4rem var(--color-brand-lift); }
-@media (max-width: 480px) { .capability-card { flex-basis: min(88vw, 23.75rem); width: min(88vw, 23.75rem); height: min(31.25rem, 78svh); } .capability-status { font-size: 0.625rem; text-align: center; } }
-@media (max-width: 767px), (hover: none) { .capability-card:hover { transform: none; } .capability-card:not(.is-open):hover .capability-image { transform: none; } .capability-card:not(.is-open):hover .capability-caption, .capability-card:not(.is-open):focus-within .capability-caption { opacity: 1; transform: none; } .capability-card:not(.is-open):hover .capability-detail, .capability-card:not(.is-open):focus-within .capability-detail { display: none; } .capability-card.is-open { height: auto; min-height: 0; transform: none; background: var(--color-surface); } .capability-card.is-open .capability-photo { position: relative; height: 14rem; } .capability-card.is-open .capability-caption { top: 10rem; bottom: auto; opacity: 1; transform: none; } .capability-card.is-open .capability-detail { position: relative; display: flex; height: auto; padding: 1.5rem; background: var(--color-surface); color: var(--color-ink); opacity: 1; visibility: visible; transform: none; backdrop-filter: none; } .capability-card.is-open .capability-detail p, .capability-card.is-open .capability-close { color: var(--color-ink-2); } }
+/* 2026-09-24: centred dots replace the arrows; the active dot stretches like the triad's. */
+.capability-dots { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.35rem; margin-top: 1.25rem; }
+.capability-dots button { position: relative; width: 0.55rem; height: 0.55rem; border-radius: 10rem; background: var(--color-line); cursor: pointer; transition: width var(--motion-swift), background var(--motion-swift); }
+.capability-dots button::before { content: ""; position: absolute; inset: -0.55rem -0.3rem; }
+.capability-dots button:hover { background: var(--color-brand-lift); }
+.capability-dots button[aria-current] { width: 1.6rem; background: var(--color-brand-live); }
+.capability-rail { user-select: none; }
+.capability-rail:active { cursor: grabbing; }
+.capability-rail img { -webkit-user-drag: none; }
+@media (max-width: 480px) { .capability-card { flex-basis: min(88vw, 23.75rem); width: min(88vw, 23.75rem); height: min(31.25rem, 78svh); } }
+@media (max-width: 767px), (hover: none) { .capability-card:hover { transform: none; } .capability-card:not(.is-open):hover .capability-image { transform: none; } .capability-card:not(.is-open):hover .capability-caption, .capability-card:not(.is-open):focus-within .capability-caption { opacity: 1; transform: none; } .capability-card:not(.is-open):hover .capability-detail, .capability-card:not(.is-open):focus-within .capability-detail { display: none; } .capability-card.is-open { height: auto; min-height: 0; transform: none; background: var(--color-surface); } .capability-card.is-open .capability-photo { position: relative; height: 14rem; } .capability-card.is-open .capability-caption { top: 10rem; bottom: auto; opacity: 1; transform: none; } .capability-card.is-open .capability-detail { position: relative; display: flex; height: auto; padding: 1.5rem; background: var(--color-surface); color: var(--color-ink); opacity: 1; visibility: visible; transform: none; backdrop-filter: none; } .capability-card.is-open .capability-detail p { color: var(--color-ink-2); } }
 
 /* MDI's sticky index shares the viewport with the long-form content. */
 .mdi-layout { display: grid; grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr); max-width: 90rem; margin-inline: auto; }
@@ -501,7 +469,6 @@
 .triad-photo { position: relative; height: clamp(17rem, 22vw, 22rem); overflow: hidden; border-radius: 0.2rem; }
 .triad-photo img { transition: transform var(--motion-glide) var(--ease-glide); }
 .triad-card:hover .triad-photo img { transform: scale(1.035); }
-.triad-number { position: absolute; top: 1rem; left: 1rem; min-width: 2.5rem; padding: 0.3rem 0.55rem; border-radius: 0.25rem; background: var(--color-surface); color: var(--color-brand); font-family: var(--font-mono); font-size: var(--text-fine); font-weight: 700; text-align: center; box-shadow: 0 2px 8px rgb(16 21 26 / 0.12); }
 .triad-copy { padding: 1.15rem 0 0; }
 @media (min-width: 768px) { .triad-card:nth-child(2) { margin-top: 4rem; } .triad-card:nth-child(3) { margin-top: 2rem; } }
 @media (max-width: 767px) { .triad-photo { height: min(38svh, 22rem); } .triad-copy { padding-bottom: 1.25rem; } }
@@ -525,3 +492,134 @@
 .about-hero-image img, .about-person img { transition: transform var(--motion-glide) var(--ease-glide); }
 @media (hover: hover) { .about-hero-image:hover, .about-person:hover { transform: translateY(-0.35rem); box-shadow: 0 0.9rem 1.7rem rgb(16 21 26 / 0.12); } .about-hero-image:hover img, .about-person:hover img { transform: scale(1.025); } }
 @media (prefers-reduced-motion: reduce) { .triad-photo img, .about-hero-image, .about-person, .about-hero-image img, .about-person img { transition: none; } }
+
+/*
+  Final pass 2026-09-23: the Home gallery wheel, components/sections/RadialGallery.tsx.
+  Unwired (no script, or reduced motion) it is a swipeable row. With the wheel
+  on, every card shares one grid cell and the script turns each one about a
+  point --radius below its top edge, so the cards ride the top arc of a wheel
+  larger than the screen. The band is a screen tall and the cards are sized
+  from the viewport so they fill it, as on the reference. --step is a bare
+  number because the script reads it.
+*/
+.radial-band { --card-w: min(78vw, calc((100svh - 16rem) * 0.8)); --radius: calc(var(--card-w) * 3.2); --step: 20; position: relative; overflow: hidden; }
+.radial-intro { padding-top: var(--band-y); }
+.radial-stage { padding: 1.5rem 0 var(--band-y); }
+.radial-wheel { display: flex; gap: 1rem; overflow-x: auto; padding: 0 var(--spacing-gutter); scroll-snap-type: x mandatory; scrollbar-width: none; }
+.radial-wheel::-webkit-scrollbar { display: none; }
+.radial-card { flex: 0 0 var(--card-w); width: var(--card-w); scroll-snap-align: center; }
+.radial-card figure { display: flex; flex-direction: column; gap: 0.9rem; transform: scale(calc(0.86 + 0.14 * var(--near, 1))); transform-origin: 50% 100%; }
+.radial-photo { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 1.25rem; background: var(--color-raise); box-shadow: 0 1.5rem 3rem -1.25rem rgb(0 35 65 / 0.4); }
+.radial-card figcaption { font-family: var(--font-mono); font-size: var(--text-fine); letter-spacing: 0.04em; color: var(--color-ink-2); text-align: center; }
+.radial-band[data-wheel="on"] { display: flex; flex-direction: column; min-height: 100svh; }
+.radial-band[data-wheel="on"]::after { content: ""; position: absolute; inset: auto 0 0; height: 7rem; background: linear-gradient(to top, var(--color-surface), transparent); pointer-events: none; }
+.radial-band[data-wheel="on"] .radial-stage { display: flex; flex: 1; justify-content: center; padding-top: 2rem; }
+.radial-band[data-wheel="on"] .radial-wheel { display: grid; overflow: visible; padding: 0; }
+.radial-band[data-wheel="on"] .radial-card { grid-area: 1 / 1; transform-origin: 50% var(--radius); will-change: transform; }
+@media (min-width: 768px) { .radial-band { --card-w: min(42vw, 32rem, calc((100svh - 17rem) * 0.8)); --radius: calc(var(--card-w) * 3.4); --step: 18; } }
+
+/* Programmes learning stages: one panel remains open; pointer, focus and tap choose it. */
+.stage-band { overflow: hidden; border-bottom: 1px solid var(--color-line-soft); background: var(--color-paper); }
+.stage-head { padding-top: var(--band-y); }
+.stage-track { display: flex; flex-direction: column; gap: 0.4rem; padding: 2rem var(--spacing-gutter) var(--band-y); }
+.stage-panel { position: relative; flex: 0 0 5rem; min-height: 0; overflow: hidden; border-radius: 0.55rem; background: var(--color-ink); color: var(--color-surface); isolation: isolate; transition: flex-basis var(--motion-rail) var(--ease-glide), flex-grow var(--motion-rail) var(--ease-glide); }
+.stage-panel[data-active="true"] { flex-basis: 24rem; }
+.stage-photo, .stage-shade, .stage-pick { position: absolute; inset: 0; }
+.stage-photo img { object-position: center; filter: blur(8px) saturate(0.55) brightness(0.7); transform: scale(1.08); transition: filter var(--motion-rail) var(--ease-glide), transform var(--motion-rail) var(--ease-glide); }
+.stage-panel[data-active="true"] .stage-photo img { filter: none; transform: scale(1.025); }
+.stage-shade { z-index: 1; background: rgb(6 18 28 / 0.28); pointer-events: none; transition: background var(--motion-glide) var(--ease-glide); }
+.stage-panel[data-active="true"] .stage-shade { background: linear-gradient(to top, rgb(6 18 28 / 0.88), rgb(6 18 28 / 0.28) 62%, rgb(6 18 28 / 0.12)); }
+.stage-closed, .stage-copy { position: absolute; z-index: 2; pointer-events: none; }
+.stage-closed { inset: 0; display: flex; align-items: center; gap: 1rem; padding: 1.25rem; opacity: 1; transition: opacity var(--motion-swift) var(--ease-glide) 380ms; }
+.stage-panel[data-active="true"] .stage-closed { opacity: 0; transition: none; }
+.stage-closed-title { font-family: var(--font-display); font-size: var(--text-lead); font-weight: 800; line-height: 1.2; text-shadow: 0 1px 8px rgb(0 0 0 / 0.7); }
+.stage-copy { inset: auto 0 0; display: flex; width: 100%; flex-direction: column; gap: 0.65rem; padding: 2rem; opacity: 0; visibility: hidden; transform: translateY(0.5rem); }
+.stage-panel[data-active="true"] .stage-copy { opacity: 1; visibility: visible; transform: translateY(0); transition: opacity var(--motion-swift) var(--ease-glide) 300ms, transform var(--motion-swift) var(--ease-glide) 300ms; }
+.stage-count { font-family: var(--font-mono); font-size: var(--text-fine); letter-spacing: 0.08em; color: var(--color-surface); }
+.stage-title { font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.05; }
+.stage-body { max-width: 46ch; font-size: var(--text-lead); line-height: 1.5; }
+.stage-pick { z-index: 3; width: 100%; cursor: pointer; }
+.stage-pick:focus-visible { outline: 3px solid var(--color-brand-lift); outline-offset: -6px; }
+@media (min-width: 900px) {
+  .stage-track { flex-direction: row; height: clamp(28rem, 48vw, 38rem); gap: 0.5rem; }
+  .stage-panel { flex: 1 1 0; min-width: 0; }
+  .stage-panel[data-active="true"] { flex: 5 1 0; }
+  .stage-closed { align-items: flex-start; flex-direction: column; justify-content: space-between; padding: 1.5rem 1rem; }
+  .stage-closed-title { writing-mode: vertical-rl; transform: rotate(180deg); font-size: clamp(1rem, 1.4vw, 1.35rem); white-space: nowrap; }
+  .stage-copy { width: min(36rem, calc((100vw - 2 * var(--spacing-gutter)) * 0.53)); padding: 2.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { .stage-panel, .stage-photo img, .stage-shade, .stage-closed, .stage-copy { transition: none; } }
+
+/*
+  Final pass 2026-09-23: the Media LinkedIn fan, components/sections/LinkedInFan.tsx,
+  after the supplied reference. Every card shares one cell; --offset (signed
+  distance from the front card) slides, shrinks and tilts it into the fan and
+  --depth sends it back. Cards two or more away fade out.
+  Revised 2026-09-23: "change the green colour to CDIE blue". The panel is the
+  brand blue, deepened toward ink rather than a new colour.
+*/
+.fan { --fan-w: min(78vw, 22rem); --fan-tone: var(--color-brand); --fan-deep: color-mix(in oklab, var(--color-brand) 62%, var(--color-ink)); display: flex; flex-direction: column; gap: 1.5rem; }
+.fan-stage { position: relative; display: grid; place-items: center; min-height: 34rem; overflow-x: clip; padding: 1rem 0; }
+.fan-card { grid-area: 1 / 1; position: relative; width: var(--fan-w); height: 32rem; overflow: hidden; border-radius: 1.25rem; background: var(--color-surface); box-shadow: 0 1.5rem 3rem -1rem rgb(16 21 26 / 0.35); z-index: calc(10 - var(--depth)); opacity: clamp(0, calc(2 - var(--depth)), 1); filter: saturate(calc(1 - var(--depth) * 0.25)) brightness(calc(1 - var(--depth) * 0.08)); transform: translateX(calc(var(--offset) * 64%)) translateY(calc(var(--depth) * 1.5rem)) scale(calc(1 - var(--depth) * 0.14)) rotate(calc(var(--offset) * 2.5deg)); transition: transform var(--motion-scene) var(--ease-glide), opacity var(--motion-glide), filter var(--motion-glide); }
+.fan-pick { position: absolute; inset: 0; z-index: 5; cursor: pointer; }
+/* 2026-09-24: "increase image coverage area on the cards". */
+.fan-photo { position: absolute; inset: 0 0 38%; background: var(--color-raise); }
+.fan-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-scene) var(--ease-glide); }
+.fan-photo img[data-mark] { object-fit: contain; padding: 2.5rem 3rem 3.5rem; background: var(--color-surface); }
+.fan-card[data-front]:hover .fan-photo img:not([data-mark]) { transform: scale(1.05); }
+.fan-panel { position: absolute; inset: auto 0 0; display: flex; min-height: 44%; flex-direction: column; align-items: center; gap: 0.6rem; padding: 1.5rem 1.5rem 1.75rem; border-radius: 1rem 1rem 0 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--fan-tone) 92%, transparent), var(--fan-deep)); color: var(--color-surface); text-align: center; backdrop-filter: blur(6px); }
+.fan-kicker { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in oklab, var(--fan-tone) 35%, var(--color-surface)); }
+.fan-title { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-family: var(--font-display); font-size: 1.375rem; font-weight: 700; line-height: 1.2; }
+.fan-summary { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: var(--text-fine); line-height: 1.55; color: rgb(255 255 255 / 0.88); }
+.fan-more { margin-top: auto; padding: 0.7rem 1.6rem; border-radius: 10rem; background: var(--color-surface); color: var(--fan-deep); font-family: var(--font-display); font-size: 0.9375rem; font-weight: 700; box-shadow: 0 0.5rem 1.25rem -0.5rem rgb(0 0 0 / 0.4); transition: background var(--motion-swift), color var(--motion-swift), transform var(--motion-swift); }
+.fan-more:hover, .fan-more:focus-visible { background: color-mix(in oklab, var(--fan-tone) 20%, var(--color-surface)); transform: translateY(-2px); }
+.fan-arrow { position: absolute; top: 50%; z-index: 20; display: grid; width: 3rem; height: 3rem; place-items: center; border-radius: 50%; background: var(--fan-tone); color: var(--color-surface); box-shadow: 0 0.5rem 1.25rem -0.4rem rgb(16 21 26 / 0.5); transform: translateY(-50%); cursor: pointer; transition: background var(--motion-swift), transform var(--motion-swift); }
+.fan-arrow:hover { background: var(--fan-deep); transform: translateY(-50%) scale(1.08); }
+.fan-arrow[data-side="prev"] { left: max(0.25rem, calc(50% - var(--fan-w) * 1.2)); }
+.fan-arrow[data-side="next"] { right: max(0.25rem, calc(50% - var(--fan-w) * 1.2)); }
+.fan-arrow svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+.fan-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.25rem; }
+.fan-tabs button { padding: 0.5rem 1.1rem; border-radius: 10rem; color: var(--color-ink-2); font-size: var(--text-fine); transition: background var(--motion-swift), color var(--motion-swift); cursor: pointer; }
+.fan-tabs button:hover { color: var(--fan-deep); }
+.fan-tabs button[aria-current="true"] { background: var(--fan-tone); color: var(--color-surface); font-weight: 600; }
+@media (min-width: 768px) { .fan-stage { min-height: 36rem; } .fan-card { height: 33rem; } }
+
+/*
+  Revised 2026-09-23: the Media events calendar, components/blocks/EventCalendar.tsx,
+  after gt-world-challenge.com/calendar. A track of cards moved by --pos, --per
+  cards to a view; cards outside the view take --depth and shrink and fade on
+  the LinkedIn fan's curve. The date block is CDIE blue where the reference is red.
+*/
+.cal { --cal-gap: 1.25rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.cal-stage { overflow-x: clip; padding: 0.5rem 0 1.5rem; touch-action: pan-y; }
+.cal-track { display: flex; gap: var(--cal-gap); transform: translateX(calc(var(--pos) * -1 * ((100% - (var(--per) - 1) * var(--cal-gap)) / var(--per) + var(--cal-gap)))); transition: transform var(--motion-scene) var(--ease-glide); }
+.cal-slot { flex: 0 0 calc((100% - (var(--per) - 1) * var(--cal-gap)) / var(--per)); transform: scale(calc(1 - var(--depth, 0) * 0.08)); opacity: calc(1 - var(--depth, 0) * 0.45); transition: transform var(--motion-scene) var(--ease-glide), opacity var(--motion-glide); }
+.cal-card { display: flex; height: 100%; flex-direction: column; overflow: hidden; border-radius: 0.75rem; background: linear-gradient(to bottom, color-mix(in oklab, var(--color-ink) 88%, var(--color-brand)), var(--color-ink)); color: var(--color-surface); box-shadow: 0 1.25rem 2.5rem -1.25rem rgb(16 21 26 / 0.45); }
+/* 2026-09-24: the photograph takes more of the card. */
+.cal-photo { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-surface); }
+.cal-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-scene) var(--ease-glide); }
+.cal-photo img[data-mark] { object-fit: contain; padding: 1.5rem 2rem 2.5rem; }
+.cal-card:hover .cal-photo img:not([data-mark]) { transform: scale(1.05); }
+.cal-top { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-top: -2.75rem; padding: 0 1.25rem; position: relative; }
+.cal-date { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 0.8rem; border-radius: 0.3rem; background: var(--color-brand); box-shadow: 0 0.5rem 1.25rem -0.5rem rgb(0 0 0 / 0.5); }
+.cal-date-part { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+.cal-date-day { font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
+.cal-date-month, .cal-date-year { font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.08em; opacity: 0.9; }
+.cal-date-month { margin-top: 0.25rem; }
+.cal-date-dash { width: 0.6rem; height: 2px; background: currentColor; }
+.cal-tag { padding: 0.25rem 0.7rem; border-radius: 0.2rem; background: var(--color-brand-live); font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.cal-tag[data-upcoming] { background: var(--color-moss); }
+.cal-details { display: flex; flex: 1; flex-direction: column; gap: 0.4rem; padding: 1rem 1.25rem 1.25rem; }
+.cal-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.01em; }
+.cal-sub { font-size: var(--text-fine); color: rgb(255 255 255 / 0.78); }
+/* 2026-09-24: "replace event info link with Read More, make it a button"; the pill matches From our community. */
+.cal-footer { display: flex; justify-content: center; padding: 0 1.25rem 1.4rem; }
+.cal-more { padding: 0.7rem 1.6rem; border-radius: 10rem; background: var(--color-surface); color: var(--color-brand); font-family: var(--font-display); font-size: 0.9375rem; font-weight: 700; box-shadow: 0 0.5rem 1.25rem -0.5rem rgb(0 0 0 / 0.4); transition: background var(--motion-swift), color var(--motion-swift), transform var(--motion-swift); }
+.cal-more:hover, .cal-more:focus-visible { background: color-mix(in oklab, var(--color-brand) 20%, var(--color-surface)); color: var(--color-brand); transform: translateY(-2px); }
+.cal-footer span { padding: 0.7rem 0; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.55); }
+.cal-controls { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; }
+.cal-count { margin-right: auto; font-family: var(--font-mono); font-size: var(--text-fine); color: var(--color-ink-3); }
+.cal-arrow { display: grid; width: 3rem; height: 3rem; place-items: center; border-radius: 50%; background: var(--color-brand); color: var(--color-surface); cursor: pointer; transition: background var(--motion-swift), transform var(--motion-swift), opacity var(--motion-swift); }
+.cal-arrow:hover:not(:disabled) { background: var(--color-brand-live); transform: scale(1.08); }
+.cal-arrow:disabled { opacity: 0.3; cursor: default; }
+.cal-arrow svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }

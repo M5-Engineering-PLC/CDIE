@@ -1,8 +1,10 @@
 // Serves files uploaded through the admin dashboard. See lib/admin/store.ts.
+// Local disk first, then the copy committed to public/uploads (lib/admin/github.ts).
 
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
+import { readCommittedUpload } from "@/lib/admin/github";
 import { uploadsDir } from "@/lib/admin/store";
 
 const TYPES: Record<string, string> = {
@@ -20,7 +22,8 @@ export async function GET(_: Request, context: RouteContext<"/api/uploads/[file]
   // Names are generated UUIDs; anything else, including a path, is refused.
   if (!/^[0-9a-f-]{36}\.[a-z0-9]+$/.test(file)) return new Response("Not found", { status: 404 });
   try {
-    const body = await readFile(path.join(uploadsDir(), file));
+    const body = await readFile(path.join(uploadsDir(), file)).catch(() => readCommittedUpload(file));
+    if (!body) throw new Error("missing");
     return new Response(body, {
       headers: {
         "content-type": TYPES[path.extname(file)] ?? "application/octet-stream",

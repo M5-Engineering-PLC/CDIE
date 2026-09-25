@@ -44,10 +44,13 @@ export function NavPanel({ items, login, open, isCurrent, onNavigate }: NavPanel
           <li>
             <a
               href={login.href}
+              target="_blank"
+              rel="noreferrer"
               onClick={onNavigate}
               className="block py-2.5 text-lead font-semibold text-ink-2 transition-colors hover:text-brand"
             >
               {login.label}
+              <span className="sr-only"> (opens in a new tab)</span>
             </a>
           </li>
         ) : null}

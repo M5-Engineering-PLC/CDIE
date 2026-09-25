@@ -83,10 +83,10 @@ export const opportunities: Opportunity[] = [
     topic: "invention-education",
     pending: [],
     image: {
-      src: "/images/cdie-summer-program-needs-filtering.jpg",
-      alt: "Participants working through needs filtering at tables",
-      width: 1600,
-      height: 1000,
+      src: "/images/hero-workshop-1.jpg",
+      alt: "A small team reviews notes together during a design workshop",
+      width: 2560,
+      height: 1707,
     },
   },
   {
@@ -109,9 +109,10 @@ export const opportunities: Opportunity[] = [
   },
   {
     id: "design-challenge",
-    title: "Design Challenge",
+    // 2026-09-24: "Change all Design challenge titles to Design Challenges".
+    title: "Design Challenges",
     kind: "Challenge",
-    carouselTitle: "Design challenges",
+    carouselTitle: "Design Challenges",
     summary:
       "A real challenge. A chance to make something useful. Work with others to explore a practical response to a defined problem.",
     status: "enquire",
@@ -144,7 +145,13 @@ export const opportunities: Opportunity[] = [
       "Award amount",
       "Assessment criteria and application deadline",
     ],
-    // Image matching sheet P4/P9: no photograph shows a Catalyst grant, so none is used.
+    // 2026-09-23: photograph supplied by CDIE for the Catalyst grant slot.
+    image: {
+      src: "/images/cdie-catalyst-grant-presentation.jpg",
+      alt: "Presenter addressing a seated audience in a CDIE seminar room",
+      width: 1600,
+      height: 1200,
+    },
   },
   {
     id: "training",
@@ -254,7 +261,7 @@ export const programmeFaqs: Faq[] = [
     id: "award",
     question: "What qualification do I get, and how long does it take?",
     answer:
-      "You graduate with an M.Sc. in Biomedical Engineering — Medical Device Innovation. The programme runs for 18 months, full-time and in person at Kenyatta University.",
+      "You graduate with an M.Sc. in Biomedical Engineering – Medical Device Innovation. The programme runs for 18 months, full-time and in person at Kenyatta University.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
@@ -324,21 +331,21 @@ export const programmeFaqs: Faq[] = [
     id: "grants",
     question: "Does CDIE offer grants or funding to innovators?",
     answer:
-      "Yes. Through the Invention Education programme, CDIE runs catalytic grants that innovators can apply for to support early prototyping. There are several funding cycles each year — sign up for the newsletter so you hear when a call opens.",
+      "Yes. Through the Invention Education programme, CDIE runs catalytic grants that innovators can apply for to support early prototyping. There are several funding cycles each year. Sign up for the newsletter so you hear when a call opens.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "challenge",
     question: "What is the Design Challenge, and can I take part?",
     answer:
-      "The Design Challenge is a short, hands-on challenge where teams respond to a defined healthcare problem, build a prototype and present their thinking. Recent teams designed assistive devices to support caregivers. The brief, entry rules and next date are announced when a new round opens — ask the team to be notified.",
+      "The Design Challenge is a short, hands-on challenge where teams respond to a defined healthcare problem, build a prototype and present their thinking. Recent teams designed assistive devices to support caregivers. The brief, entry rules and next date are announced when a new round opens. Ask the team to be notified.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {
     id: "training",
     question: "Do you run short courses or masterclasses?",
     answer:
-      "Yes. CDIE runs focused sessions in design, making and medical device innovation alongside the master’s programme. Upcoming sessions, prerequisites and sign-up details are published when scheduled — contact the team to ask what is planned.",
+      "Yes. CDIE runs focused sessions in design, making and medical device innovation alongside the master’s programme. Upcoming sessions, prerequisites and sign-up details are published when scheduled. Contact the team to ask what is planned.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
 ];
@@ -453,8 +460,50 @@ export const designChallenge = {
   standfirst:
     "Bring your curiosity and work with others to explore a practical response to a defined problem. The design challenge is an opportunity to learn through making, explain your thinking and develop an idea through feedback.",
   past: "Explore previous challenge briefs and the work developed by participating teams.",
-  action: { label: "Ask about the Design Challenge", href: "/contact?topic=design-challenge", live: true },
+  action: { label: "Ask about the Design Challenges", href: "/contact?topic=design-challenge", live: true },
 } as const;
+
+/*
+  2026-09-23: "list the call and the winning teams photos, sections dated such
+  as Design Challenge 2026: Neonatal and maternal care". The facts are the ones
+  printed on the call CDIE supplied; nothing beyond the flyer is stated. Newest
+  edition first; add a record here for each new challenge.
+*/
+export const designChallengeEditions = [
+  {
+    id: "design-challenge-2026",
+    year: "2026",
+    theme: "Maternal and neonatal care",
+    brief:
+      "Teams submitted projects geared towards solving challenges in maternal and neonatal health. The most innovative projects will represent Kenya in the Regional Design Competition, which brings together innovators across the continent.",
+    facts: [
+      { label: "Dates", value: "14–18 September 2026" },
+      { label: "Pitch presentation", value: "18 September 2026" },
+      { label: "Time", value: "10:00am–5:00pm" },
+      { label: "Venue", value: "Centre for Design, Innovation & Engineering, Graduate School, Kenyatta University" },
+    ],
+    call: {
+      src: "/images/cdie-design-challenge-2026-call.webp",
+      alt: "IvE Design Challenge call for maternal and neonatal care, 14 to 18 September 2026",
+      width: 800,
+      height: 800,
+    },
+    winners: [
+      {
+        src: "/images/cdie-design-challenge-2026-winners-01.webp",
+        alt: "Winning team members holding certificates beside CDIE staff and guests",
+        width: 800,
+        height: 533,
+      },
+      {
+        src: "/images/cdie-design-challenge-2026-winners-02.webp",
+        alt: "Second group of winners holding certificates beside CDIE staff and guests",
+        width: 800,
+        height: 533,
+      },
+    ],
+  },
+] as const;
 
 export const catalystGrants = {
   headline: "Give an early idea room to develop.",
@@ -468,6 +517,52 @@ export const catalystGrants = {
     no number appears here.
   */
   action: { label: "Ask about Catalyst grants", href: "/contact?topic=catalyst-grants", live: true },
+} as const;
+
+/*
+  2026-09-24: "replace what is settled section with More details on the grant
+  and gallery of grant beneficiaries". Every fact below is from CDIE's own posts
+  of 16 May 2025: the Catalyst Grant call for proposals (and its poster) and the
+  Catalyst Grant event. They are published as that call, dated, so nothing here
+  reads as the terms of a call that has not opened. This supersedes decision D5
+  at the client's request.
+*/
+export const catalystCall = {
+  hero: {
+    src: "/images/cdie-catalyst-grant-call-poster.jpg",
+    alt: "Catalyst Grant call for proposals poster listing the project criteria and funding available",
+  },
+  eyebrow: "The May 2025 call",
+  headline: "Seed funding for hardware that answers a healthcare need.",
+  intro:
+    "The Catalyst Grant supports people building a hardware solution to a critical healthcare challenge, with seed funding to bring the project to life. Applications to the May 2025 call were reviewed on a rolling basis and submitted online.",
+  criteria: [
+    "Innovation and originality",
+    "Technical feasibility and prototyping plans",
+    "Sustainability and long-term impact",
+    "Relevance to healthcare and problem significance",
+  ],
+  awards: [
+    { label: "Student grant", value: "Up to $1,000", note: "Open to all Kenyan university students" },
+    { label: "Lecturer and postgraduate grant", value: "Up to $2,500", note: "Open to lecturers and postgraduate students" },
+  ],
+} as const;
+
+export const catalystGallery = {
+  eyebrow: "Grant beneficiaries",
+  headline: "Prototypes, presented.",
+  body: "At the Catalyst Grant event in May 2025, participants presented their prototypes and networked with peers and industry leaders.",
+  photos: [
+    { src: "/images/cdie-catalyst-grant-presentation.jpg", alt: "Presenter addressing a seated audience in a CDIE seminar room" },
+  ],
+} as const;
+
+export const catalystFollow = {
+  eyebrow: "Next call",
+  headline: "Hear when the next call opens.",
+  body: "Follow us on LinkedIn to hear when the next call opens, or write to the team about a project you are building.",
+  linkedIn: "Follow us on LinkedIn for the next call",
+  contact: "Talk to the team about your project",
 } as const;
 
 export const training = {
@@ -520,7 +615,7 @@ export const mdiGraduands: Graduand[] = [
 export const mdiCohortsCopy = {
   headline: "Success stories",
   standfirst: "Meet the people taking their ideas forward.",
-  body: "Where graduates of the programme have taken their work, in their own words.",
+  body: "What our graduates say about the program.",
   empty: "Graduate stories are published once each person has confirmed their words and given consent. Ask the team about a particular cohort or project.",
 } as const;
 

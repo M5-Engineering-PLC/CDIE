@@ -180,3 +180,28 @@ export const latestHighlights = [
     action: "Browse media",
   },
 ] as const;
+
+/*
+  Final pass 2026-09-23: "Gallery should be placed immediately after the hero.
+  The images will be in cards arranged as a circular slider". Every frame is a
+  CDIE photograph already on the site; each caption is the event or programme
+  the picture is filed under elsewhere, never a new claim.
+*/
+export const galleryCopy = {
+  eyebrow: "Gallery",
+  headline: "Life at the centre.",
+} as const;
+
+export const galleryPhotos = [
+  // 2026-09-23: the ten frames and their order are the ones CDIE supplied for the gallery.
+  { id: "g-metalwork", src: "/images/service-metalworking-1.jpeg", alt: "Student in a welding helmet grinding metal as sparks fly", caption: "Metalworking" },
+  { id: "g-coworking", src: "/images/service-coworking-1.jpg", alt: "Students seated at desks in a bright seminar room while a speaker presents", caption: "Co-working space" },
+  { id: "g-woodwork", src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw", caption: "Woodworking" },
+  { id: "g-wibek", src: "/images/cdie-wibek-2026-conference-07.jpg", alt: "Women holding a gift bag and a microphone on stage beside event banners", caption: "WIBEK 2026 Conference" },
+  { id: "g-cnc", src: "/images/cdie-summer-program-cnc-class-04.jpg", alt: "Participant in gloves setting up a CNC machine", caption: "CDIE Summer Program 2026" },
+  { id: "g-stakeholders", src: "/images/cdie-stakeholder-engagement-golden-tulip.jpg", alt: "Stakeholder engagement guests in a group photo between Invention Education banners", caption: "Stakeholder engagement" },
+  { id: "g-faculty", src: "/images/cdie-meet-the-faculty-kenneth-iloka.jpg", alt: "Faculty member showing a resin 3D printer to visiting guests", caption: "Meet the faculty" },
+  { id: "g-prototyping-lab", src: "/images/cdie-mdi-woodworking-prototyping-lab.jpg", alt: "Students in safety goggles and overalls gathered around a mitre saw", caption: "MDI prototyping lab" },
+  { id: "g-cohort-2", src: "/images/cdie-mdi-cohort-2-orientation-01.jpg", alt: "Incoming MDI Cohort 2 students and staff in a group photo", caption: "MDI Cohort 2 orientation" },
+  { id: "g-celebration", src: "/images/cdie-mdi-cohort-1-semester-one-celebration-group.jpg", alt: "MSc cohort and guests at an evening celebration", caption: "MDI Cohort 1 semester one celebration" },
+] as const;

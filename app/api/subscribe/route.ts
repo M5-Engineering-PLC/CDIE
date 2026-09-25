@@ -4,7 +4,9 @@
   dashboard counts it. Nothing is emailed from here.
 */
 
-import { recordSubscription } from "@/lib/admin/store";
+import { revalidateTag } from "next/cache";
+
+import { CMS_TAG, recordSubscription } from "@/lib/admin/store";
 
 export async function POST(request: Request) {
   let email = "";
@@ -18,5 +20,6 @@ export async function POST(request: Request) {
     return Response.json({ error: "invalid" }, { status: 400 });
   }
   await recordSubscription(email);
+  revalidateTag(CMS_TAG, "max");
   return Response.json({ ok: true });
 }

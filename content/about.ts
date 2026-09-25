@@ -212,7 +212,7 @@ export const aboutFaqs: Faq[] = [
     id: "ive",
     question: "What is the difference between CDIE and Invention Education?",
     answer:
-      "Invention Education (IvE) is the approach and the wider programme — learning through real problems at Kenyatta University. CDIE is the centre where that work happens: the design, engineering and prototyping home for IvE, and the base for the Medical Device Innovation master’s programme.",
+      "Invention Education (IvE) is the approach and the wider programme: learning through real problems at Kenyatta University. CDIE is the centre where that work happens: the design, engineering and prototyping home for IvE, and the base for the Medical Device Innovation master’s programme.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {

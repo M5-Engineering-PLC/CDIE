@@ -17,7 +17,9 @@
   disabled fieldset.
 */
 
-import { recordEnquiry } from "@/lib/admin/store";
+import { revalidateTag } from "next/cache";
+
+import { CMS_TAG, recordEnquiry } from "@/lib/admin/store";
 
 const DEFAULT_TO = "ive@ku.ac.ke";
 const MAX = { name: 120, email: 200, reason: 60, message: 5000 } as const;
@@ -56,7 +58,9 @@ export async function POST(request: Request) {
 
   // Counted for the admin dashboard (reason and time only, never the message),
   // whether or not the email below can be sent.
-  await recordEnquiry(payload.reason).catch((error) => console.error("[enquiry] count failed", error));
+  await recordEnquiry(payload.reason)
+    .then(() => revalidateTag(CMS_TAG, "max"))
+    .catch((error) => console.error("[enquiry] count failed", error));
 
   const key = process.env.RESEND_API_KEY;
   const from = process.env.ENQUIRY_FROM;
@@ -83,7 +87,7 @@ export async function POST(request: Request) {
         from,
         to: [process.env.ENQUIRY_TO || DEFAULT_TO],
         reply_to: payload.email,
-        subject: `Website enquiry: ${payload.reason || "general"} — ${payload.name}`,
+        subject: `Website enquiry: ${payload.reason || "general"}; ${payload.name}`,
         text: lines.join("\n"),
       }),
     });

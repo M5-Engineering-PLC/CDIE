@@ -41,7 +41,7 @@ export const spaces: Space[] = [
     name: "Graduate School",
     shortName: "Grad school",
     summary:
-      "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery. The room plan shows these areas together, based on the studio video and photographs.",
+      "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery.",
     hasModel: true,
   },
   {
@@ -49,7 +49,7 @@ export const spaces: Space[] = [
     name: "ATC",
     shortName: "ATC",
     summary:
-      "Engineering & Prototyping Workshop: CNC machining, laser cutting, metal fabrication, and tool storage inside and alongside the shipping container.",
+      "Engineering & Prototyping Workshop: CNC machining, laser cutting, metal fabrication, and tool storage.",
     hasModel: true,
   },
 ];
@@ -146,7 +146,7 @@ export const capabilities: Capability[] = [
     enquiry: "Ask about textile prototyping",
     media: [],
     components: [
-      { id: "sewing", name: "Sewing", note: "Making up fabric-based components." },
+      { id: "sewing", name: "Sewing", note: "Making up fabric-based components.", image: "/images/cdie-textiles-sewing.jpg", alt: "Student working at an industrial sewing machine in the textiles area" },
       { id: "cutting", name: "Cutting", note: "Preparing material for a wearable or upholstered part." },
       { id: "upholstery", name: "Upholstery", note: "Working on the surfaces a product presents to the body." },
     ],
@@ -185,7 +185,7 @@ export const capabilities: Capability[] = [
     enquiry: "Ask about woodworking",
     media: [],
     components: [
-      { id: "cnc-router", name: "Three-axis CNC routing bed", note: "Vacuum bed, water-cooled spindle, stepper gantry." },
+      { id: "cnc-router", name: "Three-axis CNC routing bed", note: "Vacuum bed, water-cooled spindle, stepper gantry.", image: "/images/cdie-cnc-milling-router.jpg", alt: "Yellow Blue Elephant ELECNC1212 CNC router inside the workshop container" },
       { id: "operator-station", name: "CAD and CAM workstation", note: "Dedicated terminal with toolpath control and preview." },
       { id: "dust-extraction", name: "Dust extraction system", note: "High-vacuum swarf collector over spindle head." },
     ],
@@ -206,15 +206,18 @@ export const capabilities: Capability[] = [
     enquiry: "Ask about CNC and laser engraving",
     media: [],
     components: [
-      { id: "co2-laser", name: "Enclosed laser cutting bed", note: "Enclosed cutting bed with safety interlock viewing canopy." },
+      { id: "co2-laser", name: "Enclosed laser cutting bed", note: "Enclosed cutting bed with safety interlock viewing canopy.", image: "/images/cdie-laser-engraving-machine.jpg", alt: "Enclosed Blue Elephant laser engraving machine beside the louvred window wall" },
       { id: "dsp-controller", name: "Digital controller keypad", note: "Digital speed, power and origin positioning keypad." },
       { id: "honeycomb-bed", name: "Honeycomb and knife bed", note: "Dual-surface cutting bed with active fume exhaust duct." },
     ],
   },
   /*
     changes-v2 item 5: "empty card for casting and moulding, no description for
-    now". The card holds the name and nothing else: no photograph, no headline
-    and no equipment list, because none has been supplied.
+    now". The card holds the name and nothing else: no headline and no
+    equipment list, because none has been supplied. 2026-09-23: it now has a
+    photograph, supplied for this service (a clear resin cast of a hand).
+    2026-09-24: casting and moulding sits on the lowest shelf of the 3D printing
+    rack, so it lights that shelf in the room rather than leaving the plan unlit.
   */
   {
     id: "casting-moulding",
@@ -222,7 +225,7 @@ export const capabilities: Capability[] = [
     space: "studio",
     headline: "",
     body: "",
-    modelGroup: null,
+    modelGroup: "casting-moulding",
     pending: ["A description of this area, its equipment and how to use it"],
     enquiry: "Ask about casting and moulding",
     media: [],
@@ -281,7 +284,7 @@ export const studioFaqs: Faq[] = [
     id: "three-d-print",
     question: "Can I get something 3D printed?",
     answer:
-      "The studio has FDM and SLA printing to take a digital design to a physical model. File requirements, materials, turnaround and any charges depend on the machine and your project — ask the team before you prepare a file.",
+      "The studio has FDM and SLA printing to take a digital design to a physical model. File requirements, materials, turnaround and any charges depend on the machine and your project; ask the team before you prepare a file.",
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
   {

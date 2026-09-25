@@ -8,6 +8,7 @@ import { StudioViewPill } from "./StudioViewPill";
 import type { AtcServiceId } from "./atc-3js";
 import type { UnifiedServiceId } from "./explorerModel";
 import type { ServiceId } from "./studioLayout";
+import { preloadAtc3D, preloadDesignStudio3D } from "./preloadStudio3D";
 
 const LoadingBox = ({ text }: { text: string }) => (
   <div className="grid aspect-video place-items-center border border-line bg-raise md:min-h-96">
@@ -16,12 +17,12 @@ const LoadingBox = ({ text }: { text: string }) => (
 );
 
 const DesignStudio3D = dynamic(
-  () => import("./design-studio-3js").then((mod) => mod.DesignStudio3D),
+  () => preloadDesignStudio3D().then((mod) => mod.DesignStudio3D),
   { ssr: false, loading: () => <LoadingBox text="Loading the room…" /> },
 );
 
 const Atc3D = dynamic(
-  () => import("./atc-3js").then((mod) => mod.Atc3D),
+  () => preloadAtc3D().then((mod) => mod.Atc3D),
   { ssr: false, loading: () => <LoadingBox text="Loading the ATC workshop…" /> },
 );
 

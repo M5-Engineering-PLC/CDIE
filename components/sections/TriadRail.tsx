@@ -39,7 +39,9 @@ export function TriadRail({ items }: { items: readonly TriadItem[] }) {
   return (
     <div>
     <ul ref={rail} onScroll={updateActive} aria-label="What CDIE is" className="triad-rail rail rail-glide -mx-gutter auto-cols-[82%] gap-4 px-gutter md:mx-0 md:grid-flow-row md:auto-cols-auto md:grid-cols-3 md:overflow-visible md:px-0">
-      {items.map((item, index) => (
+      {/* Final pass 2026-09-23: "remove the numbers in the images in the
+          innovate convene cards". */}
+      {items.map((item) => (
         <li key={item.id} className="triad-card">
           <div className="triad-photo">
             <Image
@@ -49,7 +51,6 @@ export function TriadRail({ items }: { items: readonly TriadItem[] }) {
               sizes="(max-width: 768px) 82vw, 33vw"
               className="object-cover"
             />
-            <span className="triad-number">{String(index + 1).padStart(2, "0")}</span>
           </div>
           <div className="triad-copy flex flex-col gap-2">
             <h3 className="display text-sub text-brand">{item.title}</h3>

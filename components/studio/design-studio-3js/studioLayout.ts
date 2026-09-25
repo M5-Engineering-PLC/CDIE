@@ -15,7 +15,9 @@ export type ServiceId =
   | 'co-working'
   | 'three-d-printing'
   | 'electronics'
-  | 'textiles';
+  | 'textiles'
+  /* 2026-09-24: shares the 3D printing rack, on its lowest shelf. */
+  | 'casting-moulding';
 
 export type TableLayout = {
   id: string;
@@ -89,6 +91,14 @@ export const studioLayout: StudioLayout = {
       service: 'three-d-printing',
       position: [2.05, 0.72, -3.1],
       size: [3.2, 2.82, 0.82],
+      rotationY: 0,
+    },
+    {
+      id: 'casting-moulding-shelf',
+      label: 'Casting and moulding',
+      service: 'casting-moulding',
+      position: [2.05, 0.78, -3.1],
+      size: [3.2, 0.1, 0.82],
       rotationY: 0,
     },
     {

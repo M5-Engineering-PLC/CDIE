@@ -10,12 +10,13 @@ const spaceShortName = new Map(spaces.map((space) => [space.id, space.shortName]
 const studioImages: Record<string, string> = {
   design: "/images/service-design-2.jpg",
   electronics: "/images/service-electronics-1.jpg",
-  "three-d-printing": "/images/service-3dprinting-1.jpg",
+  "three-d-printing": "/images/cdie-3d-printers.jpg",
   "co-working": "/images/service-coworking-1.jpg",
   metalworking: "/images/service-metalworking-1.jpeg",
-  textiles: "/images/service-textile-2.jpg",
+  textiles: "/images/cdie-textiles-sewing.jpg",
   woodworking: "/images/service-woodworking-1.jpeg",
-  "laser-cutting": "/images/cdie-summer-program-laser-cutting.jpg",
+  "laser-cutting": "/images/cdie-laser-engraving-machine.jpg",
+  "casting-moulding": "/images/service-casting-moulding-1.webp",
 };
 
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({

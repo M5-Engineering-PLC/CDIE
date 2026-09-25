@@ -6,8 +6,8 @@
   without JavaScript, it is keyboard-operable and screen-reader-announced with
   no ARIA of our own, and it keeps this a server component.
 
-  The first question is open on load so the section never reads as an empty
-  stack of bars.
+  2026-09-24: "Keep all faqs closed until tapped". Every question starts
+  closed; openFirst remains for a page that wants the first one open.
 
   Change request 2026-09-21, second pass: "require manual input and
   confirmation for all faqs". An answer publishes only where content/types.ts
@@ -24,7 +24,7 @@ import type { Faq } from "@/content/types";
 
 export type FaqListProps = {
   items: Faq[];
-  /** Opens the first question. Set false where the section is already long. */
+  /** Opens the first question. Off by default: every question starts closed. */
   openFirst?: boolean;
   /** Where an unconfirmed question sends the reader. */
   enquiryHref?: string;
@@ -33,7 +33,7 @@ export type FaqListProps = {
 const UNCONFIRMED =
   "This answer is being confirmed with the team before it is published. Ask us and we will reply with the current position.";
 
-export function FaqList({ items, openFirst = true, enquiryHref = "/contact" }: FaqListProps) {
+export function FaqList({ items, openFirst = false, enquiryHref = "/contact" }: FaqListProps) {
   if (items.length === 0) return null;
 
   return (

@@ -183,7 +183,7 @@ export type Capability = {
   headline: string;
   body: string;
   /** service group id in the studio/atc model, or null where the position is unknown */
-  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | "textiles" | "woodworking" | "metalworking" | "laser-cutting" | null;
+  modelGroup: "design" | "electronics" | "three-d-printing" | "co-working" | "textiles" | "woodworking" | "metalworking" | "laser-cutting" | "casting-moulding" | null;
   pending: string[];
   enquiry: string;
   media: Figure[];

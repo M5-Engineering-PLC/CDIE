@@ -99,9 +99,12 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
         {login ? (
             <a
               href={login.href}
+              target="_blank"
+              rel="noreferrer"
               className="site-login"
             >
               {login.label}
+              <span className="sr-only"> (opens in a new tab)</span>
             </a>
         ) : null}
 

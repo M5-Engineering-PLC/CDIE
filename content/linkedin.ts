@@ -24,6 +24,14 @@ export type LinkedInPost = {
     infers it from the text.
   */
   repost: boolean;
+  /*
+    Final pass 2026-09-23: the fan cards on Media lead with a picture and a
+    title, as in the supplied reference. Both are optional sheet columns
+    ("image", "title"); a post without them shows the CDIE mark and the
+    opening words of its own text, never a stand-in picture.
+  */
+  image?: string;
+  title?: string;
 };
 
 export type LinkedInFeed = {
@@ -64,6 +72,8 @@ export function normalisePost(raw: unknown): LinkedInPost | null {
   if (Number.isNaN(Date.parse(postedAt))) return null;
 
   const repost = row.repost;
+  const image = typeof row.image === "string" && /^https:\/\/\S+$/.test(row.image.trim()) ? row.image.trim() : undefined;
+  const title = typeof row.title === "string" && row.title.trim() ? row.title.trim().slice(0, 120) : undefined;
 
   return {
     id,
@@ -74,6 +84,8 @@ export function normalisePost(raw: unknown): LinkedInPost | null {
     // A sheet column arrives as text, so "TRUE", "true" and "1" all count.
     repost:
       repost === true || (typeof repost === "string" && /^(true|yes|1)$/i.test(repost.trim())),
+    ...(image ? { image } : {}),
+    ...(title ? { title } : {}),
   };
 }
 
@@ -89,7 +101,6 @@ export const stubFeed: LinkedInFeed = {
 
 export const linkedInCopy = {
   headline: "From our community",
-  standfirst: "The three most recent posts from the CDIE account, reposts included.",
   fallback: "See the latest from CDIE on LinkedIn.",
   /** shown once the account URL is confirmed; see decision D17 and the copy note */
   pageUrl: null as string | null,
