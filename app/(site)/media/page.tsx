@@ -101,7 +101,7 @@ export default async function MediaPage() {
     href: item.external,
   })),
   ];
-  const feed = await getLinkedInFeed();
+  const feed = await getLinkedInFeed(posts);
   const recent = feed.posts.slice(0, RECENT_POSTS);
 
   return (

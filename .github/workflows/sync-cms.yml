@@ -1,22 +1,31 @@
 # Keeps content/cms-snapshot.json in step with the dashboard's Google Sheet.
 #
 # The dashboard fires repository_dispatch "cms-updated" after every save
-# (lib/admin/github.ts); an hourly schedule, off for now, caught edits made
-# directly in the sheet. A changed snapshot is committed to the default
-# branch, which the host deploys like any other commit.
+# (lib/admin/github.ts); the hourly schedule catches edits made directly in the
+# sheet. A changed snapshot is committed to the default branch, which the host
+# deploys like any other commit.
 #
-# Repository secrets: GOOGLE_SHEET_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY.
+# Repository secrets: GOOGLE_SHEET_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL,
+# GOOGLE_PRIVATE_KEY, and CMS_PUSH_TOKEN. main is protected by a ruleset that
+# repository admins bypass; CMS_PUSH_TOKEN is an admin's fine-grained token
+# (this repository, Contents read and write), the same one the site holds as
+# GITHUB_TOKEN, so the snapshot commit can land. scripts/connect-services.sh
+# sets all four.
+#
+# 2026-09-25: until the Google secrets are set the job exits cleanly with a
+# notice instead of failing every hour.
 
 name: Sync dashboard content
 
-# 2026-09-25: the hourly schedule is off until the Google secrets are set.
 on:
   repository_dispatch:
     types: [cms-updated]
+  schedule:
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: sync-cms
@@ -25,21 +34,38 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+      GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+      GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+      CMS_PUSH_TOKEN: ${{ secrets.CMS_PUSH_TOKEN }}
     steps:
+      - name: Check the secrets are set
+        id: configured
+        run: |
+          if [ -z "$GOOGLE_SHEET_ID" ] || [ -z "$GOOGLE_SERVICE_ACCOUNT_EMAIL" ] || [ -z "$GOOGLE_PRIVATE_KEY" ] || [ -z "$CMS_PUSH_TOKEN" ]; then
+            echo "::notice::Sync skipped: set the Google secrets and CMS_PUSH_TOKEN (scripts/connect-services.sh)."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v7
+        if: steps.configured.outputs.ready == 'true'
+        with:
+          token: ${{ secrets.CMS_PUSH_TOKEN }}
 
       - uses: actions/setup-node@v7
+        if: steps.configured.outputs.ready == 'true'
         with:
           node-version: 24
 
       - name: Pull the sheet into the snapshot
+        if: steps.configured.outputs.ready == 'true'
         run: node scripts/sync-cms.mjs
-        env:
-          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
-          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
 
       - name: Commit when it changed
+        if: steps.configured.outputs.ready == 'true'
         run: |
           git diff --quiet -- content/cms-snapshot.json && exit 0
           git config user.name "cdie-content-bot"

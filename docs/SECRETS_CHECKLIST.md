@@ -31,6 +31,7 @@ kept in step with this file.
 | Yes | Resend, or the Apps Script pair `ENQUIRY_WEBHOOK_URL` and `ENQUIRY_WEBHOOK_SECRET` | The newsletter sends: confirmation links on sign-up and issues from the dashboard. Web3Forms cannot do this, it delivers to one inbox only. Until one is set, sign-ups are recorded and told so, and the send panel says what to set | Ive | Vercel |
 | Yes | `GOOGLE_SHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY` | The dashboard writes to and reads from the Google Sheet | Owner of the CDIE website Drive folder | Vercel and GitHub Actions secrets |
 | No | `GITHUB_REPO`, `GITHUB_TOKEN` | A dashboard save triggers the snapshot workflow at once and uploads are committed to `public/uploads` | Repository admin | Vercel |
+| No | `CMS_PUSH_TOKEN` (same token as `GITHUB_TOKEN`) | The sync workflow can commit the snapshot to the protected `main` | Repository admin | GitHub Actions secret |
 | Yes | `LINKEDIN_SHEET_CSV_URL` | The Media page reads the CDIE LinkedIn feed sheet instead of the stub | Owner of the sheet | Vercel |
 
 ## 3. The contact form, free path to a Gmail inbox
