@@ -4,6 +4,7 @@ import test from "node:test";
 
 import { deliverEnquiry, isAppsScriptUrl } from "../lib/enquiry/deliver.ts";
 import { allow, isHoneypotFilled, resetThrottle } from "../lib/security/throttle.ts";
+import { emailProvider, sendBatch, sendEmail } from "../lib/email.ts";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -155,4 +156,17 @@ test("the Drive folder's call posters and photographs sit on their pages", () =>
   assert.match(training, /<ProgrammeGallery/);
   assert.match(training, /call=\{trainingCall\}/);
   assert.match(read("docs/BUILD_PLAN.md"), /Conflict C-10, 2026-09-25/);
+});
+
+test("the newsletter sends through the same providers as the contact form", async () => {
+  assert.equal(emailProvider({}), null);
+  assert.equal(emailProvider({ RESEND_API_KEY: "k", ENQUIRY_FROM: "a@b.co" }), "resend");
+  assert.equal(emailProvider({ ENQUIRY_WEBHOOK_URL: "https://script.google.com/macros/s/x/exec" }), "webhook");
+  assert.equal(emailProvider({ ENQUIRY_WEBHOOK_URL: "https://example.com/hook" }), null, "only an Apps Script address counts");
+  assert.equal(emailProvider({ WEB3FORMS_ACCESS_KEY: "k" }), null, "Web3Forms cannot reach subscribers");
+  assert.equal(await sendEmail({ to: "a@b.co", subject: "s", html: "", text: "" }), false);
+  assert.deepEqual(await sendBatch([{ to: "a@b.co", subject: "s", html: "", text: "" }]), { sent: 0, failed: 1 });
+  assert.match(read("app/admin/actions.ts"), /EMAIL_SETUP_HINT/);
+  assert.match(read("docs/SECRETS_CHECKLIST.md"), /WEBHOOK_SECRET/);
+  assert.match(read(".env.example"), /ENQUIRY_WEBHOOK_SECRET=/);
 });
