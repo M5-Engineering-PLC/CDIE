@@ -89,7 +89,17 @@ The workflow `.github/workflows/sync-cms.yml` pulls the sheet into
 fires its `cms-updated` event (set `GITHUB_REPO` and `GITHUB_TOKEN`). The site
 falls back to that snapshot if the sheet cannot be reached. Subscriber emails
 and enquiry counts stay in the sheet and never reach the snapshot. The
-workflow needs the three Google values as repository secrets.
+workflow needs the three Google values and `CMS_PUSH_TOKEN` as repository
+secrets; until they are set it exits with a notice rather than failing.
+
+`main` is protected by a ruleset (`scripts/protect-main.sh`) that repository
+admins bypass, so `GITHUB_TOKEN` and `CMS_PUSH_TOKEN` must be an admin's
+fine-grained token (this repository, Contents read and write).
+`scripts/connect-services.sh` enters every value in Vercel and GitHub in one
+run, from the service account's JSON key.
+
+A dashboard post whose link is a LinkedIn post also shows in the LinkedIn band
+on Media, so posts can be added by hand until the Make scenario is connected.
 
 Without a sheet, the dashboard writes a local file under `.data`, which suits a
 dev server only. Setup details are in `.env.example`.

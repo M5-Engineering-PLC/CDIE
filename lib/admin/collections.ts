@@ -40,7 +40,7 @@ export const collections: Collection[] = [
       { name: "date", label: "Date", type: "date" },
       { name: "summary", label: "Summary", type: "textarea" },
       { name: "image", label: "Photograph", type: "image" },
-      { name: "link", label: "Link", type: "url", hint: "Optional. Where the item is published." },
+      { name: "link", label: "Link", type: "url", hint: "Optional. Where the item is published. A LinkedIn post link also shows the post in the LinkedIn band on Media." },
     ],
   },
   {
