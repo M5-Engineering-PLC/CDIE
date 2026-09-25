@@ -18,11 +18,11 @@ const Atc3D = dynamic(
 );
 
 const serviceGroups: { id: AtcServiceId; name: string; description: string }[] = [
-  { id: "metalworking", name: "Metalworking", description: "Work benches and container tools" },
-  { id: "woodworking", name: "Woodworking", description: "CNC router and assembly table" },
-  { id: "laser-cutting", name: "Laser cutting", description: "Laser cutter along the window wall" },
-  { id: "tooling-storage", name: "Tool storage", description: "Shelving inside the container" },
-  { id: "facility-access", name: "Room structure", description: "Container and workshop shell" },
+  { id: "metalworking", name: "Metalworking", description: "Fabrication benches, TOTAL vice, welder & grinder" },
+  { id: "woodworking", name: "Woodworking", description: "CNC router & CAD/CAM desk inside container" },
+  { id: "laser-cutting", name: "Laser cutting", description: "CO2 laser cutter along rear window wall" },
+  { id: "tooling-storage", name: "Tool storage", description: "Heavy-duty tool shelving inside container" },
+  { id: "facility-access", name: "Room structure", description: "Container booth and entrance gateway" },
 ];
 
 export function AtcLab() {
@@ -34,7 +34,6 @@ export function AtcLab() {
         <Atc3D active={active} onSelect={setActive} initialView="isometric" interactive />
         <p className="text-fine text-ink-3">
           Drag to rotate. Scroll to zoom. Select equipment in the model or use the list to highlight an area.
-          Dimensions and equipment positions remain illustrative estimates.
         </p>
       </section>
 
@@ -84,7 +83,7 @@ export function AtcLab() {
 
         <div className="mt-auto border-t border-line pt-4">
           <p className="text-[0.6875rem] uppercase tracking-wider text-ink-3">Build branch</p>
-          <p className="mt-1 break-all font-mono text-fine text-ink-2">feat/accurate-atc-room</p>
+          <p className="mt-1 break-all font-mono text-fine text-ink-2">atc-latest</p>
         </div>
       </aside>
     </div>

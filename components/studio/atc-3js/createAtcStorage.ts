@@ -1,4 +1,7 @@
-/* Source: the blue workshop bays and open tool shelves in the supplied ATC media. */
+/* Tool Storage & Racks: 4-tier heavy-duty industrial shelving inside the container.
+   Source: frame_7040.jpg, cnc.jpg, frame_7030.jpg.
+   Runs along the interior back wall behind the router and operator desk.
+   Packed with Total turquoise & yellow toolboxes, spray cans, hardware bins, and safety signs. */
 
 import * as THREE from "three";
 
@@ -6,73 +9,102 @@ import type { AtcMaterials } from "./materials";
 import { addTextPlate, atcBox, atcCylinder } from "./primitives";
 
 export function createAtcStorage(materials: AtcMaterials): THREE.Group {
-  const storage = new THREE.Group();
-  storage.name = "blue-tool-bays-and-open-shelves";
-  storage.userData.service = "tooling-storage";
+  const root = new THREE.Group();
+  root.name = "tool-storage-zone";
+  root.userData.service = "tooling-storage";
 
-  const bay = new THREE.Group();
-  bay.name = "blue-corrugated-tool-bay";
-  bay.position.set(-2.25, 0, -4.12);
-  bay.add(atcBox("tool-bay-back", [6.5, 2.62, 0.16], [0, 1.31, 0], "blue", materials, "tooling-storage"));
-  bay.add(atcBox("tool-bay-top", [6.65, 0.12, 1.18], [0, 2.68, 0.45], "blue", materials, "tooling-storage"));
-  for (const x of [-3.08, -1.55, 0.15, 1.45, 2.85]) {
-    bay.add(atcBox(`bay-corrugation-${x}`, [0.025, 2.52, 0.035], [x, 1.31, 0.1], "steelDark", materials, "tooling-storage"));
-  }
+  // Shelving system along container back wall
+  // Container X center is -4.4, inner back wall is around -5.8
+  const shelfX = -5.35;
+  const shelfZ = -0.5;
+  const totalLength = 4.8;
+  const depth = 0.55;
+  const height = 2.2;
 
-  for (const x of [-1.55, 1.2]) {
-    bay.add(atcBox(`bay-louver-frame-${x}`, [1.85, 1.76, 0.06], [x, 1.38, 0.17], "white", materials, "tooling-storage", 0.025));
-    for (let y = 0.62; y <= 2.15; y += 0.19) {
-      bay.add(atcBox(`bay-louver-${x}-${y.toFixed(2)}`, [1.68, 0.035, 0.1], [x, y, 0.225], "steel", materials, "tooling-storage"));
+  const shelving = new THREE.Group();
+  shelving.name = "4-tier-industrial-tool-shelves";
+  shelving.position.set(shelfX, 0, shelfZ);
+  shelving.userData.service = "tooling-storage";
+
+  // 1. Steel Upright Posts (5 sets of twin uprights with foot plates)
+  const postsCount = 5;
+  for (let i = 0; i < postsCount; i += 1) {
+    const z = -totalLength / 2 + 0.15 + (i * (totalLength - 0.3)) / (postsCount - 1);
+    for (const dx of [-depth / 2 + 0.04, depth / 2 - 0.04]) {
+      shelving.add(atcBox(`shelf-post-${i}-${dx}`, [0.05, height, 0.05], [dx, height / 2, z], "steelDark", materials, "tooling-storage"));
+      shelving.add(atcBox(`shelf-foot-${i}-${dx}`, [0.12, 0.02, 0.12], [dx, 0.01, z], "steel", materials, "tooling-storage"));
+    }
+    // Cross-tie brace between twin posts
+    for (const ty of [0.4, 1.1, 1.8]) {
+      shelving.add(atcBox(`shelf-brace-${i}-${ty}`, [depth - 0.08, 0.03, 0.03], [0, ty, z], "steelDark", materials, "tooling-storage"));
     }
   }
-  const baySign = addTextPlate(
-    bay,
-    "tool-bay-sign",
-    "WORKSHOP STORAGE",
-    "",
-    [1.7, 0.34],
-    [0, 2.38, 0.245],
-    "#e6e3d8",
-    "#1b3340",
+
+  // 2. Shelf Deck Tiers (4 tiers)
+  const tierHeights = [0.25, 0.82, 1.38, 1.94] as const;
+  tierHeights.forEach((y, idx) => {
+    // Heavy-duty steel shelf deck
+    shelving.add(atcBox(`shelf-deck-${idx}`, [depth, 0.035, totalLength], [0, y, 0], "steel", materials, "tooling-storage"));
+    // Front edge retaining lip
+    shelving.add(atcBox(`shelf-lip-${idx}`, [0.03, 0.06, totalLength], [depth / 2 - 0.015, y + 0.03, 0], "steelDark", materials, "tooling-storage"));
+  });
+
+  // 3. Toolboxes on Shelves (Total turquoise, industrial yellow, and black cases - Source: frame_7040.jpg)
+  const caseColors = ["turquoise", "yellow", "black", "turquoise", "yellow"] as const;
+
+  // Tier 1 (bottom shelf) - large heavy tool cases
+  for (let i = 0; i < 6; i += 1) {
+    const z = -totalLength / 2 + 0.45 + i * 0.72;
+    const color = caseColors[i % caseColors.length];
+    shelving.add(atcBox(`toolcase-t1-${i}`, [0.38, 0.28, 0.52], [0, 0.25 + 0.16, z], color, materials, "tooling-storage", 0.02));
+    shelving.add(atcBox(`toolcase-handle-t1-${i}`, [0.03, 0.04, 0.14], [0.19, 0.25 + 0.16, z], "steelDark", materials, "tooling-storage", 0.01));
+  }
+
+  // Tier 2 (middle-lower shelf) - medium tool cases & power tool boxes
+  for (let i = 0; i < 7; i += 1) {
+    const z = -totalLength / 2 + 0.35 + i * 0.62;
+    const color = caseColors[(i + 1) % caseColors.length];
+    shelving.add(atcBox(`toolcase-t2-${i}`, [0.36, 0.22, 0.44], [0, 0.82 + 0.13, z], color, materials, "tooling-storage", 0.015));
+  }
+
+  // Tier 3 (middle-upper shelf) - Spray Cans (WD-40 blue/yellow & silver) and small parts bins
+  for (let i = 0; i < 8; i += 1) {
+    const z = -totalLength / 2 + 0.3 + i * 0.22;
+    const isWd40 = i % 2 === 0;
+    const can = atcCylinder(`spray-can-${i}`, 0.032, 0.19, [0.05, 1.38 + 0.11, z], isWd40 ? "containerBlue" : "chrome", materials, "tooling-storage", 16);
+    shelving.add(can);
+    if (isWd40) {
+      shelving.add(atcCylinder(`spray-cap-${i}`, 0.022, 0.04, [0.05, 1.38 + 0.22, z], "yellow", materials, "tooling-storage", 16));
+    }
+  }
+
+  // Hardware bins on Tier 3
+  for (let i = 0; i < 5; i += 1) {
+    const z = 0.4 + i * 0.42;
+    shelving.add(atcBox(`hardware-bin-${i}`, [0.34, 0.16, 0.32], [0, 1.38 + 0.1, z], i % 2 ? "turquoise" : "steelDark", materials, "tooling-storage", 0.01));
+  }
+
+  // Tier 4 (top shelf) - spare parts boxes and bulk materials
+  for (let i = 0; i < 5; i += 1) {
+    const z = -totalLength / 2 + 0.5 + i * 0.85;
+    shelving.add(atcBox(`top-box-${i}`, [0.42, 0.24, 0.62], [0, 1.94 + 0.14, z], "wood", materials, "tooling-storage", 0.01));
+  }
+
+  // Safety Poster on the center upright post (Source: frame_7040.jpg)
+  addTextPlate(
+    shelving,
+    "safety-rules-poster",
+    "SAFETY FIRST",
+    "EYE PROTECTION REQUIRED",
+    [0.32, 0.44],
+    [depth / 2 + 0.015, 1.5, 0],
+    "#0f766e",
+    "#ffffff",
     materials,
     "tooling-storage",
   );
-  if (baySign) baySign.position.y = 2.38;
-  storage.add(bay);
 
-  const shelves = new THREE.Group();
-  shelves.name = "open-steel-tool-shelves";
-  const shelfZ = -3.45;
-  const shelfWidth = 6.6;
-  for (const x of [-5.3, -3.75, -2.2, -0.65, 0.9]) {
-    shelves.add(atcBox(`shelf-upright-${x}`, [0.06, 2.2, 0.07], [x, 1.14, shelfZ], "steelDark", materials, "tooling-storage"));
-    shelves.add(atcBox(`shelf-foot-${x}`, [0.42, 0.055, 0.45], [x, 0.04, shelfZ + 0.12], "steel", materials, "tooling-storage"));
-  }
-  for (const y of [0.42, 1.02, 1.64, 2.18]) {
-    shelves.add(atcBox(`shelf-deck-${y}`, [shelfWidth, 0.045, 0.7], [-2.2, y, shelfZ], "steel", materials, "tooling-storage"));
-    shelves.add(atcBox(`shelf-front-lip-${y}`, [shelfWidth, 0.07, 0.035], [-2.2, y + 0.055, shelfZ + 0.35], "steelDark", materials, "tooling-storage"));
-  }
+  root.add(shelving);
 
-  const boxColors = ["yellow", "blue", "black"] as const;
-  for (let index = 0; index < 12; index += 1) {
-    const column = index % 6;
-    const row = Math.floor(index / 6);
-    const x = -4.85 + column * 1.08;
-    const y = row === 0 ? 0.59 : 1.27;
-    shelves.add(atcBox(`tool-case-${index}`, [0.72, 0.3, 0.45], [x, y, shelfZ], boxColors[index % boxColors.length], materials, "tooling-storage", 0.035));
-    shelves.add(atcBox(`tool-case-handle-${index}`, [0.19, 0.035, 0.035], [x, y + 0.035, shelfZ + 0.235], "steelDark", materials, "tooling-storage"));
-  }
-
-  for (let index = 0; index < 5; index += 1) {
-    const x = -4.7 + index * 0.83;
-    shelves.add(atcCylinder(`shelf-aerosol-can-${index}`, 0.052, 0.26, [x, 1.83, shelfZ], index % 2 ? "white" : "yellow", materials, "tooling-storage", 20));
-    shelves.add(atcBox(`shelf-bin-${index}`, [0.44, 0.26, 0.46], [x + 0.4, 1.83, shelfZ], index % 2 ? "blue" : "black", materials, "tooling-storage", 0.025));
-  }
-  shelves.add(atcBox("small-parts-drawer-cabinet", [1.24, 0.54, 0.56], [-4.52, 0.3, shelfZ + 0.08], "blue", materials, "tooling-storage", 0.025));
-  for (const y of [0.18, 0.36, 0.54]) {
-    shelves.add(atcBox(`parts-drawer-front-${y}`, [1.12, 0.1, 0.025], [-4.52, y, shelfZ + 0.37], "white", materials, "tooling-storage"));
-    shelves.add(atcBox(`parts-drawer-pull-${y}`, [0.17, 0.018, 0.035], [-4.52, y + 0.01, shelfZ + 0.39], "steelDark", materials, "tooling-storage"));
-  }
-  storage.add(shelves);
-  return storage;
+  return root;
 }
