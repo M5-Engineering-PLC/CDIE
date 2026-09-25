@@ -8,7 +8,9 @@ import { redirect } from "next/navigation";
 
 import { endSession, passwordMatches, requireAdmin, startSession } from "@/lib/admin/auth";
 import { collectionById, type CollectionId } from "@/lib/admin/collections";
-import { addItem, CMS_TAG, removeItem, saveUpload } from "@/lib/admin/store";
+import { addItem, CMS_TAG, listItems, listSubscribers, removeItem, saveUpload, updateItem } from "@/lib/admin/store";
+import { emailConfigured, sendBatch, sendEmail } from "@/lib/email";
+import { issueEmail } from "@/lib/newsletter";
 
 const IMAGE = /^image\/(jpeg|png|webp|gif|avif)$/;
 
@@ -63,4 +65,50 @@ export async function deleteItem(form: FormData) {
   await removeItem(collection.id as CollectionId, String(form.get("id")));
   updateTag(CMS_TAG);
   revalidatePath("/", "layout");
+}
+
+/*
+  Sends one newsletter issue to the list. 2026-09-25: sending is a deliberate
+  step, never a side effect of saving a record, and a test send to one address
+  comes first so nobody discovers a broken link in front of the whole list.
+
+  What went out is written back onto the issue (when, to how many), so the
+  dashboard can say so and a second click cannot quietly send it twice.
+*/
+export async function sendIssue(_: string | null, form: FormData): Promise<string | null> {
+  await requireAdmin();
+  if (!emailConfigured()) return "Sending is not configured: set RESEND_API_KEY and ENQUIRY_FROM on the server.";
+
+  const id = String(form.get("id"));
+  const test = String(form.get("mode")) === "test";
+  const issue = (await listItems("newsletters")).find((item) => item.id === id);
+  if (!issue) return "That issue is no longer saved.";
+  if (!issue.pdf) return "That issue has no PDF to link to.";
+
+  const content = { issue: issue.issue, title: issue.title, summary: issue.summary, pdf: issue.pdf, image: issue.image };
+
+  if (test) {
+    const to = String(form.get("test") ?? "").trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to)) return "Enter the address the test should go to.";
+    const ok = await sendEmail(issueEmail(to, "test-token", content));
+    return ok ? null : "The test did not send. The server log has the reason.";
+  }
+
+  if (issue.sentAt && String(form.get("again")) !== "yes") {
+    return `This issue was already sent on ${new Date(issue.sentAt).toLocaleDateString("en-GB")}. Tick "send it again" to send it once more.`;
+  }
+
+  const subscribers = await listSubscribers("confirmed");
+  if (subscribers.length === 0) return "Nobody has confirmed a subscription yet, so there is no one to send to.";
+
+  const { sent, failed } = await sendBatch(
+    subscribers.map((person) => issueEmail(person.email, person.token ?? "", content)),
+  );
+  await updateItem("newsletters", id, {
+    sentAt: new Date().toISOString(),
+    sentCount: String(sent),
+  });
+  updateTag(CMS_TAG);
+  revalidatePath("/admin", "layout");
+  return failed > 0 ? `Sent to ${sent}. ${failed} did not go out; the server log has the reason.` : null;
 }
