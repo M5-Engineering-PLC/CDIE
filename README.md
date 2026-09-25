@@ -85,8 +85,9 @@ save is written to the sheet, one tab per section (created on first use), and
 the site reads from it. Share the sheet with the service account as an Editor.
 
 The workflow `.github/workflows/sync-cms.yml` pulls the sheet into
-`content/cms-snapshot.json` every hour, and straight away when the dashboard
-fires its `cms-updated` event (set `GITHUB_REPO` and `GITHUB_TOKEN`). The site
+`content/cms-snapshot.json` when the dashboard fires its `cms-updated` event
+(set `GITHUB_REPO` and `GITHUB_TOKEN`) or when it is run by hand. Since 25
+September 2026 its hourly schedule is off until the Google secrets are set. The site
 falls back to that snapshot if the sheet cannot be reached. Subscriber emails
 and enquiry counts stay in the sheet and never reach the snapshot. The
 workflow needs the three Google values as repository secrets.

@@ -1,19 +1,18 @@
 # Keeps content/cms-snapshot.json in step with the dashboard's Google Sheet.
 #
 # The dashboard fires repository_dispatch "cms-updated" after every save
-# (lib/admin/github.ts); the hourly schedule catches edits made directly in the
-# sheet. A changed snapshot is committed to the default branch, which the host
-# deploys like any other commit.
+# (lib/admin/github.ts); an hourly schedule, off for now, caught edits made
+# directly in the sheet. A changed snapshot is committed to the default
+# branch, which the host deploys like any other commit.
 #
 # Repository secrets: GOOGLE_SHEET_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY.
 
 name: Sync dashboard content
 
+# 2026-09-25: the hourly schedule is off until the Google secrets are set.
 on:
   repository_dispatch:
     types: [cms-updated]
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -27,9 +26,9 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
 
