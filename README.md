@@ -35,6 +35,9 @@ npm run build
   the open decisions.
 - `docs/reference/` and `docs/architecture/` — the governing inputs, filed so the
   build does not depend on a path outside the repository.
+- `docs/SECRETS_CHECKLIST.md` — every credential the site can use, who owns it
+  and where it is set. `docs/DASHBOARD_WALKTHROUGH.md` — the one-page guide to
+  the admin dashboard for the CDIE team.
 
 ## Where things live
 
@@ -69,9 +72,10 @@ station highlights, the tour and interactive flags, the room dimensions and a
 log of the service ids the viewer emits. It exists so the models can be worked
 on without driving the studio explorer around them.
 
-There is no authentication on `/admin`. Anyone who knows the URL can open it on
-a deployed environment, so nothing behind it may be private, and it stays
-free of anything that writes or reveals data until an access decision is made.
+Sign-in on `/admin` is switched on with `ADMIN_AUTH=on` and `ADMIN_PASSWORD`.
+Until both are set (the 2026-09-22 decision was no login for now) anyone who
+knows the URL can open it on a deployed environment. Set both before the site
+is public; see `docs/SECRETS_CHECKLIST.md`.
 
 ### Where dashboard content lives
 
@@ -107,6 +111,13 @@ This is not abstract. An audit of the current site found published facts that
 no source supports, including profiles that were never real people. The record
 of those findings is kept outside this repository; the rules they produced are
 the ones above.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs lint, route type generation, typecheck, the
+tests and a production build on every pull request and on `main`. It needs no
+secrets: without them the build serves the stub LinkedIn feed and the committed
+content snapshot, which is what a preview should do.
 
 ## Deployment
 
