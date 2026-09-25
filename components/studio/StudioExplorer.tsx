@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { StudioCapabilityList } from "./StudioCapabilityList";
 import { StudioComponentGrid } from "./StudioComponentGrid";
 import { StudioDetail } from "./StudioDetail";
+import { StudioPhotoStrip } from "./StudioPhotoStrip";
 import { StudioRailThumb } from "./StudioRailThumb";
 import { StudioStage } from "./StudioStage";
 import { StudioTourIntro } from "./StudioTourIntro";
@@ -111,10 +112,11 @@ export function StudioExplorer({ capabilities, initialId, intro }: StudioExplore
             <StudioStage
               active={selected.modelGroup} open={roomOpen} tour={tour} viewOnly={viewOnly} atc={selected.atc} space={activeSpace}
               name={selected.name} spaceName={selected.spaceName} headline={selected.headline} step={index + 1} of={capabilities.length}
-              image={selected.image} imageAlt={`${selected.name} at the CDIE Design Studio`} onSelect={selectByModelGroup}
+              image={selected.image} imageAlt={selected.media[0]?.alt ?? `${selected.name} at the CDIE Design Studio`} onSelect={selectByModelGroup}
               onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={() => { setRoomOpen(true); setTour(true); }}
               onSwitchSpace={handleSwitchSpace}
             />
+            <StudioPhotoStrip photos={selected.media} capabilityName={selected.name} />
             <StudioComponentGrid items={selected.components} capabilityName={selected.name} />
           </div>
           <StudioDetail selected={selected} />

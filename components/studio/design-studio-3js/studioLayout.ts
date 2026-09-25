@@ -97,7 +97,8 @@ export const studioLayout: StudioLayout = {
       id: 'casting-moulding-shelf',
       label: 'Casting and moulding',
       service: 'casting-moulding',
-      position: [2.05, 0.78, -3.1],
+      /* 2026-09-25: the rack's bottom, floor-level shelf. */
+      position: [2.05, 0.16, -3.1],
       size: [3.2, 0.1, 0.82],
       rotationY: 0,
     },

@@ -35,5 +35,7 @@ export type ExplorerCapability = {
   enquiry: string;
   enquiryHref: string;
   image: string;
+  /** every photograph of the area, the first of them on the stage */
+  media: readonly { src: string; alt: string }[];
   components: readonly ExplorerComponent[];
 };

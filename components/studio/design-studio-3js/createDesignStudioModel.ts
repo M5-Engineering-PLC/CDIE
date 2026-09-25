@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { studioLayout, type ServiceId } from './studioLayout';
+import { createMouldingShelf } from './createMouldingShelf';
 import { createTextileStations } from './createTextileStations';
 import { createBambuEnclosed, createBambuOpen, createFilamentUnit, createPrusaPrinter } from './realisticProps';
 
@@ -416,11 +417,11 @@ export function createDesignStudioModel(): THREE.Group {
     'three-d-printing': new THREE.Group(),
     electronics: new THREE.Group(),
     textiles: new THREE.Group(),
-    // Holds no meshes of its own: it lights the 3D printing rack's lowest
-    // shelf (userData.alsoService), so the camera centre is set here.
+    // 2026-09-25: owns the rack's new bottom shelf (createMouldingShelf) and
+    // still lights the printer shelf above it (userData.alsoService).
     'casting-moulding': new THREE.Group(),
   };
-  services['casting-moulding'].userData.centre = new THREE.Vector3(2.05, 1.1, -3.1);
+  services['casting-moulding'].userData.centre = new THREE.Vector3(2.05, 0.6, -3.1);
   for (const [id, group] of Object.entries(services)) {
     group.name = `service-${id}`;
     group.userData.service = id;
@@ -433,6 +434,7 @@ export function createDesignStudioModel(): THREE.Group {
   root.add(room, windows, electronicsWindow);
   services.design.add(createDoor(), createComputerStations(), createPresentationWall(), createTeacherStation());
   services['three-d-printing'].add(createPrinterStation());
+  services['casting-moulding'].add(createMouldingShelf());
   services.electronics.add(createElectronicsCupboards());
   const textileStations = createTextileStations();
   markService(textileStations, 'textiles');
