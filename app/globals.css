@@ -478,13 +478,14 @@
 @media (min-width: 768px) { .triad-dots { display: none; } }
 
 .cdie-initial { color: var(--color-brand); font-size: 1.2em; font-weight: 800; }
+.cdie-mark-stage { display: inline-block; }
 .cdie-mark { display: inline-block; }
 .cdie-mark-letter { display: inline-block; transform-origin: center 70%; transition: transform 520ms var(--ease-glide); }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .cdie-mark:hover .cdie-mark-letter:nth-child(1) { transform: translate(-0.04em, 0.07em) rotate(-25deg); }
-  .cdie-mark:hover .cdie-mark-letter:nth-child(2) { transform: translate(0.02em, -0.05em) rotate(20deg); }
-  .cdie-mark:hover .cdie-mark-letter:nth-child(3) { transform: translate(0.01em, 0.08em) rotate(-32deg); }
-  .cdie-mark:hover .cdie-mark-letter:nth-child(4) { transform: translate(0.04em, -0.04em) rotate(24deg); }
+  .cdie-mark-stage:hover .cdie-mark-letter:nth-child(1) { transform: translate(-0.04em, 0.07em) rotate(-25deg); }
+  .cdie-mark-stage:hover .cdie-mark-letter:nth-child(2) { transform: translate(0.02em, -0.05em) rotate(20deg); }
+  .cdie-mark-stage:hover .cdie-mark-letter:nth-child(3) { transform: translate(0.01em, 0.08em) rotate(-32deg); }
+  .cdie-mark-stage:hover .cdie-mark-letter:nth-child(4) { transform: translate(0.04em, -0.04em) rotate(24deg); }
 }
 @media (prefers-reduced-motion: reduce) { .cdie-mark-letter { transition: none; } }
 

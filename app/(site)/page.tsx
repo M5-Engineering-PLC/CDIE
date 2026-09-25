@@ -82,7 +82,7 @@ export default function HomePage() {
 
       <Section tone="surface" eyebrow={defineCdie.eyebrow} title={defineCdie.headline}>
         <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:gap-16">
-          <div className="self-center">
+          <div className="cdie-mark-stage self-center">
             <p aria-hidden="true" className="cdie-mark display text-mega leading-none text-brand">
               <span className="cdie-mark-letter">C</span>.<span className="cdie-mark-letter">D</span>.<span className="cdie-mark-letter">I</span>.<span className="cdie-mark-letter">E</span>
             </p>
