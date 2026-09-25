@@ -70,15 +70,15 @@ export function NewsletterSignup() {
 
   return (
     <form
-      className="flex max-w-md flex-col gap-2"
+      className="relative flex max-w-md flex-col gap-2"
       onSubmit={async (event) => {
         event.preventDefault();
-        const email = String(new FormData(event.currentTarget).get("email") ?? "");
+        const data = new FormData(event.currentTarget);
         setState("sending");
         const response = await fetch("/api/subscribe", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email: String(data.get("email") ?? ""), company_website: data.get("company_website") }),
         }).catch(() => null);
 
         if (!response) return setState("error");
@@ -94,6 +94,13 @@ export function NewsletterSignup() {
         setState(outcome ?? "recorded");
       }}
     >
+      {/* 2026-09-25: the honeypot, as on the enquiry form. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Leave this field empty
+          <input type="text" name="company_website" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </label>
+      </div>
       <label htmlFor="newsletter-email" className="text-fine text-ink-2">
         Get the next issue by email
       </label>

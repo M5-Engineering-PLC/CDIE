@@ -162,6 +162,22 @@ the high window in the Graduate School room. The model places textiles there.
 The video gives no measurements, so the room size and station spacing remain
 illustrative. Metalworking and woodworking still have no documented position.
 
+The new ATC upload contains four room videos and four still images. The PNG plan
+opens in portrait orientation. A counter-clockwise turn makes its labels
+readable. It marks two metalworking benches on one side, two woodworking
+stations opposite them, and a laser station near one end. The plan gives no
+room measurements.
+
+The videos show green steel supports, high grid windows, a corrugated roof,
+blue storage bays, open tool shelves, and work tables. `IMG_0938.MP4` shows the
+Blue Elephant name and ELECNC1212 label on the woodworking router. The plan names
+a laser station but gives no make or model. The ATC model follows these areas
+and keeps its room footprint illustrative.
+
+The user asked to retain the blue shipping-container cutaway from the prior ATC
+model. The model keeps its previous position and proportions. Its dimensions
+remain illustrative because the supplied plan does not measure the container.
+
 The source of R9, and of the other four review items numbered R10 to R13, is a
 machine transcript of poor quality in which speaker attribution is unreliable.
 The corrections pass lives with the meeting record outside this repository. Do
@@ -252,6 +268,20 @@ Design Studio, currently render the enquiry wording instead of their answer.
 What unblocks it: a named person at CDIE reads each answer and confirms it. The
 confirmation goes into the record as `confirmed: { by, on, source }` and that
 answer publishes immediately, one question at a time. Nothing else changes.
+
+#### Conflict C-09, 2026-09-25. A Summer Programme page that Lucid does not draw
+
+The daily note of 25 September asks for a summer programme page under
+Programmes, populated from CDIE's LinkedIn posts and the events list, and
+built like the Design Challenge page. The Lucid IA has no such page.
+
+The page is built at `/programmes/summer-programme` and listed among the
+opportunities, because the client asked for it in writing. Every fact on it is
+lifted from CDIE's own posts as kept in the CDIE LinkedIn feed sheet, with the
+dates stated to the month because the sheet marks them estimated. The next
+edition's dates, eligibility, fees and application route are `pending`.
+
+What settles it: the Lucid map gains the page, or the client withdraws it.
 
 ### 3.3 Review feedback of 11 September, and where it collides with Lucid
 
@@ -369,6 +399,19 @@ issues, the reports login, and the remaining team members. The programme cards
 accept a photograph and render without one until it arrives. The full list with
 owners is in the meeting record.
 
+
+#### Conflict C-10, 2026-09-25. The summer programme call poster and the feed sheet disagree on dates
+
+The CDIE LinkedIn feed sheet marks the 2026 summer programme dates as
+estimated, May to June 2026, and the earlier draft of the page said "four
+weeks". The call poster CDIE published (shared by Drive on 25 September) says
+11 to 29 May 2026, a three-week programme, with a participant cost of Ksh
+7,000 sponsored up to 90 percent. The poster is CDIE's own call, so the page
+now carries its dates, cost and eligibility, and the headline says three
+weeks. The poster is dated to that one edition; the next edition stays
+pending. The same folder gave the assistive devices design challenge its
+call poster, which fixes that edition to 23 to 27 March 2026 and names the
+theme "assistive devices" rather than "assistive care".
 
 ## 4. Target architecture
 

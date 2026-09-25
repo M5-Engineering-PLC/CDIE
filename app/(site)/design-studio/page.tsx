@@ -66,7 +66,9 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   pending: capability.pending,
   enquiry: capability.enquiry,
   enquiryHref: "/contact?topic=studio",
-  image: studioImages[capability.id],
+  // 2026-09-25: a capability's first photograph leads; the map is the fallback.
+  image: capability.media[0]?.src ?? studioImages[capability.id],
+  media: capability.media,
   components: capability.components,
 }));
 
@@ -78,8 +80,8 @@ const capabilityCards: VisualRailItem[] = capabilities.map((capability) => ({
   eyebrow: capability.name,
   title: spaceNames.get(capability.space) ?? capability.space,
   summary: capability.headline,
-  image: studioImages[capability.id],
-  alt: `${capability.name} at the CDIE Design Studio`,
+  image: capability.media[0]?.src ?? studioImages[capability.id],
+  alt: capability.media[0]?.alt ?? `${capability.name} at the CDIE Design Studio`,
   href: `/design-studio?service=${capability.id}`,
   action: "Explore in the room",
 }));

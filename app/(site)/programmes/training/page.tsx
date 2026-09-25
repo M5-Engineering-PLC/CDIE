@@ -6,8 +6,9 @@ import type { Metadata } from "next";
 import { Button } from "@/components/primitives/Button";
 import { Pending } from "@/components/primitives/Pending";
 import { PageHero } from "@/components/sections/PageHero";
+import { ProgrammeGallery } from "@/components/sections/ProgrammeGallery";
 import { Section } from "@/components/sections/Section";
-import { training, getOpportunity } from "@/content/programmes";
+import { training, trainingCall, trainingPhotos, getOpportunity } from "@/content/programmes";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -34,6 +35,16 @@ export default function TrainingPage() {
       >
         <Button href={training.action.href}>{training.action.label}</Button>
       </PageHero>
+
+      {/* 2026-09-25: the call poster and workshop photographs the client shared by Drive. */}
+      <ProgrammeGallery
+        eyebrow="Masterclasses and prototyping workshops"
+        title="Tell us what you would come for."
+        intro="The current call asks for your input on class schedules, the courses offered and pricing. The photographs are from masterclass sessions at the ATC workshop."
+        call={trainingCall}
+        photos={trainingPhotos}
+        galleryTitle="From the workshops"
+      />
 
       <Section eyebrow="What is settled" title="What we can tell you today.">
         <p className="max-w-[62ch] text-lead leading-relaxed text-ink-2">

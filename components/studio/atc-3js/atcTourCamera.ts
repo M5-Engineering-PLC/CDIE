@@ -1,7 +1,6 @@
 /*
   The guided tour camera driver for the ATC Engineering & Prototyping Workshop.
-  Controls smooth continuous turntable yaw and flies directly to the active station
-  (Woodworking/CNC, Metalworking/Benches, Laser Cutting, Tooling/Storage).
+  Controls a slow room orbit and flies to the selected workstation or storage area.
 */
 
 import * as THREE from "three";
@@ -15,12 +14,12 @@ const YAW_PER_FRAME = 0.0015;
 /** Camera lerp factor. Smooth, elegant easing. */
 const CHASE = 0.045;
 
-const ROOM = { radius: 15.5, phi: 0.95, height: 0.5 };
+const ROOM = { radius: 16.5, phi: 0.94, height: 1.6 };
 /** How far from the room centre toward a station the camera stands (0 = centre,
     negative = back past the centre). "zoom out abit": a little behind centre. */
 const CENTRE_PULL = -0.15;
 /** Standing eye height inside the room, in metres. */
-const EYE_HEIGHT = 1.9;
+const EYE_HEIGHT = 1.75;
 const CLOSE = { radius: 5.8, phi: 1.05 };
 
 function centreOf(runtime: AtcRuntime, service: AtcServiceId | null, into: THREE.Vector3) {

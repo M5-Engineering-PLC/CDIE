@@ -9,6 +9,8 @@
 
   Where sending is not configured the sign-up is still recorded and the answer
   says so, rather than losing the address.
+
+  2026-09-25, security: a per-address throttle and a honeypot, as on /api/enquiry.
 */
 
 import { revalidateTag } from "next/cache";
@@ -16,15 +18,22 @@ import { revalidateTag } from "next/cache";
 import { emailConfigured, sendEmail } from "@/lib/email";
 import { confirmationEmail } from "@/lib/newsletter";
 import { CMS_TAG, recordSubscription } from "@/lib/admin/store";
+import { allow, clientAddress, isHoneypotFilled } from "@/lib/security/throttle";
 
 export async function POST(request: Request) {
-  let email = "";
-  try {
-    const body = (await request.json()) as { email?: unknown };
-    email = typeof body.email === "string" ? body.email.trim().toLowerCase().slice(0, 200) : "";
-  } catch {
-    email = "";
+  if (!allow(`subscribe:${clientAddress(request)}`)) {
+    return Response.json({ error: "too_many" }, { status: 429, headers: { "retry-after": "60" } });
   }
+
+  let body: { email?: unknown } = {};
+  try {
+    body = (await request.json()) as { email?: unknown };
+  } catch {
+    body = {};
+  }
+  if (isHoneypotFilled(body)) return Response.json({ ok: true });
+
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase().slice(0, 200) : "";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return Response.json({ error: "invalid" }, { status: 400 });
   }

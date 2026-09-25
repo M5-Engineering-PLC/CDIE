@@ -1,10 +1,26 @@
 # LinkedIn read layer
 
-Date: 2026-09-11, revised 2026-09-22
+Date: 2026-09-11, revised 2026-09-22 and 2026-09-25
 Governing decision record: CDIE_Website_LinkedIn_Integration_Handoff_2026-09-11.md
 Status: Read layer built and wired into the Media page. The sheet exists and is
 kept by hand; it is not yet published to the web, so the site still serves the
 empty stub. The Make scenario does not exist yet.
+
+Checked 2026-09-25 against the sheet itself:
+
+- The posts tab has the six columns this document specifies, in order, and
+  three rows, all `urn:li:activity:` URNs from September 2026 with ISO dates.
+  They would pass validation as they stand.
+- The sheet also carries an Event Posts tab (62 rows: date, event, type,
+  excerpt, post URL, embed URL, embed code) and an Events Calendar tab (42
+  events with start, end, status and date confidence). The read layer ignores
+  both; `content/programmes.ts` was hand-filled from them.
+- `LINKEDIN_SHEET_CSV_URL` is not set anywhere, so production serves the stub.
+
+What remains, in order: publish the posts tab to the web as CSV
+(`docs/SECRETS_CHECKLIST.md` section 5), set the variable, confirm the Media
+band renders the three posts, then build the Make scenario with a page admin
+present.
 
 ## What this is
 

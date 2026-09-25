@@ -1,5 +1,7 @@
 "use client";
 
+/* Source: user-supplied ATC floor plan and room videos. */
+
 import { useRef, useState } from "react";
 
 import type { AtcServiceId } from "./atcLayout";
@@ -24,11 +26,11 @@ export function Atc3D({
 }: Atc3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [view, setView] = useState<AtcView>(initialView);
-  const [showLabels, setShowLabels] = useState<boolean>(true);
-  const [shutterOpen, setShutterOpen] = useState<boolean>(true);
+  const [showLabels, setShowLabels] = useState<boolean>(false);
+  const [roofVisible, setRoofVisible] = useState<boolean>(false);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
-  const { toggleShutter } = useAtcScene({
+  const { toggleRoof } = useAtcScene({
     canvasRef,
     active,
     view,
@@ -40,13 +42,13 @@ export function Atc3D({
     onError: () => setStatus("error"),
   });
 
-  const handleShutterToggle = () => {
-    if (toggleShutter) {
-      const state = toggleShutter();
+  const handleRoofToggle = () => {
+    if (toggleRoof) {
+      const state = toggleRoof();
       if (typeof state === "boolean") {
-        setShutterOpen(state);
+        setRoofVisible(state);
       } else {
-        setShutterOpen((prev) => !prev);
+        setRoofVisible((prev) => !prev);
       }
     }
   };
@@ -68,7 +70,7 @@ export function Atc3D({
         ref={canvasRef}
         className={`block aspect-video min-h-96 w-full ${interactive ? "touch-none" : "touch-pan-y"}`}
         role="img"
-        aria-label="Interactive 3D digital floor plan of the CDIE Engineering & Prototyping Workshop (ATC). Drag to orbit, scroll to zoom, or select equipment to highlight its capability."
+        aria-label="Interactive illustrative 3D model of the CDIE ATC workshop, based on the supplied floor plan and room videos. Drag to orbit, scroll to zoom, or select equipment to highlight its capability."
       />
 
       {status === "loading" ? (
@@ -81,7 +83,7 @@ export function Atc3D({
       {interactive && !tour ? (
         <div
           className="absolute bottom-4 right-4 flex flex-wrap items-center gap-1 border border-line bg-surface p-1 shadow-sm"
-          aria-label="Workshop 3D camera and equipment controls"
+          aria-label="ATC room view controls"
         >
           {(["isometric", "top"] as const).map((option) => (
             <button
@@ -106,18 +108,21 @@ export function Atc3D({
             className={`px-2.5 py-1.5 text-fine transition-colors ${
               showLabels ? "bg-raise font-medium text-ink" : "text-ink-3 hover:bg-raise"
             }`}
-            title="Toggle 3D numbered badge labels"
+            title="Show or hide the station markers"
+            disabled={status !== "ready"}
           >
-            🏷️ Badges: {showLabels ? "ON" : "OFF"}
+            Station markers: {showLabels ? "On" : "Off"}
           </button>
 
           <button
             type="button"
-            onClick={handleShutterToggle}
-            className="px-2.5 py-1.5 text-fine text-ink-2 hover:bg-raise transition-colors"
-            title="Toggle container roll-up shutter"
+            onClick={handleRoofToggle}
+            aria-pressed={roofVisible}
+            className={`px-2.5 py-1.5 text-fine transition-colors ${roofVisible ? "bg-raise font-medium text-ink" : "text-ink-2 hover:bg-raise"}`}
+            title="Show or hide the corrugated roof panels"
+            disabled={status !== "ready"}
           >
-            🚪 Shutter: {shutterOpen ? "Open" : "Closed"}
+            Roof: {roofVisible ? "On" : "Off"}
           </button>
         </div>
       ) : null}
