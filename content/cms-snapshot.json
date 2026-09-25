@@ -1,7 +1,14 @@
 {
-  "syncedAt": "2026-09-25T13:42:41.703Z",
+  "syncedAt": "2026-09-25T13:52:05.442Z",
   "items": {
-    "posts": [],
+    "posts": [
+      {
+        "id": "77e1e4ac-411b-4d13-b47c-8dbcbd209760",
+        "createdAt": "2026-09-25T13:51:52.012Z",
+        "title": "Women in STEM: Transforming Healthcare",
+        "link": "https://www.linkedin.com/feed/update/urn:li:activity:7508789924649832448/"
+      }
+    ],
     "newsletters": [],
     "events": [],
     "activities": [],
