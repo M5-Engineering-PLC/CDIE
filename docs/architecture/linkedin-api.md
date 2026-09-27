@@ -2,9 +2,37 @@
 
 Date: 2026-09-11, revised 2026-09-22 and 2026-09-25
 Governing decision record: CDIE_Website_LinkedIn_Integration_Handoff_2026-09-11.md
-Status: Read layer built and wired into the Media page. The sheet exists and is
-kept by hand; it is not yet published to the web, so the site still serves the
-empty stub. The Make scenario does not exist yet.
+Status, 2026-09-27: The Media page now reads `content/linkedin-snapshot.json`
+and images committed under `public/linkedin/`. Page renders and browser image
+requests never contact LinkedIn or the Google Sheet. The scheduled job discovers
+the latest public company posts from LinkedIn's page data. Dashboard links and
+the private sheet are additional sources.
+
+`scripts/sync-linkedin.mjs` reads the public company page and, when configured,
+the private sheet through the existing Google service account. It merges
+dashboard links, validates and sorts up to eight
+posts, copies their pictures and missing event pictures to local assets, and
+updates the snapshot. `npm run build` runs this first. `.github/workflows/sync-linkedin.yml`
+also runs it every three hours and commits changes, triggering a deployment.
+The workflow can run without Google credentials. If the repository has
+`GOOGLE_SHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL`, and `GOOGLE_PRIVATE_KEY`
+secrets, it also reads the private sheet. If a source is unavailable, the
+previous committed posts remain in the snapshot. A published CSV URL is an
+optional sheet fallback.
+
+The historical design notes below describe the sheet and Make setup. References
+to live sheet reads, runtime `og:image` fetching, and LinkedIn embeds no longer
+describe the Media page's delivery path.
+
+### Activate the scheduled post sync
+
+1. Once this workflow is on the default branch, choose Actions → Sync LinkedIn media → Run workflow. It discovers public posts and commits the snapshot and pictures. The three-hour schedule handles later posts.
+2. The [CDIE LinkedIn feed sheet](https://docs.google.com/spreadsheets/d/1YwW7t2l1w1Jp6_y7ENvOpf21XvEB6xH2eVvxEAX7Wg4/edit) is optional. Its rows are on the `Untitled` tab. Keep it private; for the scheduled job to read it, the repository needs the service-account secrets and that account needs Reader access.
+3. For sheet rows, `id` and `postedAt` are required; `text`, `repost`, `image` and `title` are optional.
+
+Public page discovery is best effort because LinkedIn may change its page
+markup or limit automated requests. The committed snapshot remains available
+if a refresh cannot reach LinkedIn.
 
 Checked 2026-09-25 against the sheet itself:
 

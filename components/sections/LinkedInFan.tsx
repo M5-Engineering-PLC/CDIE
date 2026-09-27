@@ -75,8 +75,9 @@ export function LinkedInFan({ posts, fallbackImage }: { posts: LinkedInPost[]; f
             >
               {front ? null : <button type="button" className="fan-pick" tabIndex={-1} onClick={() => setActive(index)} />}
               <div className="fan-photo">
-                {/* eslint-disable-next-line @next/next/no-img-element -- the picture is a URL from the sheet */}
-                <img src={post.image ?? fallbackImage} alt="" loading="lazy" data-mark={!post.image || undefined} />
+                {/* eslint-disable-next-line @next/next/no-img-element -- local snapshot image */}
+                <img src={post.image ?? fallbackImage} alt="" loading="lazy" data-mark={!post.image || undefined}
+                  onError={(event) => { event.currentTarget.src = fallbackImage; }} />
               </div>
               <div className="fan-panel">
                 <p className="fan-kicker">{dateLabel(post.postedAt)}{post.repost ? " · Repost" : ""}</p>

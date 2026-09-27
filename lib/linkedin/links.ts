@@ -1,8 +1,7 @@
 /*
   Pasted LinkedIn links, the hand-kept path into the feed.
 
-  2026-09-25: until a CDIE page admin connects the Make scenario, a post
-  reaches the Media band when someone adds it in the dashboard (Posts, Link).
+  A post added in the dashboard (Posts, Link) joins the next snapshot sync.
   This file turns the link into a store row; normalisePost still decides
   whether the row is real, so a link with no post id is dropped, never guessed.
 

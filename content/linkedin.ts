@@ -72,7 +72,9 @@ export function normalisePost(raw: unknown): LinkedInPost | null {
   if (Number.isNaN(Date.parse(postedAt))) return null;
 
   const repost = row.repost;
-  const image = typeof row.image === "string" && /^https:\/\/\S+$/.test(row.image.trim()) ? row.image.trim() : undefined;
+  const image = typeof row.image === "string" &&
+    (/^https:\/\/\S+$/.test(row.image.trim()) || /^\/linkedin\/[a-z0-9-]+\.(?:jpg|png|webp|avif)$/.test(row.image.trim()))
+    ? row.image.trim() : undefined;
   const title = typeof row.title === "string" && row.title.trim() ? row.title.trim().slice(0, 120) : undefined;
 
   return {

@@ -2,6 +2,7 @@
 // Copy: MEDIA. Newsletters open the published issue in a new tab.
 
 import type { Metadata } from "next";
+import snapshot from "@/content/linkedin-snapshot.json";
 
 import { EventCalendar, type CalendarCardEvent } from "@/components/blocks/EventCalendar";
 import { FaqList } from "@/components/blocks/FaqList";
@@ -20,7 +21,6 @@ import {
 import { events, eventsCopy } from "@/content/programmes";
 import { listItems } from "@/lib/admin/store";
 import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
-import { fetchPostImage } from "@/lib/linkedin/image";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -56,12 +56,13 @@ const programmeEvents: CalendarCardEvent[] = events.map((event) => ({
   image: event.image,
 }));
 
-/* Revised 2026-09-23: an event with no photograph of its own takes the first
-   picture of the LinkedIn post it is filed from, when that post has one. */
-const withPostImage = (event: CalendarCardEvent) =>
-  event.image || !event.link?.startsWith("https://www.linkedin.com/")
-    ? Promise.resolve(event)
-    : fetchPostImage(event.link).then((image) => (image ? { ...event, image } : event));
+/* The scheduled sync commits LinkedIn pictures into /public/linkedin. Rendering
+   this page never waits for LinkedIn or sends its image URLs to a browser. */
+const withPostImage = (event: CalendarCardEvent) => {
+  const image = event.image?.startsWith("https://media.licdn.com/") ? undefined : event.image;
+  if (image || !event.link?.startsWith("https://www.linkedin.com/")) return { ...event, image };
+  return { ...event, image: (snapshot.eventImages as Record<string, string>)[event.link] };
+};
 
 export default async function MediaPage() {
   /* Enhancements 2026-09-22: one timeline holds programme events plus the
@@ -72,12 +73,12 @@ export default async function MediaPage() {
     listItems("posts"),
     listItems("newsletters"),
   ]);
-  const calendarEvents: CalendarCardEvent[] = await Promise.all([
+  const calendarEvents: CalendarCardEvent[] = [
     ...programmeEvents,
     ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Event", image: item.image })),
     ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Activity", image: item.image })),
     ...posts.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Post", link: item.link, image: item.image })),
-  ].map(withPostImage));
+  ].map(withPostImage);
   const today = new Date().toISOString().slice(0, 10);
 
   const newsletters = mediaItems.filter((item) => item.kind === "newsletter");
@@ -101,7 +102,7 @@ export default async function MediaPage() {
     href: item.external,
   })),
   ];
-  const feed = await getLinkedInFeed(posts);
+  const feed = await getLinkedInFeed();
   const recent = feed.posts.slice(0, RECENT_POSTS);
 
   return (

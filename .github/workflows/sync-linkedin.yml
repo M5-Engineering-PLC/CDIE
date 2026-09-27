@@ -1,0 +1,37 @@
+# Discover recent public posts and commit feed and image copies for local delivery.
+name: Sync LinkedIn media
+
+on:
+  schedule:
+    - cron: "27 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-linkedin
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Save posts and images
+        run: node scripts/sync-linkedin.mjs --optional
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+      - name: Commit when content changed
+        run: |
+          git add content/linkedin-snapshot.json public/linkedin
+          git diff --cached --quiet && exit 0
+          git config user.name "cdie-content-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync LinkedIn posts and local images"
+          git push

@@ -1,16 +1,14 @@
 /*
   The page's own public posts, read with no LinkedIn account and no admin role.
 
-  2026-09-25: replaces the Make scenario as the way new posts reach the site.
+  The scheduled snapshot job uses this to discover new posts.
   LinkedIn's public company page carries a JSON-LD block for search engines
   listing the page's latest posts (about seven) as SocialMediaPosting entries,
-  each with its URL, datePublished and text. The server reads that block once
-  an hour and the posts join the feed; the embeds themselves come from
-  LinkedIn as before.
+  each with its URL, datePublished and text. The job copies these posts and
+  their images to the repository so page rendering stays local.
 
   It is best-effort by design. If LinkedIn changes the page or turns the
-  request away, this returns no rows and the feed falls back to the sheet and
-  the dashboard, which keep working on their own.
+  request away, this returns no rows and the previous snapshot stays available.
 
   Node built-ins only, so the tests can import it with type stripping.
 */
@@ -19,7 +17,6 @@ import { linkedInUrn } from "./links.ts";
 
 /** Invention Education - Kenyatta University, the page every CDIE post comes from. */
 export const LINKEDIN_PAGE = "https://www.linkedin.com/company/invention-education-kenyatta-university/";
-const HOUR_SECONDS = 3_600;
 
 type Posting = { "@type"?: string; url?: string; datePublished?: string; text?: string };
 
@@ -54,7 +51,6 @@ export async function fetchPublicPosts(page: string = LINKEDIN_PAGE) {
         "accept-language": "en",
       },
       signal: AbortSignal.timeout(8_000),
-      next: { revalidate: HOUR_SECONDS },
     } as RequestInit);
     if (!response.ok) return [];
     return parsePublicPage(await response.text());

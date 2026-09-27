@@ -134,3 +134,9 @@ snapshot, which is what a preview should do.
 Vercel. Every pull request gets a preview deployment; `main` deploys to
 production. A pull request merges after the preview renders, the checks pass and
 the review session approves.
+
+The Media page serves LinkedIn posts and pictures from the committed snapshot.
+The three-hour `Sync LinkedIn media` workflow discovers posts on the public
+company page, adds any dashboard links or available private-sheet rows, and
+commits local images. A production build also refreshes the snapshot. See
+`docs/architecture/linkedin-api.md` for the setup.
