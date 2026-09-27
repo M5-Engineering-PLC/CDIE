@@ -10,14 +10,15 @@
 import { normalisePost, type LinkedInFeed, type LinkedInPost } from "@/content/linkedin";
 
 import { MAX_POSTS } from "./config";
-import type { StoreRead } from "./store";
+
+type SnapshotRead = { syncedAt: string | null; rows: unknown[] };
 
 /** Epoch stands for "never synced". isStale treats it as stale, so a store
     that cannot report a heartbeat degrades to the fallback rather than
     presenting itself as fresh. */
 const NEVER = "1970-01-01T00:00:00Z";
 
-export function buildFeed(read: StoreRead, limit: number = MAX_POSTS): LinkedInFeed {
+export function buildFeed(read: SnapshotRead, limit: number = MAX_POSTS): LinkedInFeed {
   const seen = new Set<string>();
   const posts: LinkedInPost[] = [];
 

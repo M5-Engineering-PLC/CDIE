@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/sync-linkedin.mjs --optional",
     "build": "next build",
     "start": "next start",
     "test": "node --test tests/*.test.mjs",

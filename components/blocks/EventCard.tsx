@@ -4,7 +4,7 @@
   and, where the event runs longer than a day, the end; the event type as a
   tag; the title; the venue, or the programme line; and a Read More button (2026-09-24)
   that opens the post the record comes from. A date the source only estimates
-  says so. Images are plain img because some are LinkedIn URLs.
+  says so. LinkedIn photographs are copied to this site's public directory.
 */
 
 export type CalendarCardEvent = {
@@ -47,8 +47,9 @@ export function EventCard({ event, today, fallbackImage, focusable = true }: {
   return (
     <article className="cal-card">
       <div className="cal-photo">
-        {/* eslint-disable-next-line @next/next/no-img-element -- some pictures come from LinkedIn */}
-        <img src={event.image ?? fallbackImage} alt="" loading="lazy" data-mark={!event.image || undefined} />
+        {/* eslint-disable-next-line @next/next/no-img-element -- static local photograph */}
+        <img src={event.image ?? fallbackImage} alt="" loading="lazy" data-mark={!event.image || undefined}
+          onError={(error) => { error.currentTarget.src = fallbackImage; }} />
       </div>
       <div className="cal-top">
         <p className="cal-date" aria-label={`${event.start}${multiDay ? ` to ${event.end}` : ""}`}>
