@@ -8,7 +8,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { NavItem } from "@/content/types";
 
@@ -28,6 +28,7 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const update = () => setCompact(window.scrollY > 72);
@@ -49,7 +50,11 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      // The closing panel turns inert, which would drop focus to the page;
+      // hand it back to the control that opened it, as the disclosure pattern expects.
+      toggle.current?.focus();
     };
     // Reaching the desktop breakpoint reveals the full bar, so the panel is
     // redundant and would otherwise stay open behind it.
@@ -109,6 +114,7 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
         ) : null}
 
         <button
+          ref={toggle}
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}

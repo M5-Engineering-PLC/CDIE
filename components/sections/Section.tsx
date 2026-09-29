@@ -5,9 +5,15 @@
   token it reads halves below the md breakpoint. Supporting copy folds to three
   lines on a phone via .and is released on a wider screen, so
   nothing is removed from the document.
+
+  Transitions branch 2026-09-29: the band's heading and its body each rise in
+  once on first view, through Reveal. Heroes do not use Section, so the first
+  screen of every page is never held back.
 */
 
 import type { ReactNode } from "react";
+
+import { Reveal } from "@/components/primitives/Reveal";
 
 export type SectionProps = {
   id?: string;
@@ -33,17 +39,19 @@ export function Section({
     >
       <div className="shell band-y">
         {eyebrow || title || standfirst ? (
-          <header className="mb-6 max-w-[62ch] md:mb-10">
-            {eyebrow ? <p className="kicker">{eyebrow}</p> : null}
-            {title ? <h2 className="display mt-3 text-title md:text-head">{title}</h2> : null}
-            {standfirst ? (
-              <p className="mt-3 text-lead leading-relaxed text-ink-2 md:mt-4">
-                {standfirst}
-              </p>
-            ) : null}
-          </header>
+          <Reveal>
+            <header className="mb-6 max-w-[62ch] md:mb-10">
+              {eyebrow ? <p className="kicker">{eyebrow}</p> : null}
+              {title ? <h2 className="display mt-3 text-title md:text-head">{title}</h2> : null}
+              {standfirst ? (
+                <p className="mt-3 text-lead leading-relaxed text-ink-2 md:mt-4">
+                  {standfirst}
+                </p>
+              ) : null}
+            </header>
+          </Reveal>
         ) : null}
-        {children}
+        <Reveal>{children}</Reveal>
       </div>
     </section>
   );
