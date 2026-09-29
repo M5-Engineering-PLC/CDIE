@@ -30,18 +30,23 @@ export function Reveal({ children, className = "" }: RevealProps) {
     if (node.getBoundingClientRect().top < window.innerHeight) return;
 
     node.dataset.reveal = "wait";
+    const release = () => {
+      node.dataset.reveal = "in";
+      observer.disconnect();
+      node.removeEventListener("focusin", release);
+    };
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        node.dataset.reveal = "in";
-        observer.disconnect();
-      },
+      ([entry]) => { if (entry.isIntersecting) release(); },
       { rootMargin: "0px 0px -8% 0px" },
     );
     observer.observe(node);
+    // Keyboard focus can land in a block faster than the observer reports it
+    // on screen; a focused control must never sit inside a transparent block.
+    node.addEventListener("focusin", release);
 
     return () => {
       observer.disconnect();
+      node.removeEventListener("focusin", release);
       delete node.dataset.reveal;
     };
   }, []);
