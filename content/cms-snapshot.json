@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-09-30T13:51:34.186Z",
+  "syncedAt": "2026-09-30T13:53:12.951Z",
   "items": {
     "posts": [
       {
@@ -20,6 +20,16 @@
       "collection": "events",
       "key": "ev11",
       "at": "2026-09-30T13:51:24.167Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev18",
+      "at": "2026-09-30T13:51:35.413Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev01",
+      "at": "2026-09-30T13:52:57.905Z"
     }
   ],
   "studio": [],
