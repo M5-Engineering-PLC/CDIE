@@ -2,6 +2,7 @@
 
 import { ViewTransition } from "react";
 
+import { SiteAnalytics } from "@/components/chrome/SiteAnalytics";
 import { SiteFooter } from "@/components/chrome/SiteFooter";
 import { SiteNav } from "@/components/chrome/SiteNav";
 import { SkipLink } from "@/components/chrome/SkipLink";
@@ -34,6 +35,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         institution={site.institution}
         socialAccounts={[...socialAccounts]}
       />
+      <SiteAnalytics />
     </>
   );
 }

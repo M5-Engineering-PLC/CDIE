@@ -45,7 +45,8 @@ export const metadata: Metadata = pageMetadata({
 const serviceImages: Record<string, string> = {
   design: "/images/service-design-2.jpg",
   electronics: "/images/service-electronics-1.jpg",
-  "three-d-printing": "/images/cdie-3d-printers.jpg",
+  // Review 2026-09-30: "change the 3d printing image to the human heart image".
+  "three-d-printing": "/images/cdie-3d-printing-heart-model-01.jpeg",
   "co-working": "/images/service-coworking-1.jpg",
   metalworking: "/images/service-metalworking-1.jpeg",
   textiles: "/images/cdie-textiles-sewing.jpg",

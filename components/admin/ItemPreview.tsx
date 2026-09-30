@@ -8,7 +8,7 @@
   because a preview may be a local file that has not been uploaded yet.
 */
 
-import { CohortGrid } from "@/components/blocks/CohortGrid";
+import { StoryGrid } from "@/components/blocks/StoryGrid";
 import { EventCard } from "@/components/blocks/EventCard";
 import type { CollectionId } from "@/lib/admin/collections";
 
@@ -65,7 +65,7 @@ export function ItemPreview({ collection, values }: { collection: CollectionId; 
     return (
       <Frame where="MSc MDI, Success stories">
         {v("image") ? (
-          <CohortGrid items={[{ id: "preview", name: v("name", "Cohort name"), programme: v("programme", "Programme"), year: v("year"), summary: v("summary"), image: v("image") }]} />
+          <StoryGrid items={[{ id: "preview", name: v("name", "Graduand name"), cohort: v("year"), quote: v("summary") || undefined, image: v("image"), alt: v("name", "Graduand"), socials: [{ platform: "linkedin", href: v("linkedin") || undefined }] }]} />
         ) : (
           <p className="text-fine text-ink-3">Not shown on the site until it has a photograph.</p>
         )}

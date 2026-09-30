@@ -8,7 +8,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { NavItem } from "@/content/types";
 
@@ -28,6 +28,8 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
+  const bar = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const update = () => setCompact(window.scrollY > 72);
@@ -49,16 +51,26 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      // The closing panel turns inert, which would drop focus to the page;
+      // hand it back to the control that opened it, as the disclosure pattern expects.
+      toggle.current?.focus();
     };
     // Reaching the desktop breakpoint reveals the full bar, so the panel is
     // redundant and would otherwise stay open behind it.
     const wide = window.matchMedia("(min-width: 1024px)");
     const onWide = () => wide.matches && setOpen(false);
+    // Review 2026-09-30: "when the navbar is open, it closes when you tap outside it".
+    const onOutside = (event: PointerEvent) => {
+      if (!bar.current?.contains(event.target as Node)) setOpen(false);
+    };
     document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onOutside);
     wide.addEventListener("change", onWide);
     return () => {
       document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onOutside);
       wide.removeEventListener("change", onWide);
     };
   }, [open]);
@@ -66,7 +78,7 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
   const login = utility[0];
 
   return (
-    <header className={`site-nav sticky top-0 z-40 ${compact ? "is-compact" : ""}`}>
+    <header ref={bar} className={`site-nav sticky top-0 z-40 ${compact ? "is-compact" : ""}`}>
       <div className="site-nav-inner">
         <Link href="/" className="site-nav-brand" aria-label="CDIE home">
           <Image
@@ -109,6 +121,7 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
         ) : null}
 
         <button
+          ref={toggle}
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}

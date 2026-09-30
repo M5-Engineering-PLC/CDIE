@@ -1,4 +1,5 @@
 // The dashboard's one bar: the CDIE logo and the dashboard's own links. Internal tooling.
+// Review 2026-09-30: "navbar heading to large blue Dashboard".
 
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +16,7 @@ export function AdminBar({ logo, links = [], signOut }: {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
         <Link href="/admin" className="flex items-center gap-3">
           <Image src={logo.src} alt={logo.alt} width={logo.width} height={logo.height} className="h-9 w-auto" priority />
-          <span className="font-mono text-fine uppercase tracking-widest text-ink-3">Dashboard</span>
+          <span className="display text-title text-brand">Dashboard</span>
         </Link>
         {links.length > 0 ? (
           <nav aria-label="Dashboard" className="flex flex-wrap items-center gap-x-5 gap-y-1">

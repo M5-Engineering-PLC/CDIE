@@ -128,7 +128,7 @@ export function NewsletterSignup() {
           ? "That address does not look right. Check it and try again."
           : state === "error"
             ? "That did not go through. Try again in a moment, or email ive@ku.ac.ke."
-            : "We will email you to confirm. Every issue has an unsubscribe link."}
+            : "We will email you to confirm."}
       </p>
     </form>
   );

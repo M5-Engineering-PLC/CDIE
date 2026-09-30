@@ -104,7 +104,7 @@ export default function ProgrammesPage() {
 
       <ProgrammeHeroCarousel slides={heroSlides} />
 
-      {/* The four learning stages expand on hover or focus, independently of scrolling. */}
+      {/* The four learning stages open in turn as the pinned band is scrolled through; hover, tap or focus also opens one. */}
       <StageAccordion
         eyebrow="How learning works"
         title="Understand the need, then build something you can test."
