@@ -622,11 +622,14 @@
 .fan-tabs button:hover { color: var(--fan-deep); }
 .fan-tabs button[aria-current="true"] { background: var(--fan-tone); color: var(--color-surface); font-weight: 600; }
 @media (min-width: 768px) { .fan-stage { min-height: 36rem; } .fan-card { height: 33rem; } }
-/* Review 2026-09-30: the home gallery on a phone uses the fan (GalleryFan). A
-   photograph carries only its caption, so its panel is shorter and the picture
-   takes the space the summary and button would have used. */
-.fan[data-variant="photo"] .fan-photo { inset: 0 0 18%; }
-.fan[data-variant="photo"] .fan-panel { min-height: 24%; justify-content: center; gap: 0.35rem; padding-block: 1.1rem 1.3rem; }
+/* Review 2026-09-30: the home gallery on a phone uses the fan (GalleryFan).
+   Follow-up the same day: "use the image caption on the image without the blue
+   text bg". The photograph fills the card and the caption sits on it, over a
+   neutral shade that darkens only the foot of the picture so white text holds
+   its contrast on a bright frame. */
+.fan[data-variant="photo"] .fan-photo { inset: 0; }
+.fan[data-variant="photo"] .fan-panel { min-height: 0; gap: 0.3rem; padding: 4.5rem 1.5rem 1.5rem; border-radius: 0; background: linear-gradient(to top, rgb(6 18 28 / 0.82), rgb(6 18 28 / 0.45) 55%, transparent); backdrop-filter: none; text-shadow: 0 1px 8px rgb(0 0 0 / 0.55); }
+.fan[data-variant="photo"] .fan-kicker { color: rgb(255 255 255 / 0.85); }
 
 /*
   Revised 2026-09-23: the Media events calendar, components/blocks/EventCalendar.tsx,
