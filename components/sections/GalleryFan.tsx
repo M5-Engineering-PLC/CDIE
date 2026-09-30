@@ -10,22 +10,48 @@
   its lower part carrying the caption the photograph is filed under. The
   geometry is the shared .fan-* rules in app/globals.css; only the content
   differs from LinkedInFan. There is no Read More, because a gallery frame has
-  no destination to send it to. Arrows, a swipe or a side card bring a
-  photograph to the front; it does not move on its own.
+  no destination to send it to.
+
+  Follow-up the same day: "make it automatic scroll, remove the arrows". The
+  fan brings the next photograph forward on its own. A swipe or a tap on a
+  side card still chooses one, and the clock restarts from that choice. It
+  holds while a finger is on it or it has keyboard focus (arrow keys move it
+  then), off screen, in a background tab, and not at all under reduced motion.
 */
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 import type { GalleryPhoto } from "./RadialGallery";
 
 const SWIPE_PX = 48;
+const ADVANCE_MS = 4500;
 
 export function GalleryFan({ photos, label }: { photos: readonly GalleryPhoto[]; label: string }) {
   const [active, setActive] = useState(0);
+  const [held, setHeld] = useState(false);
+  const [onScreen, setOnScreen] = useState(false);
   const down = useRef<number | null>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const still = useReducedMotion();
   const count = photos.length;
   const go = (next: number) => setActive((next + count) % count);
+
+  useEffect(() => {
+    const node = stage.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), { threshold: 0.4 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (still || held || !onScreen || count < 2) return;
+    const timer = window.setTimeout(() => { if (!document.hidden) setActive((active + 1) % count); }, ADVANCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [active, count, held, onScreen, still]);
 
   const swipe = (end: number) => {
     const start = down.current;
@@ -36,10 +62,15 @@ export function GalleryFan({ photos, label }: { photos: readonly GalleryPhoto[];
   return (
     <div className="fan" data-variant="photo" role="region" aria-roledescription="carousel" aria-label={label}>
       <div
+        ref={stage}
+        tabIndex={0}
+        aria-label={`${label}: use the arrow keys to move between photographs`}
         className="fan-stage touch-pan-y"
-        onPointerDown={(event) => { down.current = event.clientX; }}
-        onPointerUp={(event) => swipe(event.clientX)}
-        onPointerCancel={() => { down.current = null; }}
+        onPointerDown={(event) => { down.current = event.clientX; setHeld(true); }}
+        onPointerUp={(event) => { swipe(event.clientX); setHeld(false); }}
+        onPointerCancel={() => { down.current = null; setHeld(false); }}
+        onFocus={() => setHeld(true)}
+        onBlur={() => setHeld(false)}
         onKeyDown={(event) => {
           if (event.key === "ArrowRight") go(active + 1);
           if (event.key === "ArrowLeft") go(active - 1);
@@ -72,16 +103,6 @@ export function GalleryFan({ photos, label }: { photos: readonly GalleryPhoto[];
             </figure>
           );
         })}
-        {count > 1 ? (
-          <>
-            <button type="button" className="fan-arrow" data-side="prev" aria-label="Previous photograph" onClick={() => go(active - 1)}>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-            </button>
-            <button type="button" className="fan-arrow" data-side="next" aria-label="Next photograph" onClick={() => go(active + 1)}>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
-            </button>
-          </>
-        ) : null}
       </div>
     </div>
   );

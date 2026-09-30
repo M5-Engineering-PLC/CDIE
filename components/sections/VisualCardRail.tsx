@@ -30,6 +30,8 @@ function CapabilityCard({ item, open, clone, onToggle, onLeave }: {
           control that opens it, so a phone (no hover) can still reach it. */}
       <div className="capability-caption">
         <h3>{item.eyebrow}</h3>
+        {/* Review 2026-09-30, mobile: an arrow says the card opens. */}
+        <span className="capability-cue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
       </div>
       {clone ? null : (
         <button id={`cap-toggle-${item.id}`} type="button" className="capability-hit" aria-label={`${open ? "Hide" : "Show"} ${item.eyebrow} details`} aria-expanded={open} onClick={onToggle} />
@@ -40,7 +42,13 @@ function CapabilityCard({ item, open, clone, onToggle, onLeave }: {
         <h4>{item.title}</h4>
         <p>{item.summary}</p>
         <div className="capability-actions">
-          {clone ? <span className="capability-action">{item.action}</span> : <Link href={item.href} className="capability-action group-hover:text-brand-live">{item.action}</Link>}
+          {/* Review 2026-09-30: on a phone the open card keeps its title and this
+              link shrinks to an arrow; the label stays as its accessible name. */}
+          {clone ? (
+            <span className="capability-action"><span className="capability-action-label">{item.action}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+          ) : (
+            <Link href={item.href} className="capability-action group-hover:text-brand-live"><span className="capability-action-label">{item.action}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></Link>
+          )}
         </div>
       </div>
     </li>

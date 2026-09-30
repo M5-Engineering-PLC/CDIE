@@ -404,6 +404,22 @@
    the rotation in useLoopRail and every swipe land on one whole card. */
 @media (max-width: 767px) { .capability-rail { scroll-snap-type: x mandatory; } .capability-card { flex-basis: 100%; width: 100%; height: min(31.25rem, 78svh); scroll-snap-align: center; } }
 @media (max-width: 767px), (hover: none) { .capability-card:hover { transform: none; } .capability-card:not(.is-open):hover .capability-image { transform: none; } .capability-card:not(.is-open):hover .capability-caption, .capability-card:not(.is-open):focus-within .capability-caption { opacity: 1; transform: none; } .capability-card:not(.is-open):hover .capability-detail, .capability-card:not(.is-open):focus-within .capability-detail { display: none; } .capability-card.is-open { height: auto; min-height: 0; transform: none; background: var(--color-surface); } .capability-card.is-open .capability-photo { position: relative; height: 14rem; } .capability-card.is-open .capability-caption { top: 10rem; bottom: auto; opacity: 1; transform: none; } .capability-card.is-open .capability-detail { position: relative; display: flex; height: auto; padding: 1.5rem; background: var(--color-surface); color: var(--color-ink); opacity: 1; visibility: visible; transform: none; backdrop-filter: none; } .capability-card.is-open .capability-detail p { color: var(--color-ink-2); } }
+/* Review 2026-09-30: "on mobile keep only the title when it expands and have an
+   arrow icon to show card is clickable". A closed card carries an arrow cue;
+   an open one shows its title beside a round arrow link, and the summary and
+   the link's words step aside (the words remain the link's accessible name). */
+.capability-cue, .capability-action svg { display: none; }
+.capability-cue svg, .capability-action svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 767px) {
+  .capability-cue { display: grid; flex-shrink: 0; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid rgb(255 255 255 / 0.55); border-radius: 50%; background: rgb(255 255 255 / 0.14); color: var(--color-surface); backdrop-filter: blur(6px); }
+  .capability-card.is-open .capability-cue { display: none; }
+  .capability-card.is-open .capability-detail { flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem 1.5rem; }
+  .capability-card.is-open .capability-detail p { display: none; }
+  .capability-card.is-open .capability-actions { flex-shrink: 0; margin-top: 0; }
+  .capability-card.is-open .capability-action { width: 2.75rem; height: 2.75rem; min-height: 0; justify-content: center; padding: 0; border-radius: 50%; background: var(--color-brand); color: var(--color-surface); }
+  .capability-card.is-open .capability-action svg { display: block; }
+  .capability-card.is-open .capability-action-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 
 /* MDI's sticky index shares the viewport with the long-form content. */
 .mdi-layout { display: grid; grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr); max-width: 90rem; margin-inline: auto; }
