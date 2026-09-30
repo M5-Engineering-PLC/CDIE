@@ -92,7 +92,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
       {/* Enhancements 2026-09-22: OpenStreetMap, marker on the Graduate School
           Building, Kenyatta University. Moved below the form 2026-09-24. */}
       <Section eyebrow="Visit us" title={visit.headline}>
-        <div className="grid items-start gap-8 md:grid-cols-[.9fr_1.1fr] md:gap-14">
+        <div className="grid items-start gap-8 md:grid-cols-[.9fr_1.1fr] md:items-center md:gap-14">
           <div>
             <p className="max-w-[54ch] text-lead leading-relaxed text-ink-2">{contact.campus}</p>
             <p className="mt-4 max-w-[54ch] text-lead leading-relaxed text-ink">
