@@ -20,16 +20,19 @@
 import { useRef, useState } from "react";
 
 import type { LinkedInPost } from "@/content/linkedin";
+import { captionText } from "@/lib/linkedin/caption";
 
 const SWIPE_PX = 48;
 
 const dateLabel = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
-/** The sheet's title column, else the post's own first sentence. */
+/** The sheet's title column, else the post's own first sentence. Words only:
+    captionText drops emoji and hashtags (review 2026-09-30). */
 function headline(post: LinkedInPost) {
-  if (post.title) return post.title;
-  const first = post.text.split(/(?<=[.!?])\s|\n/)[0]?.trim() ?? "";
+  const title = post.title ? captionText(post.title) : "";
+  if (title) return title;
+  const first = captionText(post.text).split(/(?<=[.!?])\s|\n/)[0]?.trim() ?? "";
   return first.length > 90 ? `${first.slice(0, 87).trimEnd()}…` : first || "CDIE on LinkedIn";
 }
 
@@ -48,7 +51,7 @@ export function LinkedInFan({ posts, fallbackImage }: { posts: LinkedInPost[]; f
   };
 
   return (
-    <div className="fan" aria-roledescription="carousel" aria-label="Recent LinkedIn posts">
+    <div className="fan" role="region" aria-roledescription="carousel" aria-label="Recent LinkedIn posts">
       <div
         className="fan-stage"
         onPointerDown={(event) => { down.current = event.clientX; }}
@@ -82,7 +85,7 @@ export function LinkedInFan({ posts, fallbackImage }: { posts: LinkedInPost[]; f
               <div className="fan-panel">
                 <p className="fan-kicker">{dateLabel(post.postedAt)}{post.repost ? " · Repost" : ""}</p>
                 <h3 className="fan-title">{headline(post)}</h3>
-                <p className="fan-summary">{post.text}</p>
+                <p className="fan-summary">{captionText(post.text)}</p>
                 <a href={post.permalink} target="_blank" rel="noreferrer" className="fan-more" tabIndex={front ? 0 : -1}>
                   Read More<span className="sr-only"> on LinkedIn (opens in a new tab)</span>
                 </a>

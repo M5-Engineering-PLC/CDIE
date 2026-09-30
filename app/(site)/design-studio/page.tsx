@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 
 import { FaqList } from "@/components/blocks/FaqList";
 import { Section } from "@/components/sections/Section";
-import { WorkshopGallery } from "@/components/sections/WorkshopGallery";
 import { VisualCardRail, type VisualRailItem } from "@/components/sections/VisualCardRail";
 import { StudioExplorer, type ExplorerCapability } from "@/components/studio/StudioExplorer";
 import {
@@ -45,14 +44,6 @@ const studioImages: Record<string, string> = {
 // stale when one is added (laser cutting made it eight).
 const countWord = (n: number) =>
   ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][n] ?? String(n);
-
-// 2026-09-24: "invert horizontally the images order".
-const workshopPhotos = [
-  { src: "/images/cdie-3d-printing-heart-model-01.jpeg", alt: "3D printer finishing a model of a human heart" },
-  { src: "/images/cdie-studio-laptop-working-session.jpg", alt: "Students gathered around a laptop at a studio bench" },
-  { src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board" },
-  { src: "/images/cdie-woodwork-mitre-saw.jpg", alt: "Student cutting timber on a mitre saw" },
-];
 
 const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({
   id: capability.id,
@@ -123,23 +114,9 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
         <VisualCardRail items={capabilityCards} label="studio capabilities" />
       </Section>
 
-      <Section tone="surface" eyebrow="The two sides" title="Where the work happens.">
-        <ul className="grid gap-px bg-line md:grid-cols-2">
-          {spaces.map((space) => (
-            <li key={space.id} className="flex flex-col gap-2 bg-surface p-5 md:gap-3 md:p-6">
-              <div className="flex items-center gap-3">
-                <h3 className="display text-sub">{space.name}</h3>
-              </div>
-              <p className="hidden text-body leading-relaxed text-ink-2 md:block">{space.summary}</p>
-            </li>
-          ))}
-        </ul>
-        {/* Image matching sheet 2026-09-22, Design Studio D11-D14: workshop areas. */}
-        <div className="mt-6 md:mt-8">
-          <WorkshopGallery items={workshopPhotos} />
-        </div>
-      </Section>
-
+      {/* Review 2026-09-30: "remove the two sides section in design studio",
+          its workshop photographs with it. The two spaces still name every
+          capability card and the room switch in the explorer above. */}
       {/* Enhancements 2026-09-22: "remove access section in design studio page".
           The FAQs it carried stay, in a band of their own. */}
       <Section eyebrow="FAQs" title="Questions about the studio.">

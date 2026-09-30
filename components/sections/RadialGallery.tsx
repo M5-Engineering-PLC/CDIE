@@ -20,10 +20,22 @@
 
   With reduced motion, or before the script runs, the same cards are a plain
   swipeable row. The geometry is .radial-* in app/globals.css.
+
+  Review 2026-09-30: below md the wheel is replaced by GalleryFan, the Media
+  card fan. The wheel only turns where it is shown.
 */
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+
+import { GalleryFan } from "./GalleryFan";
+
+const WIDE = "(min-width: 768px)";
+const onWideChange = (change: () => void) => {
+  const query = window.matchMedia(WIDE);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+};
 
 export type GalleryPhoto = { id: string; src: string; alt: string; caption: string };
 
@@ -33,11 +45,12 @@ const SECONDS_PER_CARD = 3.2;
 export function RadialGallery({ eyebrow, title, photos }: { eyebrow: string; title: string; photos: readonly GalleryPhoto[] }) {
   const band = useRef<HTMLElement>(null);
   const wheel = useRef<HTMLUListElement>(null);
+  const wide = useSyncExternalStore(onWideChange, () => window.matchMedia(WIDE).matches, () => false);
 
   useEffect(() => {
     const section = band.current;
     const list = wheel.current;
-    if (!section || !list || photos.length < 2) return;
+    if (!section || !list || !wide || photos.length < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     section.dataset.wheel = "on";
@@ -78,7 +91,7 @@ export function RadialGallery({ eyebrow, title, photos }: { eyebrow: string; tit
       delete section.dataset.wheel;
       cards.forEach((card) => { card.style.transform = ""; card.style.visibility = ""; card.style.removeProperty("--near"); });
     };
-  }, [photos.length]);
+  }, [photos.length, wide]);
 
   return (
     <section ref={band} aria-label={eyebrow} className="radial-band border-b border-line-soft bg-surface">
@@ -86,7 +99,10 @@ export function RadialGallery({ eyebrow, title, photos }: { eyebrow: string; tit
         <p className="kicker">{eyebrow}</p>
         <h2 className="display mt-3 text-title md:text-head">{title}</h2>
       </div>
-      <div className="radial-stage">
+      <div className="shell pt-6 pb-(--band-y) md:hidden">
+        <GalleryFan photos={photos} label={title} />
+      </div>
+      <div className="radial-stage max-md:hidden">
         <ul ref={wheel} className="radial-wheel">
           {photos.map((photo) => (
             <li key={photo.id} className="radial-card">

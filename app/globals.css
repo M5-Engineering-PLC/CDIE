@@ -371,7 +371,7 @@
 /* Beautify F05: original 380 × 500 photograph panels and full disclosure. */
 .capability-rail { display: flex; gap: 1.75rem; overflow-x: auto; overflow-y: hidden; padding: 1rem 0 1.75rem; scrollbar-width: none; cursor: grab; }
 .capability-rail::-webkit-scrollbar { display: none; }
-.capability-card { position: relative; flex: 0 0 23.75rem; width: 23.75rem; height: 31.25rem; overflow: hidden; border: 1px solid rgb(255 255 255 / 0.1); border-radius: 1rem; background: var(--color-ink); color: var(--color-surface); isolation: isolate; box-shadow: 0 0.75rem 2.25rem -0.75rem rgb(0 35 65 / 0.35); transition: transform var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide), border-color var(--motion-glide); }
+.capability-card { position: relative; flex: 0 0 min(23.75rem, 100%); width: min(23.75rem, 100%); height: 31.25rem; overflow: hidden; border: 1px solid rgb(255 255 255 / 0.1); border-radius: 1rem; background: var(--color-ink); color: var(--color-surface); isolation: isolate; box-shadow: 0 0.75rem 2.25rem -0.75rem rgb(0 35 65 / 0.35); transition: transform var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide), border-color var(--motion-glide); }
 .capability-card:hover, .capability-card:focus-within, .capability-card.is-open { z-index: 2; transform: translateY(-0.5rem) scale(1.02); border-color: var(--color-brand-lift); box-shadow: 0 1.4rem 3.1rem -0.75rem rgb(0 45 85 / 0.55), 0 0 1.75rem rgb(11 120 192 / 0.35); }
 .capability-card.is-clone { pointer-events: none; }
 .capability-photo { position: absolute; inset: 0; }
@@ -398,7 +398,11 @@
 .capability-rail { user-select: none; }
 .capability-rail:active { cursor: grabbing; }
 .capability-rail img { -webkit-user-drag: none; }
-@media (max-width: 480px) { .capability-card { flex-basis: min(88vw, 23.75rem); width: min(88vw, 23.75rem); height: min(31.25rem, 78svh); } }
+/* Review 2026-09-30: "make the card responsive such that a full card width is
+   visible on all viewports". A card is never wider than its rail (the min()
+   above); below md it is exactly the rail's width and the rail snaps to it, so
+   the rotation in useLoopRail and every swipe land on one whole card. */
+@media (max-width: 767px) { .capability-rail { scroll-snap-type: x mandatory; } .capability-card { flex-basis: 100%; width: 100%; height: min(31.25rem, 78svh); scroll-snap-align: center; } }
 @media (max-width: 767px), (hover: none) { .capability-card:hover { transform: none; } .capability-card:not(.is-open):hover .capability-image { transform: none; } .capability-card:not(.is-open):hover .capability-caption, .capability-card:not(.is-open):focus-within .capability-caption { opacity: 1; transform: none; } .capability-card:not(.is-open):hover .capability-detail, .capability-card:not(.is-open):focus-within .capability-detail { display: none; } .capability-card.is-open { height: auto; min-height: 0; transform: none; background: var(--color-surface); } .capability-card.is-open .capability-photo { position: relative; height: 14rem; } .capability-card.is-open .capability-caption { top: 10rem; bottom: auto; opacity: 1; transform: none; } .capability-card.is-open .capability-detail { position: relative; display: flex; height: auto; padding: 1.5rem; background: var(--color-surface); color: var(--color-ink); opacity: 1; visibility: visible; transform: none; backdrop-filter: none; } .capability-card.is-open .capability-detail p { color: var(--color-ink-2); } }
 
 /* MDI's sticky index shares the viewport with the long-form content. */
@@ -558,6 +562,32 @@
   .stage-copy { width: min(36rem, calc((100vw - 2 * var(--spacing-gutter)) * 0.53)); padding: 2.5rem; }
 }
 @media (prefers-reduced-motion: reduce) { .stage-panel, .stage-photo img, .stage-shade, .stage-closed, .stage-copy { transition: none; } }
+/*
+  Review 2026-09-30: the stages open with the scroll, pinned. .stage-scroll is
+  one screen plus --stage-scroll-step of scrolling per stage; the band inside
+  sticks under the bar (--stage-pin-top, the bar's height at each layout) and
+  fills the rest of the screen, so the open panel takes whatever height the
+  closed ones leave. Only where the screen is tall enough to hold the band; on
+  a short one the band scrolls normally and a tap opens a stage.
+*/
+.stage-scroll { --stage-pin-top: 4.4rem; --stage-scroll-step: 55svh; }
+@media (min-width: 1024px) { .stage-scroll { --stage-pin-top: 3.9rem; } }
+@media (min-height: 600px) {
+  .stage-scroll { height: calc(100svh - var(--stage-pin-top) + var(--stage-count) * var(--stage-scroll-step)); }
+  .stage-scroll > .stage-band { position: sticky; top: var(--stage-pin-top); display: flex; height: calc(100svh - var(--stage-pin-top)); flex-direction: column; }
+  .stage-scroll .stage-head { padding-top: 1.25rem; }
+  .stage-scroll .stage-track { flex: 1; min-height: 0; height: auto; padding-top: 1.25rem; padding-bottom: 1.25rem; }
+  .stage-scroll .stage-panel { flex: 0 0 3.5rem; }
+  .stage-scroll .stage-panel[data-active="true"] { flex: 1 1 0; }
+  .stage-scroll .stage-closed { padding-block: 0.75rem; }
+}
+@media (min-height: 600px) and (min-width: 900px) {
+  .stage-scroll .stage-head { padding-top: 2rem; }
+  .stage-scroll .stage-track { padding-top: 2rem; padding-bottom: 2rem; }
+  .stage-scroll .stage-panel { flex: 1 1 0; }
+  .stage-scroll .stage-panel[data-active="true"] { flex: 5 1 0; }
+  .stage-scroll .stage-closed { padding-block: 1.5rem; }
+}
 
 /*
   Final pass 2026-09-23: the Media LinkedIn fan, components/sections/LinkedInFan.tsx,
@@ -592,6 +622,11 @@
 .fan-tabs button:hover { color: var(--fan-deep); }
 .fan-tabs button[aria-current="true"] { background: var(--fan-tone); color: var(--color-surface); font-weight: 600; }
 @media (min-width: 768px) { .fan-stage { min-height: 36rem; } .fan-card { height: 33rem; } }
+/* Review 2026-09-30: the home gallery on a phone uses the fan (GalleryFan). A
+   photograph carries only its caption, so its panel is shorter and the picture
+   takes the space the summary and button would have used. */
+.fan[data-variant="photo"] .fan-photo { inset: 0 0 18%; }
+.fan[data-variant="photo"] .fan-panel { min-height: 24%; justify-content: center; gap: 0.35rem; padding-block: 1.1rem 1.3rem; }
 
 /*
   Revised 2026-09-23: the Media events calendar, components/blocks/EventCalendar.tsx,
