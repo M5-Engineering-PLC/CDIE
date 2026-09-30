@@ -11,6 +11,7 @@ import { StudioStage } from "./StudioStage";
 import { StudioTourIntro } from "./StudioTourIntro";
 import type { ExplorerCapability, UnifiedServiceId } from "./explorerModel";
 import { useStudio3DWarmup } from "./useStudio3DWarmup";
+import { useStagePhoto, useStudioPhotoWarmup } from "./useStudioPhotos";
 import { useViewOnly } from "./useViewOnly";
 
 export type { ExplorerCapability, ExplorerComponent, UnifiedServiceId } from "./explorerModel";
@@ -43,7 +44,10 @@ export function StudioExplorer({
 
   const index = Math.max(0, capabilities.findIndex((item) => item.id === selectedId));
   const selected = capabilities[index] ?? capabilities[0];
-  useStudio3DWarmup(Boolean(selected?.atc));
+  useStudio3DWarmup();
+  const [photoIndex, pickPhoto] = useStagePhoto(selected?.id ?? "");
+  const photo = selected?.media[photoIndex];
+  useStudioPhotoWarmup(capabilities, selected?.media);
   const [activeSpace, setActiveSpace] = useState<"studio" | "atc">(selected?.space ?? "studio");
 
   // Follow the selected capability into its space, adjusted during render
@@ -128,12 +132,13 @@ export function StudioExplorer({
             <StudioStage
               active={selected.modelGroup} open={roomOpen} tour={tour} viewOnly={viewOnly} atc={selected.atc} space={activeSpace}
               name={selected.name} spaceName={selected.spaceName} headline={selected.headline} step={index + 1} of={capabilities.length}
-              image={selected.image} imageAlt={selected.media[0]?.alt ?? `${selected.name} at the CDIE Design Studio`} imageSize={selected.media[0]}
+              image={photo?.src ?? selected.image} imageAlt={photo?.alt ?? `${selected.name} at the CDIE Design Studio`} imageSize={photo}
               onSelect={selectByModelGroup}
               onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={openRoom}
               onSwitchSpace={handleSwitchSpace}
             />
-            <StudioPhotoStrip photos={selected.media} capabilityName={selected.name} />
+            <StudioPhotoStrip photos={selected.media} capabilityName={selected.name} current={photoIndex}
+              onPick={(next) => { pickPhoto(next); setRoomOpen(false); setTour(false); }} />
             <StudioComponentGrid items={selected.components} capabilityName={selected.name} />
           </div>
           <StudioDetail selected={selected} />

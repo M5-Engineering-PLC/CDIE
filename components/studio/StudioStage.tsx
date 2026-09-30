@@ -9,6 +9,7 @@ import type { AtcServiceId } from "./atc-3js";
 import type { UnifiedServiceId } from "./explorerModel";
 import type { ServiceId } from "./studioLayout";
 import { preloadAtc3D, preloadDesignStudio3D } from "./preloadStudio3D";
+import { STAGE_SIZES } from "./useStudioPhotos";
 
 const LoadingBox = ({ text }: { text: string }) => (
   <div className="grid aspect-video place-items-center border border-line bg-raise md:min-h-96">
@@ -92,10 +93,13 @@ export function StudioStage({
         {/* Follow-up 2026-09-25: the frame follows the photograph's own ratio
             and the image is contained, never cropped. */}
         <div
-          className="relative max-h-[36rem] min-h-48 overflow-hidden bg-ink"
+          className="relative max-h-[28rem] min-h-48 overflow-hidden bg-ink"
           style={imageSize ? { aspectRatio: `${imageSize.width} / ${imageSize.height}` } : undefined}
         >
-          <Image src={image} alt={imageAlt} fill sizes="(max-width: 1280px) 100vw, 70vw" className="object-contain" />
+          {/* Review 2026-09-30: "the main image should be a bit smaller"; the
+              thumbnails under the stage (StudioPhotoStrip) choose it, and the
+              new one settles in rather than cutting. */}
+          <Image key={image} src={image} alt={imageAlt} fill sizes={STAGE_SIZES} loading="eager" className="settle object-contain" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
           {/* Enhancements 2026-09-22: "remove the expand button". The pill above is the switch. */}
         </div>

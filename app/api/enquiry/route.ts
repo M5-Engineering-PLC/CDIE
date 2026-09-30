@@ -61,9 +61,11 @@ export async function POST(request: Request) {
     return Response.json({ error: "invalid" }, { status: 400 });
   }
 
-  // Counted for the admin dashboard (reason and time only, never the message),
-  // whether or not the email below can be sent.
-  await recordEnquiry(payload.reason)
+  // Recorded for the admin dashboard whether or not the email below can be sent.
+  // Review 2026-09-30: the dashboard now shows who wrote and what they said, so
+  // the name, address and message are kept with the reason. They live in the
+  // sheet only, behind sign-in, never in the committed snapshot.
+  await recordEnquiry({ reason: payload.reason, name: payload.name, email: payload.email, message: payload.message })
     .then(() => revalidateTag(CMS_TAG, "max"))
     .catch((error) => console.error("[enquiry] count failed", error));
 

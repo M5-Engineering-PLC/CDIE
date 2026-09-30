@@ -127,8 +127,9 @@ export const capabilities: Capability[] = [
     ],
     enquiry: "Ask about 3D printing",
     media: [
-      { src: "/images/cdie-3d-printers.jpg", alt: "3D printers on the studio rack", width: 1600, height: 1200 },
+      // Review 2026-09-30: the human heart leads, so it is the capability card's picture.
       { src: "/images/cdie-3d-printing-heart-model-01.jpeg", alt: "3D printer finishing a model of a human heart", width: 1112, height: 1600 },
+      { src: "/images/cdie-3d-printers.jpg", alt: "3D printers on the studio rack", width: 1600, height: 1200 },
       { src: "/images/cdie-meet-the-faculty-kenneth-iloka.jpg", alt: "Faculty member showing a resin 3D printer to visiting guests", width: 606, height: 607 },
     ],
     components: [

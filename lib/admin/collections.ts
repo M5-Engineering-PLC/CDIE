@@ -93,7 +93,6 @@ export const collections: Collection[] = [
       { name: "name", label: "Name", type: "text", required: true },
       { name: "role", label: "Role", type: "text", required: true },
       { name: "image", label: "Portrait", type: "image" },
-      { name: "bio", label: "Short bio", type: "textarea" },
     ],
   },
   {
@@ -102,13 +101,23 @@ export const collections: Collection[] = [
     singular: "cohort",
     titleField: "name",
     fields: [
-      { name: "name", label: "Cohort name", type: "text", required: true },
-      { name: "programme", label: "Programme", type: "text", required: true },
-      { name: "year", label: "Year", type: "text" },
-      { name: "summary", label: "Summary", type: "textarea" },
-      { name: "image", label: "Photograph", type: "image" },
+      /* Review 2026-09-30: "change cohort name to graduand name", "remove
+         programme", "add ... linkedin link". Each record is one graduand. */
+      { name: "name", label: "Graduand name", type: "text", required: true },
+      { name: "year", label: "Cohort", type: "text", hint: "For example: Cohort 2, MDI" },
+      { name: "linkedin", label: "LinkedIn link", type: "url", hint: "Their public LinkedIn profile, for example https://www.linkedin.com/in/…" },
+      { name: "summary", label: "Quote", type: "textarea", hint: "Optional. The graduand's own words, published only with their written consent." },
+      { name: "image", label: "Photograph", type: "image", required: true },
     ],
   },
 ];
 
 export const collectionById = (id: string) => collections.find((item) => item.id === id);
+
+/*
+  Review 2026-09-30: "remove labs, posts, upcoming activities". The two
+  collections stay defined, because records saved under them still show on the
+  Media calendar, but the dashboard no longer lists, counts or adds them.
+*/
+export const dashboardCollections = collections.filter((item) => item.id !== "posts" && item.id !== "activities");
+export const onDashboard = (id: string) => dashboardCollections.find((item) => item.id === id);

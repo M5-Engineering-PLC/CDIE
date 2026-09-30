@@ -4,20 +4,74 @@
 // the session first: an action is a public endpoint whether or not a page links to it.
 
 import { revalidatePath, updateTag } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { endSession, passwordMatches, requireAdmin, startSession } from "@/lib/admin/auth";
-import { collectionById, type CollectionId } from "@/lib/admin/collections";
-import { addItem, CMS_TAG, listItems, listSubscribers, removeItem, saveUpload, updateItem } from "@/lib/admin/store";
+import {
+  credentialsMatch, EMAIL, endSession, hashPassword, mayHaveAccount, normaliseEmail, requireAdmin, signupOpen, startSession,
+} from "@/lib/admin/auth";
+import { siteItems } from "@/lib/admin/builtins";
+import { collectionById, onDashboard, type CollectionId } from "@/lib/admin/collections";
+import {
+  addAccount, addItem, CMS_TAG, findAccount, hideBuiltIn, listItems, listSubscribers, removeItem, saveUpload, unhideBuiltIn, updateItem,
+} from "@/lib/admin/store";
+import { allow } from "@/lib/security/throttle";
 import { EMAIL_SETUP_HINT, emailConfigured, sendBatch, sendEmail } from "@/lib/email";
 import { issueEmail } from "@/lib/newsletter";
 
 const IMAGE = /^image\/(jpeg|png|webp|gif|avif)$/;
 
+/* Ten tries per quarter hour, per address and per network address, so a guesser is slowed either way. */
+const SIGN_IN_RULE = { limit: 10, windowMs: 15 * 60_000 };
+
+async function throttled(kind: string, email: string) {
+  const from = (await headers()).get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+  return !allow(`${kind}:ip:${from}`, SIGN_IN_RULE) || !allow(`${kind}:email:${email}`, SIGN_IN_RULE);
+}
+
 export async function login(_: string | null, form: FormData) {
-  if (!passwordMatches(String(form.get("password") ?? ""))) return "That password is not right.";
-  await startSession();
+  const email = normaliseEmail(form.get("email"));
+  if (await throttled("login", email)) return "Too many attempts. Wait a few minutes and try again.";
+  if (!(await credentialsMatch(email, String(form.get("password") ?? "")))) {
+    return "That email address and password do not match an account.";
+  }
+  await startSession(email);
   redirect("/admin");
+}
+
+/*
+  Review 2026-09-30: "create new account option in admin login". Only an
+  address on ADMIN_EMAILS or at a domain on ADMIN_EMAIL_DOMAINS can make one
+  (lib/admin/auth.ts); the check is here, on the server, not in the form.
+*/
+export async function signup(_: string | null, form: FormData) {
+  if (!signupOpen()) return "New accounts cannot be made on this server yet. Ask the site administrator.";
+  const email = normaliseEmail(form.get("email"));
+  const password = String(form.get("password") ?? "");
+  if (await throttled("signup", email)) return "Too many attempts. Wait a few minutes and try again.";
+  if (!EMAIL.test(email)) return "Enter a valid email address.";
+  if (!mayHaveAccount(email)) return "That address cannot hold a dashboard account. Ask the site administrator to add it.";
+  if (password.length < 12) return "Use a password of at least 12 characters.";
+  if (password !== String(form.get("confirm") ?? "")) return "The two passwords do not match.";
+  if (await findAccount(email)) return "There is already an account for that address. Sign in instead.";
+  await addAccount({ email, hash: await hashPassword(password), createdAt: new Date().toISOString() });
+  await startSession(email);
+  redirect("/admin");
+}
+
+/*
+  Review 2026-09-30: a record that ships with the site is hidden rather than
+  deleted, and can be put back. The key must name one of the site's own
+  records, so the form cannot be used to write arbitrary rows.
+*/
+export async function hideItem(form: FormData) {
+  await requireAdmin();
+  const collection = onDashboard(String(form.get("collection")));
+  const key = String(form.get("key"));
+  if (!collection || !siteItems(collection.id).some((item) => item.key === key)) return;
+  await (String(form.get("restore")) === "yes" ? unhideBuiltIn(collection.id, key) : hideBuiltIn(collection.id, key));
+  updateTag(CMS_TAG);
+  revalidatePath("/", "layout");
 }
 
 export async function logout() {
@@ -27,7 +81,7 @@ export async function logout() {
 
 export async function createItem(_: string | null, form: FormData): Promise<string | null> {
   await requireAdmin();
-  const collection = collectionById(String(form.get("collection")));
+  const collection = onDashboard(String(form.get("collection")));
   if (!collection) return "Unknown section.";
 
   const fields: Record<string, string> = {};

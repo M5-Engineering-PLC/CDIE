@@ -30,6 +30,26 @@ export type FaqListProps = {
   enquiryHref?: string;
 };
 
+/*
+  Transitions branch 2026-09-29: the answer unfolds instead of popping open.
+  It animates the details element's own content slot to its natural height,
+  so the element stays native. Gated on interpolate-size: a browser that
+  cannot tween to an auto height keeps the instant open it has today rather
+  than a delayed snap. Timing is the --motion-glide and --ease-glide tokens.
+*/
+const unfold = [
+  "supports-[interpolate-size:allow-keywords]:[interpolate-size:allow-keywords]",
+  "supports-[interpolate-size:allow-keywords]:details-content:h-0",
+  "supports-[interpolate-size:allow-keywords]:details-content:overflow-clip",
+  "supports-[interpolate-size:allow-keywords]:details-content:opacity-0",
+  "supports-[interpolate-size:allow-keywords]:details-content:transition-[height,opacity,content-visibility]",
+  "supports-[interpolate-size:allow-keywords]:details-content:[transition-behavior:allow-discrete]",
+  "supports-[interpolate-size:allow-keywords]:details-content:duration-(--motion-glide)",
+  "supports-[interpolate-size:allow-keywords]:details-content:ease-(--ease-glide)",
+  "supports-[interpolate-size:allow-keywords]:open:details-content:h-auto",
+  "supports-[interpolate-size:allow-keywords]:open:details-content:opacity-100",
+].join(" ");
+
 const UNCONFIRMED =
   "This answer is being confirmed with the team before it is published. Ask us and we will reply with the current position.";
 
@@ -43,7 +63,7 @@ export function FaqList({ items, openFirst = false, enquiryHref = "/contact" }: 
           key={faq.id}
           name="faq"
           open={openFirst && index === 0}
-          className="group bg-raise open:bg-surface"
+          className={`group bg-raise transition-colors duration-(--motion-swift) open:bg-surface ${unfold}`}
         >
           <summary
             className="flex cursor-pointer list-none items-start justify-between gap-6 p-6 text-lead text-ink transition-colors hover:text-brand [&::-webkit-details-marker]:hidden"

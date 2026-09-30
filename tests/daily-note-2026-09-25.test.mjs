@@ -17,11 +17,13 @@ test("the hero keeps its original mechanism: the action button on the slide", ()
   assert.doesNotMatch(carousel, /ProgrammeHeroStrip/);
 });
 
-test("studio photographs show whole, each frame at its own ratio, one row on desktop", () => {
+/* Narrowed by the review of 30 September: the strip became a row of
+   thumbnails that choose the stage's photograph, so "one row on desktop"
+   (flexGrow, sm:flex-nowrap) is withdrawn and asserted in
+   review-2026-09-30.test.mjs. Whole photographs at their own ratio stand. */
+test("studio photographs show whole, each frame at its own ratio", () => {
   const strip = read("components/studio/StudioPhotoStrip.tsx");
   assert.match(strip, /aspectRatio: `\$\{photo\.width\} \/ \$\{photo\.height\}`/);
-  assert.match(strip, /flexGrow: photo\.width \/ photo\.height/);
-  assert.match(strip, /sm:flex-nowrap/);
   assert.match(strip, /object-contain/);
   assert.doesNotMatch(strip, /object-cover/);
   const stage = read("components/studio/StudioStage.tsx");

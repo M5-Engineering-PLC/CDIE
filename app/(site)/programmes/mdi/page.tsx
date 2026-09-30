@@ -12,10 +12,9 @@ import { PageHero } from "@/components/sections/PageHero";
 import { MdiSectionNav } from "@/components/sections/MdiSectionNav";
 import { Section } from "@/components/sections/Section";
 import { mdiSemesters } from "@/content/curriculum";
-import { CohortGrid } from "@/components/blocks/CohortGrid";
 import { StoryGrid, type StoryCardItem } from "@/components/blocks/StoryGrid";
 import { mdi, mdiCohortsCopy, mdiGraduands } from "@/content/programmes";
-import { listItems } from "@/lib/admin/store";
+import { hiddenKeys, listItems } from "@/lib/admin/store";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -33,11 +32,11 @@ const crumbs = [
 ];
 
 export default async function MdiPage() {
-  const cohorts = (await listItems("cohorts"))
-    .filter((item) => item.image)
-    .map((item) => ({ id: item.id, name: item.name, programme: item.programme, year: item.year, summary: item.summary, image: item.image }));
+  /* Review 2026-09-30: a dashboard record is one graduand, so it joins the
+     same story cards, and a graduand hidden in the dashboard leaves them. */
+  const [added, hidden] = await Promise.all([listItems("cohorts"), hiddenKeys()]);
 
-  const graduands: StoryCardItem[] = mdiGraduands.map((person) => ({
+  const graduands: StoryCardItem[] = [...mdiGraduands.filter((person) => !hidden.has(`cohorts:${person.id}`)).map((person) => ({
     id: person.id,
     name: person.name,
     cohort: person.cohort,
@@ -45,7 +44,15 @@ export default async function MdiPage() {
     image: person.image,
     alt: person.alt,
     socials: [{ platform: "linkedin" as const, href: person.linkedin }],
-  }));
+  })), ...added.filter((item) => item.image).map((item) => ({
+    id: item.id,
+    name: item.name,
+    cohort: item.year ?? "",
+    quote: item.summary,
+    image: item.image,
+    alt: item.name,
+    socials: [{ platform: "linkedin" as const, href: item.linkedin?.startsWith("https://") ? item.linkedin : undefined }],
+  }))];
 
   return (
     <>
@@ -168,8 +175,6 @@ export default async function MdiPage() {
             band; cohorts added in the dashboard follow. */}
         {graduands.length > 0 ? (
           <StoryGrid items={graduands} />
-        ) : cohorts.length > 0 ? (
-          <CohortGrid items={cohorts} />
         ) : (
           <div className="border border-dashed border-line bg-surface p-8">
             <p className="max-w-[54ch] text-lead text-ink-2">{mdiCohortsCopy.empty}</p>

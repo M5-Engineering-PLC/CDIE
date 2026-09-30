@@ -3,6 +3,9 @@
 /*
   Only the public collections are written. Newsletter subscribers and enquiry
   counts stay in the sheet: an email address does not belong in a repository.
+  Review 2026-09-30: the hidden list and the studio photograph lists are site
+  configuration, so they are written too. Enquiries (now with name, address
+  and message) and admin accounts never are.
   The file is rewritten only when the content changed, so an unchanged sheet
   makes no commit and no deploy.
 */
@@ -19,7 +22,7 @@ if (!sheetCredentials()) {
   process.exit(1);
 }
 
-const rows = await readTabs(collections.map((item) => item.id));
+const rows = await readTabs([...collections.map((item) => item.id), "hidden", "studio"]);
 const items = Object.fromEntries(
   collections.map(({ id }) => [
     id,
@@ -30,12 +33,20 @@ const items = Object.fromEntries(
   ]),
 );
 
+const hidden = rows.hidden
+  .filter((row) => row.collection && row.key)
+  .map(({ collection, key, at }) => ({ collection, key, at }));
+const studio = rows.studio
+  .filter((row) => row.capability)
+  .map(({ capability, photos, at }) => ({ capability, photos, at }));
+
 const previous = JSON.parse(await readFile(target, "utf8").catch(() => "{}"));
-if (JSON.stringify(previous.items ?? {}) === JSON.stringify(items)) {
+const same = (a, b) => JSON.stringify(a ?? []) === JSON.stringify(b ?? []);
+if (same(previous.items ?? {}, items) && same(previous.hidden, hidden) && same(previous.studio, studio)) {
   console.log("Snapshot already current.");
   process.exit(0);
 }
 
-const snapshot = { syncedAt: new Date().toISOString(), items, subscriptions: [], enquiries: [] };
+const snapshot = { syncedAt: new Date().toISOString(), items, hidden, studio, subscriptions: [], enquiries: [] };
 await writeFile(target, `${JSON.stringify(snapshot, null, 2)}\n`);
 console.log(`Snapshot updated: ${collections.map(({ id }) => `${id} ${items[id].length}`).join(", ")}`);

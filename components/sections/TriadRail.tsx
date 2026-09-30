@@ -12,6 +12,7 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 
+import { glideBy } from "@/lib/motion";
 import { useRailRotation } from "@/lib/useRailRotation";
 
 export type TriadItem = {
@@ -34,6 +35,15 @@ export function TriadRail({ items }: { items: readonly TriadItem[] }) {
     const closest = children.reduce((best, card, index) =>
       Math.abs(card.offsetLeft - node.scrollLeft) < Math.abs(children[best].offsetLeft - node.scrollLeft) ? index : best, 0);
     setActive(closest);
+  };
+
+  /* Review 2026-09-30, rail stutter: the dots used the browser's own smooth
+     scroll, which the rotation's glide could not cancel, so a tap during a
+     rotation pulled the rail two ways. Both now go through glideBy. */
+  const showCard = (index: number) => {
+    const node = rail.current;
+    const card = node?.children[index] as HTMLElement | undefined;
+    if (node && card) glideBy(node, card.offsetLeft - node.scrollLeft - node.offsetLeft);
   };
 
   return (
@@ -59,9 +69,9 @@ export function TriadRail({ items }: { items: readonly TriadItem[] }) {
         </li>
       ))}
     </ul>
-    <div className="triad-dots md:hidden" aria-label="What CDIE is slides">
+    <div className="triad-dots md:hidden" role="group" aria-label="What CDIE is slides">
       {items.map((item, index) => (
-        <button key={item.id} type="button" aria-label={`Show ${item.title}`} aria-current={active === index ? "true" : undefined} onClick={() => rail.current?.children[index]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" })} />
+        <button key={item.id} type="button" aria-label={`Show ${item.title}`} aria-current={active === index ? "true" : undefined} onClick={() => showCard(index)} />
       ))}
     </div>
     </div>
