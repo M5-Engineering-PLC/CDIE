@@ -19,7 +19,7 @@ import {
   newslettersCopy,
 } from "@/content/media";
 import { events, eventsCopy } from "@/content/programmes";
-import { listItems } from "@/lib/admin/store";
+import { hiddenKeys, listItems } from "@/lib/admin/store";
 import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
 import { pageMetadata } from "@/lib/seo";
 
@@ -67,21 +67,23 @@ const withPostImage = (event: CalendarCardEvent) => {
 export default async function MediaPage() {
   /* Enhancements 2026-09-22: one timeline holds programme events plus the
      events, upcoming activities and posts added in the admin dashboard. */
-  const [added, activities, posts, addedIssues] = await Promise.all([
+  const [added, activities, posts, addedIssues, hidden] = await Promise.all([
     listItems("events"),
     listItems("activities"),
     listItems("posts"),
     listItems("newsletters"),
+    hiddenKeys(),
   ]);
+  // Review 2026-09-30: events and issues removed in the dashboard leave the page.
   const calendarEvents: CalendarCardEvent[] = [
-    ...programmeEvents,
+    ...programmeEvents.filter((event) => !hidden.has(`events:${event.id}`)),
     ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Event", image: item.image })),
     ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Activity", image: item.image })),
     ...posts.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Post", link: item.link, image: item.image })),
   ].map(withPostImage);
   const today = new Date().toISOString().slice(0, 10);
 
-  const newsletters = mediaItems.filter((item) => item.kind === "newsletter");
+  const newsletters = mediaItems.filter((item) => item.kind === "newsletter" && !hidden.has(`newsletters:${item.id}`));
   const newsletterCards: NewsletterCardItem[] = [
     ...addedIssues.map((item) => ({
       id: item.id,

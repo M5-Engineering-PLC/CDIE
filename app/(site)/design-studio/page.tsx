@@ -14,6 +14,7 @@ import {
   studioFaqs,
   studioIntro,
 } from "@/content/studio";
+import { studioPhotoOverrides, type StudioPhoto } from "@/lib/admin/store";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -45,7 +46,12 @@ const studioImages: Record<string, string> = {
 const countWord = (n: number) =>
   ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][n] ?? String(n);
 
-const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability) => ({
+/* Review 2026-09-30: photographs set in the dashboard replace a capability's
+   own list, in the editor's order; the first leads. */
+type Photos = Record<string, readonly StudioPhoto[]>;
+const photosOf = (id: string, overrides: Photos) => overrides[id] ?? capabilities.find((item) => item.id === id)?.media ?? [];
+
+const explorerCapabilities = (overrides: Photos): ExplorerCapability[] => capabilities.map((capability) => ({
   id: capability.id,
   name: capability.name,
   space: capability.space,
@@ -58,21 +64,21 @@ const explorerCapabilities: ExplorerCapability[] = capabilities.map((capability)
   enquiry: capability.enquiry,
   enquiryHref: "/contact?topic=studio",
   // 2026-09-25: a capability's first photograph leads; the map is the fallback.
-  image: capability.media[0]?.src ?? studioImages[capability.id],
-  media: capability.media,
+  image: photosOf(capability.id, overrides)[0]?.src ?? studioImages[capability.id],
+  media: photosOf(capability.id, overrides),
   components: capability.components,
 }));
 
 /* Final pass 2026-09-23: "switch the labelling of the cards". The workshop
    area (Design and CAD, Electronics) is on the card at rest; the location it
    sits in is what the card shows on hover. */
-const capabilityCards: VisualRailItem[] = capabilities.map((capability) => ({
+const capabilityCards = (overrides: Photos): VisualRailItem[] => capabilities.map((capability) => ({
   id: capability.id,
   eyebrow: capability.name,
   title: spaceNames.get(capability.space) ?? capability.space,
   summary: capability.headline,
-  image: capability.media[0]?.src ?? studioImages[capability.id],
-  alt: capability.media[0]?.alt ?? `${capability.name} at the CDIE Design Studio`,
+  image: photosOf(capability.id, overrides)[0]?.src ?? studioImages[capability.id],
+  alt: photosOf(capability.id, overrides)[0]?.alt ?? `${capability.name} at the CDIE Design Studio`,
   href: `/design-studio?service=${capability.id}`,
   action: "Explore in the room",
 }));
@@ -90,11 +96,12 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
     requested && capabilities.some((item) => item.id === requested)
       ? requested
       : defaultCapabilityId;
+  const overrides = await studioPhotoOverrides();
 
   return (
     <>
       <StudioExplorer
-        capabilities={explorerCapabilities}
+        capabilities={explorerCapabilities(overrides)}
         initialId={initialId}
         intro={{ headline: studioIntro.tourHeadline, standfirst: studioIntro.tourStandfirst }}
       />
@@ -111,7 +118,7 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
         title={`${countWord(capabilities.length)} ways to make something.`}
         standfirst="Browse the workshop areas, then open any one of them in the room above."
       >
-        <VisualCardRail items={capabilityCards} label="studio capabilities" />
+        <VisualCardRail items={capabilityCards(overrides)} label="studio capabilities" />
       </Section>
 
       {/* Review 2026-09-30: "remove the two sides section in design studio",

@@ -23,7 +23,7 @@ import snapshot from "@/content/cms-snapshot.json";
 
 import { collections, type CollectionId } from "./collections";
 import { commitUpload, notifyContentChanged } from "./github";
-import { appendRow, deleteRows, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
+import { appendRow, deleteRows, readTab, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
 
 export type Item = { id: string; createdAt: string } & Record<string, string>;
 
@@ -49,24 +49,49 @@ export type Subscription = {
 
 /** A row with no status predates double opt-in and counts as confirmed. */
 export const subscriptionStatus = (entry: Subscription): SubscriptionStatus => entry.status ?? "confirmed";
-export type EnquiryRecord = { reason: string; at: string };
+/*
+  Review 2026-09-30: "contact forms ... show actual email and message". Rows
+  from before then carry only the reason and time. These fields are personal
+  data: they stay in the sheet and the git-ignored local file, never in the
+  committed snapshot (scripts/sync-cms.mjs leaves enquiries out).
+*/
+export type EnquiryRecord = { reason: string; at: string; name?: string; email?: string; message?: string };
+
+/*
+  Review 2026-09-30, dashboard: the site's own records (the ones in content/)
+  can be taken off the website. They are not deleted from the code; a row here
+  hides one, keyed by collection and the record's id, and deleting the row
+  brings it back. Studio photograph lists replace a capability's photographs
+  once an editor has changed them. Both are public configuration, so both are
+  carried in the committed snapshot.
+*/
+export type HiddenRecord = { collection: string; key: string; at: string };
+export type StudioPhoto = { src: string; alt: string; width: number; height: number };
+export type StudioPhotoRecord = { capability: string; photos: string; at: string };
+
+/** A dashboard account. `hash` is a salted scrypt hash (lib/admin/auth.ts). */
+export type Account = { email: string; hash: string; createdAt: string };
 
 type Data = {
+  /** Only ever in the local file and the sheet's "accounts" tab; never read with the site's content. */
+  accounts?: Account[];
   items: Partial<Record<CollectionId, Item[]>>;
   subscriptions: Subscription[];
   enquiries: EnquiryRecord[];
+  hidden: HiddenRecord[];
+  studio: StudioPhotoRecord[];
 };
 
 /** Cache tag on every sheet read. Server actions call updateTag(CMS_TAG) after a write. */
 export const CMS_TAG = "cms";
 const SHEET_CACHE = { revalidate: 300, tags: [CMS_TAG] };
-const TABS = [...collections.map((item) => item.id), "subscriptions", "enquiries"];
+const TABS = [...collections.map((item) => item.id), "subscriptions", "enquiries", "hidden", "studio"];
 
 const root = () => path.resolve(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".data"));
 const file = () => path.join(root(), "cms.json");
 export const uploadsDir = () => path.join(root(), "uploads");
 
-const empty = (): Data => ({ items: {}, subscriptions: [], enquiries: [] });
+const empty = (): Data => ({ items: {}, subscriptions: [], enquiries: [], hidden: [], studio: [] });
 
 /* Records saved before the rename live under "media"; they are posts now. */
 function normalise(data: Partial<Data> & { items?: Record<string, Item[]> }): Data {
@@ -105,7 +130,15 @@ function fromRows(rows: Record<string, SheetRow[]>): Data {
       token: row.token || undefined,
       confirmedAt: row.confirmedAt || undefined,
     })),
-    enquiries: (rows.enquiries ?? []).map((row) => ({ reason: row.reason, at: row.at })),
+    enquiries: (rows.enquiries ?? []).map((row) => ({
+      reason: row.reason,
+      at: row.at,
+      name: row.name || undefined,
+      email: row.email || undefined,
+      message: row.message || undefined,
+    })),
+    hidden: (rows.hidden ?? []).filter((row) => row.collection && row.key).map((row) => ({ collection: row.collection, key: row.key, at: row.at })),
+    studio: (rows.studio ?? []).filter((row) => row.capability).map((row) => ({ capability: row.capability, photos: row.photos, at: row.at })),
   };
 }
 
@@ -239,8 +272,14 @@ export async function updateItem(collection: CollectionId, id: string, patch: Re
   });
 }
 
-export async function recordEnquiry(reason: string) {
-  const entry = { reason: reason || "general", at: new Date().toISOString() };
+export async function recordEnquiry(fields: { reason: string; name?: string; email?: string; message?: string }) {
+  const entry: EnquiryRecord & SheetRow = {
+    reason: fields.reason || "general",
+    at: new Date().toISOString(),
+    name: fields.name ?? "",
+    email: fields.email ?? "",
+    message: fields.message ?? "",
+  };
   if (sheetsConfigured()) await appendRow("enquiries", entry);
   await updateLocal((data) => {
     data.enquiries.push(entry);
@@ -250,4 +289,74 @@ export async function recordEnquiry(reason: string) {
 export async function readAnalytics() {
   const data = await load();
   return { subscriptions: data.subscriptions, enquiries: data.enquiries };
+}
+
+/** Every hidden site record, as "collection:key". */
+export async function hiddenKeys(): Promise<Set<string>> {
+  return new Set((await load()).hidden.map((row) => `${row.collection}:${row.key}`));
+}
+
+/** Takes one of the site's own records off the website. */
+export async function hideBuiltIn(collection: string, key: string) {
+  if ((await hiddenKeys()).has(`${collection}:${key}`)) return;
+  const row = { collection, key, at: new Date().toISOString() };
+  // `ref` is the one column a restore can match on without touching another collection's rows.
+  if (sheetsConfigured()) await appendRow("hidden", { ref: `${collection}:${key}`, ...row });
+  await updateLocal((data) => { data.hidden.push(row); });
+  await notifyContentChanged(`hid ${collection}`);
+}
+
+/** Puts a hidden site record back on the website. */
+export async function unhideBuiltIn(collection: string, key: string) {
+  if (sheetsConfigured()) await deleteRows("hidden", "ref", `${collection}:${key}`);
+  await updateLocal((data) => { data.hidden = data.hidden.filter((row) => !(row.collection === collection && row.key === key)); });
+  await notifyContentChanged(`restored ${collection}`);
+}
+
+/** The photograph lists an editor has set, by capability id. */
+export async function studioPhotoOverrides(): Promise<Record<string, StudioPhoto[]>> {
+  const result: Record<string, StudioPhoto[]> = {};
+  for (const row of (await load()).studio) {
+    try {
+      const photos = JSON.parse(row.photos) as StudioPhoto[];
+      if (Array.isArray(photos)) result[row.capability] = photos.filter((photo) => photo?.src && photo.width > 0 && photo.height > 0);
+    } catch {
+      console.error("[admin] unreadable studio photo list for", row.capability);
+    }
+  }
+  return result;
+}
+
+/** Replaces one capability's photographs, in order. */
+export async function saveStudioPhotos(capability: string, photos: StudioPhoto[]) {
+  const row = { capability, photos: JSON.stringify(photos), at: new Date().toISOString() };
+  const present = (await load()).studio.some((entry) => entry.capability === capability);
+  if (sheetsConfigured()) {
+    if (present) await updateRow("studio", "capability", capability, row);
+    else await appendRow("studio", row);
+  }
+  await updateLocal((data) => {
+    data.studio = [...data.studio.filter((entry) => entry.capability !== capability), row];
+  });
+  await notifyContentChanged("studio photographs");
+}
+
+/*
+  Dashboard accounts. Read on every sign-in straight from the sheet, uncached,
+  so a new account can sign in at once; never part of load(), so the site's
+  content reads never carry a password hash.
+*/
+export async function findAccount(email: string): Promise<Account | null> {
+  if (sheetsConfigured()) {
+    const row = (await readTab("accounts", { revalidate: 0 })).find((entry) => entry.email === email);
+    return row?.hash ? { email: row.email, hash: row.hash, createdAt: row.createdAt } : null;
+  }
+  return ((await loadLocal())?.accounts ?? []).find((entry) => entry.email === email) ?? null;
+}
+
+export async function addAccount(account: Account) {
+  if (sheetsConfigured()) await appendRow("accounts", account);
+  await updateLocal((data) => {
+    data.accounts = [...(data.accounts ?? []).filter((entry) => entry.email !== account.email), account];
+  });
 }
