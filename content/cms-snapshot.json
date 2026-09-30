@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-09-30T13:40:01.206Z",
+  "syncedAt": "2026-09-30T13:41:31.287Z",
   "items": {
     "posts": [
       {
@@ -9,17 +9,7 @@
         "link": "https://www.linkedin.com/feed/update/urn:li:activity:7508789924649832448/"
       }
     ],
-    "newsletters": [
-      {
-        "id": "a986af68-eba1-4e5a-86b6-55e9eb8fab19",
-        "createdAt": "2026-09-30T13:39:50.690Z",
-        "issue": "TEST Issue",
-        "title": "Automation test - delete me",
-        "summary": "Handover automation test. Will be removed.",
-        "image": "/api/uploads/7e0da67a-75a4-4cbf-a6cb-03eee321dbfe.jpg",
-        "pdf": "/api/uploads/0a353bb6-f0fd-4b5f-8be6-4a4bce479247.pdf"
-      }
-    ],
+    "newsletters": [],
     "events": [],
     "activities": [],
     "staff": [],
