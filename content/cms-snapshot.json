@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-09-30T13:41:31.287Z",
+  "syncedAt": "2026-09-30T13:51:34.186Z",
   "items": {
     "posts": [
       {
@@ -15,7 +15,13 @@
     "staff": [],
     "cohorts": []
   },
-  "hidden": [],
+  "hidden": [
+    {
+      "collection": "events",
+      "key": "ev11",
+      "at": "2026-09-30T13:51:24.167Z"
+    }
+  ],
   "studio": [],
   "subscriptions": [],
   "enquiries": []
