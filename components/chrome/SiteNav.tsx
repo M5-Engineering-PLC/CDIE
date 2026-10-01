@@ -14,6 +14,7 @@ import type { NavItem } from "@/content/types";
 
 import { MenuIcon } from "./MenuIcon";
 import { NavPanel } from "./NavPanel";
+import { useAdminEasterEgg } from "./useAdminEasterEgg";
 
 export type SiteNavProps = {
   items: NavItem[];
@@ -76,11 +77,12 @@ export function SiteNav({ items, utility, logo }: SiteNavProps) {
   }, [open]);
 
   const login = utility[0];
+  const onLogoClick = useAdminEasterEgg();
 
   return (
     <header ref={bar} className={`site-nav sticky top-0 z-40 ${compact ? "is-compact" : ""}`}>
       <div className="site-nav-inner">
-        <Link href="/" className="site-nav-brand" aria-label="CDIE home">
+        <Link href="/" className="site-nav-brand" aria-label="CDIE home" onClick={onLogoClick}>
           <Image
             src={logo.src}
             alt={logo.alt}

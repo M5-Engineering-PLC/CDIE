@@ -72,7 +72,9 @@ test("the Google Sheet is the dashboard's database and GitHub syncs from it", ()
 
 test("revised: events calendar cards open on the three most recent events", () => {
   const calendar = read("components/blocks/EventCalendar.tsx");
-  assert.match(calendar, /started - shown/);
+  // Revised 2026-10-01: upcoming events are in the opening window too.
+  assert.match(calendar, /openingIndex\(/);
+  assert.match(read("lib/eventWindow.ts"), /started - shown \+ Math\.min\(upcoming, shown\)/);
   assert.match(read("app/(site)/media/page.tsx"), /<EventCalendar/);
   assert.match(read("app/globals.css"), /\.cal-track \{[^}]*transition: transform var\(--motion-scene\) var\(--ease-glide\)/);
 });

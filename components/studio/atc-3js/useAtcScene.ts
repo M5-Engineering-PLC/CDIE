@@ -17,6 +17,8 @@ type SceneOptions = {
   tour?: boolean;
   interactive?: boolean;
   showLabels?: boolean;
+  /** hidden behind the other space: draw one frame to compile, then idle */
+  paused?: boolean;
   onSelect?: (service: AtcServiceId) => void;
   onReady?: (runtime: AtcRuntime) => void;
   onError?: () => void;
@@ -92,6 +94,7 @@ export function useAtcScene({
   view,
   tour = false,
   interactive = true,
+  paused = false,
   showLabels = true,
   onSelect,
   onReady,
@@ -101,6 +104,7 @@ export function useAtcScene({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const driveRef = useRef({ tour, interactive, active });
+  const pausedRef = useRef(paused);
   const selectRef = useRef(onSelect);
   const readyRef = useRef(onReady);
   const errorRef = useRef(onError);
@@ -114,6 +118,10 @@ export function useAtcScene({
   useEffect(() => {
     driveRef.current = { tour, interactive, active };
   }, [tour, interactive, active]);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -226,7 +234,10 @@ export function useAtcScene({
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const step = createAtcTourCamera(runtime, camera, controls, still);
 
+    let drawn = false;
     renderer.setAnimationLoop(() => {
+      if (pausedRef.current && drawn) return;
+      drawn = true;
       step(driveRef.current);
       renderer.render(scene, camera);
     });

@@ -52,7 +52,7 @@ test("site visitors come from the Vercel Web Analytics API, collected on public 
 test("the site's own records can be taken off the website and put back", () => {
   assert.match(read("lib/admin/builtins.ts"), /case "newsletters":/);
   assert.match(read("app/(site)/media/page.tsx"), /!hidden\.has\(`newsletters:\$\{item\.id\}`\)/);
-  assert.match(read("app/(site)/media/page.tsx"), /!hidden\.has\(`events:\$\{event\.id\}`\)/);
+  assert.match(read("lib/events.ts"), /!hidden\.has\(`events:\$\{event\.id\}`\)/);
   assert.match(read("app/(site)/about/page.tsx"), /!hidden\.has\(`staff:\$\{person\.id\}`\)/);
   assert.match(read("app/(site)/programmes/mdi/page.tsx"), /!hidden\.has\(`cohorts:\$\{person\.id\}`\)/);
   // a hide names one of the site's own records, never an arbitrary key

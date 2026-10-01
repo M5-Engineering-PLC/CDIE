@@ -44,7 +44,7 @@ export function StudioExplorer({
 
   const index = Math.max(0, capabilities.findIndex((item) => item.id === selectedId));
   const selected = capabilities[index] ?? capabilities[0];
-  useStudio3DWarmup();
+  const warm /* phones build the scenes only once the room opens */ =useStudio3DWarmup() && !viewOnly;
   const [photoIndex, pickPhoto] = useStagePhoto(selected?.id ?? "");
   const photo = selected?.media[photoIndex];
   useStudioPhotoWarmup(capabilities, selected?.media);
@@ -135,7 +135,7 @@ export function StudioExplorer({
               image={photo?.src ?? selected.image} imageAlt={photo?.alt ?? `${selected.name} at the CDIE Design Studio`} imageSize={photo}
               onSelect={selectByModelGroup}
               onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={openRoom}
-              onSwitchSpace={handleSwitchSpace}
+              onSwitchSpace={handleSwitchSpace} warm={warm}
             />
             <StudioPhotoStrip photos={selected.media} capabilityName={selected.name} current={photoIndex}
               onPick={(next) => { pickPhoto(next); setRoomOpen(false); setTour(false); }} />

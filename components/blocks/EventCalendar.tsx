@@ -9,7 +9,7 @@
   one used in From our Community."
 
   One card per event, in date order, on a single track. The window opens on
-  the three most recent events that have started; earlier ones wait to the
+  the soonest upcoming events, then the most recent (lib/eventWindow.ts); earlier ones wait to the
   left and anything upcoming to the right. The arrows, a swipe, a sideways
   trackpad scroll and the keyboard move the window one card at a time, and
   cards leaving it shrink and fade on the same curve as the LinkedIn fan.
@@ -19,6 +19,8 @@
 */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+
+import { openingIndex } from "@/lib/eventWindow";
 
 import { EventCard, type CalendarCardEvent } from "./EventCard";
 
@@ -33,13 +35,13 @@ const wide = (change: () => void) => {
 };
 const perView = () => (window.matchMedia("(min-width: 1024px)").matches ? 3 : window.matchMedia("(min-width: 640px)").matches ? 2 : 1);
 
-export function EventCalendar({ items, today, fallbackImage }: { items: CalendarCardEvent[]; today: string; fallbackImage: string }) {
+/** `controls` false drops the count and arrows, for a fixed set such as the three on Programmes. */
+export function EventCalendar({ items, today, fallbackImage, controls = true }: { items: CalendarCardEvent[]; today: string; fallbackImage: string; controls?: boolean }) {
   const events = [...items].sort((a, b) => a.start.localeCompare(b.start));
   const shown = useSyncExternalStore(wide, perView, () => 3);
-  const started = events.filter((event) => event.start <= today).length;
   const max = Math.max(0, events.length - shown);
   const [pos, setPos] = useState<number | null>(null);
-  const at = Math.min(max, Math.max(0, pos ?? started - shown));
+  const at = Math.min(max, Math.max(0, pos ?? openingIndex(events.map((event) => event.start), today, shown)));
   const go = (next: number) => setPos(Math.min(max, Math.max(0, next)));
   const down = useRef<number | null>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -94,7 +96,7 @@ export function EventCalendar({ items, today, fallbackImage }: { items: Calendar
           })}
         </ol>
       </div>
-      <div className="cal-controls">
+      {controls ? <div className="cal-controls">
         <p className="cal-count" aria-live="polite">
           {events.length > shown ? `${at + 1}–${Math.min(at + shown, events.length)} of ${events.length} events` : `${events.length} events`}
         </p>
@@ -104,7 +106,7 @@ export function EventCalendar({ items, today, fallbackImage }: { items: Calendar
         <button type="button" className="cal-arrow" aria-label="Later events" disabled={at >= max} onClick={() => go(at + 1)}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
         </button>
-      </div>
+      </div> : null}
     </div>
   );
 }

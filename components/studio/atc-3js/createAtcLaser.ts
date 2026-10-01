@@ -47,16 +47,22 @@ export function createAtcLaser(materials: AtcMaterials): THREE.Group {
   const hatchX = -0.15;
   const hatchZ = 0.08;
 
-  // Hatch frame
-  laser.add(atcBox("laser-hatch-frame", [hatchW, 0.04, hatchD], [hatchX, h - 0.01, hatchZ], "steelDark", materials, "laser-cutting", 0.015));
+  /* Revised 2026-10-01: the lid flickered. The tinted glass sat inside the
+     frame, its top 2.5 mm under the frame's, and the frame cut into the body.
+     Each layer now rests on the one below with a clear step, and the glass,
+     being see-through, casts no shadow of its own. */
+  // Hatch frame, resting on the body top
+  laser.add(atcBox("laser-hatch-frame", [hatchW, 0.03, hatchD], [hatchX, h + 0.015, hatchZ], "steelDark", materials, "laser-cutting", 0.012));
 
-  // Dark tinted acrylic glass window (Source: frame_7039.jpg)
-  laser.add(atcBox("laser-view-glass", [hatchW - 0.1, 0.015, hatchD - 0.1], [hatchX, h, hatchZ], "darkGlass", materials, "laser-cutting"));
+  // Dark tinted acrylic glass window, laid on the frame (Source: frame_7039.jpg)
+  const glass = atcBox("laser-view-glass", [hatchW - 0.1, 0.01, hatchD - 0.1], [hatchX, h + 0.036, hatchZ], "darkGlass", materials, "laser-cutting");
+  glass.castShadow = false;
+  laser.add(glass);
 
   // Hatch handles and hinges
-  laser.add(atcBox("laser-hatch-handle", [0.42, 0.025, 0.03], [hatchX, h + 0.03, hatchZ + hatchD / 2 - 0.04], "steelDark", materials, "laser-cutting", 0.008));
-  laser.add(atcBox("laser-hinge-l", [0.08, 0.02, 0.04], [hatchX - 0.4, h + 0.01, hatchZ - hatchD / 2 + 0.02], "steelDark", materials, "laser-cutting"));
-  laser.add(atcBox("laser-hinge-r", [0.08, 0.02, 0.04], [hatchX + 0.4, h + 0.01, hatchZ - hatchD / 2 + 0.02], "steelDark", materials, "laser-cutting"));
+  laser.add(atcBox("laser-hatch-handle", [0.42, 0.025, 0.03], [hatchX, h + 0.06, hatchZ + hatchD / 2 - 0.04], "steelDark", materials, "laser-cutting", 0.008));
+  laser.add(atcBox("laser-hinge-l", [0.08, 0.02, 0.04], [hatchX - 0.4, h + 0.04, hatchZ - hatchD / 2 + 0.02], "steelDark", materials, "laser-cutting"));
+  laser.add(atcBox("laser-hinge-r", [0.08, 0.02, 0.04], [hatchX + 0.4, h + 0.04, hatchZ - hatchD / 2 + 0.02], "steelDark", materials, "laser-cutting"));
 
   // 5. Honeycomb Cutting Bed & Laser Head inside chamber
   laser.add(atcBox("laser-honeycomb-bed", [hatchW - 0.16, 0.03, hatchD - 0.16], [hatchX, h - 0.16, hatchZ], "chrome", materials, "laser-cutting"));
@@ -65,16 +71,16 @@ export function createAtcLaser(materials: AtcMaterials): THREE.Group {
   // 6. Right Control Console (Digital Keypad, Screen, Emergency Stop, Key Switch)
   const panelX = w / 2 - 0.22;
   const panelZ = 0.15;
-  laser.add(atcBox("laser-control-panel-recess", [0.32, 0.02, 0.48], [panelX, h - 0.01, panelZ], "steelDark", materials, "laser-cutting", 0.01));
-  laser.add(atcBox("laser-lcd-screen", [0.18, 0.008, 0.14], [panelX, h, panelZ - 0.12], "screen", materials, "laser-cutting"));
-  laser.add(atcBox("laser-keypad-membrane", [0.18, 0.006, 0.16], [panelX, h, panelZ + 0.06], "black", materials, "laser-cutting"));
+  laser.add(atcBox("laser-control-panel-recess", [0.32, 0.02, 0.48], [panelX, h + 0.01, panelZ], "steelDark", materials, "laser-cutting", 0.01));
+  laser.add(atcBox("laser-lcd-screen", [0.18, 0.008, 0.14], [panelX, h + 0.025, panelZ - 0.12], "screen", materials, "laser-cutting"));
+  laser.add(atcBox("laser-keypad-membrane", [0.18, 0.006, 0.16], [panelX, h + 0.024, panelZ + 0.06], "black", materials, "laser-cutting"));
 
   // Red mushroom emergency stop button (Source: laser.jpg)
-  laser.add(atcCylinder("laser-estop-base", 0.025, 0.02, [panelX - 0.08, h + 0.015, panelZ + 0.19], "yellow", materials, "laser-cutting", 16));
-  laser.add(atcCylinder("laser-estop-mushroom", 0.032, 0.025, [panelX - 0.08, h + 0.035, panelZ + 0.19], "red", materials, "laser-cutting", 20));
+  laser.add(atcCylinder("laser-estop-base", 0.025, 0.02, [panelX - 0.08, h + 0.03, panelZ + 0.19], "yellow", materials, "laser-cutting", 16));
+  laser.add(atcCylinder("laser-estop-mushroom", 0.032, 0.025, [panelX - 0.08, h + 0.052, panelZ + 0.19], "red", materials, "laser-cutting", 20));
 
   // Key switch
-  laser.add(atcCylinder("laser-key-switch", 0.014, 0.02, [panelX + 0.08, h + 0.015, panelZ + 0.19], "chrome", materials, "laser-cutting", 12));
+  laser.add(atcCylinder("laser-key-switch", 0.014, 0.02, [panelX + 0.08, h + 0.03, panelZ + 0.19], "chrome", materials, "laser-cutting", 12));
 
   // 7. Blue Elephant Brand Badge on Front Panel (Source: frame_7030.jpg "BLUE ELEPHANT" with diamond)
   addTextPlate(

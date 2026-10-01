@@ -130,7 +130,7 @@ test("the tour turns the room, walks the capabilities and calls each one out", (
 });
 
 test("an ATC capability switches the stage instead of lighting another room", () => {
-  assert.match(read("components/studio/StudioStage.tsx"), /if \(atc\)/);
+  assert.match(read("components/studio/StudioStage.tsx"), /const isAtc = space === "atc" \|\| atc/);
   assert.match(read("app/(site)/design-studio/page.tsx"), /atc: capability\.space === "atc"/);
 });
 

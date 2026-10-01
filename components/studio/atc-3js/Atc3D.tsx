@@ -15,6 +15,8 @@ export type Atc3DProps = {
   initialView?: AtcView;
   tour?: boolean;
   interactive?: boolean;
+  /** mounted but hidden behind the other space */
+  paused?: boolean;
 };
 
 export function Atc3D({
@@ -24,6 +26,7 @@ export function Atc3D({
   initialView = "isometric",
   tour = false,
   interactive = true,
+  paused = false,
 }: Atc3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [view, setView] = useState<AtcView>(initialView);
@@ -37,6 +40,7 @@ export function Atc3D({
     view,
     tour,
     interactive,
+    paused,
     showLabels,
     onSelect,
     onReady: () => setStatus("ready"),

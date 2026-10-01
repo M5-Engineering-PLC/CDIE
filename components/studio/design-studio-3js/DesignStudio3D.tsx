@@ -22,6 +22,8 @@ export type DesignStudio3DProps = {
     autofocus are identical to the desktop tour.
   */
   interactive?: boolean;
+  /** mounted but hidden behind the other space */
+  paused?: boolean;
 };
 
 export function DesignStudio3D({
@@ -31,9 +33,16 @@ export function DesignStudio3D({
   initialView = "isometric",
   tour = false,
   interactive = true,
+  paused = false,
 }: DesignStudio3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [view, setView] = useState<StudioView>(initialView);
+  // Follow a new initial view without rebuilding the scene.
+  const [lastInitial, setLastInitial] = useState(initialView);
+  if (initialView !== lastInitial) {
+    setLastInitial(initialView);
+    setView(initialView);
+  }
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useDesignStudioScene({
@@ -42,6 +51,7 @@ export function DesignStudio3D({
     view,
     tour,
     interactive,
+    paused,
     onSelect,
     onReady: () => setStatus("ready"),
     onError: () => setStatus("error"),

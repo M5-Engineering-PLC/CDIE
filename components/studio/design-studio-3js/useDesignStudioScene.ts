@@ -27,6 +27,8 @@ type SceneOptions = {
   view: StudioView;
   tour?: boolean;
   interactive?: boolean;
+  /** hidden behind the other space: draw one frame to compile, then idle */
+  paused?: boolean;
   onSelect?: (service: ServiceId) => void;
   onReady?: () => void;
   onError?: () => void;
@@ -89,6 +91,7 @@ export function useDesignStudioScene({
   view,
   tour = false,
   interactive = true,
+  paused = false,
   onSelect,
   onReady,
   onError,
@@ -99,6 +102,7 @@ export function useDesignStudioScene({
   /* The loop reads these every frame. They are refs, not state, because a
      change must reach the running animation without rebuilding the scene. */
   const driveRef = useRef({ tour, interactive, active });
+  const pausedRef = useRef(paused);
   const selectRef = useRef(onSelect);
   const readyRef = useRef(onReady);
   const errorRef = useRef(onError);
@@ -112,6 +116,10 @@ export function useDesignStudioScene({
   useEffect(() => {
     driveRef.current = { tour, interactive, active };
   }, [tour, interactive, active]);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -201,7 +209,10 @@ export function useDesignStudioScene({
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const step = createTourCamera(runtime, camera, controls, still);
 
+    let drawn = false;
     renderer.setAnimationLoop(() => {
+      if (pausedRef.current && drawn) return;
+      drawn = true;
       step(driveRef.current);
       renderer.render(scene, camera);
     });

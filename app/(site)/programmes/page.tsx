@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 
 import { Chip } from "@/components/primitives/Kicker";
 import { Button } from "@/components/primitives/Button";
-import { EventGrid, type EventCardItem } from "@/components/blocks/EventGrid";
+import { EventCalendar } from "@/components/blocks/EventCalendar";
 import { FaqList } from "@/components/blocks/FaqList";
 import { PlaceholderPhoto } from "@/components/blocks/PlaceholderPhoto";
 import { AutoRail } from "@/components/sections/AutoRail";
@@ -13,34 +13,25 @@ import { ProgrammeHeroCarousel, type ProgrammeHeroSlide } from "@/components/sec
 import { Section } from "@/components/sections/Section";
 import { StageAccordion, type LearningStagePanel } from "@/components/sections/StageAccordion";
 import {
-  events,
   eventsCopy,
   learningStages,
   opportunities,
   programmeFaqs,
   programmesLanding,
 } from "@/content/programmes";
+import { getCalendarEvents, recentEvents } from "@/lib/events";
 import { pageMetadata } from "@/lib/seo";
 
 /*
   Enhancements 2026-09-22: "on programmes just have the most recent 3 events".
-  Only events with their own photograph qualify, so no card has an empty frame;
-  the full list is the Media calendar.
+  Revised 2026-10-01: the three are the ones the Media calendar opens on,
+  upcoming events included, read
+  from the same timeline, so admin-added events and posts show here too. An
+  event without a photograph takes the logo, as it does on the calendar. The
+  cards are the calendar's own, so the two pages show the same thing.
 */
-const eventCards: EventCardItem[] = events
-  .filter((event) => event.image)
-  .sort((a, b) => Date.parse(b.end ?? b.start) - Date.parse(a.end ?? a.start))
-  .slice(0, 3)
-  .map((event) => ({
-    id: event.id,
-    title: event.title,
-    start: event.start,
-    venue: event.kind ?? "",
-    summary: "",
-    image: event.image as string,
-    alt: event.title,
-    href: event.link,
-  }));
+/* Same refresh as Media, so a new event reaches both pages together. */
+export const revalidate = 600;
 
 /*
   Change request 2026-09-13, section 4.1, revised: the carousel is the first
@@ -98,7 +89,9 @@ export const metadata: Metadata = pageMetadata({
   path: "/programmes",
 });
 
-export default function ProgrammesPage() {
+export default async function ProgrammesPage() {
+  const today = new Date().toISOString().slice(0, 10);
+  const eventCards = recentEvents(await getCalendarEvents(), today);
   return (
     <>
 
@@ -184,7 +177,7 @@ export default function ProgrammesPage() {
           </div>
         ) : (
           <>
-            <EventGrid items={eventCards} />
+            <EventCalendar items={eventCards} today={today} fallbackImage="/brand/cdie-logo.webp" controls={false} />
             <div className="mt-8">
               <Button href="/media#events" tone="outline">
                 See the full events calendar

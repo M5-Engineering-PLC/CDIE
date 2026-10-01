@@ -2,9 +2,8 @@
 // Copy: MEDIA. Newsletters open the published issue in a new tab.
 
 import type { Metadata } from "next";
-import snapshot from "@/content/linkedin-snapshot.json";
 
-import { EventCalendar, type CalendarCardEvent } from "@/components/blocks/EventCalendar";
+import { EventCalendar } from "@/components/blocks/EventCalendar";
 import { FaqList } from "@/components/blocks/FaqList";
 import { NewsletterGrid, type NewsletterCardItem } from "@/components/blocks/NewsletterGrid";
 import { Button } from "@/components/primitives/Button";
@@ -18,8 +17,9 @@ import {
   mediaLanding,
   newslettersCopy,
 } from "@/content/media";
-import { events, eventsCopy } from "@/content/programmes";
+import { eventsCopy } from "@/content/programmes";
 import { hiddenKeys, listItems } from "@/lib/admin/store";
+import { getCalendarEvents } from "@/lib/events";
 import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
 import { pageMetadata } from "@/lib/seo";
 
@@ -42,45 +42,15 @@ export const revalidate = 600;
 
 /*
   The events calendar leads the page. Programmes owns every event record; this
-  is a second view of the same list, so the two cannot drift.
+  is a second view of the same list, so the two cannot drift. lib/events.ts
+  builds the timeline both pages read.
 */
-const programmeEvents: CalendarCardEvent[] = events.map((event) => ({
-  id: event.id,
-  title: event.title,
-  start: event.start,
-  end: event.end,
-  kind: event.kind,
-  venue: event.venue,
-  estimated: event.estimated,
-  link: event.link,
-  image: event.image,
-}));
-
-/* The scheduled sync commits LinkedIn pictures into /public/linkedin. Rendering
-   this page never waits for LinkedIn or sends its image URLs to a browser. */
-const withPostImage = (event: CalendarCardEvent) => {
-  const image = event.image?.startsWith("https://media.licdn.com/") ? undefined : event.image;
-  if (image || !event.link?.startsWith("https://www.linkedin.com/")) return { ...event, image };
-  return { ...event, image: (snapshot.eventImages as Record<string, string>)[event.link] };
-};
-
 export default async function MediaPage() {
-  /* Enhancements 2026-09-22: one timeline holds programme events plus the
-     events, upcoming activities and posts added in the admin dashboard. */
-  const [added, activities, posts, addedIssues, hidden] = await Promise.all([
-    listItems("events"),
-    listItems("activities"),
-    listItems("posts"),
+  const [calendarEvents, addedIssues, hidden] = await Promise.all([
+    getCalendarEvents(),
     listItems("newsletters"),
     hiddenKeys(),
   ]);
-  // Review 2026-09-30: events and issues removed in the dashboard leave the page.
-  const calendarEvents: CalendarCardEvent[] = [
-    ...programmeEvents.filter((event) => !hidden.has(`events:${event.id}`)),
-    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Event", image: item.image })),
-    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Activity", image: item.image })),
-    ...posts.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Post", link: item.link, image: item.image })),
-  ].map(withPostImage);
   const today = new Date().toISOString().slice(0, 10);
 
   const newsletters = mediaItems.filter((item) => item.kind === "newsletter" && !hidden.has(`newsletters:${item.id}`));
