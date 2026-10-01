@@ -31,7 +31,7 @@ function CapabilityCard({ item, open, clone, onToggle, onLeave }: {
       <div className="capability-caption">
         <h3>{item.eyebrow}</h3>
         {/* Review 2026-09-30, mobile: an arrow says the card opens. */}
-        <span className="capability-cue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+        <span className="capability-cue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
       </div>
       {clone ? null : (
         <button id={`cap-toggle-${item.id}`} type="button" className="capability-hit" aria-label={`${open ? "Hide" : "Show"} ${item.eyebrow} details`} aria-expanded={open} onClick={onToggle} />
@@ -42,12 +42,12 @@ function CapabilityCard({ item, open, clone, onToggle, onLeave }: {
         <h4>{item.title}</h4>
         <p>{item.summary}</p>
         <div className="capability-actions">
-          {/* Review 2026-09-30: on a phone the open card keeps its title and this
-              link shrinks to an arrow; the label stays as its accessible name. */}
+          {/* Review 2026-09-30: on a phone the open card is its words alone; this
+              link spreads over them and its label stays as the accessible name. */}
           {clone ? (
-            <span className="capability-action"><span className="capability-action-label">{item.action}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+            <span className="capability-action"><span className="capability-action-label">{item.action}</span></span>
           ) : (
-            <Link href={item.href} className="capability-action group-hover:text-brand-live"><span className="capability-action-label">{item.action}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></Link>
+            <Link href={item.href} className="capability-action group-hover:text-brand-live"><span className="capability-action-label">{item.action}</span></Link>
           )}
         </div>
       </div>

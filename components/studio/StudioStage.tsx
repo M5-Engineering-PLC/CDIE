@@ -87,13 +87,13 @@ export function StudioStage({
 
   if (!open) {
     return (
-      <div className="flex min-w-0 flex-col gap-3">
+      <div className="flex min-w-0 flex-col gap-3 lg:min-h-0 lg:flex-1">
         {toggleBar}
         {viewPill}
         {/* Follow-up 2026-09-25: the frame follows the photograph's own ratio
             and the image is contained, never cropped. */}
         <div
-          className="relative max-h-[28rem] min-h-48 overflow-hidden bg-ink"
+          className="relative max-h-[28rem] min-h-48 overflow-hidden bg-ink lg:max-h-none lg:min-h-72 lg:flex-1 lg:!aspect-auto"
           style={imageSize ? { aspectRatio: `${imageSize.width} / ${imageSize.height}` } : undefined}
         >
           {/* Review 2026-09-30: "the main image should be a bit smaller"; the
