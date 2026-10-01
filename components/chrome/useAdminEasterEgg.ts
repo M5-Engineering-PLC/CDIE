@@ -8,8 +8,8 @@
 
 import { useRef, type MouseEvent } from "react";
 
-const CLICKS = 5;
-const WINDOW_MS = 2000;
+const CLICKS = 3;
+const WINDOW_MS = 3000;
 
 export function useAdminEasterEgg(href = "/admin") {
   const clicks = useRef<number[]>([]);
