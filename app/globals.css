@@ -577,32 +577,6 @@
   .stage-copy { width: min(36rem, calc((100vw - 2 * var(--spacing-gutter)) * 0.53)); padding: 2.5rem; }
 }
 @media (prefers-reduced-motion: reduce) { .stage-panel, .stage-photo img, .stage-shade, .stage-closed, .stage-copy { transition: none; } }
-/*
-  Review 2026-09-30: the stages open with the scroll, pinned. .stage-scroll is
-  one screen plus --stage-scroll-step of scrolling per stage; the band inside
-  sticks under the bar (--stage-pin-top, the bar's height at each layout) and
-  fills the rest of the screen, so the open panel takes whatever height the
-  closed ones leave. Only where the screen is tall enough to hold the band; on
-  a short one the band scrolls normally and a tap opens a stage.
-*/
-.stage-scroll { --stage-pin-top: 4.4rem; --stage-scroll-step: 55svh; }
-@media (min-width: 1024px) { .stage-scroll { --stage-pin-top: 3.9rem; } }
-@media (min-height: 600px) {
-  .stage-scroll { height: calc(100svh - var(--stage-pin-top) + var(--stage-count) * var(--stage-scroll-step)); }
-  .stage-scroll > .stage-band { position: sticky; top: var(--stage-pin-top); display: flex; height: calc(100svh - var(--stage-pin-top)); flex-direction: column; }
-  .stage-scroll .stage-head { padding-top: 1.25rem; }
-  .stage-scroll .stage-track { flex: 1; min-height: 0; height: auto; padding-top: 1.25rem; padding-bottom: 1.25rem; }
-  .stage-scroll .stage-panel { flex: 0 0 3.5rem; }
-  .stage-scroll .stage-panel[data-active="true"] { flex: 1 1 0; }
-  .stage-scroll .stage-closed { padding-block: 0.75rem; }
-}
-@media (min-height: 600px) and (min-width: 900px) {
-  .stage-scroll .stage-head { padding-top: 2rem; }
-  .stage-scroll .stage-track { padding-top: 2rem; padding-bottom: 2rem; }
-  .stage-scroll .stage-panel { flex: 1 1 0; }
-  .stage-scroll .stage-panel[data-active="true"] { flex: 5 1 0; }
-  .stage-scroll .stage-closed { padding-block: 1.5rem; }
-}
 
 /*
   Final pass 2026-09-23: the Media LinkedIn fan, components/sections/LinkedInFan.tsx,
