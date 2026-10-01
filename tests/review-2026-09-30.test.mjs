@@ -58,9 +58,12 @@ test("the open mobile menu closes on a tap outside it", () => {
   assert.match(nav, /bar\.current\?\.contains/);
 });
 
-test("how learning works is pinned and opens with the scroll", () => {
-  assert.match(read("components/sections/StageAccordion.tsx"), /className="stage-scroll"/);
-  assert.match(read("app/globals.css"), /\.stage-scroll > \.stage-band \{ position: sticky;/);
+test("how learning works scrolls with the page and opens on hover, tap or focus", () => {
+  const accordion = read("components/sections/StageAccordion.tsx");
+  assert.doesNotMatch(accordion, /stage-scroll/);
+  assert.doesNotMatch(accordion, /addEventListener\("scroll"/);
+  assert.match(accordion, /onClick=\{\(\) => setActive\(index\)\}/);
+  assert.doesNotMatch(read("app/globals.css"), /\.stage-scroll/);
 });
 
 test("studio photographs: a smaller stage, a thumbnail strip that chooses it, and warm-up", () => {
