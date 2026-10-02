@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-09-30T13:53:12.951Z",
+  "syncedAt": "2026-10-02T09:09:31.021Z",
   "items": {
     "posts": [
       {
@@ -32,7 +32,13 @@
       "at": "2026-09-30T13:52:57.905Z"
     }
   ],
-  "studio": [],
+  "studio": [
+    {
+      "capability": "three-d-printing",
+      "photos": "[{\"src\":\"/images/cdie-3d-printing-heart-model-01.jpeg\",\"alt\":\"3D printer finishing a model of a human heart\",\"width\":1112,\"height\":1600},{\"src\":\"/images/cdie-3d-printers.jpg\",\"alt\":\"3D printers on the studio rack\",\"width\":1600,\"height\":1200},{\"src\":\"/images/cdie-meet-the-faculty-kenneth-iloka.jpg\",\"alt\":\"Faculty member showing a resin 3D printer to visiting guests\",\"width\":606,\"height\":607}]",
+      "at": "2026-10-02T09:09:28.879Z"
+    }
+  ],
   "subscriptions": [],
   "enquiries": []
 }
