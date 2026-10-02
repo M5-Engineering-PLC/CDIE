@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-02T09:12:31.150Z",
+  "syncedAt": "2026-10-02T09:13:03.776Z",
   "items": {
     "posts": [
       {
@@ -40,8 +40,8 @@
     },
     {
       "capability": "electronics",
-      "photos": "[{\"src\":\"/images/service-electronics-1.jpg\",\"alt\":\"Two students at a bench soldering with a helping-hands clamp beside a breadboard\",\"width\":2560,\"height\":1438},{\"src\":\"/images/cdie-electronics-soldering.jpg\",\"alt\":\"Hands soldering a circuit board\",\"width\":973,\"height\":1015},{\"src\":\"/api/uploads/0cfda237-47e2-4df5-8861-fbf5e9bc747c.jpg\",\"alt\":\"Annotation\",\"width\":1376,\"height\":768}]",
-      "at": "2026-10-02T09:12:17.479Z"
+      "photos": "[{\"src\":\"/images/service-electronics-1.jpg\",\"alt\":\"Two students at a bench soldering with a helping-hands clamp beside a breadboard\",\"width\":2560,\"height\":1438},{\"src\":\"/images/cdie-electronics-soldering.jpg\",\"alt\":\"Hands soldering a circuit board\",\"width\":973,\"height\":1015}]",
+      "at": "2026-10-02T09:12:53.599Z"
     }
   ],
   "subscriptions": [],
