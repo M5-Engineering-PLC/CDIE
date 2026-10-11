@@ -11,6 +11,7 @@
 
 import type { EnquiryRecord, Subscription } from "@/lib/admin/store";
 import type { VisitorReport } from "@/lib/admin/visitors";
+import { EnquiryReplyLinks } from "./EnquiryReplyLinks";
 
 import { MonthBars, StatTile } from "./Analytics";
 
@@ -65,10 +66,10 @@ export function EnquiryPanel({ enquiries, showPeople }: { enquiries: EnquiryReco
               </summary>
               {showPeople ? (
                 <ul className="flex flex-col gap-3 pb-3">
-                  {[...entries].sort((a, b) => b.at.localeCompare(a.at)).map((entry) => (
-                    <li key={entry.at} className="border-l-2 border-line pl-3 text-fine">
+                  {[...entries].sort((a, b) => b.at.localeCompare(a.at)).map((entry, index) => (
+                    <li key={`${entry.at}-${entry.email ?? ""}-${index}`} className="border-l-2 border-line pl-3 text-fine">
                       <p className="text-ink-3">{date(entry.at)}{entry.name ? ` · ${entry.name}` : ""}</p>
-                      {entry.email ? <a href={`mailto:${entry.email}`} className="text-brand">{entry.email}</a> : <p className="text-ink-3">Address not recorded (sent before details were kept).</p>}
+                      {entry.email ? <EnquiryReplyLinks email={entry.email} message={entry.message ?? ""} /> : <p className="text-ink-3">Address not recorded (sent before details were kept).</p>}
                       {entry.message ? <p className="mt-1 whitespace-pre-line text-ink-2">{entry.message}</p> : null}
                     </li>
                   ))}
