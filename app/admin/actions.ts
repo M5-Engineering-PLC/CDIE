@@ -21,6 +21,21 @@ import { issueEmail } from "@/lib/newsletter";
 
 const IMAGE = /^image\/(jpeg|png|webp|gif|avif)$/;
 
+/*
+  Fix plan 2026-10-11, D6: a Google Sheets error (a busy quota, a timeout) is
+  answered in the form, not thrown, so it cannot take the whole page with it.
+*/
+const SHEET_BUSY = "The Google Sheet did not answer. Nothing was changed; try again in a moment.";
+
+async function attempt<T>(label: string, run: () => Promise<T>): Promise<{ ok: true; value: T } | { ok: false }> {
+  try {
+    return { ok: true, value: await run() };
+  } catch (error) {
+    console.error(`[admin] ${label} failed`, error);
+    return { ok: false };
+  }
+}
+
 /* Ten tries per quarter hour, per address and per network address, so a guesser is slowed either way. */
 const SIGN_IN_RULE = { limit: 10, windowMs: 15 * 60_000 };
 
@@ -32,9 +47,9 @@ async function throttled(kind: string, email: string) {
 export async function login(_: string | null, form: FormData) {
   const email = normaliseEmail(form.get("email"));
   if (await throttled("login", email)) return "Too many attempts. Wait a few minutes and try again.";
-  if (!(await credentialsMatch(email, String(form.get("password") ?? "")))) {
-    return "That email address and password do not match an account.";
-  }
+  const match = await attempt("sign-in", () => credentialsMatch(email, String(form.get("password") ?? "")));
+  if (!match.ok) return SHEET_BUSY;
+  if (!match.value) return "That email address and password do not match an account.";
   await startSession(email);
   redirect("/admin");
 }
@@ -53,8 +68,11 @@ export async function signup(_: string | null, form: FormData) {
   if (!mayHaveAccount(email)) return "That address cannot hold a dashboard account. Ask the site administrator to add it.";
   if (password.length < 12) return "Use a password of at least 12 characters.";
   if (password !== String(form.get("confirm") ?? "")) return "The two passwords do not match.";
-  if (await findAccount(email)) return "There is already an account for that address. Sign in instead.";
-  await addAccount({ email, hash: await hashPassword(password), createdAt: new Date().toISOString() });
+  const existing = await attempt("account lookup", () => findAccount(email));
+  if (!existing.ok) return SHEET_BUSY;
+  if (existing.value) return "There is already an account for that address. Sign in instead.";
+  const hash = await hashPassword(password);
+  if (!(await attempt("account save", () => addAccount({ email, hash, createdAt: new Date().toISOString() }))).ok) return SHEET_BUSY;
   await startSession(email);
   redirect("/admin");
 }
@@ -92,7 +110,9 @@ export async function createItem(_: string | null, form: FormData): Promise<stri
       if (file) {
         const ok = field.type === "pdf" ? file.type === "application/pdf" : IMAGE.test(file.type);
         if (!ok) return `${field.label} must be ${field.type === "pdf" ? "a PDF" : "a JPEG, PNG, WebP, GIF or AVIF image"}.`;
-        fields[field.name] = await saveUpload(file);
+        const upload = await attempt("upload", () => saveUpload(file));
+        if (!upload.ok) return `${field.label} did not upload. Nothing was saved; try again in a moment.`;
+        fields[field.name] = upload.value;
       }
     } else if (typeof raw === "string" && raw.trim()) {
       fields[field.name] = raw.trim().slice(0, field.type === "textarea" ? 4000 : 300);
@@ -135,7 +155,9 @@ export async function sendIssue(_: string | null, form: FormData): Promise<strin
 
   const id = String(form.get("id"));
   const test = String(form.get("mode")) === "test";
-  const issue = (await listItems("newsletters")).find((item) => item.id === id);
+  const issues = await attempt("issue lookup", () => listItems("newsletters"));
+  if (!issues.ok) return SHEET_BUSY;
+  const issue = issues.value.find((item) => item.id === id);
   if (!issue) return "That issue is no longer saved.";
   if (!issue.pdf) return "That issue has no PDF to link to.";
 
@@ -152,17 +174,21 @@ export async function sendIssue(_: string | null, form: FormData): Promise<strin
     return `This issue was already sent on ${new Date(issue.sentAt).toLocaleDateString("en-GB")}. Tick "send it again" to send it once more.`;
   }
 
-  const subscribers = await listSubscribers("confirmed");
-  if (subscribers.length === 0) return "Nobody has confirmed a subscription yet, so there is no one to send to.";
+  const subscribers = await attempt("subscriber list", () => listSubscribers("confirmed"));
+  if (!subscribers.ok) return SHEET_BUSY;
+  if (subscribers.value.length === 0) return "Nobody has confirmed a subscription yet, so there is no one to send to.";
 
   const { sent, failed } = await sendBatch(
-    subscribers.map((person) => issueEmail(person.email, person.token ?? "", content)),
+    subscribers.value.map((person) => issueEmail(person.email, person.token ?? "", content)),
   );
-  await updateItem("newsletters", id, {
+  // The emails are out either way; only the record of the send can fail here.
+  const recorded = await attempt("send record", () => updateItem("newsletters", id, {
     sentAt: new Date().toISOString(),
     sentCount: String(sent),
-  });
+  }));
   updateTag(CMS_TAG);
   revalidatePath("/admin", "layout");
-  return failed > 0 ? `Sent to ${sent}. ${failed} did not go out; the server log has the reason.` : null;
+  const unrecorded = recorded.ok ? "" : " The send could not be noted on the issue, so the dashboard will not show it as sent.";
+  if (failed > 0) return `Sent to ${sent}. ${failed} did not go out; the server log has the reason.${unrecorded}`;
+  return recorded.ok ? null : `Sent to ${sent}.${unrecorded}`;
 }
