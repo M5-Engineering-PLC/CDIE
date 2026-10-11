@@ -274,3 +274,10 @@ test("override helpers use the CMS cache tag, ignore an unconfigured sheet, and 
   await assert.rejects(helpers.saveLinkedinOverride({ ...current, date: "2026-02-30" }), /invalid/);
   assert.equal(calls.length, 2);
 });
+
+test("review 2026-10-11: a yearless date well before the post rolls into the next year", async () => {
+  const { dateFromText } = await import("../lib/linkedin/dates.mjs");
+  assert.equal(dateFromText("Join us 5 January at the studio", "2026-12-14T09:00:00Z"), "2027-01-05");
+  assert.equal(dateFromText("On 5 October we met the cohort", "2026-10-08T09:00:00Z"), "2026-10-05");
+  assert.equal(dateFromText("Join us 5 January 2026", "2026-12-14T09:00:00Z"), "2026-01-05");
+});

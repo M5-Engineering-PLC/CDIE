@@ -64,9 +64,9 @@ export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy, fal
       return;
     }
     if (next.posts.length === 0) return;
-    if (nextStale) return;
+    /* Review 2026-10-11: a feed that went stale while the tab was open shows the fallback, as before. */
     const excluded = new Set(excludedLinks.map((link) => linkedInUrn(link)));
-    setFeed({ posts: next.posts.filter((post) => !excluded.has(post.id)).slice(0, RECENT_POSTS), stale: false });
+    setFeed({ posts: next.posts.filter((post) => !excluded.has(post.id)).slice(0, RECENT_POSTS), stale: nextStale });
   }, [excludedLinks]);
 
   useEffect(() => {
