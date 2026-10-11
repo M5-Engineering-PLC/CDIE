@@ -17,11 +17,11 @@ const require = createRequire(import.meta.url);
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
 function load(file, dependencies) {
   const source = ts.transpileModule(read(file), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText;
-  const module = { exports: {} };
+  const sandbox = { exports: {} };
   runInNewContext(`(function(require,module,exports){${source}\n})`, { console, process, Buffer, File, FormData, URL, setTimeout })(
-    (name) => { if (name in dependencies) return dependencies[name]; if (name.startsWith("node:")) return require(name); throw new Error(`Unstubbed import: ${name}`); }, module, module.exports,
+    (name) => { if (name in dependencies) return dependencies[name]; if (name.startsWith("node:")) return require(name); throw new Error(`Unstubbed import: ${name}`); }, sandbox, sandbox.exports,
   );
-  return module.exports;
+  return sandbox.exports;
 }
 
 const event = { id: "saved-event", title: "Saved event", start: "2026-10-11", createdAt: "2026-10-10T12:00:00.000Z" };
