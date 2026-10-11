@@ -179,6 +179,35 @@ export async function updateRow(tab: string, key: string, value: string, patch: 
   return true;
 }
 
+/*
+  Fix plan 2026-10-11, D2 (review): appends rows and deletes the rows `remove`
+  accepts in one spreadsheets.batchUpdate. Google applies the requests of one
+  batchUpdate all or nothing, so a failure never leaves half a save live.
+*/
+export async function appendAndDelete(tab: string, rows: SheetRow[], remove: (row: SheetRow) => boolean): Promise<void> {
+  const header = await ensureTab(tab, [...new Set(rows.flatMap((row) => Object.keys(row)))]);
+  const sheet = (await tabs()).find((item) => item.properties.title === tab);
+  if (!sheet) throw new Error(`Sheet tab ${tab} is missing.`);
+  const values = (await call<{ values?: string[][] }>(`/values/${range(tab)}`, { cache: "no-store" })).values ?? [];
+  const matches = values.flatMap((record, index) =>
+    index > 0 && remove(Object.fromEntries(header.map((name, position) => [name, String(record[position] ?? "")]))) ? [index] : [],
+  );
+  const requests = [
+    // Bottom-up, so earlier deletions do not shift the rows still to go.
+    ...matches.reverse().map((index) => ({
+      deleteDimension: { range: { sheetId: sheet.properties.sheetId, dimension: "ROWS", startIndex: index, endIndex: index + 1 } },
+    })),
+    {
+      appendCells: {
+        sheetId: sheet.properties.sheetId,
+        fields: "userEnteredValue",
+        rows: rows.map((row) => ({ values: header.map((name) => ({ userEnteredValue: { stringValue: row[name] ?? "" } })) })),
+      },
+    },
+  ];
+  await call(":batchUpdate", { method: "POST", body: JSON.stringify({ requests }) });
+}
+
 /** Deletes every row whose `key` column equals `value`. */
 export async function deleteRows(tab: string, key: string, value: string): Promise<number> {
   return deleteRowsWhere(tab, (row) => row[key] === value);

@@ -105,7 +105,7 @@ export async function publishStudioChanges(form: FormData): Promise<PublishResul
     for (const plan of plans) {
       for (const upload of plan.uploads) plan.photos[upload.index].src = await saveUpload(upload.file);
     }
-    await saveStudioPhotos(plans.map(({ capability, photos }) => ({ capability, photos })));
+    await saveStudioPhotos(plans.map(({ capability, photos }) => ({ capability, photos, base: saved[capability]?.at ?? "" })));
   } catch (error) {
     console.error("[admin] studio photographs save failed", error);
     return { error: "That did not save. Your changes are still here; try again in a moment." };

@@ -25,7 +25,7 @@ import snapshot from "@/content/cms-snapshot.json";
 
 import { collections, type CollectionId } from "./collections";
 import { commitUpload, notifyContentChanged } from "./github";
-import { batchWrite, type BatchWrite, appendRow, deleteRows, deleteRowsWhere, readTab, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
+import { appendAndDelete, batchWrite, type BatchWrite, appendRow, deleteRows, readTab, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
 
 import { mergeOverrides, newestOverrides, type OverrideRecord } from "./overrides";
 import type { AuditEntry } from "./auditFields";
@@ -392,17 +392,18 @@ export async function studioPhotoOverrides(): Promise<Record<string, StudioPhoto
 
 /*
   Replaces the photographs of each capability given, in order, as one save:
-  one row per capability (written, then the older rows removed, so a failure
-  part way never leaves the capability without a list) and one sync to GitHub.
+  one row per capability and one sync to GitHub.
+  Review 2026-10-11: every area is written in one request that Google applies
+  all or nothing, so a failed save publishes nothing. Only rows up to the
+  version the editor loaded (`base`) are removed: if another editor saved in
+  between, their row stays behind ours rather than both being deleted.
 */
-export async function saveStudioPhotos(lists: { capability: string; photos: StudioPhoto[] }[]) {
+export async function saveStudioPhotos(lists: { capability: string; photos: StudioPhoto[]; base: string }[]) {
   const at = new Date().toISOString();
   const rows = lists.map(({ capability, photos }) => ({ capability, photos: JSON.stringify(photos), at }));
   if (sheetsConfigured()) {
-    for (const row of rows) {
-      await appendRow("studio", row);
-      await deleteRowsWhere("studio", (entry) => entry.capability === row.capability && entry.at !== at);
-    }
+    const base = new Map(lists.map((list) => [list.capability, list.base]));
+    await appendAndDelete("studio", rows, (entry) => base.has(entry.capability) && (entry.at ?? "") <= (base.get(entry.capability) ?? ""));
   }
   await updateLocal((data) => {
     const changed = new Set(rows.map((row) => row.capability));
