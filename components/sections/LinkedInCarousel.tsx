@@ -1,3 +1,4 @@
+/* Fix plan 2026-10-11, W3: Media community posts stay separate from the calendar. */
 "use client";
 
 /*
@@ -25,6 +26,7 @@ import type { LinkedInPost } from "@/content/linkedin";
 import { isStale } from "@/content/linkedin";
 import { fetchLinkedInFeed } from "@/lib/linkedin/client";
 import { CACHE_SECONDS, RECENT_POSTS } from "@/lib/linkedin/config";
+import { linkedInUrn } from "@/lib/linkedin/links";
 
 import { LinkedInFan } from "./LinkedInFan";
 
@@ -36,9 +38,12 @@ export type LinkedInCarouselProps = {
   privacy: string;
   /** shown on a card whose post has no picture of its own */
   fallbackImage: string;
+  excludedLinks?: string[];
 };
 
-export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy, fallbackImage }: LinkedInCarouselProps) {
+const NO_LINKS: string[] = [];
+
+export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy, fallbackImage, excludedLinks = NO_LINKS }: LinkedInCarouselProps) {
   const [feed, setFeed] = useState({ posts, stale });
   /* Null until the first check. The server render has no clock to read and
      reading one during render is not pure, so the window opens on the first
@@ -51,9 +56,18 @@ export function LinkedInCarousel({ posts, stale, fallback, pageUrl, privacy, fal
     if (checked.current !== null && now - checked.current < CACHE_SECONDS * 1000) return;
     checked.current = now;
     const next = await fetchLinkedInFeed();
+    /* Fix plan 2026-10-11, W3: refresh cannot restore calendar duplicates, and
+       a current empty feed can mean that all community posts were hidden. */
+    const nextStale = isStale(next.lastSyncedAt);
+    if (next.posts.length === 0 && !nextStale) {
+      setFeed({ posts: [], stale: false });
+      return;
+    }
     if (next.posts.length === 0) return;
-    setFeed({ posts: next.posts.slice(0, RECENT_POSTS), stale: isStale(next.lastSyncedAt) });
-  }, []);
+    if (nextStale) return;
+    const excluded = new Set(excludedLinks.map((link) => linkedInUrn(link)));
+    setFeed({ posts: next.posts.filter((post) => !excluded.has(post.id)).slice(0, RECENT_POSTS), stale: false });
+  }, [excludedLinks]);
 
   useEffect(() => {
     document.addEventListener("visibilitychange", listen);

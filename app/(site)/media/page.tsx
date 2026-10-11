@@ -20,7 +20,7 @@ import {
 import { eventsCopy } from "@/content/programmes";
 import { hiddenKeys, listItems } from "@/lib/admin/store";
 import { getCalendarEvents } from "@/lib/events";
-import { getLinkedInFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
+import { getLinkedInCommunityFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -74,7 +74,8 @@ export default async function MediaPage() {
     href: item.external,
   })),
   ];
-  const feed = await getLinkedInFeed();
+  /* Fix plan 2026-10-11, W3: each post appears in the calendar or community. */
+  const feed = await getLinkedInCommunityFeed(calendarEvents.flatMap((item) => item.link ? [item.link] : []));
   const recent = feed.posts.slice(0, RECENT_POSTS);
 
   return (
@@ -156,6 +157,7 @@ export default async function MediaPage() {
           pageUrl={linkedInCopy.pageUrl}
           privacy={linkedInCopy.privacy}
           fallbackImage="/brand/cdie-logo.webp"
+          excludedLinks={calendarEvents.flatMap((item) => item.link ? [item.link] : [])}
         />
       </Section>
 

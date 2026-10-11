@@ -11,6 +11,7 @@ import { MAX_POSTS } from "../lib/linkedin/config.ts";
 import { pickPostImage } from "../lib/linkedin/image.ts";
 import { rowsFromLinks } from "../lib/linkedin/links.ts";
 import { fetchPublicPosts } from "../lib/linkedin/public.ts";
+import { classifyCalendar } from "../lib/linkedin/classify.mjs";
 
 const sheetUrl = process.env.LINKEDIN_SHEET_CSV_URL?.trim();
 const rowsFile = process.argv.includes("--rows-file") ? process.argv[process.argv.indexOf("--rows-file") + 1] : null;
@@ -20,6 +21,14 @@ const timeout = 8_000;
 const maxImageBytes = 8 * 1024 * 1024;
 const optional = process.argv.includes("--optional");
 const previous = JSON.parse(await readFile(snapshotFile, "utf8"));
+
+/* Fix plan 2026-10-11, W3: reclassify the saved posts without any network or image work. */
+if (process.argv.includes("--reclassify")) {
+  const calendar = classifyCalendar(previous.posts);
+  await writeFile(snapshotFile, `${JSON.stringify({ ...previous, calendar }, null, 2)}\n`);
+  console.log(`LinkedIn snapshot: ${previous.posts.length} posts, ${calendar.length} calendar items (offline)`);
+  process.exit(0);
+}
 
 if (sheetUrl && (new URL(sheetUrl).protocol !== "https:" || new URL(sheetUrl).hostname !== "docs.google.com")) {
   throw new Error("LINKEDIN_SHEET_CSV_URL must be a published https docs.google.com CSV URL");
@@ -151,10 +160,12 @@ await mapLimited(calendar, async (event) => {
 
 const heartbeats = rows.map((row) => Date.parse(row.syncedAt ?? "")).filter(Number.isFinite);
 const snapshot = {
+  ...previous,
   lastSyncedAt: published.length || dashboard.length
     ? null
     : heartbeats.length ? new Date(Math.max(...heartbeats)).toISOString() : previous.lastSyncedAt,
   posts: cachedPosts,
+  calendar: classifyCalendar(cachedPosts),
   eventImages: Object.fromEntries(Object.entries(eventImages).sort(([a], [b]) => a.localeCompare(b))),
 };
 if (JSON.stringify(snapshot) !== JSON.stringify(previous)) {

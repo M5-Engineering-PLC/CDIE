@@ -5,6 +5,8 @@ import snapshot from "@/content/linkedin-snapshot.json";
 import { events } from "@/content/programmes";
 import { hiddenKeys, listItems } from "@/lib/admin/store";
 import { openingIndex } from "@/lib/eventWindow";
+import { getLinkedInPlacements } from "@/lib/linkedin";
+import { postKey, uniqueCalendar } from "@/lib/linkedin/placement.mjs";
 
 /* The scheduled sync commits LinkedIn pictures into /public/linkedin. Rendering
    never waits for LinkedIn or sends its image URLs to a browser. */
@@ -18,23 +20,30 @@ const withPostImage = (event: CalendarCardEvent) => {
    events, upcoming activities and posts added in the admin dashboard.
    Review 2026-09-30: events removed in the dashboard leave the timeline. */
 export async function getCalendarEvents(): Promise<CalendarCardEvent[]> {
-  const [added, activities, posts, hidden] = await Promise.all([
+  const [added, activities, posts, hidden, linkedin] = await Promise.all([
     listItems("events"),
     listItems("activities"),
     listItems("posts"),
     hiddenKeys(),
+    getLinkedInPlacements(),
   ]);
-  return [
+  const dashboard: CalendarCardEvent[] = [
     ...events
       .filter((event) => !hidden.has(`events:${event.id}`))
       .map((event) => ({
         id: event.id, title: event.title, start: event.start, end: event.end, kind: event.kind,
         venue: event.venue, estimated: event.estimated, link: event.link, image: event.image,
       })),
-    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Event", image: item.image })),
-    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Activity", image: item.image })),
+    /* Fix plan 2026-10-11, D1: keep each dashboard event's Read More link. */
+    ...added.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Event", link: item.link, image: item.image })),
+    ...activities.map((item) => ({ id: item.id, title: item.title, start: item.start, end: item.end, venue: item.venue, kind: "Activity", link: item.link, image: item.image })),
     ...posts.map((item) => ({ id: item.id, title: item.title, start: item.date || item.createdAt.slice(0, 10), kind: "Post", link: item.link, image: item.image })),
-  ].map(withPostImage);
+  ];
+  /* Fix plan 2026-10-11, W3: a corrected post replaces a duplicate calendar entry. */
+  return uniqueCalendar([
+    ...dashboard.filter((item) => !linkedin.corrected.has(postKey(item.link))),
+    ...linkedin.calendar,
+  ], linkedin.excluded).map(withPostImage);
 }
 
 /** The cards the Media calendar opens on: upcoming first, then the most recent. */
