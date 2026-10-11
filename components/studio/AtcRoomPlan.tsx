@@ -1,6 +1,7 @@
 /* Source: User-supplied ATC floor plan and site photos. */
+/* Fix plan 2026-10-11, W2: the SVG plan imports only layout data, never the renderer barrel. */
 
-import { atcLayout, type AtcServiceId } from "./atc-3js";
+import { atcLayout, type AtcServiceId } from "./atc-3js/atcLayout";
 
 const SCALE = 42;
 const PAD = 34;

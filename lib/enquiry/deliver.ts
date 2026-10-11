@@ -26,6 +26,7 @@ export type Enquiry = { name: string; email: string; reason: string; message: st
 export type Delivery = { ok: true; provider: string } | { ok: false; reason: "not_configured" | "send_failed" };
 
 const DEFAULT_TO = "ive@ku.ac.ke";
+const validReplyAddress = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 
 const subjectFor = (enquiry: Enquiry) => `Website enquiry: ${enquiry.reason || "general"}; ${enquiry.name}`;
 
@@ -48,7 +49,7 @@ async function viaResend(enquiry: Enquiry, env: NodeJS.ProcessEnv): Promise<bool
   if (!key || !from) return null;
   return post(
     "https://api.resend.com/emails",
-    { from, to: [env.ENQUIRY_TO || DEFAULT_TO], reply_to: enquiry.email, subject: subjectFor(enquiry), text: textFor(enquiry) },
+    { from, to: [env.ENQUIRY_TO || DEFAULT_TO], ...(validReplyAddress(enquiry.email) ? { reply_to: enquiry.email } : {}), subject: subjectFor(enquiry), text: textFor(enquiry) },
     { authorization: `Bearer ${key}` },
   );
 }
@@ -62,6 +63,7 @@ async function viaWeb3Forms(enquiry: Enquiry, env: NodeJS.ProcessEnv): Promise<b
     from_name: "CDIE website",
     name: enquiry.name,
     email: enquiry.email,
+    ...(validReplyAddress(enquiry.email) ? { replyto: enquiry.email } : {}),
     reason: enquiry.reason,
     message: enquiry.message,
   });
@@ -83,7 +85,7 @@ async function viaWebhook(enquiry: Enquiry, env: NodeJS.ProcessEnv): Promise<boo
     console.error("[enquiry] ENQUIRY_WEBHOOK_URL must be an https script.google.com address");
     return false;
   }
-  return post(url, { ...enquiry, to: env.ENQUIRY_TO || DEFAULT_TO, subject: subjectFor(enquiry), text: textFor(enquiry) });
+  return post(url, { ...enquiry, ...(validReplyAddress(enquiry.email) ? { replyTo: enquiry.email } : {}), to: env.ENQUIRY_TO || DEFAULT_TO, subject: subjectFor(enquiry), text: textFor(enquiry) });
 }
 
 const providers = [
