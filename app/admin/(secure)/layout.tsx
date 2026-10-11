@@ -18,6 +18,7 @@ export default async function SecureLayout({ children }: { children: React.React
           { href: "/admin", label: "Overview" },
           { href: "/admin/studio", label: "Design Studio" },
           { href: "/admin/activity", label: "Activity" },
+          { href: "/admin/linkedin", label: "LinkedIn" },
           // Review 2026-09-30: Labs, Posts and Upcoming activities leave the bar.
           ...dashboardCollections.map((collection) => ({ href: `/admin/${collection.id}`, label: collection.label })),
         ]}

@@ -18,7 +18,7 @@ import {
   newslettersCopy,
 } from "@/content/media";
 import { eventsCopy } from "@/content/programmes";
-import { hiddenKeys, listItems } from "@/lib/admin/store";
+import { applyOverrides, hiddenKeys, listItems } from "@/lib/admin/store";
 import { getCalendarEvents } from "@/lib/events";
 import { getLinkedInCommunityFeed, isStale, linkedInCopy, RECENT_POSTS } from "@/lib/linkedin";
 import { pageMetadata } from "@/lib/seo";
@@ -46,14 +46,16 @@ export const revalidate = 600;
   builds the timeline both pages read.
 */
 export default async function MediaPage() {
-  const [calendarEvents, addedIssues, hidden] = await Promise.all([
+  const [calendarEvents, addedIssues, hidden, builtInIssues] = await Promise.all([
     getCalendarEvents(),
     listItems("newsletters"),
     hiddenKeys(),
+    /* Fix plan 2026-10-11, D3: dashboard edits to the site's own issues. */
+    applyOverrides("newsletters", mediaItems.filter((item) => item.kind === "newsletter"), (item) => item.id),
   ]);
   const today = new Date().toISOString().slice(0, 10);
 
-  const newsletters = mediaItems.filter((item) => item.kind === "newsletter" && !hidden.has(`newsletters:${item.id}`));
+  const newsletters = builtInIssues.filter((item) => !hidden.has(`newsletters:${item.id}`));
   const newsletterCards: NewsletterCardItem[] = [
     ...addedIssues.map((item) => ({
       id: item.id,
