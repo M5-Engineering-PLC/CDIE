@@ -1,3 +1,4 @@
+// Lucid: Design Studio virtual tour. Copy: DESIGN STUDIO > Virtual tour.
 "use client";
 
 // Enhancements 2026-09-22: "on mobile we just need one pill for 3d view and
@@ -6,6 +7,7 @@
 // Adds the sliding indicator from adds.txt's Transitions.dev tab reference.
 
 import { useEffect, useRef } from "react";
+import { prefetchStudio3D } from "./useStudio3DWarmup";
 
 export function StudioViewPill({ open, onOpen, onClose }: { open: boolean; onOpen: () => void; onClose: () => void }) {
   const pill = useRef<HTMLSpanElement>(null);
@@ -36,6 +38,8 @@ export function StudioViewPill({ open, onOpen, onClose }: { open: boolean; onOpe
           type="button"
           aria-pressed={option.on}
           onClick={option.act}
+          onMouseEnter={index === 0 ? prefetchStudio3D : undefined}
+          onFocus={index === 0 ? prefetchStudio3D : undefined}
           className={`sliding-toggle-button rounded-full px-4 py-1.5 text-fine font-medium transition-colors ${option.on ? "text-surface" : "text-ink-2 hover:text-brand"}`}
         >
           {option.label}
