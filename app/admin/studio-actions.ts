@@ -6,73 +6,112 @@
   order, delete them".
 
   A capability's photographs start as the ones in content/studio.ts. The first
-  change saves the whole ordered list for that capability (store,
+  save keeps the whole ordered list for that capability (store,
   saveStudioPhotos), and from then on the public page reads that list instead.
   The first photograph leads: it is the capability card's picture and the
   explorer's opening photograph.
+
+  Fix plan 2026-10-11, D2 and D7: nothing here runs per click any more. The
+  page drafts the changes and sends them all at once, and this action:
+  1. reads the saved lists fresh, never from the cache
+  2. checks every change, and saves nothing if one fails
+  3. refuses an area someone else saved after the page was opened
+  4. uploads the new photographs, writes one row per area and syncs once
 */
 
 import { revalidatePath, updateTag } from "next/cache";
 
 import { capabilities } from "@/content/studio";
 import { requireAdmin } from "@/lib/admin/auth";
-import { CMS_TAG, saveStudioPhotos, saveUpload, studioPhotoOverrides, type StudioPhoto } from "@/lib/admin/store";
+import { CMS_TAG, saveStudioPhotos, saveUpload, studioPhotoLists, type StudioPhoto } from "@/lib/admin/store";
+import type { StudioChange } from "@/lib/admin/studioDraft";
 
 const IMAGE = /^image\/(jpeg|png|webp|avif)$/;
 
-async function photosOf(id: string): Promise<StudioPhoto[] | null> {
-  const capability = capabilities.find((item) => item.id === id);
-  if (!capability) return null;
-  const overrides = await studioPhotoOverrides();
-  return overrides[id] ?? capability.media.map(({ src, alt, width, height }) => ({ src, alt, width, height }));
+export type PublishResult = { error: string; area?: string } | null;
+
+type Upload = { index: number; file: File; alt: string; width: number; height: number };
+type Plan = { capability: string; photos: StudioPhoto[]; uploads: Upload[] };
+
+const plain = ({ src, alt, width, height }: StudioPhoto): StudioPhoto => ({ src, alt, width, height });
+
+function readChanges(form: FormData): StudioChange[] | null {
+  try {
+    const changes = JSON.parse(String(form.get("changes") ?? ""));
+    return Array.isArray(changes) ? changes : null;
+  } catch {
+    return null;
+  }
 }
 
-async function publish(id: string, photos: StudioPhoto[]) {
-  await saveStudioPhotos(id, photos);
+function checkUpload(form: FormData, entry: { file: string; alt: string; width: number; height: number }, index: number): Upload | string {
+  const file = entry.file.startsWith("new:") ? form.get(entry.file) : null;
+  if (!(file instanceof File) || file.size === 0) return "A new photograph did not reach the server. Add it again.";
+  if (!IMAGE.test(file.type)) return "A new photograph is not a JPEG, PNG, WebP or AVIF image.";
+  const alt = String(entry.alt ?? "").trim().slice(0, 200);
+  if (!alt) return "Every new photograph needs a description, for people who cannot see it.";
+  const width = Number(entry.width);
+  const height = Number(entry.height);
+  if (!(width > 0 && height > 0 && width < 20000 && height < 20000)) return "A new photograph could not be read. Add it again.";
+  return { index, file, alt, width: Math.round(width), height: Math.round(height) };
+}
+
+export async function publishStudioChanges(form: FormData): Promise<PublishResult> {
+  await requireAdmin();
+  const changes = readChanges(form);
+  if (!changes || changes.length === 0) return { error: "There are no changes to save." };
+
+  let saved: Awaited<ReturnType<typeof studioPhotoLists>>;
+  try {
+    saved = await studioPhotoLists(true);
+  } catch (error) {
+    console.error("[admin] studio photographs read failed", error);
+    return { error: "The Google Sheet did not answer, so nothing was saved. Your changes are still here; try again in a moment." };
+  }
+
+  const plans: Plan[] = [];
+  for (const change of changes) {
+    const capability = capabilities.find((item) => item.id === change?.capability);
+    if (!capability || plans.some((plan) => plan.capability === capability.id) || !Array.isArray(change.photos)) {
+      return { error: "One of the workshop areas is not recognised. Reload the page and try again." };
+    }
+    const area = capability.id;
+    if ((saved[area]?.at ?? "") !== String(change.base ?? "")) {
+      return { area, error: `Someone saved the ${capability.name} photographs after you opened this page. Reload the page to see their version, then make your changes again.` };
+    }
+    // An existing photograph is named by its address only; what it shows is looked up here, never taken from the form.
+    const known = new Map([...capability.media, ...(saved[area]?.photos ?? [])].map((photo) => [photo.src, plain(photo)]));
+    const plan: Plan = { capability: area, photos: [], uploads: [] };
+    for (const [index, entry] of change.photos.entries()) {
+      if (!entry || typeof entry !== "object") return { area, error: "The changes could not be read. Reload the page and try again." };
+      if ("src" in entry) {
+        const photo = known.get(entry.src);
+        if (!photo) return { area, error: `A ${capability.name} photograph is no longer there. Reload the page and try again.` };
+        plan.photos.push(photo);
+      } else {
+        const upload = checkUpload(form, entry, index);
+        if (typeof upload === "string") return { area, error: `${capability.name}: ${upload}` };
+        plan.uploads.push(upload);
+        plan.photos.push({ src: "", alt: upload.alt, width: upload.width, height: upload.height });
+      }
+    }
+    // A workshop area always keeps one photograph; the card and the explorer need it.
+    if (plan.photos.length === 0) return { area, error: `${capability.name} needs at least one photograph.` };
+    plans.push(plan);
+  }
+
+  try {
+    for (const plan of plans) {
+      for (const upload of plan.uploads) plan.photos[upload.index].src = await saveUpload(upload.file);
+    }
+    await saveStudioPhotos(plans.map(({ capability, photos }) => ({ capability, photos })));
+  } catch (error) {
+    console.error("[admin] studio photographs save failed", error);
+    return { error: "That did not save. Your changes are still here; try again in a moment." };
+  }
+
   updateTag(CMS_TAG);
   revalidatePath("/design-studio");
   revalidatePath("/admin/studio");
-}
-
-export async function addStudioPhoto(_: string | null, form: FormData): Promise<string | null> {
-  await requireAdmin();
-  const id = String(form.get("capability"));
-  const photos = await photosOf(id);
-  if (!photos) return "Unknown workshop area.";
-  const file = form.get("photo");
-  if (!(file instanceof File) || file.size === 0) return "Choose a photograph to add.";
-  if (!IMAGE.test(file.type)) return "The photograph must be a JPEG, PNG, WebP or AVIF image.";
-  const alt = String(form.get("alt") ?? "").trim().slice(0, 200);
-  if (!alt) return "Describe the photograph in a sentence, for people who cannot see it.";
-  const width = Number(form.get("width"));
-  const height = Number(form.get("height"));
-  if (!(width > 0 && height > 0 && width < 20000 && height < 20000)) return "That image could not be read. Try another file.";
-  try {
-    const src = await saveUpload(file);
-    await publish(id, [...photos, { src, alt, width: Math.round(width), height: Math.round(height) }]);
-  } catch (error) {
-    console.error("[admin] studio photograph save failed", error);
-    return "That did not save. Nothing changed; try again in a moment.";
-  }
   return null;
-}
-
-export async function changeStudioPhotos(form: FormData) {
-  await requireAdmin();
-  const id = String(form.get("capability"));
-  const photos = await photosOf(id);
-  const index = Number(form.get("index"));
-  if (!photos || !Number.isInteger(index) || index < 0 || index >= photos.length) return;
-  const next = [...photos];
-  const op = String(form.get("op"));
-  if (op === "delete") {
-    // A workshop area always keeps one photograph; the card and the explorer need it.
-    if (next.length === 1) return;
-    next.splice(index, 1);
-  } else {
-    const to = op === "up" ? index - 1 : index + 1;
-    if (to < 0 || to >= next.length) return;
-    [next[index], next[to]] = [next[to], next[index]];
-  }
-  await publish(id, next);
 }

@@ -18,12 +18,13 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { cache } from "react";
 
 import snapshot from "@/content/cms-snapshot.json";
 
 import { collections, type CollectionId } from "./collections";
 import { commitUpload, notifyContentChanged } from "./github";
-import { appendRow, deleteRows, readTab, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
+import { appendRow, deleteRows, deleteRowsWhere, readTab, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
 
 export type Item = { id: string; createdAt: string } & Record<string, string>;
 
@@ -87,7 +88,11 @@ export const CMS_TAG = "cms";
 const SHEET_CACHE = { revalidate: 300, tags: [CMS_TAG] };
 const TABS = [...collections.map((item) => item.id), "subscriptions", "enquiries", "hidden", "studio"];
 
-const root = () => path.resolve(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".data"));
+/*
+  Fix plan 2026-10-11, D6: the hint keeps the build from tracing the whole
+  project, public/ included, into every server function because of cwd().
+*/
+const root = () => path.resolve(process.env.CMS_DATA_DIR || path.join(/* turbopackIgnore: true */ process.cwd(), ".data"));
 const file = () => path.join(root(), "cms.json");
 export const uploadsDir = () => path.join(root(), "uploads");
 
@@ -142,7 +147,11 @@ function fromRows(rows: Record<string, SheetRow[]>): Data {
   };
 }
 
-async function load(): Promise<Data> {
+/*
+  Fix plan 2026-10-11, D6: one request reads the sheet once, however many
+  panels on the page ask for it.
+*/
+const load = cache(async (): Promise<Data> => {
   if (sheetsConfigured()) {
     try {
       return fromRows(await readTabs(TABS, SHEET_CACHE));
@@ -151,6 +160,16 @@ async function load(): Promise<Data> {
       return fromSnapshot();
     }
   }
+  return (await loadLocal()) ?? fromSnapshot();
+});
+
+/*
+  Fix plan 2026-10-11, D2: a change is worked out from the sheet as it is now,
+  never from a cached copy, or a stale list is written back over a newer one.
+  Unlike load(), a failed read throws: nothing is saved on a guess.
+*/
+async function loadFresh(): Promise<Data> {
+  if (sheetsConfigured()) return fromRows(await readTabs(TABS, { revalidate: 0 }));
   return (await loadLocal()) ?? fromSnapshot();
 }
 
@@ -313,13 +332,24 @@ export async function unhideBuiltIn(collection: string, key: string) {
   await notifyContentChanged(`restored ${collection}`);
 }
 
-/** The photograph lists an editor has set, by capability id. */
-export async function studioPhotoOverrides(): Promise<Record<string, StudioPhoto[]>> {
-  const result: Record<string, StudioPhoto[]> = {};
-  for (const row of (await load()).studio) {
+/** A capability's saved photographs and when they were saved, the version a draft is checked against. */
+export type StudioPhotoList = { photos: StudioPhoto[]; at: string };
+
+/*
+  Fix plan 2026-10-11, D2: a capability may have more than one row, left by
+  the old update-or-append write. The newest row wins, so those duplicates
+  resolve themselves; before this the first row took every edit while the site
+  read the last.
+*/
+function studioLists(rows: StudioPhotoRecord[]): Record<string, StudioPhotoList> {
+  const result: Record<string, StudioPhotoList> = {};
+  for (const row of rows) {
+    if (result[row.capability] && result[row.capability].at > (row.at ?? "")) continue;
     try {
       const photos = JSON.parse(row.photos) as StudioPhoto[];
-      if (Array.isArray(photos)) result[row.capability] = photos.filter((photo) => photo?.src && photo.width > 0 && photo.height > 0);
+      if (Array.isArray(photos)) {
+        result[row.capability] = { photos: photos.filter((photo) => photo?.src && photo.width > 0 && photo.height > 0), at: row.at ?? "" };
+      }
     } catch {
       console.error("[admin] unreadable studio photo list for", row.capability);
     }
@@ -327,16 +357,34 @@ export async function studioPhotoOverrides(): Promise<Record<string, StudioPhoto
   return result;
 }
 
-/** Replaces one capability's photographs, in order. */
-export async function saveStudioPhotos(capability: string, photos: StudioPhoto[]) {
-  const row = { capability, photos: JSON.stringify(photos), at: new Date().toISOString() };
-  const present = (await load()).studio.some((entry) => entry.capability === capability);
+/** The photograph lists an editor has saved, by capability id, with their versions. `fresh` skips the cache. */
+export async function studioPhotoLists(fresh = false): Promise<Record<string, StudioPhotoList>> {
+  return studioLists((await (fresh ? loadFresh() : load())).studio);
+}
+
+/** The photograph lists an editor has set, by capability id. */
+export async function studioPhotoOverrides(): Promise<Record<string, StudioPhoto[]>> {
+  const lists = await studioPhotoLists();
+  return Object.fromEntries(Object.entries(lists).map(([id, list]) => [id, list.photos]));
+}
+
+/*
+  Replaces the photographs of each capability given, in order, as one save:
+  one row per capability (written, then the older rows removed, so a failure
+  part way never leaves the capability without a list) and one sync to GitHub.
+*/
+export async function saveStudioPhotos(lists: { capability: string; photos: StudioPhoto[] }[]) {
+  const at = new Date().toISOString();
+  const rows = lists.map(({ capability, photos }) => ({ capability, photos: JSON.stringify(photos), at }));
   if (sheetsConfigured()) {
-    if (present) await updateRow("studio", "capability", capability, row);
-    else await appendRow("studio", row);
+    for (const row of rows) {
+      await appendRow("studio", row);
+      await deleteRowsWhere("studio", (entry) => entry.capability === row.capability && entry.at !== at);
+    }
   }
   await updateLocal((data) => {
-    data.studio = [...data.studio.filter((entry) => entry.capability !== capability), row];
+    const changed = new Set(rows.map((row) => row.capability));
+    data.studio = [...data.studio.filter((entry) => !changed.has(entry.capability)), ...rows];
   });
   await notifyContentChanged("studio photographs");
 }

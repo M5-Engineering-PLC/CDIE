@@ -85,9 +85,18 @@ async function call<T>(path: string, init: Init = {}): Promise<T> {
 const range = (tab: string, cells = "A:ZZ") => encodeURIComponent(`'${tab.replace(/'/g, "''")}'!${cells}`);
 
 type SheetMeta = { properties: { sheetId: number; title: string } };
+type ReadCache = { revalidate?: number; tags?: string[] };
 
-async function tabs(): Promise<SheetMeta[]> {
-  const meta = await call<{ sheets: SheetMeta[] }>("?fields=sheets.properties(sheetId,title)", { cache: "no-store" });
+/*
+  Fix plan 2026-10-11, D6: the tab list is read with the same cache as the
+  values it guards, so a cached read costs one request, not two. Writes pass no
+  cache and see the sheet as it is now.
+*/
+async function tabs(cache?: ReadCache): Promise<SheetMeta[]> {
+  const meta = await call<{ sheets: SheetMeta[] }>(
+    "?fields=sheets.properties(sheetId,title)",
+    cache ? { next: cache } : { cache: "no-store" },
+  );
   return meta.sheets;
 }
 
@@ -119,7 +128,7 @@ function toRows(values: string[][] | undefined): SheetRow[] {
 }
 
 /** Reads a whole tab as objects keyed by the header row. A missing tab reads as empty. */
-export async function readTab(tab: string, cache: { revalidate?: number; tags?: string[] } = {}): Promise<SheetRow[]> {
+export async function readTab(tab: string, cache: ReadCache = {}): Promise<SheetRow[]> {
   try {
     const body = await call<{ values?: string[][] }>(`/values/${range(tab)}`, { next: cache });
     return toRows(body.values);
@@ -130,8 +139,8 @@ export async function readTab(tab: string, cache: { revalidate?: number; tags?: 
 }
 
 /** Reads several tabs in one request. */
-export async function readTabs(names: string[], cache: { revalidate?: number; tags?: string[] } = {}): Promise<Record<string, SheetRow[]>> {
-  const present = new Set((await tabs()).map((sheet) => sheet.properties.title));
+export async function readTabs(names: string[], cache: ReadCache = {}): Promise<Record<string, SheetRow[]>> {
+  const present = new Set((await tabs(cache)).map((sheet) => sheet.properties.title));
   const wanted = names.filter((name) => present.has(name));
   const result: Record<string, SheetRow[]> = Object.fromEntries(names.map((name) => [name, []]));
   if (wanted.length === 0) return result;
@@ -172,12 +181,18 @@ export async function updateRow(tab: string, key: string, value: string, patch: 
 
 /** Deletes every row whose `key` column equals `value`. */
 export async function deleteRows(tab: string, key: string, value: string): Promise<number> {
+  return deleteRowsWhere(tab, (row) => row[key] === value);
+}
+
+/** Deletes every row `match` accepts. The row is read as an object keyed by the header. */
+export async function deleteRowsWhere(tab: string, match: (row: SheetRow) => boolean): Promise<number> {
   const sheet = (await tabs()).find((item) => item.properties.title === tab);
   if (!sheet) return 0;
   const values = (await call<{ values?: string[][] }>(`/values/${range(tab)}`, { cache: "no-store" })).values ?? [];
-  const column = values[0]?.indexOf(key) ?? -1;
-  if (column < 0) return 0;
-  const matches = values.flatMap((record, index) => (index > 0 && record[column] === value ? [index] : []));
+  const header = values[0] ?? [];
+  const matches = values.flatMap((record, index) =>
+    index > 0 && match(Object.fromEntries(header.map((name, position) => [name, String(record[position] ?? "")]))) ? [index] : [],
+  );
   if (matches.length === 0) return 0;
   // Bottom-up, so earlier deletions do not shift the rows still to go.
   await call(":batchUpdate", {

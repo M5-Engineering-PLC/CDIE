@@ -70,8 +70,10 @@ test("staff lose the short bio; a cohort record is a graduand with a LinkedIn li
 test("the dashboard's Design Studio manages photographs only", () => {
   const page = read("app/admin/(secure)/studio/page.tsx");
   assert.doesNotMatch(page, /StudioExplorer/);
-  assert.match(page, /<StudioPhotoAdd /);
-  assert.match(read("app/admin/studio-actions.ts"), /op === "delete"/);
+  // Fix plan 2026-10-11: add, reorder and delete are drafted in the editor and saved together.
+  assert.match(page, /<StudioPhotoEditor /);
+  assert.match(read("components/admin/StudioPhotoEditor.tsx"), /<StudioPhotoAdd /);
+  assert.match(read("components/admin/StudioPhotoTile.tsx"), /aria-label="Delete photograph"/);
   assert.match(read("app/(site)/design-studio/page.tsx"), /studioPhotoOverrides\(\)/);
 });
 
