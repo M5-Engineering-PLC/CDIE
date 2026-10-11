@@ -30,7 +30,7 @@ test("D6: the dashboard has an error boundary with Try again, a loading state, a
   const boundary = read("app/admin/(secure)/error.tsx");
   assert.match(boundary, /^"use client";/);
   assert.match(boundary, /Try again/);
-  assert.match(boundary, /router\.refresh\(\)/);
+  assert.match(boundary, /onClick=\{\(\) => retry\(\)\}/);
   assert.ok(exists("app/admin/(secure)/loading.tsx"));
   assert.match(read("app/global-error.tsx"), /<html lang="en">/);
 });

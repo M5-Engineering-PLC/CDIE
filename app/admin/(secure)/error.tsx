@@ -9,22 +9,15 @@
   deployment.
 */
 
-import { useRouter } from "next/navigation";
-import { startTransition, useEffect } from "react";
+import { useEffect } from "react";
 
 const button = "border px-4 py-2 text-body transition-colors disabled:opacity-50";
 
-export default function DashboardError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  const router = useRouter();
-
+// Next 16: retry() fetches the segment again and re-renders it.
+export default function DashboardError({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
   useEffect(() => {
     console.error("[admin] page failed", error);
   }, [error]);
-
-  const retry = () => startTransition(() => {
-    router.refresh();
-    reset();
-  });
 
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-4 p-6 md:p-10">
@@ -34,7 +27,7 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
       </p>
       {error.digest ? <p className="font-mono text-fine text-ink-3">Reference {error.digest}</p> : null}
       <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={retry} className={`${button} border-brand bg-brand font-semibold text-surface hover:bg-brand-live`}>
+        <button type="button" onClick={() => retry()}className={`${button} border-brand bg-brand font-semibold text-surface hover:bg-brand-live`}>
           Try again
         </button>
         <button type="button" onClick={() => window.location.reload()} className={`${button} border-line bg-surface text-ink-2 hover:border-brand hover:text-brand`}>
