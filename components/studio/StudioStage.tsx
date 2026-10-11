@@ -1,7 +1,9 @@
+// Lucid: Design Studio virtual tour. Copy: DESIGN STUDIO > Virtual tour.
 "use client";
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useState } from "react";
 
 import { StudioCallout } from "./StudioCallout";
 import { StudioSpaceToggle } from "./StudioSpaceToggle";
@@ -48,13 +50,11 @@ export type StudioStageProps = {
   onClose: () => void;
   onOpen: () => void;
   onSwitchSpace?: (space: "studio" | "atc") => void;
-  /** build both scenes in the background before the room is opened */
-  warm?: boolean;
 };
 
 export function StudioStage({
   active, open, tour, viewOnly, atc, space, name, spaceName, headline,
-  step, of, image, imageAlt, imageSize, onSelect, onClose, onOpen, onSwitchSpace, warm = false,
+  step, of, image, imageAlt, imageSize, onSelect, onClose, onOpen, onSwitchSpace,
 }: StudioStageProps) {
   const isAtc = space === "atc" || atc;
 
@@ -62,17 +62,16 @@ export function StudioStage({
 
   const viewPill = <StudioViewPill open={open} onOpen={onOpen} onClose={onClose} />;
 
-  /*
-    Both scenes stay mounted once built and the hidden one stops drawing.
-    Switching spaces used to unmount one and rebuild the other from nothing:
-    renderer, model, shadow maps and shaders. Now it only shows a canvas.
-  */
-  const scenes = open || warm ? (
+  /* Fix plan 2026-10-11, W2: build a room only when opened; retain visited rooms for space switches. */
+  const [built, setBuilt] = useState({ studio: false, atc: false });
+  const spaceKey = isAtc ? "atc" : "studio";
+  if (open && !built[spaceKey]) setBuilt({ ...built, [spaceKey]: true });
+  const scenes = built.studio || built.atc ? (
     <div className={open ? "relative" : "hidden"} aria-hidden={!open || undefined}>
-      <div className={isAtc ? undefined : "hidden"}>
+      {built.atc ? <div className={isAtc ? undefined : "hidden"}>
         <Atc3D active={isAtc ? (active as AtcServiceId | null) : null} onSelect={(s) => onSelect(s)} tour={tour && isAtc} interactive={!viewOnly} paused={!open || !isAtc} />
-      </div>
-      <div className={isAtc ? "hidden" : undefined}>
+      </div> : null}
+      {built.studio ? <div className={isAtc ? "hidden" : undefined}>
         <DesignStudio3D
           active={isAtc ? null : (active as ServiceId | null)}
           onSelect={(s) => onSelect(s)}
@@ -81,7 +80,7 @@ export function StudioStage({
           interactive={!viewOnly}
           paused={!open || isAtc}
         />
-      </div>
+      </div> : null}
       {open ? <StudioCallout show={tour || isAtc} name={name} spaceName={spaceName} headline={headline} step={step} of={of} /> : null}
     </div>
   ) : null;

@@ -1,8 +1,10 @@
+// Lucid: Design Studio virtual tour. Geometry: the Three.js room layout module.
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { createSceneFrameLoop } from "../sceneFrameLoop";
 
 import { createAtcModel, type AtcRuntime } from "./createAtcModel";
 import { createAtcTourCamera } from "./atcTourCamera";
@@ -17,7 +19,7 @@ type SceneOptions = {
   tour?: boolean;
   interactive?: boolean;
   showLabels?: boolean;
-  /** hidden behind the other space: draw one frame to compile, then idle */
+  /** Pause while the room is hidden. */
   paused?: boolean;
   onSelect?: (service: AtcServiceId) => void;
   onReady?: (runtime: AtcRuntime) => void;
@@ -105,6 +107,8 @@ export function useAtcScene({
   const controlsRef = useRef<OrbitControls | null>(null);
   const driveRef = useRef({ tour, interactive, active });
   const pausedRef = useRef(paused);
+  const frameRef = useRef<ReturnType<typeof createSceneFrameLoop> | null>(null);
+  const labelsRef = useRef(showLabels);
   const selectRef = useRef(onSelect);
   const readyRef = useRef(onReady);
   const errorRef = useRef(onError);
@@ -117,10 +121,12 @@ export function useAtcScene({
 
   useEffect(() => {
     driveRef.current = { tour, interactive, active };
+    frameRef.current?.invalidate();
   }, [tour, interactive, active]);
 
   useEffect(() => {
     pausedRef.current = paused;
+    frameRef.current?.invalidate();
   }, [paused]);
 
   useEffect(() => {
@@ -138,12 +144,15 @@ export function useAtcScene({
       return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    /* Fix plan 2026-10-11, W2: static shadows update only after build or scene changes. */
+    renderer.shadowMap.autoUpdate = false;
+    renderer.shadowMap.needsUpdate = true;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf1f5f9);
@@ -198,19 +207,7 @@ export function useAtcScene({
     runtimeRef.current = runtime;
     scene.add(model);
 
-    runtime.setLabelsVisible(showLabels);
-
-    const resize = () => {
-      const bounds = canvas.getBoundingClientRect();
-      if (!bounds.width || !bounds.height) return;
-      renderer.setSize(bounds.width, bounds.height, false);
-      camera.aspect = bounds.width / bounds.height;
-      camera.updateProjectionMatrix();
-    };
-
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
-    resize();
+    runtime.setLabelsVisible(labelsRef.current);
 
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
@@ -234,19 +231,18 @@ export function useAtcScene({
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const step = createAtcTourCamera(runtime, camera, controls, still);
 
-    let drawn = false;
-    renderer.setAnimationLoop(() => {
-      if (pausedRef.current && drawn) return;
-      drawn = true;
-      step(driveRef.current);
-      renderer.render(scene, camera);
+    const frames = createSceneFrameLoop({
+      canvas, renderer, scene, camera, controls,
+      step: () => step(driveRef.current),
+      paused: () => pausedRef.current,
+      touring: () => driveRef.current.tour && !still,
     });
-
+    frameRef.current = frames;
     readyRef.current?.(runtime);
 
     return () => {
-      renderer.setAnimationLoop(null);
-      observer.disconnect();
+      frames.dispose();
+      frameRef.current = null;
       canvas.removeEventListener("click", choose);
       canvas.removeEventListener("webglcontextlost", contextLost);
       controls.dispose();
@@ -262,6 +258,7 @@ export function useAtcScene({
       ground.geometry.dispose();
       (ground.material as THREE.Material).dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
       runtimeRef.current = null;
       cameraRef.current = null;
       controlsRef.current = null;
@@ -270,11 +267,14 @@ export function useAtcScene({
 
   useEffect(() => {
     if (runtimeRef.current) setSelection(runtimeRef.current, active);
+    frameRef.current?.invalidate(true);
   }, [active]);
 
   useEffect(() => {
+    labelsRef.current = showLabels;
     if (runtimeRef.current) {
       runtimeRef.current.setLabelsVisible(showLabels);
+      frameRef.current?.invalidate();
     }
   }, [showLabels]);
 
@@ -285,9 +285,14 @@ export function useAtcScene({
     camera.position.copy(views[view].position);
     controls.target.copy(views[view].target);
     controls.update();
+    frameRef.current?.invalidate();
   }, [tour, view]);
 
   return {
-    toggleShutter: () => runtimeRef.current?.toggleShutter(),
+    toggleShutter: () => {
+      const open = runtimeRef.current?.toggleShutter();
+      frameRef.current?.invalidate(true);
+      return open;
+    },
   };
 }

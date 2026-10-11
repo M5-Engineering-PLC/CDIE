@@ -1,8 +1,10 @@
+// Lucid: Design Studio virtual tour. Geometry: the Three.js room layout module.
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { createSceneFrameLoop } from "../sceneFrameLoop";
 
 import { createDesignStudioModel, type StudioRuntime } from "./createDesignStudioModel";
 import { createTourCamera } from "./tourCamera";
@@ -27,7 +29,7 @@ type SceneOptions = {
   view: StudioView;
   tour?: boolean;
   interactive?: boolean;
-  /** hidden behind the other space: draw one frame to compile, then idle */
+  /** Pause while the room is hidden. */
   paused?: boolean;
   onSelect?: (service: ServiceId) => void;
   onReady?: () => void;
@@ -103,6 +105,7 @@ export function useDesignStudioScene({
      change must reach the running animation without rebuilding the scene. */
   const driveRef = useRef({ tour, interactive, active });
   const pausedRef = useRef(paused);
+  const frameRef = useRef<ReturnType<typeof createSceneFrameLoop> | null>(null);
   const selectRef = useRef(onSelect);
   const readyRef = useRef(onReady);
   const errorRef = useRef(onError);
@@ -115,10 +118,12 @@ export function useDesignStudioScene({
 
   useEffect(() => {
     driveRef.current = { tour, interactive, active };
+    frameRef.current?.invalidate();
   }, [tour, interactive, active]);
 
   useEffect(() => {
     pausedRef.current = paused;
+    frameRef.current?.invalidate();
   }, [paused]);
 
   useEffect(() => {
@@ -132,12 +137,15 @@ export function useDesignStudioScene({
       return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
+    /* Fix plan 2026-10-11, W2: static shadows update only after build or scene changes. */
+    renderer.shadowMap.autoUpdate = false;
+    renderer.shadowMap.needsUpdate = true;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xedf1ef);
@@ -178,17 +186,6 @@ export function useDesignStudioScene({
     ground.receiveShadow = true;
     scene.add(ground);
 
-    const resize = () => {
-      const bounds = canvas.getBoundingClientRect();
-      if (!bounds.width || !bounds.height) return;
-      renderer.setSize(bounds.width, bounds.height, false);
-      camera.aspect = bounds.width / bounds.height;
-      camera.updateProjectionMatrix();
-    };
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
-    resize();
-
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
     const choose = (event: PointerEvent) => {
@@ -209,18 +206,18 @@ export function useDesignStudioScene({
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const step = createTourCamera(runtime, camera, controls, still);
 
-    let drawn = false;
-    renderer.setAnimationLoop(() => {
-      if (pausedRef.current && drawn) return;
-      drawn = true;
-      step(driveRef.current);
-      renderer.render(scene, camera);
+    const frames = createSceneFrameLoop({
+      canvas, renderer, scene, camera, controls,
+      step: () => step(driveRef.current),
+      paused: () => pausedRef.current,
+      touring: () => driveRef.current.tour && !still,
     });
+    frameRef.current = frames;
     readyRef.current?.();
 
     return () => {
-      renderer.setAnimationLoop(null);
-      observer.disconnect();
+      frames.dispose();
+      frameRef.current = null;
       canvas.removeEventListener("click", choose);
       canvas.removeEventListener("webglcontextlost", contextLost);
       controls.dispose();
@@ -237,6 +234,7 @@ export function useDesignStudioScene({
       ground.geometry.dispose();
       (ground.material as THREE.Material).dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
       runtimeRef.current = null;
       cameraRef.current = null;
       controlsRef.current = null;
@@ -245,6 +243,7 @@ export function useDesignStudioScene({
 
   useEffect(() => {
     if (runtimeRef.current) setSelection(runtimeRef.current, active);
+    frameRef.current?.invalidate(true);
   }, [active]);
 
   /* A view button is a manual override, so it does nothing while the tour is
@@ -256,5 +255,6 @@ export function useDesignStudioScene({
     camera.position.copy(views[view].position);
     controls.target.copy(views[view].target);
     controls.update();
+    frameRef.current?.invalidate();
   }, [tour, view]);
 }

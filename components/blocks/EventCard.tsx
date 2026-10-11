@@ -7,6 +7,8 @@
   says so. LinkedIn photographs are copied to this site's public directory.
 */
 
+import Image from "next/image";
+
 export type CalendarCardEvent = {
   id: string;
   title: string;
@@ -44,12 +46,21 @@ export function EventCard({ event, today, fallbackImage, focusable = true }: {
 }) {
   const multiDay = event.end && event.end.slice(0, 10) !== event.start.slice(0, 10);
   const upcoming = event.start > today;
+  const image = event.image ?? fallbackImage;
+  const imageProps = {
+    src: image,
+    alt: "",
+    sizes: "(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw",
+    "data-mark": !event.image || undefined,
+    onError: (error: React.SyntheticEvent<HTMLImageElement>) => { error.currentTarget.src = fallbackImage; },
+  };
   return (
     <article className="cal-card">
       <div className="cal-photo">
-        {/* eslint-disable-next-line @next/next/no-img-element -- static local photograph */}
-        <img src={event.image ?? fallbackImage} alt="" loading="lazy" data-mark={!event.image || undefined}
-          onError={(error) => { error.currentTarget.src = fallbackImage; }} />
+        {image.startsWith("/") ? <Image {...imageProps} alt="" fill /> : (
+          // eslint-disable-next-line @next/next/no-img-element -- remote images do not use a configured host
+          <img {...imageProps} alt="" loading="lazy" />
+        )}
       </div>
       <div className="cal-top">
         <p className="cal-date" aria-label={`${event.start}${multiDay ? ` to ${event.end}` : ""}`}>

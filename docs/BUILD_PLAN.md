@@ -224,6 +224,15 @@ Dates the sheet marks as estimated render as approximate ("c."). The Media
 calendar shows six months back and three months ahead; Programmes shows the
 three most recent events that have their own photograph.
 
+Decision 2026-10-11, Munene. LinkedIn posts reach the calendar automatically.
+The LinkedIn sync sorts each post into event, announcement or community. An
+event or announcement goes on the calendar without a person confirming it
+first. The date comes only from the post's own text. An announcement with no
+date in its text sits on its posting date and carries the Announcement label.
+A wrong guess is corrected on the dashboard page /admin/linkedin, and the
+correction survives the next sync. This replaces route 2 above for LinkedIn
+posts only. Records in content/programmes.ts are not affected.
+
 #### Conflict C-07, 2026-09-21. The carousel titles are not the Actual Copy names
 
 The second pass of the 21 September change request names the five slides of the
