@@ -1,3 +1,4 @@
+// Lucid: Design Studio virtual tour. Copy: DESIGN STUDIO > Virtual tour.
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -10,7 +11,7 @@ import { StudioRailThumb } from "./StudioRailThumb";
 import { StudioStage } from "./StudioStage";
 import { StudioTourIntro } from "./StudioTourIntro";
 import type { ExplorerCapability, UnifiedServiceId } from "./explorerModel";
-import { useStudio3DWarmup } from "./useStudio3DWarmup";
+import { useStudioSelection } from "./useStudioSelection";
 import { useStagePhoto, useStudioPhotoWarmup } from "./useStudioPhotos";
 import { useViewOnly } from "./useViewOnly";
 
@@ -36,7 +37,8 @@ export function StudioExplorer({
   interactiveMode = false,
   showIntro = true,
 }: StudioExplorerProps) {
-  const [selectedId, setSelectedId] = useState(initialId);
+  /* Fix plan 2026-10-11, W2: follow client URL selections, with initialId as the default. */
+  const [selectedId, setSelectedId] = useStudioSelection(capabilities, initialId);
   const [roomOpen, setRoomOpen] = useState(interactiveMode);
   const [tour, setTour] = useState(false);
   const deviceViewOnly = useViewOnly();
@@ -44,7 +46,6 @@ export function StudioExplorer({
 
   const index = Math.max(0, capabilities.findIndex((item) => item.id === selectedId));
   const selected = capabilities[index] ?? capabilities[0];
-  const warm /* phones build the scenes only once the room opens */ =useStudio3DWarmup() && !viewOnly;
   const [photoIndex, pickPhoto] = useStagePhoto(selected?.id ?? "");
   const photo = selected?.media[photoIndex];
   useStudioPhotoWarmup(capabilities, selected?.media);
@@ -77,7 +78,7 @@ export function StudioExplorer({
       setSelectedId(capabilities[(index + 1) % capabilities.length].id);
     }, STEP_MS);
     return () => window.clearTimeout(timer);
-  }, [capabilities, index, roomOpen, tour]);
+  }, [capabilities, index, roomOpen, tour, setSelectedId]);
 
   const selectByModelGroup = useCallback(
     (group: UnifiedServiceId) => {
@@ -87,7 +88,7 @@ export function StudioExplorer({
         setActiveSpace(match.space);
       }
     },
-    [capabilities],
+    [capabilities, setSelectedId],
   );
 
   const handleSwitchSpace = useCallback(
@@ -98,15 +99,8 @@ export function StudioExplorer({
         if (firstInSpace) setSelectedId(firstInSpace.id);
       }
     },
-    [capabilities, selected.space],
+    [capabilities, selected.space, setSelectedId],
   );
-
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("service") === selectedId) return;
-    url.searchParams.set("service", selectedId);
-    window.history.replaceState(null, "", url);
-  }, [selectedId]);
 
   if (!selected) return null;
 
@@ -135,7 +129,7 @@ export function StudioExplorer({
               image={photo?.src ?? selected.image} imageAlt={photo?.alt ?? `${selected.name} at the CDIE Design Studio`} imageSize={photo}
               onSelect={selectByModelGroup}
               onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={openRoom}
-              onSwitchSpace={handleSwitchSpace} warm={warm}
+              onSwitchSpace={handleSwitchSpace}
             />
             <StudioPhotoStrip photos={selected.media} capabilityName={selected.name} current={photoIndex}
               onPick={(next) => { pickPhoto(next); setRoomOpen(false); setTour(false); }} />
