@@ -93,5 +93,30 @@
     "https://www.linkedin.com/feed/update/urn:li:activity:7505491285416357888/": "/linkedin/event-7505491285416357888.jpg",
     "https://www.linkedin.com/feed/update/urn:li:activity:7508065548178710528/": "/linkedin/event-7508065548178710528.jpg",
     "https://www.linkedin.com/feed/update/urn:li:activity:7508789924649832448/": "/linkedin/event-7508789924649832448.jpg"
-  }
+  },
+  "calendar": [
+    {
+      "id": "linkedin:urn:li:activity:7513897246992539648",
+      "title": "Join us this Friday as CDIE staff, MDI students and undergrads face off on one pitch. Pick your side.",
+      "start": "2026-10-09",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7513897246992539648/"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7513863648130498560",
+      "title": "Your innovation is only as strong as your ability to protect it.",
+      "start": "2026-10-22",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7513863648130498560/",
+      "image": "/linkedin/post-urn-li-activity-7513863648130498560.jpg"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7512804259827163137",
+      "title": "Got a hardware solution to a healthcare problem? The Catalyst Grant is still open! 😊",
+      "start": "2026-10-05",
+      "kind": "Announcement",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7512804259827163137/",
+      "image": "/linkedin/post-urn-li-activity-7512804259827163137.jpg"
+    }
+  ]
 }
