@@ -1,4 +1,6 @@
+// Geometry source: the supplied room layout module and room photographs.
 import * as THREE from 'three';
+import { mergeStaticRoomMeshes } from "../mergeStaticRoomMeshes";
 
 import { studioLayout, type ServiceId } from './studioLayout';
 import { createElectronicsBench, electronicsBenchFocus } from './createElectronicsBench';
@@ -466,6 +468,8 @@ export function createDesignStudioModel(): THREE.Group {
     });
   }
 
+  /* Fix plan 2026-10-11, W2: only static background siblings share merged geometry. */
+  mergeStaticRoomMeshes(root);
   const nodes: Record<string, THREE.Object3D> = {};
   const selectable: THREE.Object3D[] = [];
   root.traverse((node) => {

@@ -1,4 +1,4 @@
-// Lucid: Design Studio, virtual tour first. Warm the 3D chunks after the route is visible.
+// Lucid: Design Studio, virtual tour first. Load 3D code only on explicit intent.
 
 type DesignStudioModule = typeof import("./design-studio-3js");
 type AtcModule = typeof import("./atc-3js");

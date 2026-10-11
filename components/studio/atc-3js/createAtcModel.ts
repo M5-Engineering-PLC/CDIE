@@ -1,8 +1,10 @@
+// Geometry source: the supplied room layout module and room photographs.
 /* Source: User-supplied ATC floor plan, site photographs, and video captures.
    Hyper-realistic, clean studio workshop representation.
    Rule: NO GREEN BARS. CNC and tool storage inside container, workbenches and laser in open workshop. */
 
 import * as THREE from "three";
+import { mergeStaticRoomMeshes } from "../mergeStaticRoomMeshes";
 
 import { atcLayout, type AtcServiceId } from "./atcLayout";
 import { createAtcArchitecture } from "./createAtcArchitecture";
@@ -127,6 +129,8 @@ export function createAtcModel(): THREE.Group {
   root.add(architecture, container.group, ...Object.values(services));
 
   // 4. Numbered 3D Station Badges
+  /* Fix plan 2026-10-11, W2: only static background siblings share merged geometry. */
+  mergeStaticRoomMeshes(root);
   const nodes: Record<string, THREE.Object3D> = {};
   const selectable: THREE.Object3D[] = [];
   const sprites: THREE.Sprite[] = [];

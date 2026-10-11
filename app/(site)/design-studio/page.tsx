@@ -5,7 +5,8 @@ import type { Metadata } from "next";
 
 import { FaqList } from "@/components/blocks/FaqList";
 import { Section } from "@/components/sections/Section";
-import { VisualCardRail, type VisualRailItem } from "@/components/sections/VisualCardRail";
+import type { VisualRailItem } from "@/components/sections/VisualCardRail";
+import { StudioCapabilityRail } from "@/components/studio/StudioCapabilityRail";
 import { StudioExplorer, type ExplorerCapability } from "@/components/studio/StudioExplorer";
 import {
   capabilities,
@@ -89,20 +90,15 @@ const capabilityCards = (overrides: Photos): VisualRailItem[] => capabilities.ma
 const PAGE_FAQS = ["who", "booking", "unfamiliar", "hours", "where"];
 const pageFaqs = PAGE_FAQS.flatMap((id) => studioFaqs.filter((faq) => faq.id === id));
 
-export default async function DesignStudioPage(props: PageProps<"/design-studio">) {
-  const query = await props.searchParams;
-  const requested = typeof query.service === "string" ? query.service : undefined;
-  const initialId =
-    requested && capabilities.some((item) => item.id === requested)
-      ? requested
-      : defaultCapabilityId;
+/* Fix plan 2026-10-11, W2: the explorer reads its URL selection on the client. */
+export default async function DesignStudioPage() {
   const overrides = await studioPhotoOverrides();
 
   return (
     <>
       <StudioExplorer
         capabilities={explorerCapabilities(overrides)}
-        initialId={initialId}
+        initialId={defaultCapabilityId}
         intro={{ headline: studioIntro.tourHeadline, standfirst: studioIntro.tourStandfirst }}
       />
 
@@ -118,7 +114,7 @@ export default async function DesignStudioPage(props: PageProps<"/design-studio"
         title={`${countWord(capabilities.length)} ways to make something.`}
         standfirst="Browse the workshop areas, then open any one of them in the room above."
       >
-        <VisualCardRail items={capabilityCards(overrides)} label="studio capabilities" />
+        <StudioCapabilityRail items={capabilityCards(overrides)} label="studio capabilities" />
       </Section>
 
       {/* Review 2026-09-30: "remove the two sides section in design studio",
