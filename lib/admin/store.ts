@@ -18,6 +18,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
 import snapshot from "@/content/cms-snapshot.json";
@@ -148,13 +149,22 @@ function fromRows(rows: Record<string, SheetRow[]>): Data {
 }
 
 /*
+  Fix plan 2026-10-11, W1: the whole sheet read sits in the data cache under
+  the cms tag. The Google token request inside it is uncached, and read
+  directly it made every page that shows sheet content render per request.
+  Behind unstable_cache those pages stay static, refresh every five minutes,
+  and a dashboard save refreshes them at once through updateTag(CMS_TAG).
+*/
+const readSheet = unstable_cache(async () => fromRows(await readTabs(TABS, SHEET_CACHE)), ["cms-sheet"], SHEET_CACHE);
+
+/*
   Fix plan 2026-10-11, D6: one request reads the sheet once, however many
   panels on the page ask for it.
 */
 const load = cache(async (): Promise<Data> => {
   if (sheetsConfigured()) {
     try {
-      return fromRows(await readTabs(TABS, SHEET_CACHE));
+      return await readSheet();
     } catch (error) {
       console.error("[admin] sheet read failed, serving the snapshot", error);
       return fromSnapshot();
