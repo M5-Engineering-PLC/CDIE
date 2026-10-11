@@ -182,7 +182,7 @@ test("D1: the production calendar function passes dashboard event and activity l
   const { getCalendarEvents } = await loadFunctionModule("lib/events.ts", {
     "@/content/linkedin-snapshot.json": { default: snapshot },
     "@/content/programmes": { events: [] },
-    "@/lib/admin/store": { listItems: async (collection) => records[collection], hiddenKeys: async () => new Set() },
+    "@/lib/admin/store": { listItems: async (collection) => records[collection], hiddenKeys: async () => new Set(), applyOverrides: async (_collection, items) => [...items] },
     "@/lib/eventWindow": { openingIndex: () => 0 },
     "@/lib/linkedin": { getLinkedInPlacements: async () => placements },
     "@/lib/linkedin/placement.mjs": { postKey, uniqueCalendar },

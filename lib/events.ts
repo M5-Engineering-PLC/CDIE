@@ -3,7 +3,7 @@
 import type { CalendarCardEvent } from "@/components/blocks/EventCalendar";
 import snapshot from "@/content/linkedin-snapshot.json";
 import { events } from "@/content/programmes";
-import { hiddenKeys, listItems } from "@/lib/admin/store";
+import { applyOverrides, hiddenKeys, listItems } from "@/lib/admin/store";
 import { openingIndex } from "@/lib/eventWindow";
 import { getLinkedInPlacements } from "@/lib/linkedin";
 import { postKey, uniqueCalendar } from "@/lib/linkedin/placement.mjs";
@@ -20,15 +20,17 @@ const withPostImage = (event: CalendarCardEvent) => {
    events, upcoming activities and posts added in the admin dashboard.
    Review 2026-09-30: events removed in the dashboard leave the timeline. */
 export async function getCalendarEvents(): Promise<CalendarCardEvent[]> {
-  const [added, activities, posts, hidden, linkedin] = await Promise.all([
+  const [added, activities, posts, hidden, linkedin, builtIn] = await Promise.all([
     listItems("events"),
     listItems("activities"),
     listItems("posts"),
     hiddenKeys(),
     getLinkedInPlacements(),
+    /* Fix plan 2026-10-11, D3: dashboard edits to the site's own events. */
+    applyOverrides("events", events, (event) => event.id),
   ]);
   const dashboard: CalendarCardEvent[] = [
-    ...events
+    ...builtIn
       .filter((event) => !hidden.has(`events:${event.id}`))
       .map((event) => ({
         id: event.id, title: event.title, start: event.start, end: event.end, kind: event.kind,

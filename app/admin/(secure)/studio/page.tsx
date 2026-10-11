@@ -9,6 +9,7 @@
   its version, and the editor drafts changes against them until they are saved.
 */
 
+import { auditWho } from "@/lib/admin/audit";
 import { StudioPhotoEditor } from "@/components/admin/StudioPhotoEditor";
 import { capabilities, defaultCapabilityId } from "@/content/studio";
 import { studioPhotoLists } from "@/lib/admin/store";
@@ -35,7 +36,7 @@ export default async function AdminStudioPage(props: PageProps<"/admin/studio">)
           The first photograph leads: it is the workshop card&apos;s picture and the first one visitors see. Changes stay on this page until you review and save them, then show on the Design Studio page.
         </p>
       </header>
-      <StudioPhotoEditor areas={areas} initialArea={selected.id} />
+      <StudioPhotoEditor areas={areas} initialArea={selected.id} scope={await auditWho()} />
     </main>
   );
 }

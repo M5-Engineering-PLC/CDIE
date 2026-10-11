@@ -17,11 +17,13 @@ export default async function SecureLayout({ children }: { children: React.React
         links={[
           { href: "/admin", label: "Overview" },
           { href: "/admin/studio", label: "Design Studio" },
+          { href: "/admin/activity", label: "Activity" },
+          { href: "/admin/linkedin", label: "LinkedIn" },
           // Review 2026-09-30: Labs, Posts and Upcoming activities leave the bar.
           ...dashboardCollections.map((collection) => ({ href: `/admin/${collection.id}`, label: collection.label })),
         ]}
         signOut={AUTH_ENABLED ? (
-          <form action={logout} className="flex items-center gap-3">
+          <form action={logout} data-draft-leave className="flex items-center gap-3">
             {who ? <span className="text-fine text-ink-3">{who}</span> : null}
             <button type="submit" className="text-fine font-medium text-brand hover:text-brand-live">Sign out</button>
           </form>

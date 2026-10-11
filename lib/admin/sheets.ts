@@ -236,3 +236,62 @@ export async function deleteRowsWhere(tab: string, match: (row: SheetRow) => boo
   });
   return matches.length;
 }
+
+/*
+  Fix plan 2026-10-11, D7: every change in one spreadsheets.batchUpdate, which
+  Google applies all or nothing (review 2026-10-11: two requests could leave
+  half a save live). Requests run in order: new tabs, headers and row updates
+  by their current position, deletions bottom-up, then appends.
+*/
+export type BatchWrite =
+  | { tab: string; kind: "append"; row: SheetRow }
+  | { tab: string; kind: "update"; match: SheetRow; row: SheetRow }
+  | { tab: string; kind: "delete"; match: SheetRow };
+
+const cells = (values: string[]) => ({ values: values.map((value) => ({ userEnteredValue: { stringValue: value } })) });
+
+export async function batchWrite(operations: BatchWrite[]): Promise<void> {
+  if (operations.length === 0) return;
+  const names = [...new Set(operations.map((operation) => operation.tab))];
+  const metadata = await tabs();
+  const present = names.filter((name) => metadata.some((sheet) => sheet.properties.title === name));
+  const query = present.map((name) => `ranges=${range(name)}`).join("&");
+  const read = present.length ? await call<{ valueRanges: { values?: string[][] }[] }>(`/values:batchGet?${query}`, { cache: "no-store" }) : { valueRanges: [] };
+  const created: object[] = [];
+  const updates: object[] = [];
+  const deletions: object[] = [];
+  const appends: object[] = [];
+  for (const name of names) {
+    const changes = operations.filter((operation) => operation.tab === name);
+    let sheetId = metadata.find((sheet) => sheet.properties.title === name)?.properties.sheetId;
+    if (sheetId === undefined) {
+      if (changes.every((change) => change.kind === "delete")) continue;
+      // A new tab is created in the same request; its id is chosen here so later requests can name it.
+      sheetId = 100_000 + Math.floor(Math.random() * 1_000_000_000);
+      created.push({ addSheet: { properties: { title: name, sheetId } } });
+    }
+    const values = read.valueRanges[present.indexOf(name)]?.values ?? [];
+    const oldHeader = values[0] ?? [];
+    const header = [...new Set([...oldHeader, ...changes.flatMap((operation) => "row" in operation ? Object.keys(operation.row) : [])])];
+    const rows = values.slice(1).map((record) => Object.fromEntries(header.map((key, index) => [key, String(record[index] ?? "")])));
+    const dirty = new Set<number>();
+    const removed = new Set<number>();
+    const added: SheetRow[] = [];
+    for (const operation of changes) {
+      if (operation.kind === "append") { added.push(operation.row); continue; }
+      const matches = rows.flatMap((row, index) => Object.entries(operation.match).every(([key, value]) => row[key] === value) ? [index] : []);
+      if (operation.kind === "update") {
+        if (matches.length !== 1) throw new Error("A changed row is missing or duplicated. Reload the page.");
+        Object.assign(rows[matches[0]], operation.row);
+        dirty.add(matches[0]);
+      } else matches.forEach((index) => removed.add(index));
+    }
+    const at = (rowIndex: number) => ({ sheetId, rowIndex, columnIndex: 0 });
+    if (header.length && JSON.stringify(header) !== JSON.stringify(oldHeader)) updates.push({ updateCells: { start: at(0), rows: [cells(header)], fields: "userEnteredValue" } });
+    for (const index of dirty) if (!removed.has(index)) updates.push({ updateCells: { start: at(index + 1), rows: [cells(header.map((key) => rows[index][key] ?? ""))], fields: "userEnteredValue" } });
+    [...removed].sort((a, b) => b - a).forEach((index) => deletions.push({ deleteDimension: { range: { sheetId, dimension: "ROWS", startIndex: index + 1, endIndex: index + 2 } } }));
+    if (added.length) appends.push({ appendCells: { sheetId, rows: added.map((row) => cells(header.map((key) => row[key] ?? ""))), fields: "userEnteredValue" } });
+  }
+  const requests = [...created, ...updates, ...deletions, ...appends];
+  if (requests.length) await call(":batchUpdate", { method: "POST", body: JSON.stringify({ requests }) });
+}

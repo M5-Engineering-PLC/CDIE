@@ -22,7 +22,7 @@ if (!sheetCredentials()) {
   process.exit(1);
 }
 
-const rows = await readTabs([...collections.map((item) => item.id), "hidden", "studio"]);
+const rows = await readTabs([...collections.map((item) => item.id), "hidden", "studio", "overrides"]);
 const items = Object.fromEntries(
   collections.map(({ id }) => [
     id,
@@ -40,13 +40,17 @@ const studio = rows.studio
   .filter((row) => row.capability)
   .map(({ capability, photos, at }) => ({ capability, photos, at }));
 
+const overrides = rows.overrides
+  .filter((row) => row.collection && row.key)
+  .map(({ collection, key, fields, at }) => ({ collection, key, fields, at }));
+
 const previous = JSON.parse(await readFile(target, "utf8").catch(() => "{}"));
 const same = (a, b) => JSON.stringify(a ?? []) === JSON.stringify(b ?? []);
-if (same(previous.items ?? {}, items) && same(previous.hidden, hidden) && same(previous.studio, studio)) {
+if (same(previous.items ?? {}, items) && same(previous.hidden, hidden) && same(previous.studio, studio) && same(previous.overrides, overrides)) {
   console.log("Snapshot already current.");
   process.exit(0);
 }
 
-const snapshot = { syncedAt: new Date().toISOString(), items, hidden, studio, subscriptions: [], enquiries: [] };
+const snapshot = { syncedAt: new Date().toISOString(), items, hidden, studio, overrides, subscriptions: [], enquiries: [] };
 await writeFile(target, `${JSON.stringify(snapshot, null, 2)}\n`);
 console.log(`Snapshot updated: ${collections.map(({ id }) => `${id} ${items[id].length}`).join(", ")}`);

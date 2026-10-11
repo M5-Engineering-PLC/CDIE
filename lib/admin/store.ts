@@ -25,7 +25,11 @@ import snapshot from "@/content/cms-snapshot.json";
 
 import { collections, type CollectionId } from "./collections";
 import { commitUpload, notifyContentChanged } from "./github";
-import { appendAndDelete, appendRow, deleteRows, readTab, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
+import { appendAndDelete, batchWrite, type BatchWrite, appendRow, deleteRows, readTab, readTabs, sheetsConfigured, updateRow, type SheetRow } from "./sheets";
+
+import { mergeOverrides, newestOverrides, type OverrideRecord } from "./overrides";
+import type { AuditEntry } from "./auditFields";
+import { CollectionConflict, recordStamp, type ValidatedChange } from "./collectionDraft";
 
 export type Item = { id: string; createdAt: string } & Record<string, string>;
 
@@ -82,12 +86,14 @@ type Data = {
   enquiries: EnquiryRecord[];
   hidden: HiddenRecord[];
   studio: StudioPhotoRecord[];
+  overrides: OverrideRecord[];
+  audit?: AuditEntry[];
 };
 
 /** Cache tag on every sheet read. Server actions call updateTag(CMS_TAG) after a write. */
 export const CMS_TAG = "cms";
 const SHEET_CACHE = { revalidate: 300, tags: [CMS_TAG] };
-const TABS = [...collections.map((item) => item.id), "subscriptions", "enquiries", "hidden", "studio"];
+const TABS = [...collections.map((item) => item.id), "subscriptions", "enquiries", "hidden", "studio", "overrides"];
 
 /*
   Fix plan 2026-10-11, D6: the hint keeps the build from tracing the whole
@@ -97,7 +103,7 @@ const root = () => path.resolve(process.env.CMS_DATA_DIR || path.join(/* turbopa
 const file = () => path.join(root(), "cms.json");
 export const uploadsDir = () => path.join(root(), "uploads");
 
-const empty = (): Data => ({ items: {}, subscriptions: [], enquiries: [], hidden: [], studio: [] });
+const empty = (): Data => ({ items: {}, subscriptions: [], enquiries: [], hidden: [], studio: [], overrides: [] });
 
 /* Records saved before the rename live under "media"; they are posts now. */
 function normalise(data: Partial<Data> & { items?: Record<string, Item[]> }): Data {
@@ -144,6 +150,7 @@ function fromRows(rows: Record<string, SheetRow[]>): Data {
       message: row.message || undefined,
     })),
     hidden: (rows.hidden ?? []).filter((row) => row.collection && row.key).map((row) => ({ collection: row.collection, key: row.key, at: row.at })),
+    overrides: (rows.overrides ?? []).filter((row) => row.collection && row.key).map((row) => ({ collection: row.collection, key: row.key, fields: row.fields, at: row.at })),
     studio: (rows.studio ?? []).filter((row) => row.capability).map((row) => ({ capability: row.capability, photos: row.photos, at: row.at })),
   };
 }
@@ -200,11 +207,14 @@ function updateLocal(change: (data: Data) => void) {
 }
 
 export async function listItems(collection: CollectionId): Promise<Item[]> {
-  return (await load()).items[collection] ?? [];
+  const data = await load();
+  const hidden = new Set(data.hidden.filter((row) => row.collection === collection).map((row) => row.key));
+  return (data.items[collection] ?? []).filter((item) => !hidden.has(item.id));
 }
 
-export async function addItem(collection: CollectionId, fields: Record<string, string>) {
-  const item: Item = { ...fields, id: randomUUID(), createdAt: new Date().toISOString() };
+export async function addItem(collection: CollectionId, fields: Record<string, string>, batch?: BatchWrite[], id: string = randomUUID()) {
+  const item: Item = { ...fields, id, createdAt: new Date().toISOString() };
+  if (batch) { batch.push({ tab: collection, kind: "append", row: item }); return item; }
   if (sheetsConfigured()) await appendRow(collection, { id: item.id, createdAt: item.createdAt, ...fields });
   await updateLocal((data) => {
     data.items[collection] = [item, ...(data.items[collection] ?? [])];
@@ -293,7 +303,9 @@ export async function listSubscribers(status: SubscriptionStatus = "confirmed") 
 }
 
 /** Merges fields into one saved record, for example a newsletter's send record. */
-export async function updateItem(collection: CollectionId, id: string, patch: Record<string, string>) {
+export async function updateItem(collection: CollectionId, id: string, fields: Record<string, string>, batch?: BatchWrite[]) {
+  const patch = { ...fields, updatedAt: new Date().toISOString() };
+  if (batch) { batch.push({ tab: collection, kind: "update", match: { id }, row: patch }); return; }
   if (sheetsConfigured()) await updateRow(collection, "id", id, patch);
   await updateLocal((data) => {
     const item = (data.items[collection] ?? []).find((entry) => entry.id === id);
@@ -417,5 +429,78 @@ export async function addAccount(account: Account) {
   if (sheetsConfigured()) await appendRow("accounts", account);
   await updateLocal((data) => {
     data.accounts = [...(data.accounts ?? []).filter((entry) => entry.email !== account.email), account];
+  });
+}
+
+
+/* Fix plan 2026-10-11, D3: public readers use the same cached load as other CMS content. */
+export async function applyOverrides<T extends object>(collection: CollectionId, records: readonly T[], keyOf: (record: T) => string): Promise<T[]> {
+  return mergeOverrides(collection, records, keyOf, (await load()).overrides);
+}
+
+export async function collectionData(collection: CollectionId, fresh = false) {
+  const data = await (fresh ? loadFresh() : load());
+  return { items: data.items[collection] ?? [], hidden: data.hidden.filter((row) => row.collection === collection), overrides: data.overrides.filter((row) => row.collection === collection) };
+}
+
+/* Fix plan 2026-10-11, D7: serialise read/compare/write within this server process. */
+let publications: Promise<unknown> = Promise.resolve();
+export function serialisePublication<T>(run: () => Promise<T>): Promise<T> {
+  const next = publications.then(run);
+  publications = next.catch(() => undefined);
+  return next;
+}
+
+export async function appendAudit(entry: AuditEntry) {
+  if (sheetsConfigured()) await appendRow("audit", entry);
+  await updateLocal((data) => { data.audit = [...(data.audit ?? []), entry]; });
+}
+
+export async function readAudit(): Promise<AuditEntry[]> {
+  if (sheetsConfigured()) return (await readTab("audit", { revalidate: 0 })) as AuditEntry[];
+  return (await loadLocal())?.audit ?? [];
+}
+
+/* Fix plan 2026-10-11, D3 and D7: content and audit rows share a batch, without per-control dispatches. */
+export async function saveCollectionChanges(collection: CollectionId, plans: ValidatedChange[], audits: AuditEntry[]) {
+  const operations: BatchWrite[] = [];
+  const data = await collectionData(collection, true);
+  const overrides = newestOverrides(collection, data.overrides);
+  const at = new Date().toISOString();
+  for (const plan of plans) {
+    const own = data.items.find((row) => row.id === plan.recordId);
+    const hiddenRows = data.hidden.filter((row) => row.key === plan.recordId);
+    const hiddenAt = hiddenRows.map((row) => row.at).sort().join(",");
+    const fields = plan.source === "site" ? { ...plan.before?.original, ...overrides[plan.recordId]?.fields } : own;
+    const version = plan.source === "site" ? `${overrides[plan.recordId]?.at ?? ""}:${hiddenAt}` : hiddenAt;
+    if (plan.action === "add") { if (own) throw new CollectionConflict(plan.id); }
+    else if (plan.before?.base && (!fields || recordStamp(fields, hiddenRows.length > 0, version) !== plan.base)) throw new CollectionConflict(plan.id);
+  }
+  for (const plan of plans) {
+    const id = plan.recordId;
+    if (plan.action === "add") await addItem(collection, plan.fields, operations, id);
+    else if (plan.action === "edit" && plan.source === "dashboard") await updateItem(collection, id, plan.fields, operations);
+    else if (plan.action === "edit") {
+      const fields = { ...overrides[id]?.fields, ...plan.fields };
+      for (const name of Object.keys(fields)) if (fields[name] === (plan.before?.original?.[name] ?? "")) delete fields[name];
+      operations.push({ tab: "overrides", kind: "append", row: { collection, key: id, fields: JSON.stringify(fields), at } });
+    } else if (plan.action === "delete") {
+      operations.push({ tab: collection, kind: "delete", match: { id } }, { tab: "hidden", kind: "delete", match: { collection, key: id } });
+    } else if (plan.action === "hide") operations.push({ tab: "hidden", kind: "append", row: { ref: `${collection}:${id}`, collection, key: id, at } });
+    else if (plan.action === "restore") operations.push({ tab: "hidden", kind: "delete", match: { collection, key: id } });
+  }
+  operations.push(...audits.map((row): BatchWrite => ({ tab: "audit", kind: "append", row })));
+  if (sheetsConfigured()) await batchWrite(operations);
+  await updateLocal((local) => {
+    local.items[collection] = data.items;
+    local.hidden = [...local.hidden.filter((row) => row.collection !== collection), ...data.hidden];
+    local.overrides = [...local.overrides.filter((row) => row.collection !== collection), ...data.overrides];
+    for (const operation of operations) {
+      const rows = operation.tab === "hidden" ? local.hidden : operation.tab === "overrides" ? local.overrides : operation.tab === "audit" ? (local.audit ??= []) : (local.items[collection] ??= []);
+      const entries = rows as Record<string, string>[];
+      if (operation.kind === "append") entries.push(operation.row);
+      else if (operation.kind === "update") entries.filter((row) => Object.entries(operation.match).every(([key, value]) => row[key] === value)).forEach((row) => Object.assign(row, operation.row));
+      else for (let index = entries.length - 1; index >= 0; index--) if (Object.entries(operation.match).every(([key, value]) => entries[index][key] === value)) entries.splice(index, 1);
+    }
   });
 }
