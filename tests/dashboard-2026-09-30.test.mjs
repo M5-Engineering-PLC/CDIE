@@ -56,7 +56,7 @@ test("the site's own records can be taken off the website and put back", () => {
   assert.match(read("app/(site)/about/page.tsx"), /!hidden\.has\(`staff:\$\{person\.id\}`\)/);
   assert.match(read("app/(site)/programmes/mdi/page.tsx"), /!hidden\.has\(`cohorts:\$\{person\.id\}`\)/);
   // a hide names one of the site's own records, never an arbitrary key
-  assert.match(read("app/admin/actions.ts"), /siteItems\(collection\.id\)\.some\(\(item\) => item\.key === key\)/);
+  assert.match(read("app/admin/collection-actions.ts"), /collectionRecords\(collection\.id, true\)/);
 });
 
 test("staff lose the short bio; a cohort record is a graduand with a LinkedIn link and no programme", () => {

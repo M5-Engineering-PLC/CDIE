@@ -21,6 +21,7 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 
+import { audit, auditWho } from "@/lib/admin/audit";
 import { capabilities } from "@/content/studio";
 import { requireAdmin } from "@/lib/admin/auth";
 import { CMS_TAG, saveStudioPhotos, saveUpload, studioPhotoLists, type StudioPhoto } from "@/lib/admin/store";
@@ -110,6 +111,8 @@ export async function publishStudioChanges(form: FormData): Promise<PublishResul
     return { error: "That did not save. Your changes are still here; try again in a moment." };
   }
 
+  const who = await auditWho();
+  for (const plan of plans) await audit({ who, action: "studio-photos", collection: "studio", recordId: plan.capability, recordTitle: capabilities.find((area) => area.id === plan.capability)?.name, summary: `Saved ${plan.photos.length} photographs in the reviewed order.` });
   updateTag(CMS_TAG);
   revalidatePath("/design-studio");
   revalidatePath("/admin/studio");

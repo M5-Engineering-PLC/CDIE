@@ -63,7 +63,7 @@ export function useDraft<T>(page: string, { empty, isEmpty, persist, restore }: 
 function useLeaveGuard(active: boolean) {
   useEffect(() => {
     if (!active) return;
-    const unload = (event: BeforeUnloadEvent) => event.preventDefault();
+    const unload = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
     // Capture phase, so the question comes before the client router follows the link.
     const click = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -75,9 +75,16 @@ function useLeaveGuard(active: boolean) {
         event.stopPropagation();
       }
     };
+    const submit = (event: SubmitEvent) => {
+      if (event.target instanceof HTMLFormElement && event.target.hasAttribute("data-draft-leave") && !window.confirm(LEAVE)) {
+        event.preventDefault(); event.stopPropagation();
+      }
+    };
+    document.addEventListener("submit", submit, true);
     window.addEventListener("beforeunload", unload);
     document.addEventListener("click", click, true);
     return () => {
+      document.removeEventListener("submit", submit, true);
       window.removeEventListener("beforeunload", unload);
       document.removeEventListener("click", click, true);
     };

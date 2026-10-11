@@ -29,7 +29,7 @@ permissions:
 
 concurrency:
   group: sync-cms
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   sync:

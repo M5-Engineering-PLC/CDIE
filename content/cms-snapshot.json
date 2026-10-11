@@ -15,6 +15,7 @@
     "staff": [],
     "cohorts": []
   },
+  "overrides": [],
   "hidden": [
     {
       "collection": "events",

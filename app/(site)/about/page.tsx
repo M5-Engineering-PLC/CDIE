@@ -36,7 +36,7 @@ import {
   purpose,
   workYouCanSee,
 } from "@/content/about";
-import { hiddenKeys, listItems } from "@/lib/admin/store";
+import { applyOverrides, hiddenKeys, listItems } from "@/lib/admin/store";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -48,14 +48,14 @@ export const metadata: Metadata = pageMetadata({
 
 export default async function AboutPage() {
   /* Enhancements 2026-09-22: staff added in the dashboard join the team. */
-  const [staff, hidden] = await Promise.all([listItems("staff"), hiddenKeys()]);
+  const [staff, hidden, builtIn] = await Promise.all([listItems("staff"), hiddenKeys(), applyOverrides("staff", people, (person) => person.id)]);
   const added = staff
     .filter((item) => item.image)
     .map((item) => ({ id: item.id, name: item.name, role: item.role, portrait: { src: item.image, alt: item.name, width: 600, height: 720 } }));
   /* changes-v2, 2026-09-23: a colleague whose photograph has not arrived keeps
      their card, with an empty frame where the portrait will go. */
   // Review 2026-09-30: a colleague removed in the dashboard leaves the team.
-  const team = [...people.filter((person) => !hidden.has(`staff:${person.id}`)), ...added];
+  const team = [...builtIn.filter((person) => !hidden.has(`staff:${person.id}`)), ...added];
 
   return (
     <>

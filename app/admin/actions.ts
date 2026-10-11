@@ -10,16 +10,14 @@ import { redirect } from "next/navigation";
 import {
   credentialsMatch, EMAIL, endSession, hashPassword, mayHaveAccount, normaliseEmail, requireAdmin, signupOpen, startSession,
 } from "@/lib/admin/auth";
-import { siteItems } from "@/lib/admin/builtins";
-import { collectionById, onDashboard, type CollectionId } from "@/lib/admin/collections";
+import { audit, auditWho } from "@/lib/admin/audit";
 import {
-  addAccount, addItem, CMS_TAG, findAccount, hideBuiltIn, listItems, listSubscribers, removeItem, saveUpload, unhideBuiltIn, updateItem,
+  addAccount, CMS_TAG, findAccount, listItems, listSubscribers, updateItem,
 } from "@/lib/admin/store";
 import { allow } from "@/lib/security/throttle";
 import { EMAIL_SETUP_HINT, emailConfigured, sendBatch, sendEmail } from "@/lib/email";
 import { issueEmail } from "@/lib/newsletter";
 
-const IMAGE = /^image\/(jpeg|png|webp|gif|avif)$/;
 
 /*
   Fix plan 2026-10-11, D6: a Google Sheets error (a busy quota, a timeout) is
@@ -46,10 +44,18 @@ async function throttled(kind: string, email: string) {
 
 export async function login(_: string | null, form: FormData) {
   const email = normaliseEmail(form.get("email"));
-  if (await throttled("login", email)) return "Too many attempts. Wait a few minutes and try again.";
+  if (await throttled("login", email)) {
+    await audit({ who: email, action: "login-failure", collection: "accounts", summary: "Sign-in attempts exceeded the limit." });
+    return "Too many attempts. Wait a few minutes and try again.";
+  }
   const match = await attempt("sign-in", () => credentialsMatch(email, String(form.get("password") ?? "")));
+  if (!match.ok) await audit({ who: email, action: "login-failure", collection: "accounts", summary: "The account lookup failed." });
   if (!match.ok) return SHEET_BUSY;
-  if (!match.value) return "That email address and password do not match an account.";
+  if (!match.value) {
+    await audit({ who: email, action: "login-failure", collection: "accounts", summary: "Sign-in credentials did not match." });
+    return "That email address and password do not match an account.";
+  }
+  await audit({ who: email, action: "login-success", collection: "accounts", summary: "Signed in." });
   await startSession(email);
   redirect("/admin");
 }
@@ -73,72 +79,15 @@ export async function signup(_: string | null, form: FormData) {
   if (existing.value) return "There is already an account for that address. Sign in instead.";
   const hash = await hashPassword(password);
   if (!(await attempt("account save", () => addAccount({ email, hash, createdAt: new Date().toISOString() }))).ok) return SHEET_BUSY;
+  await audit({ who: email, action: "signup", collection: "accounts", summary: "Created an account." });
   await startSession(email);
   redirect("/admin");
 }
 
-/*
-  Review 2026-09-30: a record that ships with the site is hidden rather than
-  deleted, and can be put back. The key must name one of the site's own
-  records, so the form cannot be used to write arbitrary rows.
-*/
-export async function hideItem(form: FormData) {
-  await requireAdmin();
-  const collection = onDashboard(String(form.get("collection")));
-  const key = String(form.get("key"));
-  if (!collection || !siteItems(collection.id).some((item) => item.key === key)) return;
-  await (String(form.get("restore")) === "yes" ? unhideBuiltIn(collection.id, key) : hideBuiltIn(collection.id, key));
-  updateTag(CMS_TAG);
-  revalidatePath("/", "layout");
-}
-
 export async function logout() {
+  await audit({ who: await auditWho(), action: "logout", collection: "accounts", summary: "Signed out." });
   await endSession();
   redirect("/admin/login");
-}
-
-export async function createItem(_: string | null, form: FormData): Promise<string | null> {
-  await requireAdmin();
-  const collection = onDashboard(String(form.get("collection")));
-  if (!collection) return "Unknown section.";
-
-  const fields: Record<string, string> = {};
-  for (const field of collection.fields) {
-    const raw = form.get(field.name);
-    if (field.type === "image" || field.type === "pdf") {
-      const file = raw instanceof File && raw.size > 0 ? raw : null;
-      if (file) {
-        const ok = field.type === "pdf" ? file.type === "application/pdf" : IMAGE.test(file.type);
-        if (!ok) return `${field.label} must be ${field.type === "pdf" ? "a PDF" : "a JPEG, PNG, WebP, GIF or AVIF image"}.`;
-        const upload = await attempt("upload", () => saveUpload(file));
-        if (!upload.ok) return `${field.label} did not upload. Nothing was saved; try again in a moment.`;
-        fields[field.name] = upload.value;
-      }
-    } else if (typeof raw === "string" && raw.trim()) {
-      fields[field.name] = raw.trim().slice(0, field.type === "textarea" ? 4000 : 300);
-    }
-    if (field.required && !fields[field.name]) return `${field.label} is required.`;
-  }
-  if (fields.end && fields.start && fields.end < fields.start) return "The end date is before the start date.";
-
-  try {
-    await addItem(collection.id, fields);
-  } catch (error) {
-    console.error("[admin] save failed", error);
-    return "The Google Sheet did not accept that. Nothing was saved; try again in a moment.";
-  }
-  updateTag(CMS_TAG);
-  revalidatePath("/", "layout");
-  return null;
-}
-
-export async function deleteItem(form: FormData) {
-  await requireAdmin();
-  const collection = collectionById(String(form.get("collection")));
-  if (!collection) return;
-  await removeItem(collection.id as CollectionId, String(form.get("id")));
-  updateTag(CMS_TAG);
-  revalidatePath("/", "layout");
 }
 
 /*
@@ -167,6 +116,7 @@ export async function sendIssue(_: string | null, form: FormData): Promise<strin
     const to = String(form.get("test") ?? "").trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to)) return "Enter the address the test should go to.";
     const ok = await sendEmail(issueEmail(to, "test-token", content));
+    await audit({ who: await auditWho(), action: "newsletter-test", collection: "newsletters", recordId: id, recordTitle: issue.title, summary: ok ? "Sent a test issue." : "The test issue did not send." });
     return ok ? null : "The test did not send. The server log has the reason.";
   }
 
@@ -186,6 +136,7 @@ export async function sendIssue(_: string | null, form: FormData): Promise<strin
     sentAt: new Date().toISOString(),
     sentCount: String(sent),
   }));
+  await audit({ who: await auditWho(), action: "newsletter-send", collection: "newsletters", recordId: id, recordTitle: issue.title, summary: `Sent to ${sent}; ${failed} failed.` });
   updateTag(CMS_TAG);
   revalidatePath("/admin", "layout");
   const unrecorded = recorded.ok ? "" : " The send could not be noted on the issue, so the dashboard will not show it as sent.";

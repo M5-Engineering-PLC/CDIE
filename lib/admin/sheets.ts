@@ -207,3 +207,53 @@ export async function deleteRowsWhere(tab: string, match: (row: SheetRow) => boo
   });
   return matches.length;
 }
+
+/* Fix plan 2026-10-11, D7: one values batch for all changed rows, followed by one deletion batch. */
+export type BatchWrite =
+  | { tab: string; kind: "append"; row: SheetRow }
+  | { tab: string; kind: "update"; match: SheetRow; row: SheetRow }
+  | { tab: string; kind: "delete"; match: SheetRow };
+
+export async function batchWrite(operations: BatchWrite[]): Promise<void> {
+  if (operations.length === 0) return;
+  const names = [...new Set(operations.map((operation) => operation.tab))];
+  const metadata = await tabs();
+  const present = names.filter((name) => metadata.some((sheet) => sheet.properties.title === name));
+  const query = present.map((name) => `ranges=${range(name)}`).join("&");
+  const read = present.length ? await call<{ valueRanges: { values?: string[][] }[] }>(`/values:batchGet?${query}`, { cache: "no-store" }) : { valueRanges: [] };
+  const writes: { range: string; values: string[][] }[] = [];
+  const deletions: { deleteDimension: { range: { sheetId: number; dimension: string; startIndex: number; endIndex: number } } }[] = [];
+  for (const name of names) {
+    const changes = operations.filter((operation) => operation.tab === name);
+    const values = read.valueRanges[present.indexOf(name)]?.values ?? [];
+    const oldHeader = values[0] ?? [];
+    const header = [...new Set([...oldHeader, ...changes.flatMap((operation) => "row" in operation ? Object.keys(operation.row) : [])])];
+    const rows = values.slice(1).map((cells) => Object.fromEntries(header.map((key, index) => [key, String(cells[index] ?? "")])));
+    const dirty = new Set<number>();
+    const removed = new Set<number>();
+    for (const operation of changes) {
+      if (operation.kind === "append") { dirty.add(rows.length); rows.push(operation.row); continue; }
+      const matches = rows.flatMap((row, index) => Object.entries(operation.match).every(([key, value]) => row[key] === value) ? [index] : []);
+      if (operation.kind === "update") {
+        if (matches.length !== 1) throw new Error("A changed row is missing or duplicated. Reload the page.");
+        Object.assign(rows[matches[0]], operation.row);
+        dirty.add(matches[0]);
+      } else matches.forEach((index) => removed.add(index));
+    }
+    // Plan everything before making a write, including missing-row failures.
+    if (!metadata.some((sheet) => sheet.properties.title === name) && changes.some((change) => change.kind !== "delete")) {
+      const created = await call<{ replies: { addSheet: SheetMeta }[] }>(":batchUpdate", {
+        method: "POST", body: JSON.stringify({ requests: [{ addSheet: { properties: { title: name } } }] }),
+      });
+      metadata.push(created.replies[0].addSheet);
+    }
+    if (header.length && JSON.stringify(header) !== JSON.stringify(oldHeader)) writes.push({ range: `'${name}'!A1`, values: [header] });
+    for (const index of dirty) {
+      if (!removed.has(index)) writes.push({ range: `'${name}'!A${index + 2}`, values: [header.map((key) => rows[index][key] ?? "")] });
+    }
+    const sheet = metadata.find((entry) => entry.properties.title === name);
+    if (sheet) [...removed].sort((a, b) => b - a).forEach((index) => deletions.push({ deleteDimension: { range: { sheetId: sheet.properties.sheetId, dimension: "ROWS", startIndex: index + 1, endIndex: index + 2 } } }));
+  }
+  if (writes.length) await call("/values:batchUpdate", { method: "POST", body: JSON.stringify({ valueInputOption: "RAW", data: writes }) });
+  if (deletions.length) await call(":batchUpdate", { method: "POST", body: JSON.stringify({ requests: deletions }) });
+}

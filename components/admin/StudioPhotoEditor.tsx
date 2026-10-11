@@ -26,9 +26,9 @@ const EMPTY: StudioDraft = {};
 const isEmpty = (draft: StudioDraft) => Object.keys(draft).length === 0;
 const forget = (tiles: DraftPhoto[]) => tiles.filter((tile) => tile.added).forEach((tile) => URL.revokeObjectURL(tile.src));
 
-export function StudioPhotoEditor({ areas, initialArea }: { areas: StudioArea[]; initialArea: string }) {
+export function StudioPhotoEditor({ areas, initialArea, scope }: { areas: StudioArea[]; initialArea: string; scope: string }) {
   const restore = useCallback((saved: unknown) => restoreDraft(areas, saved), [areas]);
-  const { draft, change, clear } = useDraft("studio", { empty: EMPTY, isEmpty, persist: persistable, restore });
+  const { draft, change, clear } = useDraft(`${scope}:studio`, { empty: EMPTY, isEmpty, persist: persistable, restore });
   const [selectedId, setSelectedId] = useState(initialArea);
   const [files, setFiles] = useState<Record<string, File>>({});
   const [dragKey, setDragKey] = useState<string | null>(null);

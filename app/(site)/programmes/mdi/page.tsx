@@ -14,7 +14,7 @@ import { Section } from "@/components/sections/Section";
 import { mdiSemesters } from "@/content/curriculum";
 import { StoryGrid, type StoryCardItem } from "@/components/blocks/StoryGrid";
 import { mdi, mdiCohortsCopy, mdiGraduands } from "@/content/programmes";
-import { hiddenKeys, listItems } from "@/lib/admin/store";
+import { applyOverrides, hiddenKeys, listItems } from "@/lib/admin/store";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -34,9 +34,9 @@ const crumbs = [
 export default async function MdiPage() {
   /* Review 2026-09-30: a dashboard record is one graduand, so it joins the
      same story cards, and a graduand hidden in the dashboard leaves them. */
-  const [added, hidden] = await Promise.all([listItems("cohorts"), hiddenKeys()]);
+  const [added, hidden, builtIn] = await Promise.all([listItems("cohorts"), hiddenKeys(), applyOverrides("cohorts", mdiGraduands, (person) => person.id)]);
 
-  const graduands: StoryCardItem[] = [...mdiGraduands.filter((person) => !hidden.has(`cohorts:${person.id}`)).map((person) => ({
+  const graduands: StoryCardItem[] = [...builtIn.filter((person) => !hidden.has(`cohorts:${person.id}`)).map((person) => ({
     id: person.id,
     name: person.name,
     cohort: person.cohort,

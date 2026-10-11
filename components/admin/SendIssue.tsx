@@ -13,11 +13,13 @@ export function SendIssue({
   subscribers,
   sentAt,
   sentCount,
+  disabled = false,
 }: {
   id: string;
   subscribers: number;
   sentAt?: string;
   sentCount?: string;
+  disabled?: boolean;
 }) {
   const [error, action, pending] = useActionState(sendIssue, null);
 
@@ -45,7 +47,7 @@ export function SendIssue({
           type="submit"
           name="mode"
           value="test"
-          disabled={pending}
+          disabled={pending || disabled}
           className="border border-line px-4 py-2 text-body text-ink transition-colors hover:border-brand hover:text-brand disabled:opacity-50"
         >
           Send test
@@ -57,7 +59,7 @@ export function SendIssue({
           type="submit"
           name="mode"
           value="live"
-          disabled={pending || subscribers === 0}
+          disabled={pending || disabled || subscribers === 0}
           className="bg-brand px-4 py-2 text-body font-semibold text-surface transition hover:bg-brand-live disabled:opacity-50"
         >
           {pending ? "Sending…" : `Send to ${subscribers}`}
