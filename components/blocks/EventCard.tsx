@@ -56,7 +56,8 @@ export function EventCard({ event, today, fallbackImage, focusable = true }: {
           <DateBlock iso={event.start} />
           {multiDay ? <><span className="cal-date-dash" aria-hidden="true" /><DateBlock iso={event.end as string} /></> : null}
         </p>
-        <span className="cal-tag" data-upcoming={upcoming || undefined}>{upcoming ? "Upcoming" : event.kind ?? "Event"}</span>
+        {/* Fix plan 2026-10-11, W3: an announcement always keeps its kind label. */}
+        <span className="cal-tag" data-upcoming={upcoming || undefined}>{event.kind === "Announcement" ? event.kind : upcoming ? "Upcoming" : event.kind ?? "Event"}</span>
       </div>
       <div className="cal-details">
         <h3 className="cal-title">{event.title}</h3>
