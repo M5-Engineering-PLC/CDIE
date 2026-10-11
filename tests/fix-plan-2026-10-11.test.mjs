@@ -51,7 +51,11 @@ test("D6: a Sheets error is answered in the form, not thrown", () => {
 test("D2: studio saves read fresh, upsert one row per area, and the newest row wins", () => {
   const store = read("lib/admin/store.ts");
   assert.match(store, /fresh \? loadFresh\(\) : load\(\)/);
-  assert.match(store, /deleteRowsWhere\("studio", \(entry\) => entry\.capability === row\.capability && entry\.at !== at\)/);
+  // Review 2026-10-11: one all-or-nothing request, removing only rows up to the version the editor loaded.
+  assert.match(store, /await appendAndDelete\("studio", rows, \(entry\) => base\.has\(entry\.capability\) && \(entry\.at \?\? ""\) <= /);
+  assert.doesNotMatch(store, /for \(const row of rows\) \{\s*await appendRow\("studio"/);
+  const sheets = read("lib/admin/sheets.ts");
+  assert.match(sheets, /deleteDimension[\s\S]*appendCells[\s\S]*await call\(":batchUpdate"/);
   assert.match(store, /result\[row\.capability\]\.at > \(row\.at \?\? ""\)/);
   assert.doesNotMatch(store, /updateRow\("studio"/);
 });
