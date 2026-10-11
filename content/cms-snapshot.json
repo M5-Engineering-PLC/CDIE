@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-06T14:44:22.873Z",
+  "syncedAt": "2026-10-11T15:13:12.663Z",
   "items": {
     "posts": [
       {
@@ -15,7 +15,6 @@
     "staff": [],
     "cohorts": []
   },
-  "overrides": [],
   "hidden": [
     {
       "collection": "events",
@@ -31,6 +30,41 @@
       "collection": "events",
       "key": "ev01",
       "at": "2026-09-30T13:52:57.905Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev02",
+      "at": "2026-10-11T15:13:01.255Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev03",
+      "at": "2026-10-11T15:13:01.255Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev04",
+      "at": "2026-10-11T15:13:01.255Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev05",
+      "at": "2026-10-11T15:13:01.255Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev06",
+      "at": "2026-10-11T15:13:01.255Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev07",
+      "at": "2026-10-11T15:13:01.255Z"
+    },
+    {
+      "collection": "events",
+      "key": "ev17",
+      "at": "2026-10-11T15:13:01.255Z"
     }
   ],
   "studio": [
@@ -45,6 +79,7 @@
       "at": "2026-10-06T14:44:14.092Z"
     }
   ],
+  "overrides": [],
   "subscriptions": [],
   "enquiries": []
 }
