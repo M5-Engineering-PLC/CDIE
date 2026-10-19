@@ -1,7 +1,5 @@
 // The viewer site's chrome. Admin pages sit outside this group and carry their own bar.
 
-import { ViewTransition } from "react";
-
 import { SiteAnalytics } from "@/components/chrome/SiteAnalytics";
 import { SiteFooter } from "@/components/chrome/SiteFooter";
 import { SiteNav } from "@/components/chrome/SiteNav";
@@ -20,7 +18,14 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         institution={site.institution}
         logo={site.logo}
       />
-      <ViewTransition default="page"><main id="main">{children}</main></ViewTransition>
+      {/*
+        Review 2026-10-19: the page-wide ViewTransition held every route change
+        back behind a 170 ms fade-out, a 120 ms gap and a 300 ms fade-in, and
+        waited on the new page's images. Measured: 300 to 520 ms before a click
+        showed anything, against 23 to 116 ms without it. The page now swaps
+        straight away.
+      */}
+      <main id="main">{children}</main>
       {/*
         Change request 2026-09-21: Contact leaves the top bar but not the
         site. The footer keeps it, so the route every enquiry resolves to is

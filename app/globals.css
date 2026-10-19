@@ -432,14 +432,6 @@
 .mdi-content .shell { max-width: 72rem; }
 @media (max-width: 767px) { .mdi-layout { display: block; } .mdi-index { z-index: 20; top: 4.7rem; max-height: none; padding: 0.4rem var(--spacing-gutter); background: var(--color-surface); border-bottom: 1px solid var(--color-line); } .mdi-index > p { display: none; } .mdi-index ol { display: flex; overflow-x: auto; gap: 0.5rem; margin: 0; border: 0; scrollbar-width: none; } .mdi-index li { flex: none; } .mdi-index a { margin: 0; padding: 0.55rem; border: 0; border-bottom: 2px solid transparent; white-space: nowrap; } .mdi-content { border: 0; } .mdi-content section { scroll-margin-top: 8rem; } }
 
-/* Native route transitions preserve the persistent chrome while the page settles. */
-::view-transition-group(root), ::view-transition-group(.page) { animation-duration: 0s; }
-::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-::view-transition-old(.page) { animation: page-out 170ms ease-in both; }
-::view-transition-new(.page) { animation: page-in 300ms ease-out 120ms both; }
-@keyframes page-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes page-in { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { ::view-transition-old(.page), ::view-transition-new(.page) { animation: none; } }
 
 /* The video reference keeps one logo and one set of links while two rows become one. */
 .site-nav { height: 7.35rem; margin-bottom: 0; width: 100%; background: rgb(255 255 255 / 0.96); border-bottom: 1px solid var(--color-line); box-shadow: 0 0.25rem 1.5rem rgb(16 21 26 / 0.08); backdrop-filter: blur(16px); transition: height var(--motion-glide) var(--ease-glide), margin-bottom var(--motion-glide) var(--ease-glide), box-shadow var(--motion-glide) var(--ease-glide); }
