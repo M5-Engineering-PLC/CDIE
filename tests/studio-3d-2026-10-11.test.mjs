@@ -47,16 +47,19 @@ test("W2: there is no idle warmup and only opened rooms mount", () => {
   assert.match(read("components/studio/preloadStudio3D.ts"), /import\("\.\/atc-3js"\)/);
 });
 
-test("W2: both rooms cap resolution, refresh static shadows, and release WebGL contexts", () => {
+test("W2: both rooms cap resolution, refresh static shadows, and share one renderer", () => {
+  /* Review 2026-10-19: the renderer moved to studioRenderer.ts and is kept for the visit, so no context is forced lost. */
+  const renderer = read("components/studio/studioRenderer.ts");
+  assert.match(renderer, /setPixelRatio\(Math\.min\(window\.devicePixelRatio, 1\.5\)\)/);
+  assert.match(renderer, /shadowMap\.autoUpdate = false/);
+  assert.match(renderer, /shadowMap\.needsUpdate = true/);
+  assert.doesNotMatch(renderer, /forceContextLoss/);
   for (const path of hooks) {
     const source = read(`components/studio/${path}`);
-    assert.match(source, /setPixelRatio\(Math\.min\(window\.devicePixelRatio, 1\.5\)\)/);
-    assert.match(source, /shadowMap\.autoUpdate = false/);
-    assert.match(source, /shadowMap\.needsUpdate = true/);
-    assert.match(source, /renderer\.dispose\(\);\s*renderer\.forceContextLoss\(\)/);
-    assert.doesNotMatch(source, /setAnimationLoop/);
-    assert.match(source, /createSceneFrameLoop\(/);
+    assert.match(source, /useRoomCanvas\(/);
+    assert.doesNotMatch(source, /setAnimationLoop|forceContextLoss/);
   }
+  assert.match(read("components/studio/useRoomCanvas.ts"), /createSceneFrameLoop\(/);
   const loop = read("components/studio/sceneFrameLoop.ts");
   assert.match(loop, /new IntersectionObserver/);
   assert.match(loop, /!document\.hidden && !paused\(\)/);
@@ -98,12 +101,13 @@ test("W2: the loop sleeps at rest, settles damping, pauses unseen or hidden, and
   const camera = new THREE.PerspectiveCamera();
   const controls = Object.assign(new EventTarget(), { target: new THREE.Vector3() });
   const renderer = { shadowMap: { needsUpdate: false }, setSize() {}, render() { renders++; } };
+  const shadows = { dirty: false };
   const tick = () => { const callbacks = [...queue.values()]; queue.clear(); callbacks.forEach((callback) => callback()); };
   let loop;
   try {
     loop = createSceneFrameLoop({
       canvas: { getBoundingClientRect: () => ({ width: 800, height: 450 }) }, renderer,
-      scene: {}, camera, controls, paused: () => paused, touring: () => touring,
+      scene: {}, camera, controls, shadows, paused: () => paused, touring: () => touring,
       step: () => { steps++; if (motion > 0) { camera.position.x += 0.1; motion--; } },
     });
     assert.equal(queue.size, 0);
@@ -125,7 +129,7 @@ test("W2: the loop sleeps at rest, settles damping, pauses unseen or hidden, and
     const stopped = steps;
     loop.invalidate(true); tick();
     assert.equal(steps, stopped);
-    assert.equal(renderer.shadowMap.needsUpdate, true);
+    assert.equal(shadows.dirty, true);
     document.hidden = false;
     document.dispatchEvent(new Event("visibilitychange")); tick();
     assert.equal(queue.size, 1);

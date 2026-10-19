@@ -14,3 +14,4 @@ export {
   type Vec3Tuple,
 } from "./studioLayout";
 export type { StudioView } from "./useDesignStudioScene";
+export { warmDesignStudio3D } from "./designStudioRoom";

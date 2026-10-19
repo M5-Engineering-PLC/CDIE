@@ -3,15 +3,16 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, type ComponentType } from "react";
 
 import { StudioCallout } from "./StudioCallout";
 import { StudioSpaceToggle } from "./StudioSpaceToggle";
 import { StudioViewPill } from "./StudioViewPill";
-import type { AtcServiceId } from "./atc-3js";
+import type { Atc3DProps, AtcServiceId } from "./atc-3js";
+import type { DesignStudio3DProps } from "./design-studio-3js";
 import type { UnifiedServiceId } from "./explorerModel";
 import type { ServiceId } from "./studioLayout";
-import { preloadAtc3D, preloadDesignStudio3D } from "./preloadStudio3D";
+import { loadedStudio3D, preloadAtc3D, preloadDesignStudio3D } from "./preloadStudio3D";
 import { STAGE_SIZES } from "./useStudioPhotos";
 
 const LoadingBox = ({ text }: { text: string }) => (
@@ -63,16 +64,20 @@ export function StudioStage({
   const viewPill = <StudioViewPill open={open} onOpen={onOpen} onClose={onClose} />;
 
   /* Fix plan 2026-10-11, W2: build a room only when opened; retain visited rooms for space switches. */
-  const [built, setBuilt] = useState({ studio: false, atc: false });
+  /* Review 2026-10-19: a room whose code is already loaded mounts directly, with no loading frame. */
+  const [built, setBuilt] = useState<{ studio: ComponentType<DesignStudio3DProps> | false; atc: ComponentType<Atc3DProps> | false }>({ studio: false, atc: false });
   const spaceKey = isAtc ? "atc" : "studio";
-  if (open && !built[spaceKey]) setBuilt({ ...built, [spaceKey]: true });
+  if (open && !built[spaceKey]) setBuilt({
+    ...built,
+    [spaceKey]: isAtc ? loadedStudio3D.atc?.Atc3D ?? Atc3D : loadedStudio3D.studio?.DesignStudio3D ?? DesignStudio3D,
+  });
   const scenes = built.studio || built.atc ? (
     <div className={open ? "relative" : "hidden"} aria-hidden={!open || undefined}>
       {built.atc ? <div className={isAtc ? undefined : "hidden"}>
-        <Atc3D active={isAtc ? (active as AtcServiceId | null) : null} onSelect={(s) => onSelect(s)} tour={tour && isAtc} interactive={!viewOnly} paused={!open || !isAtc} />
+        <built.atc active={isAtc ? (active as AtcServiceId | null) : null} onSelect={(s) => onSelect(s)} tour={tour && isAtc} interactive={!viewOnly} paused={!open || !isAtc} />
       </div> : null}
       {built.studio ? <div className={isAtc ? "hidden" : undefined}>
-        <DesignStudio3D
+        <built.studio
           active={isAtc ? null : (active as ServiceId | null)}
           onSelect={(s) => onSelect(s)}
           initialView={name === "Textiles and upholstery" ? "textile" : "isometric"}

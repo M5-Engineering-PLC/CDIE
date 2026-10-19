@@ -35,7 +35,8 @@ export function DesignStudio3D({
   interactive = true,
   paused = false,
 }: DesignStudio3DProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  /* Review 2026-10-19: the site's shared canvas is placed in here while this room is on screen. */
+  const containerRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<StudioView>(initialView);
   // Follow a new initial view without rebuilding the scene.
   const [lastInitial, setLastInitial] = useState(initialView);
@@ -46,12 +47,16 @@ export function DesignStudio3D({
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useDesignStudioScene({
-    canvasRef,
+    containerRef,
     active,
     view,
     tour,
     interactive,
     paused,
+    canvasClassName: `block h-full w-full ${interactive ? "touch-none" : "touch-pan-y"}`,
+    label: interactive
+      ? "Interactive three-dimensional plan of the CDIE Design Studio. Drag to orbit, scroll to zoom, or select equipment to highlight its service."
+      : "Three-dimensional plan of the CDIE Design Studio. It turns on its own and moves to whichever capability is selected.",
     onSelect,
     onReady: () => setStatus("ready"),
     onError: () => setStatus("error"),
@@ -70,16 +75,7 @@ export function DesignStudio3D({
 
   return (
     <div className={`relative overflow-hidden border border-line bg-raise ${className}`}>
-      <canvas
-        ref={canvasRef}
-        className={`block aspect-video w-full md:min-h-96 ${interactive ? "touch-none" : "touch-pan-y"}`}
-        role="img"
-        aria-label={
-          interactive
-            ? "Interactive three-dimensional plan of the CDIE Design Studio. Drag to orbit, scroll to zoom, or select equipment to highlight its service."
-            : "Three-dimensional plan of the CDIE Design Studio. It turns on its own and moves to whichever capability is selected."
-        }
-      />
+      <div ref={containerRef} className="aspect-video w-full md:min-h-96" />
 
       {status === "loading" ? (
         <p className="pointer-events-none absolute inset-0 grid place-items-center bg-raise text-fine text-ink-3">

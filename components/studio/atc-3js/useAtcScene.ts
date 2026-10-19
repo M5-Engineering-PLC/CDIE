@@ -1,19 +1,19 @@
 // Lucid: Design Studio virtual tour. Geometry: the Three.js room layout module.
 "use client";
 
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { createSceneFrameLoop } from "../sceneFrameLoop";
 
-import { createAtcModel, type AtcRuntime } from "./createAtcModel";
-import { createAtcTourCamera } from "./atcTourCamera";
+import { useRoomCanvas } from "../useRoomCanvas";
+import { atcViews, getAtcRoom, peekAtcRoom, type AtcRoom, type AtcView } from "./atcRoom";
+import type { AtcRuntime } from "./createAtcModel";
 import type { AtcServiceId } from "./atcLayout";
 
-export type AtcView = "isometric" | "top";
+export type { AtcView } from "./atcRoom";
 
+/* Review 2026-10-19: the scene lives in ./atcRoom, built once and drawn by the shared renderer. */
 type SceneOptions = {
-  canvasRef: RefObject<HTMLCanvasElement | null>;
+  containerRef: RefObject<HTMLDivElement | null>;
   active: AtcServiceId | null;
   view: AtcView;
   tour?: boolean;
@@ -21,20 +21,11 @@ type SceneOptions = {
   showLabels?: boolean;
   /** Pause while the room is hidden. */
   paused?: boolean;
+  canvasClassName: string;
+  label: string;
   onSelect?: (service: AtcServiceId) => void;
   onReady?: (runtime: AtcRuntime) => void;
   onError?: () => void;
-};
-
-const views: Record<AtcView, { position: THREE.Vector3; target: THREE.Vector3 }> = {
-  isometric: {
-    position: new THREE.Vector3(12.5, 10.5, 12.5),
-    target: new THREE.Vector3(0, 0.4, 0),
-  },
-  top: {
-    position: new THREE.Vector3(0.001, 18, 0.001),
-    target: new THREE.Vector3(0, 0, 0),
-  },
 };
 
 function setSelection(runtime: AtcRuntime, active: AtcServiceId | null) {
@@ -49,250 +40,94 @@ function setSelection(runtime: AtcRuntime, active: AtcServiceId | null) {
         material.userData.baseEmissive = material.emissive.getHex();
         material.userData.baseEmissiveIntensity = material.emissiveIntensity;
       }
-
-      if (active === null) {
-        // No selection: restore all objects to original opacity and visibility
-        material.transparent = material.userData.baseTransparent;
-        material.opacity = material.userData.baseOpacity;
-        material.depthWrite = true;
-        material.emissive.setHex(material.userData.baseEmissive);
-        material.emissiveIntensity = material.userData.baseEmissiveIntensity;
-      } else {
-        // Determine if node or any ancestor belongs to the active station
-        let service = node.userData.service as AtcServiceId | undefined;
-        let parent = node.parent;
-        while (!service && parent && parent !== runtime.root) {
-          if (parent.userData.service) {
-            service = parent.userData.service as AtcServiceId;
-          }
-          parent = parent.parent;
-        }
-
-        const isSelected = service === active;
-
-        if (isSelected) {
-          // Selected station: fully solid and visible with natural materials, NO blue highlight
-          material.transparent = material.userData.baseTransparent;
-          material.opacity = material.userData.baseOpacity;
-          material.depthWrite = true;
-          material.emissive.setHex(material.userData.baseEmissive);
-          material.emissiveIntensity = material.userData.baseEmissiveIntensity;
-        } else {
-          // The rest of the space becomes transparent so the selected station is prominent
-          material.transparent = true;
-          material.opacity = 0.08;
-          material.depthWrite = false;
-          material.emissive.setHex(0x000000);
-          material.emissiveIntensity = 0;
-        }
+      // Determine if node or any ancestor belongs to the active station
+      let service = node.userData.service as AtcServiceId | undefined;
+      let parent = node.parent;
+      while (active !== null && !service && parent && parent !== runtime.root) {
+        if (parent.userData.service) service = parent.userData.service as AtcServiceId;
+        parent = parent.parent;
       }
+      // No selection, or the selected station: original materials, no blue highlight.
+      // Otherwise the rest of the space becomes transparent so the selected station is prominent.
+      const faded = active !== null && service !== active;
+      material.transparent = faded || material.userData.baseTransparent;
+      material.opacity = faded ? 0.08 : material.userData.baseOpacity;
+      material.depthWrite = !faded;
+      material.emissive.setHex(faded ? 0x000000 : material.userData.baseEmissive);
+      material.emissiveIntensity = faded ? 0 : material.userData.baseEmissiveIntensity;
     }
   });
 }
 
+function select(room: AtcRoom, active: AtcServiceId | null) {
+  if ((room.selected ?? null) === active) return false;
+  setSelection(room.runtime, active);
+  room.selected = active;
+  return true;
+}
+
+function applyView(room: AtcRoom, view: AtcView, tour: boolean) {
+  if (tour) return;
+  room.camera.position.copy(atcViews[view].position);
+  room.controls.target.copy(atcViews[view].target);
+  room.controls.update();
+}
+
 export function useAtcScene({
-  canvasRef,
-  active,
-  view,
-  tour = false,
-  interactive = true,
-  paused = false,
-  showLabels = true,
-  onSelect,
-  onReady,
-  onError,
+  containerRef, active, view, tour = false, interactive = true, paused = false, showLabels = true,
+  canvasClassName, label, onSelect, onReady, onError,
 }: SceneOptions) {
-  const runtimeRef = useRef<AtcRuntime | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const controlsRef = useRef<OrbitControls | null>(null);
-  const driveRef = useRef({ tour, interactive, active });
-  const pausedRef = useRef(paused);
-  const frameRef = useRef<ReturnType<typeof createSceneFrameLoop> | null>(null);
-  const labelsRef = useRef(showLabels);
-  const selectRef = useRef(onSelect);
-  const readyRef = useRef(onReady);
-  const errorRef = useRef(onError);
+  const drive = useMemo(() => ({ tour, interactive, active }), [tour, interactive, active]);
+  /* The first attach of a mount sets the view and opens the shutter, as a fresh room did. */
+  const fresh = useRef(true);
+  const frameRef = useRoomCanvas({
+    containerRef, drive, paused, canvasClassName, label,
+    peekRoom: peekAtcRoom,
+    buildRoom: getAtcRoom,
+    prepare: (room) => {
+      if (select(room, active)) room.shadows.dirty = true;
+      room.runtime.setLabelsVisible(showLabels);
+      if (fresh.current) {
+        applyView(room, view, tour);
+        if (!room.shutterOpen) {
+          room.shutterOpen = room.runtime.toggleShutter();
+          room.shadows.dirty = true;
+        }
+      }
+      fresh.current = false;
+    },
+    onSelect: onSelect as ((service: string) => void) | undefined,
+    onReady: (room) => onReady?.(room.runtime),
+    onError,
+  });
 
   useEffect(() => {
-    selectRef.current = onSelect;
-    readyRef.current = onReady;
-    errorRef.current = onError;
-  }, [onSelect, onReady, onError]);
-
-  useEffect(() => {
-    driveRef.current = { tour, interactive, active };
+    const room = peekAtcRoom();
+    if (!room || !select(room, active)) return;
+    room.shadows.dirty = true;
     frameRef.current?.invalidate();
-  }, [tour, interactive, active]);
+  }, [active, frameRef]);
 
   useEffect(() => {
-    pausedRef.current = paused;
+    peekAtcRoom()?.runtime.setLabelsVisible(showLabels);
     frameRef.current?.invalidate();
-  }, [paused]);
+  }, [showLabels, frameRef]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        antialias: true,
-        powerPreference: "high-performance",
-      });
-    } catch {
-      errorRef.current?.();
-      return;
-    }
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    /* Fix plan 2026-10-11, W2: static shadows update only after build or scene changes. */
-    renderer.shadowMap.autoUpdate = false;
-    renderer.shadowMap.needsUpdate = true;
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf1f5f9);
-
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 80);
-    camera.position.copy(views.isometric.position);
-    cameraRef.current = camera;
-
-    const controls = new OrbitControls(camera, canvas);
-    controls.target.copy(views.isometric.target);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.075;
-    controls.minDistance = 2.5;
-    controls.maxDistance = 35;
-    controls.maxPolarAngle = Math.PI * 0.49;
-    controls.screenSpacePanning = true;
-    controlsRef.current = controls;
-
-    // Studio Lighting Rig
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xdfe7ec, 1.3));
-
-    const sunLight = new THREE.DirectionalLight(0xfffaed, 2.4);
-    sunLight.position.set(12, 16, 12);
-    sunLight.castShadow = true;
-    sunLight.shadow.mapSize.set(2048, 2048);
-    sunLight.shadow.bias = -0.0004;
-    sunLight.shadow.normalBias = 0.02;
-    scene.add(sunLight);
-
-    const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.8);
-    fillLight.position.set(-10, 12, -8);
-    scene.add(fillLight);
-
-    // Warm interior light inside the shipping container booth
-    const containerInteriorLight = new THREE.PointLight(0xfff3db, 16, 8, 2);
-    containerInteriorLight.position.set(-4.0, 2.1, 0.2);
-    scene.add(containerInteriorLight);
-
-    // Ground shadow receiver
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(36, 36),
-      new THREE.ShadowMaterial({ color: 0x334155, opacity: 0.12 }),
-    );
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.11;
-    ground.receiveShadow = true;
-    scene.add(ground);
-
-    // Build ATC model
-    const model = createAtcModel();
-    const runtime = model.userData.sculptRuntime as AtcRuntime;
-    runtimeRef.current = runtime;
-    scene.add(model);
-
-    runtime.setLabelsVisible(labelsRef.current);
-
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-
-    const choose = (event: PointerEvent) => {
-      const bounds = canvas.getBoundingClientRect();
-      pointer.set(
-        ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
-        -((event.clientY - bounds.top) / bounds.height) * 2 + 1,
-      );
-      raycaster.setFromCamera(pointer, camera);
-      const hit = raycaster.intersectObjects(runtime.selectable, false)[0];
-      const service = hit?.object.userData.service as AtcServiceId | undefined;
-      if (service) selectRef.current?.(service);
-    };
-
-    const contextLost = () => errorRef.current?.();
-    canvas.addEventListener("click", choose);
-    canvas.addEventListener("webglcontextlost", contextLost);
-
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const step = createAtcTourCamera(runtime, camera, controls, still);
-
-    const frames = createSceneFrameLoop({
-      canvas, renderer, scene, camera, controls,
-      step: () => step(driveRef.current),
-      paused: () => pausedRef.current,
-      touring: () => driveRef.current.tour && !still,
-    });
-    frameRef.current = frames;
-    readyRef.current?.(runtime);
-
-    return () => {
-      frames.dispose();
-      frameRef.current = null;
-      canvas.removeEventListener("click", choose);
-      canvas.removeEventListener("webglcontextlost", contextLost);
-      controls.dispose();
-      model.traverse((node) => {
-        if (!(node instanceof THREE.Mesh)) return;
-        node.geometry.dispose();
-        const materials = Array.isArray(node.material) ? node.material : [node.material];
-        materials.forEach((material) => material.dispose());
-      });
-      runtime.sprites.forEach((sprite) => sprite.material.dispose());
-      runtime.textures.forEach((texture) => texture.dispose());
-      runtime.baseMaterials.forEach((material) => material.dispose());
-      ground.geometry.dispose();
-      (ground.material as THREE.Material).dispose();
-      renderer.dispose();
-      renderer.forceContextLoss();
-      runtimeRef.current = null;
-      cameraRef.current = null;
-      controlsRef.current = null;
-    };
-  }, [canvasRef]);
-
-  useEffect(() => {
-    if (runtimeRef.current) setSelection(runtimeRef.current, active);
-    frameRef.current?.invalidate(true);
-  }, [active]);
-
-  useEffect(() => {
-    labelsRef.current = showLabels;
-    if (runtimeRef.current) {
-      runtimeRef.current.setLabelsVisible(showLabels);
-      frameRef.current?.invalidate();
-    }
-  }, [showLabels]);
-
-  useEffect(() => {
-    const camera = cameraRef.current;
-    const controls = controlsRef.current;
-    if (!camera || !controls || tour) return;
-    camera.position.copy(views[view].position);
-    controls.target.copy(views[view].target);
-    controls.update();
+    const room = peekAtcRoom();
+    if (!room || fresh.current) return;
+    applyView(room, view, tour);
     frameRef.current?.invalidate();
-  }, [tour, view]);
+  }, [tour, view, frameRef]);
 
   return {
     toggleShutter: () => {
-      const open = runtimeRef.current?.toggleShutter();
-      frameRef.current?.invalidate(true);
-      return open;
+      const room = peekAtcRoom();
+      if (!room) return undefined;
+      room.shutterOpen = room.runtime.toggleShutter();
+      room.shadows.dirty = true;
+      frameRef.current?.invalidate();
+      return room.shutterOpen;
     },
   };
 }

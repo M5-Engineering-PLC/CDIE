@@ -2,14 +2,23 @@
 /*
   2026-09-24: the Catalyst grant beneficiaries gallery. It takes however many
   photographs have been supplied and centres a short last row.
+
+  Review 2026-10-19: a single photograph no longer sits alone as a small
+  square. It takes the Catalyst poster's circle, centred and larger.
 */
 
 import Image from "next/image";
+
+import { CirclePhoto } from "@/components/blocks/CirclePhoto";
 
 export type GalleryPhoto = { src: string; alt: string };
 
 export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
   if (photos.length === 0) return null;
+  if (photos.length === 1) {
+    const [photo] = photos;
+    return <CirclePhoto src={photo.src} alt={photo.alt} sizes="(max-width: 640px) 80vw, 28rem" className="mx-auto w-full max-w-[28rem]" />;
+  }
   return (
     <ul className="flex flex-wrap justify-center gap-4">
       {photos.map((photo) => (

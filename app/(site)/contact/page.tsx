@@ -90,7 +90,10 @@ export default async function ContactPage(props: PageProps<"/contact">) {
       </Section>
 
       {/* Enhancements 2026-09-22: OpenStreetMap, marker on the Graduate School
-          Building, Kenyatta University. Moved below the form 2026-09-24. */}
+          Building, Kenyatta University. Moved below the form 2026-09-24.
+          Review 2026-10-19: the marker sat on the Post Office (OSM way
+          629986762). It now sits on the centre of the Graduate School
+          building, OSM way 552778246. */}
       <Section eyebrow="Visit us" title={visit.headline}>
         <div className="grid items-start gap-8 md:grid-cols-[.9fr_1.1fr] md:items-center md:gap-14">
           <div>
@@ -100,9 +103,9 @@ export default async function ContactPage(props: PageProps<"/contact">) {
             </p>
           </div>
           <MapEmbed
-            src="https://www.openstreetmap.org/export/embed.html?bbox=36.9238%2C-1.1867%2C36.9318%2C-1.1808&layer=mapnik&marker=-1.183746%2C36.927809"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=36.9234%2C-1.1867%2C36.9314%2C-1.1808&layer=mapnik&marker=-1.183719%2C36.927427"
             title="OpenStreetMap showing CDIE at the Graduate School Building, Kenyatta University"
-            href="https://www.openstreetmap.org/?mlat=-1.183746&mlon=36.927809#map=17/-1.183746/36.927809"
+            href="https://www.openstreetmap.org/?mlat=-1.183719&mlon=36.927427#map=18/-1.183719/36.927427"
           />
         </div>
       </Section>

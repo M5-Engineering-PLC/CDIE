@@ -4,12 +4,15 @@
   gives way to the details of the May 2025 call and the grant event, and the
   page ends on LinkedIn and contact. Every fact is from CDIE's own posts; see
   catalystCall in content/programmes.ts.
+
+  Review 2026-10-19: the current poster replaces the May 2025 one, and the
+  call's details take the poster's layout (GrantCallBoard).
 */
 
 import type { Metadata } from "next";
 
 import { Button } from "@/components/primitives/Button";
-import { GrantCallDetails } from "@/components/sections/GrantCallDetails";
+import { GrantCallBoard } from "@/components/sections/GrantCallBoard";
 import { PageHero } from "@/components/sections/PageHero";
 import { PhotoGallery } from "@/components/sections/PhotoGallery";
 import { Section } from "@/components/sections/Section";
@@ -46,7 +49,14 @@ export default function CatalystGrantsPage() {
       </PageHero>
 
       <Section eyebrow={catalystCall.eyebrow} title={catalystCall.headline}>
-        <GrantCallDetails intro={catalystCall.intro} criteria={[...catalystCall.criteria]} awards={[...catalystCall.awards]} />
+        <GrantCallBoard
+          intro={catalystCall.intro}
+          criteria={[...catalystCall.criteria]}
+          grant={{ value: catalystCall.grant.value, notes: [...catalystCall.grant.notes] }}
+          rolling={catalystCall.rolling}
+          photos={[...catalystCall.photos]}
+          action={{ label: "Submit your project to the team", href: catalystGrants.action.href }}
+        />
       </Section>
 
       <Section tone="surface" eyebrow={catalystGallery.eyebrow} title={catalystGallery.headline} standfirst={catalystGallery.body}>

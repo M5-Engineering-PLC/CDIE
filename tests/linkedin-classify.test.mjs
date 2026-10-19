@@ -1,4 +1,7 @@
-/* Fix plan 2026-10-11, W3: software tests use the actual snapshot post texts. */
+/* Fix plan 2026-10-11, W3: software tests use the actual snapshot post texts.
+   Review 2026-10-19: from a frozen copy of the snapshot (tests/fixtures), not the live
+   file. The scheduled sync keeps only the latest posts, so each sync pruned a post this
+   test names and turned CI red from 15 October. */
 
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -10,7 +13,7 @@ import { calendarItem, classifyCalendar, classifyPost } from "../lib/linkedin/cl
 import { dateFromText, validDate } from "../lib/linkedin/dates.mjs";
 import { latestOverrides, placePosts, postKey, uniqueCalendar } from "../lib/linkedin/placement.mjs";
 
-const snapshot = JSON.parse(await readFile(new URL("../content/linkedin-snapshot.json", import.meta.url), "utf8"));
+const snapshot = JSON.parse(await readFile(new URL("./fixtures/linkedin-snapshot.json", import.meta.url), "utf8"));
 const fixture = (id) => {
   const post = snapshot.posts.find((item) => item.id.endsWith(id));
   assert.ok(post, `Required snapshot fixture ${id} exists`);

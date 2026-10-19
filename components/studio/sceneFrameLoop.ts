@@ -3,12 +3,14 @@ import type { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 /* Fix plan 2026-10-11, W2: draw only during motion or invalidation, and pause unseen canvases. */
-export function createSceneFrameLoop({ canvas, renderer, scene, camera, controls, step, paused, touring }: {
+/* Review 2026-10-19: rooms share one renderer, so each room keeps its own static-shadow flag. */
+export function createSceneFrameLoop({ canvas, renderer, scene, camera, controls, shadows, step, paused, touring }: {
   canvas: HTMLCanvasElement;
   renderer: WebGLRenderer;
   scene: Scene;
   camera: PerspectiveCamera;
   controls: OrbitControls;
+  shadows: { dirty: boolean };
   step: () => void;
   paused: () => boolean;
   touring: () => boolean;
@@ -25,9 +27,15 @@ export function createSceneFrameLoop({ canvas, renderer, scene, camera, controls
   const schedule = () => {
     if (canDraw() && !frame) frame = window.requestAnimationFrame(draw);
   };
-  const invalidate = (shadows = false) => {
+  const render = () => {
+    renderer.shadowMap.needsUpdate = shadows.dirty;
+    renderer.render(scene, camera);
+    shadows.dirty = false;
+    dirty = false;
+  };
+  const invalidate = (redrawShadows = false) => {
     dirty = true;
-    if (shadows) renderer.shadowMap.needsUpdate = true;
+    if (redrawShadows) shadows.dirty = true;
     if (!canDraw()) {
       window.cancelAnimationFrame(frame);
       frame = 0;
@@ -44,7 +52,7 @@ export function createSceneFrameLoop({ canvas, renderer, scene, camera, controls
     const moving = position.distanceToSquared(camera.position) > 1e-10
       || target.distanceToSquared(controls.target) > 1e-10
       || 1 - Math.abs(rotation.dot(camera.quaternion)) > 1e-10;
-    if (dirty || moving || touring()) renderer.render(scene, camera);
+    if (dirty || moving || touring()) render();
     dirty = false;
     drawing = false;
     if (moving || touring()) schedule();
@@ -73,6 +81,10 @@ export function createSceneFrameLoop({ canvas, renderer, scene, camera, controls
   controls.addEventListener("end", change);
   return {
     invalidate,
+    /** Draw once now, before the browser paints, so an attached canvas never shows a stale room. */
+    drawNow: () => {
+      if (!disposed && !document.hidden && canvas.getBoundingClientRect().width) render();
+    },
     dispose: () => {
       disposed = true;
       window.cancelAnimationFrame(frame);
