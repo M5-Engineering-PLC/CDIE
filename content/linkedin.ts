@@ -32,6 +32,8 @@ export type LinkedInPost = {
   */
   image?: string;
   title?: string;
+  /** the post is a video: the card shows a play badge and opens the official embed */
+  video?: boolean;
 };
 
 export type LinkedInFeed = {
@@ -88,6 +90,7 @@ export function normalisePost(raw: unknown): LinkedInPost | null {
       repost === true || (typeof repost === "string" && /^(true|yes|1)$/i.test(repost.trim())),
     ...(image ? { image } : {}),
     ...(title ? { title } : {}),
+    ...(row.video === true || row.video === "true" ? { video: true } : {}),
   };
 }
 

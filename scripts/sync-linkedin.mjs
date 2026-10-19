@@ -8,7 +8,7 @@ import { events } from "../content/programmes.ts";
 import { readTab, sheetCredentials } from "../lib/admin/sheets.ts";
 import { parseCsv } from "../lib/linkedin/csv.ts";
 import { MAX_POSTS } from "../lib/linkedin/config.ts";
-import { pickPostImage } from "../lib/linkedin/image.ts";
+import { pickPostMedia } from "../lib/linkedin/image.ts";
 import { rowsFromLinks } from "../lib/linkedin/links.ts";
 import { fetchPublicPosts } from "../lib/linkedin/public.ts";
 import { classifyCalendar } from "../lib/linkedin/classify.mjs";
@@ -89,17 +89,17 @@ const localExists = async (value) => {
 const validLinkedInImage = (value) => {
   try {
     const url = new URL(value);
-    return url.protocol === "https:" && url.hostname === "media.licdn.com" ? url.href : null;
+    return url.protocol === "https:" && url.hostname === "media.licdn.com" && /\/(?:feedshare|videocover)-/.test(url.pathname) ? url.href : null;
   } catch { return null; }
 };
 
-const imageFromPost = async (permalink) => {
+const mediaFromPost = async (permalink) => {
   try {
     const result = await fetch(permalink, {
       headers: { accept: "text/html", "user-agent": "Mozilla/5.0 (compatible; CDIE-website/1.0)" },
       signal: AbortSignal.timeout(timeout),
     });
-    return result.ok ? pickPostImage(await result.text()) : null;
+    return result.ok ? pickPostMedia(await result.text()) : null;
   } catch { return null; }
 };
 
@@ -107,9 +107,11 @@ const extension = {
   "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif",
 };
 
-async function saveImage(name, source, permalink, oldPath) {
-  if (await localExists(oldPath)) return oldPath;
-  const imageUrl = validLinkedInImage(source) ?? await imageFromPost(permalink);
+async function saveImage(name, source, permalink, oldPath, wasVideo = false, detect = true) {
+  const found = detect || !(await localExists(oldPath)) ? await mediaFromPost(permalink) : null;
+  const video = found ? found.video : wasVideo;
+  if (await localExists(oldPath)) return { path: oldPath, video };
+  const imageUrl = validLinkedInImage(source) ?? found?.url;
   if (!imageUrl) return null;
   try {
     const result = await fetch(imageUrl, { signal: AbortSignal.timeout(timeout) });
@@ -121,7 +123,7 @@ async function saveImage(name, source, permalink, oldPath) {
     if (!bytes.length || bytes.length > maxImageBytes) return null;
     const filename = `${name}.${ext}`;
     await writeFile(new URL(filename, imageDir), bytes);
-    return `/linkedin/${filename}`;
+    return { path: `/linkedin/${filename}`, video };
   } catch { return null; }
 }
 
@@ -140,8 +142,10 @@ async function mapLimited(items, fn, limit = 3) {
 
 const cachedPosts = await mapLimited(posts, async (post) => {
   const filename = `post-${post.id.replace(/[^a-z0-9]/gi, "-").toLowerCase()}`;
-  const image = await saveImage(filename, post.image, post.permalink, previousPosts.get(post.id)?.image);
-  return { ...post, image: image ?? undefined };
+  const saved = await saveImage(filename, post.image, post.permalink, previousPosts.get(post.id)?.image, previousPosts.get(post.id)?.video === true);
+  const rest = { ...post };
+  delete rest.video;
+  return { ...rest, image: saved?.path, ...(saved?.video ? { video: true } : {}) };
 });
 
 const calendar = [
@@ -154,8 +158,8 @@ const eventImages = {};
 await mapLimited(calendar, async (event) => {
   const id = event.link.match(/urn:li:(?:share|activity|ugcPost):(\d+)/)?.[1];
   if (!id) return;
-  const image = await saveImage(`event-${id}`, null, event.link, previousEvents[event.link]);
-  if (image) eventImages[event.link] = image;
+  const saved = await saveImage(`event-${id}`, null, event.link, previousEvents[event.link], false, false);
+  if (saved) eventImages[event.link] = saved.path;
 });
 
 const heartbeats = rows.map((row) => Date.parse(row.syncedAt ?? "")).filter(Number.isFinite);
