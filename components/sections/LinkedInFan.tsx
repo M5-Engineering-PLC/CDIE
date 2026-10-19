@@ -19,6 +19,7 @@
 
 import { useRef, useState } from "react";
 
+import { LinkedInVideoDialog } from "./LinkedInVideoDialog";
 import type { LinkedInPost } from "@/content/linkedin";
 import { captionText } from "@/lib/linkedin/caption";
 
@@ -40,6 +41,7 @@ const tabLabel = (post: LinkedInPost) => headline(post).split(/\s+/).slice(0, 3)
 
 export function LinkedInFan({ posts, fallbackImage }: { posts: LinkedInPost[]; fallbackImage: string }) {
   const [active, setActive] = useState(0);
+  const [playing, setPlaying] = useState<string | null>(null);
   const down = useRef<number | null>(null);
   const count = posts.length;
   const go = (next: number) => setActive((next + count) % count);
@@ -81,6 +83,16 @@ export function LinkedInFan({ posts, fallbackImage }: { posts: LinkedInPost[]; f
                 {/* eslint-disable-next-line @next/next/no-img-element -- local snapshot image */}
                 <img src={post.image ?? fallbackImage} alt="" loading="lazy" data-mark={!post.image || undefined}
                   onError={(event) => { event.currentTarget.src = fallbackImage; }} />
+                {post.video ? (
+                  <a href={post.permalink} target="_blank" rel="noreferrer" tabIndex={front ? 0 : -1}
+                    onClick={(event) => { event.preventDefault(); setPlaying(post.id); }}
+                    className="absolute inset-0 z-10 grid place-items-center focus-visible:outline-2 focus-visible:outline-surface">
+                    <span className="sr-only">Play video: {headline(post)}</span>
+                    <span aria-hidden="true" className="grid size-16 place-items-center rounded-full bg-ink/70 text-surface">
+                      <svg viewBox="0 0 24 24" className="size-7 fill-current"><path d="M8 5v14l11-7z" /></svg>
+                    </span>
+                  </a>
+                ) : null}
               </div>
               <div className="fan-panel">
                 <p className="fan-kicker">{dateLabel(post.postedAt)}{post.repost ? " · Repost" : ""}</p>
@@ -104,6 +116,10 @@ export function LinkedInFan({ posts, fallbackImage }: { posts: LinkedInPost[]; f
           </>
         ) : null}
       </div>
+      {posts.filter((post) => post.video).map((post) => (
+        <LinkedInVideoDialog key={post.id} embedUrl={post.embedUrl} title={headline(post)}
+          open={playing === post.id} onClose={() => setPlaying((now) => (now === post.id ? null : now))} />
+      ))}
       {count > 1 ? (
         <div className="fan-tabs" role="group" aria-label="Choose a post">
           {posts.map((post, index) => (
