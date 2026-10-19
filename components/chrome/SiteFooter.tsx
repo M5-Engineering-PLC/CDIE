@@ -4,6 +4,10 @@
   Change request 2026-09-13, sections 2.1 and 7.2: the brand mark replaces the
   text wordmark, and the travel note leaves the footer. The note still renders
   on Contact and Design Studio, where someone is actually planning a visit.
+
+  Review 2026-10-19, "remove unnecessary information on the footer": the
+  campus line goes (Contact carries it with the map), and the hours take one
+  line instead of two. The pages list stays: Contact is reached only from here.
 */
 
 import Link from "next/link";
@@ -81,7 +85,6 @@ export function SiteFooter({
             <br />
             {institution}
           </p>
-          <p className="text-fine text-surface/70">{contact.campus}</p>
         </div>
 
         <nav aria-label="Footer">
@@ -119,9 +122,7 @@ export function SiteFooter({
                 {contact.phone}
               </a>
             </li>
-            {/* changes-v2 item 7: the hours sit on their own line. */}
-            <li>{contact.availabilityDays}</li>
-            <li>{contact.availabilityHours}</li>
+            <li>{contact.availability}</li>
           </ul>
           {/* changes-v2 item 8: two icons per row on a phone. */}
           <ul className="mt-7 grid w-fit grid-cols-2 gap-3 sm:flex sm:flex-wrap" aria-label="Social media">
