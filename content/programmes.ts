@@ -665,42 +665,49 @@ export const catalystGrants = {
   headline: "Give an early idea room to develop.",
   standfirst:
     "Catalyst grants support early prototyping through the Invention Education programme. They help innovators explore whether an idea is worth developing further.",
-  /*
-    The Lucid map states a 500 dollar grant. The Actual Copy tab records that
-    the source announcement lists different awards for different applicant
-    groups, and instructs that no amount is published until the current call is
-    confirmed. Decision D5. The copy authority wins on a published figure, so
-    no number appears here.
-  */
+  /* Review 2026-10-19: the amount is stated once, on the call board, from CDIE's current poster. */
   action: { label: "Ask about Catalyst grants", href: "/contact?topic=catalyst-grants", live: true },
 } as const;
 
 /*
   2026-09-24: "replace what is settled section with More details on the grant
-  and gallery of grant beneficiaries". Every fact below is from CDIE's own posts
-  of 16 May 2025: the Catalyst Grant call for proposals (and its poster) and the
-  Catalyst Grant event. They are published as that call, dated, so nothing here
-  reads as the terms of a call that has not opened. This supersedes decision D5
-  at the client's request.
+  and gallery of grant beneficiaries".
+
+  Review 2026-10-19: CDIE supplied the current call-for-proposals poster
+  (fixes/Catalyst_grant.jpg). Every fact below is read from that poster: the
+  criteria, grants of up to $500, open to students and lecturers at Kenyan
+  universities, prototyping at CDIE, and applications any time on a rolling
+  review. It supersedes the May 2025 terms ($1,000 and $2,500) and decision
+  D5. The poster's "Submit online" QR code opens a Google Form that answers
+  401 to a signed-out visitor, so it is not confirmed live; the button stays
+  on the enquiry route until CDIE confirms the form is open to the public.
 */
 export const catalystCall = {
   hero: {
-    src: "/images/cdie-catalyst-grant-call-poster.jpg",
-    alt: "Catalyst Grant call for proposals poster listing the project criteria and funding available",
+    src: "/images/cdie-catalyst-grant-call-poster-2026.jpg",
+    alt: "Catalyst Grant call for proposals poster: grants of up to $500 for hardware solutions to healthcare challenges, prototyped at CDIE, Kenyatta University",
   },
-  eyebrow: "The May 2025 call",
+  eyebrow: "Call for proposals",
   headline: "Seed funding for hardware that answers a healthcare need.",
   intro:
-    "The Catalyst Grant supports people building a hardware solution to a critical healthcare challenge, with seed funding to bring the project to life. Applications to the May 2025 call were reviewed on a rolling basis and submitted online.",
+    "Are you building a hardware solution to a critical healthcare challenge? Apply for the Research and Innovation Catalyst Grant in Engineering and bring your idea to life at the Centre for Design, Innovation & Engineering, Kenyatta University.",
   criteria: [
     "Innovation and originality",
-    "Technical feasibility and prototyping plans",
-    "Sustainability and long-term impact",
-    "Relevance to healthcare and problem significance",
+    "Technical feasibility and realistic plans for development",
+    "Impact and community benefit",
+    "Sustainability and collaboration",
   ],
-  awards: [
-    { label: "Student grant", value: "Up to $1,000", note: "Open to all Kenyan university students" },
-    { label: "Lecturer and postgraduate grant", value: "Up to $2,500", note: "Open to lecturers and postgraduate students" },
+  grant: {
+    value: "Up to $500",
+    notes: [
+      "Open to students and lecturers at Kenyan universities.",
+      "Prototyping is conducted at CDIE, Kenyatta University.",
+    ],
+  },
+  rolling: "Apply anytime: rolling review",
+  photos: [
+    { src: "/images/cdie-electronics-soldering.jpg", alt: "Hands soldering a circuit board" },
+    { src: "/images/cdie-metalwork-welding.jpg", alt: "Trainee welding a frame while others watch" },
   ],
 } as const;
 
@@ -714,10 +721,10 @@ export const catalystGallery = {
 } as const;
 
 export const catalystFollow = {
-  eyebrow: "Next call",
-  headline: "Hear when the next call opens.",
-  body: "Follow us on LinkedIn to hear when the next call opens, or write to the team about a project you are building.",
-  linkedIn: "Follow us on LinkedIn for the next call",
+  eyebrow: "Apply",
+  headline: "Building something? Tell us about it.",
+  body: "Applications are reviewed on a rolling basis. Write to the team about the project you are building, or follow us on LinkedIn for news of the grant.",
+  linkedIn: "Follow us on LinkedIn",
   contact: "Talk to the team about your project",
 } as const;
 
