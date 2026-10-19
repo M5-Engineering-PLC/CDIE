@@ -4,6 +4,8 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 
 /* Fix plan 2026-10-11, W2: merge static background geometry without touching capability pick or highlight meshes. */
 export function mergeStaticRoomMeshes(root: THREE.Group) {
+  /* Review 2026-10-19: one shared toJSON cache serialises each texture once, not once per mesh. The key keeps texture uuids. */
+  const meta = { textures: {}, images: {} } as unknown as Parameters<THREE.Material["toJSON"]>[0];
   const parents: THREE.Object3D[] = [];
   root.traverse((node) => { if (node.children.length) parents.push(node); });
   for (const parent of parents) {
@@ -17,7 +19,7 @@ export function mergeStaticRoomMeshes(root: THREE.Group) {
       if (Array.isArray(node.material) || node.material.transparent || node.geometry.morphAttributes.position) continue;
       if (node.geometry.drawRange.count !== Infinity || !node.visible) continue;
       // The builders clone palette materials. Identical clones can use one material within this static parent.
-      const material = Object.fromEntries(Object.entries(node.material.toJSON()).filter(([key]) => key !== "uuid" && key !== "metadata"));
+      const material = Object.fromEntries(Object.entries(node.material.toJSON(meta)).filter(([key]) => key !== "uuid" && key !== "metadata"));
       const attributes = Object.entries((node.geometry as THREE.BufferGeometry).attributes).map(([name, attribute]) => [name, attribute.itemSize, attribute.normalized]).sort();
       const key = JSON.stringify([material, attributes, node.castShadow, node.receiveShadow, node.renderOrder, node.layers.mask]);
       const batch = batches.get(key) ?? [];

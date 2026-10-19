@@ -28,20 +28,23 @@ export function Atc3D({
   interactive = true,
   paused = false,
 }: Atc3DProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  /* Review 2026-10-19: the site's shared canvas is placed in here while this room is on screen. */
+  const containerRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<AtcView>(initialView);
   const [showLabels, setShowLabels] = useState<boolean>(true);
   const [shutterOpen, setShutterOpen] = useState<boolean>(true);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   const { toggleShutter } = useAtcScene({
-    canvasRef,
+    containerRef,
     active,
     view,
     tour,
     interactive,
     paused,
     showLabels,
+    canvasClassName: `block h-full w-full ${interactive ? "touch-none" : "touch-pan-y"}`,
+    label: "Interactive 3D digital floor plan of the CDIE Engineering & Prototyping Workshop (ATC). Drag to orbit, scroll to zoom, or select equipment to highlight its capability.",
     onSelect,
     onReady: () => setStatus("ready"),
     onError: () => setStatus("error"),
@@ -71,12 +74,7 @@ export function Atc3D({
 
   return (
     <div className={`relative overflow-hidden border border-line bg-raise ${className}`}>
-      <canvas
-        ref={canvasRef}
-        className={`block aspect-video min-h-96 w-full ${interactive ? "touch-none" : "touch-pan-y"}`}
-        role="img"
-        aria-label="Interactive 3D digital floor plan of the CDIE Engineering & Prototyping Workshop (ATC). Drag to orbit, scroll to zoom, or select equipment to highlight its capability."
-      />
+      <div ref={containerRef} className="aspect-video min-h-96 w-full" />
 
       {status === "loading" ? (
         <p className="pointer-events-none absolute inset-0 grid place-items-center bg-raise text-fine text-ink-3">
