@@ -12,3 +12,4 @@ export {
   type Vec3Tuple,
 } from "./atcLayout";
 export type { AtcView } from "./useAtcScene";
+export { warmAtc3D } from "./atcRoom";

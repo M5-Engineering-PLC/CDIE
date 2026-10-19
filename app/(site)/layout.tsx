@@ -4,6 +4,7 @@ import { SiteAnalytics } from "@/components/chrome/SiteAnalytics";
 import { SiteFooter } from "@/components/chrome/SiteFooter";
 import { SiteNav } from "@/components/chrome/SiteNav";
 import { SkipLink } from "@/components/chrome/SkipLink";
+import { Studio3DWarmup } from "@/components/studio/Studio3DWarmup";
 import { contact, nav, site, socialAccounts, utilityLinks } from "@/content/site";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -41,6 +42,13 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         socialAccounts={[...socialAccounts]}
       />
       <SiteAnalytics />
+      {/*
+        Review 2026-10-19: once a page is idle, fetch the Design Studio tour's
+        code and prepare its rooms in small slices, so opening the tour later
+        does not freeze the page. Skipped on data saver, slow links and low
+        memory.
+      */}
+      <Studio3DWarmup />
     </>
   );
 }
