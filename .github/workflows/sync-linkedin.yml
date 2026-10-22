@@ -1,6 +1,6 @@
 # Discover recent public posts and commit feed and image copies for local delivery.
-# Pushes with CMS_PUSH_TOKEN (an admin's token) because main is protected and
-# the default Actions token cannot bypass the ruleset; same setup as sync-cms.yml.
+# main now requires pull requests, so this workflow opens or updates an automated
+# PR branch instead of pushing directly to main.
 name: Sync LinkedIn media
 
 on:
@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: sync-linkedin
@@ -31,11 +32,18 @@ jobs:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
-      - name: Commit when content changed
-        run: |
-          git add content/linkedin-snapshot.json public/linkedin
-          git diff --cached --quiet && exit 0
-          git config user.name "cdie-content-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Sync LinkedIn posts and local images"
-          git push
+      - name: Open pull request when content changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.CMS_PUSH_TOKEN }}
+          add-paths: |
+            content/linkedin-snapshot.json
+            public/linkedin
+          commit-message: Sync LinkedIn posts and local images
+          committer: cdie-content-bot <41898282+github-actions[bot]@users.noreply.github.com>
+          author: cdie-content-bot <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: bot/sync-linkedin-media
+          delete-branch: true
+          title: Sync LinkedIn posts and local images
+          body: |
+            Automated sync of LinkedIn snapshot data and downloaded local media.
