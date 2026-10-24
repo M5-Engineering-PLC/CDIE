@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: main
           token: ${{ secrets.CMS_PUSH_TOKEN }}
       - uses: actions/setup-node@v7
         with:
@@ -35,7 +36,9 @@ jobs:
       - name: Open pull request when content changed
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.CMS_PUSH_TOKEN }}
+          # The PAT can push content but cannot create pull requests.
+          token: ${{ github.token }}
+          branch-token: ${{ secrets.CMS_PUSH_TOKEN }}
           add-paths: |
             content/linkedin-snapshot.json
             public/linkedin
