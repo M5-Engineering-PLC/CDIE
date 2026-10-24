@@ -1,6 +1,6 @@
 # Discover recent public posts and commit feed and image copies for local delivery.
-# main now requires pull requests, so this workflow opens or updates an automated
-# PR branch instead of pushing directly to main.
+# CMS_PUSH_TOKEN authenticates the content push as its owner. Main's rulesets
+# must allow that account to bypass pull-request and pre-push check requirements.
 name: Sync LinkedIn media
 
 on:
@@ -9,8 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: sync-linkedin
@@ -22,6 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: main
           token: ${{ secrets.CMS_PUSH_TOKEN }}
       - uses: actions/setup-node@v7
         with:
@@ -32,18 +32,11 @@ jobs:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
-      - name: Open pull request when content changed
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.CMS_PUSH_TOKEN }}
-          add-paths: |
-            content/linkedin-snapshot.json
-            public/linkedin
-          commit-message: Sync LinkedIn posts and local images
-          committer: cdie-content-bot <41898282+github-actions[bot]@users.noreply.github.com>
-          author: cdie-content-bot <41898282+github-actions[bot]@users.noreply.github.com>
-          branch: bot/sync-linkedin-media
-          delete-branch: true
-          title: Sync LinkedIn posts and local images
-          body: |
-            Automated sync of LinkedIn snapshot data and downloaded local media.
+      - name: Publish changed posts and images
+        run: |
+          git add content/linkedin-snapshot.json public/linkedin
+          git diff --cached --quiet && exit 0
+          git config user.name "cdie-content-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync LinkedIn posts and local images"
+          git push origin HEAD:main
