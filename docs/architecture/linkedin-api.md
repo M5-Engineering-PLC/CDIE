@@ -13,8 +13,8 @@ the private sheet through the existing Google service account. It merges
 dashboard links, validates and sorts up to eight
 posts, copies their pictures and missing event pictures to local assets, and
 updates the snapshot. `npm run build` runs this first. `.github/workflows/sync-linkedin.yml`
-also runs it every three hours and opens or updates a pull request containing
-the changes. The website deploys after the approved pull request merges.
+also runs it every three hours and pushes changed snapshots and images directly
+to main using `CMS_PUSH_TOKEN`, triggering CI and website deployment.
 The workflow can run without Google credentials. If the repository has
 `GOOGLE_SHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL`, and `GOOGLE_PRIVATE_KEY`
 secrets, it also reads the private sheet. If a source is unavailable, the
@@ -27,8 +27,8 @@ describe the Media page's delivery path.
 
 ### Activate the scheduled post sync
 
-1. Enable Settings → Actions → General → Workflow permissions → Allow GitHub Actions to create and approve pull requests. The workflow uses its built-in `GITHUB_TOKEN` with `pull-requests: write` to open update PRs. It uses `CMS_PUSH_TOKEN` only to check out and push the content branch; that token needs Contents read/write access to this repository. CI runs on pushes to `bot/sync-linkedin-media`, since PRs opened by `GITHUB_TOKEN` do not trigger PR workflows.
-2. Once this workflow is on the default branch, choose Actions → Sync LinkedIn media → Run workflow. It discovers public posts and commits the snapshot and pictures to `bot/sync-linkedin-media`. Review and merge the update PR to publish them. The three-hour schedule refreshes that PR; it does not bypass owner approval or publish directly to `main`.
+1. `CMS_PUSH_TOKEN` needs Contents read/write access to this repository. Authentication comes from that token's owner; the bot commit name does not grant permissions. Both active main rulesets (`Protect main`, ID `23998491`, and `protect-main`, ID `25433184`) must allow the token owner's repository role to bypass rules in Always mode, or have their pull-request and pre-push status requirements disabled. A pull-request-only bypass still blocks direct publishing. Retain deletion and force-push protection where possible.
+2. Once this workflow is on main, choose Actions → Sync LinkedIn media → Run workflow. It discovers public posts and commits changed snapshots and pictures directly to main. The three-hour schedule publishes later posts automatically without a review step. The PAT push triggers CI and the production deployment.
 3. The [CDIE LinkedIn feed sheet](https://docs.google.com/spreadsheets/d/1YwW7t2l1w1Jp6_y7ENvOpf21XvEB6xH2eVvxEAX7Wg4/edit) is optional. Its rows are on the `Untitled` tab. Keep it private; for the scheduled job to read it, the repository needs the service-account secrets and that account needs Reader access.
 4. For sheet rows, `id` and `postedAt` are required; `text`, `repost`, `image` and `title` are optional.
 

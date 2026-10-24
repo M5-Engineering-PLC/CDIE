@@ -11,9 +11,7 @@ name: CI
 on:
   pull_request:
   push:
-    # GITHUB_TOKEN-created PRs do not emit a pull_request workflow run.
-    # The sync branch is pushed with CMS_PUSH_TOKEN, so validate its pushes.
-    branches: [main, bot/sync-linkedin-media]
+    branches: [main]
 
 permissions:
   contents: read
