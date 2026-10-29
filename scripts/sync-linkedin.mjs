@@ -162,7 +162,7 @@ await mapLimited(calendar, async (event) => {
   if (saved) eventImages[event.link] = saved.path;
 });
 
-const calendar = carryCalendar(cachedPosts, previous.calendar);
+const calendarItems = carryCalendar(cachedPosts, previous.calendar);
 
 const heartbeats = rows.map((row) => Date.parse(row.syncedAt ?? "")).filter(Number.isFinite);
 const snapshot = {
@@ -171,7 +171,7 @@ const snapshot = {
     ? null
     : heartbeats.length ? new Date(Math.max(...heartbeats)).toISOString() : previous.lastSyncedAt,
   posts: cachedPosts,
-  calendar,
+  calendar: calendarItems,
   eventImages: Object.fromEntries(Object.entries(eventImages).sort(([a], [b]) => a.localeCompare(b))),
 };
 if (JSON.stringify(snapshot) !== JSON.stringify(previous)) {
@@ -181,7 +181,7 @@ if (JSON.stringify(snapshot) !== JSON.stringify(previous)) {
 const used = new Set([
   ...cachedPosts.map((post) => post.image),
   ...Object.values(eventImages),
-  ...calendar.map((item) => item.image),
+  ...calendarItems.map((item) => item.image),
 ].filter(Boolean).map((item) => item.slice("/linkedin/".length)));
 for (const name of await readdir(imageDir)) {
   if (/^(post|event)-[a-z0-9-]+\.(jpg|png|webp|avif)$/.test(name) && !used.has(name)) {
