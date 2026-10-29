@@ -96,5 +96,62 @@
     "https://www.linkedin.com/feed/update/urn:li:activity:7508065548178710528/": "/linkedin/event-7508065548178710528.jpg",
     "https://www.linkedin.com/feed/update/urn:li:activity:7508789924649832448/": "/linkedin/event-7508789924649832448.jpg"
   },
-  "calendar": []
+  "calendar": [
+    {
+      "id": "linkedin:urn:li:activity:7518981360393285632",
+      "title": "How many hours did you lose this week to reports, emails, minutes, spreadsheets and paperwork?",
+      "start": "2026-10-27",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7518981360393285632/",
+      "image": "/linkedin/post-urn-li-activity-7518981360393285632.jpg"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7513863648130498560",
+      "title": "Your innovation is only as strong as your ability to protect it.",
+      "start": "2026-10-22",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7513863648130498560/",
+      "image": "/linkedin/post-urn-li-activity-7513863648130498560.jpg"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7518212935479984149",
+      "title": "REMINDER!",
+      "start": "2026-10-22",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7518212935479984149/",
+      "image": "/linkedin/post-urn-li-activity-7518212935479984149.jpg"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7513897246992539648",
+      "title": "Join us this Friday as CDIE staff, MDI students and undergrads face off on one pitch. Pick your side.",
+      "start": "2026-10-09",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7513897246992539648/",
+      "image": "/linkedin/post-urn-li-activity-7513897246992539648.jpg"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7512804259827163137",
+      "title": "Got a hardware solution to a healthcare problem? The Catalyst Grant is still open! 😊",
+      "start": "2026-10-05",
+      "kind": "Announcement",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7512804259827163137/",
+      "image": "/linkedin/post-urn-li-activity-7512804259827163137.jpg"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7505491285416357888",
+      "title": "Tune in TOP OF THE HOUR. 🎙️",
+      "start": "2026-09-15",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7505491285416357888/",
+      "image": "/linkedin/post-urn-li-activity-7505491285416357888.jpg"
+    },
+    {
+      "id": "linkedin:urn:li:activity:7508789924649832448",
+      "title": "Women in STEM: Transforming Healthcare",
+      "start": "2026-08-19",
+      "kind": "Event",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7508789924649832448/",
+      "image": "/linkedin/post-urn-li-activity-7508789924649832448.jpg"
+    }
+  ]
 }
