@@ -11,7 +11,7 @@ import { MAX_POSTS } from "../lib/linkedin/config.ts";
 import { pickPostMedia } from "../lib/linkedin/image.ts";
 import { rowsFromLinks } from "../lib/linkedin/links.ts";
 import { fetchPublicPosts } from "../lib/linkedin/public.ts";
-import { classifyCalendar } from "../lib/linkedin/classify.mjs";
+import { carryCalendar } from "../lib/linkedin/classify.mjs";
 
 const sheetUrl = process.env.LINKEDIN_SHEET_CSV_URL?.trim();
 const rowsFile = process.argv.includes("--rows-file") ? process.argv[process.argv.indexOf("--rows-file") + 1] : null;
@@ -24,7 +24,7 @@ const previous = JSON.parse(await readFile(snapshotFile, "utf8"));
 
 /* Fix plan 2026-10-11, W3: reclassify the saved posts without any network or image work. */
 if (process.argv.includes("--reclassify")) {
-  const calendar = classifyCalendar(previous.posts);
+  const calendar = carryCalendar(previous.posts, previous.calendar);
   await writeFile(snapshotFile, `${JSON.stringify({ ...previous, calendar }, null, 2)}\n`);
   console.log(`LinkedIn snapshot: ${previous.posts.length} posts, ${calendar.length} calendar items (offline)`);
   process.exit(0);
@@ -162,6 +162,8 @@ await mapLimited(calendar, async (event) => {
   if (saved) eventImages[event.link] = saved.path;
 });
 
+const calendar = carryCalendar(cachedPosts, previous.calendar);
+
 const heartbeats = rows.map((row) => Date.parse(row.syncedAt ?? "")).filter(Number.isFinite);
 const snapshot = {
   ...previous,
@@ -169,7 +171,7 @@ const snapshot = {
     ? null
     : heartbeats.length ? new Date(Math.max(...heartbeats)).toISOString() : previous.lastSyncedAt,
   posts: cachedPosts,
-  calendar: classifyCalendar(cachedPosts),
+  calendar,
   eventImages: Object.fromEntries(Object.entries(eventImages).sort(([a], [b]) => a.localeCompare(b))),
 };
 if (JSON.stringify(snapshot) !== JSON.stringify(previous)) {
@@ -179,6 +181,7 @@ if (JSON.stringify(snapshot) !== JSON.stringify(previous)) {
 const used = new Set([
   ...cachedPosts.map((post) => post.image),
   ...Object.values(eventImages),
+  ...calendar.map((item) => item.image),
 ].filter(Boolean).map((item) => item.slice("/linkedin/".length)));
 for (const name of await readdir(imageDir)) {
   if (/^(post|event)-[a-z0-9-]+\.(jpg|png|webp|avif)$/.test(name) && !used.has(name)) {
