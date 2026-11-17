@@ -41,8 +41,11 @@ export function parsePublicPage(html: string) {
   return rows;
 }
 
-/** The page's latest posts, or none. Never throws. */
-export async function fetchPublicPosts(page: string = LINKEDIN_PAGE) {
+/**
+  The page's latest posts, or none. Never throws. `report` hears why a fetch
+  came back empty, so the scheduled job can say so instead of passing silently.
+*/
+export async function fetchPublicPosts(page: string = LINKEDIN_PAGE, report: (reason: string) => void = () => {}) {
   try {
     const response = await fetch(page, {
       headers: {
@@ -52,9 +55,19 @@ export async function fetchPublicPosts(page: string = LINKEDIN_PAGE) {
       },
       signal: AbortSignal.timeout(8_000),
     } as RequestInit);
-    if (!response.ok) return [];
-    return parsePublicPage(await response.text());
-  } catch {
+    if (!response.ok) {
+      report(`LinkedIn answered HTTP ${response.status} for ${response.url || page}`);
+      return [];
+    }
+    const html = await response.text();
+    const rows = parsePublicPage(html);
+    if (!rows.length) {
+      const title = html.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() ?? "no title";
+      report(`LinkedIn page had no post data (${response.url || page}, "${title}", ${html.length} bytes)`);
+    }
+    return rows;
+  } catch (error) {
+    report(`LinkedIn request failed: ${error instanceof Error ? error.message : String(error)}`);
     return [];
   }
 }
