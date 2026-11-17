@@ -51,8 +51,13 @@ try {
   if (!optional) throw error;
   console.warn("Sheet unavailable; retaining its last cached posts:", error);
 }
-const published = await fetchPublicPosts();
+let publicFailure = null;
+const published = await fetchPublicPosts(undefined, (reason) => { publicFailure = reason; });
 const dashboard = rowsFromLinks(cms.items?.posts ?? []);
+const newest = (list) => list.map((row) => row.postedAt).filter(Boolean).sort().at(-1) ?? "none";
+console.log(`Sources: public page ${published.length} (newest ${newest(published)}), sheet ${rows.length}, dashboard ${dashboard.length}`);
+// A GitHub annotation, so a run that discovered nothing is visible on the run page, not just green.
+if (publicFailure) console.log(`::warning title=LinkedIn discovery returned no posts::${publicFailure}. The snapshot keeps its previous posts.`);
 if (!published.length && !rows.length && !dashboard.length) {
   console.warn("No new feed source available; retaining the previous posts.");
 }
@@ -188,4 +193,4 @@ for (const name of await readdir(imageDir)) {
     await unlink(new URL(name, imageDir));
   }
 }
-console.log(`LinkedIn snapshot: ${cachedPosts.length} posts, ${Object.keys(eventImages).length} event images`);
+console.log(`LinkedIn snapshot: ${cachedPosts.length} posts (newest ${newest(cachedPosts)}), ${Object.keys(eventImages).length} event images`);
