@@ -1,5 +1,24 @@
 # LinkedIn read layer
 
+## Scheduled GitHub sync
+
+The `Sync LinkedIn media` workflow prefers LinkedIn's authenticated Posts API.
+Create the repository Actions secret `LINKEDIN_ACCESS_TOKEN` using an OAuth token
+authorised by a CDIE LinkedIn Page admin with `r_organization_social`. Set the
+repository Actions variable `LINKEDIN_ORGANIZATION_ID` to the numeric ID of the
+Invention Education – Kenyatta University Page. Update `LINKEDIN_API_VERSION` in
+repository Actions variables when LinkedIn retires the default version.
+
+The workflow can still use the public company page or newer rows from the
+Google Sheet or dashboard. If LinkedIn returns no usable posts and those
+sources have neither newer posts nor a recent sheet heartbeat, the scheduled
+run fails before it changes the saved feed. Check the source counts and HTTP status in the workflow log.
+After setting the credentials, run the workflow manually and check the newest
+post in the saved snapshot and on Media once the site deploys.
+
+The rest of this document describes the original Google Sheet and Make setup.
+
+
 Date: 2026-09-11, revised 2026-09-22 and 2026-09-25
 Governing decision record: CDIE_Website_LinkedIn_Integration_Handoff_2026-09-11.md
 Status, 2026-09-27: The Media page now reads `content/linkedin-snapshot.json`
