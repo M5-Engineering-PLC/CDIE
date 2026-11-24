@@ -67,7 +67,7 @@ export function SiteFooter({
             rel="noreferrer"
             className="text-fine text-surface/70 hover:text-surface"
           >
-            Graduate School
+            Graduate School Building, 2nd Floor
             <span className="sr-only"> (opens in Google Maps in a new tab)</span>
           </a>
         </div>
