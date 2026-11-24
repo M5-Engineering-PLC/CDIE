@@ -27,8 +27,12 @@ jobs:
         with:
           node-version: 24
       - name: Save posts and images
-        run: node scripts/sync-linkedin.mjs --optional
+        run: node scripts/sync-linkedin.mjs
         env:
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_ORGANIZATION_ID: ${{ vars.LINKEDIN_ORGANIZATION_ID }}
+          LINKEDIN_API_VERSION: ${{ vars.LINKEDIN_API_VERSION }}
+          LINKEDIN_SHEET_TAB: ${{ vars.LINKEDIN_SHEET_TAB }}
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
