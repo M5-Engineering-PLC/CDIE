@@ -91,7 +91,7 @@ export const form = {
 
 export const visit = {
   headline: "Find us at Kenyatta University.",
-  pending: ["the building, the floor, parking and step-free access"],
+  pending: ["parking and step-free access"],
 } as const;
 
 /*

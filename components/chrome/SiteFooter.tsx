@@ -26,7 +26,7 @@ export type SiteFooterProps = {
     availability: string;
     availabilityDays: string;
     availabilityHours: string;
-    campus: string;
+    location: string;
   };
   name: string;
   longName: string;
@@ -67,7 +67,7 @@ export function SiteFooter({
             rel="noreferrer"
             className="text-fine text-surface/70 hover:text-surface"
           >
-            Graduate School
+            {contact.location}
             <span className="sr-only"> (opens in Google Maps in a new tab)</span>
           </a>
         </div>

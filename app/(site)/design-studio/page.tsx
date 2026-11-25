@@ -15,6 +15,7 @@ import {
   studioFaqs,
   studioIntro,
 } from "@/content/studio";
+import { graduateSchoolLocation } from "@/content/site";
 import { studioPhotoOverrides, type StudioPhoto } from "@/lib/admin/store";
 import { pageMetadata } from "@/lib/seo";
 
@@ -99,6 +100,7 @@ export default async function DesignStudioPage() {
       <StudioExplorer
         capabilities={explorerCapabilities(overrides)}
         initialId={defaultCapabilityId}
+        graduateSchoolLocation={graduateSchoolLocation}
         intro={{ headline: studioIntro.tourHeadline, standfirst: studioIntro.tourStandfirst }}
       />
 

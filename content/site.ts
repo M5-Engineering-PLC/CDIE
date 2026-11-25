@@ -39,11 +39,10 @@ export const nav: NavItem[] = [
   The one contact record. Every page reads from here.
   This closes fault F-04, inconsistent contact details across pages.
 
-  The building and floor are deliberately absent: the Contacts page publishes
-  2nd Floor Graduate School and the FAQ publishes 1st Floor Chandaria Centre.
-  Lucid records this as open fork fk3. Until it is answered, the site publishes
-  neither, and keeps the instruction to contact the team before travelling.
+  The 23 September FAQ vetting review confirmed the building and floor.
 */
+export const graduateSchoolLocation = "Graduate School, 2nd floor";
+
 export const contact = {
   email: "ive@ku.ac.ke",
   phone: "+254 759 158 430",
@@ -52,8 +51,8 @@ export const contact = {
   // changes-v2 item 7: the footer prints the days and the hours on two lines.
   availabilityDays: "Monday to Friday",
   availabilityHours: "8 am–5 pm",
-  campus: "Kenyatta University Main Campus, off Thika Superhighway, Exit 11.",
-  buildingConfirmed: false,
+  location: graduateSchoolLocation,
+  campus: `${graduateSchoolLocation}, Kenyatta University Main Campus, off Thika Superhighway, Exit 11.`,
   beforeYouTravel:
     "Please contact the team before travelling so we can confirm where to meet you.",
 } as const;
