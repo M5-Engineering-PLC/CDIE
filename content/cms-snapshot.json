@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-25T07:37:52.367Z",
+  "syncedAt": "2026-11-25T07:54:54.335Z",
   "items": {
     "posts": [
       {
@@ -102,6 +102,12 @@
       "key": "eubrea-mitchy-njeri",
       "fields": "{\"image\":\"/api/uploads/68ace690-e8cf-4b9a-8c2f-d5da1e76392a.jpg\"}",
       "at": "2026-11-25T07:37:38.470Z"
+    },
+    {
+      "collection": "staff",
+      "key": "salome-njoroge",
+      "fields": "{\"image\":\"/api/uploads/3e2bb2bd-bb4d-4f66-90e1-0204d1d2f79d.png\"}",
+      "at": "2026-11-25T07:54:44.820Z"
     }
   ],
   "subscriptions": [],
