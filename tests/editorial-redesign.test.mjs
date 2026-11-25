@@ -69,7 +69,8 @@ test("every programme's enquiry button names a topic the contact form knows", ()
 
 test("the studio's two sides are Graduate School and ATC, and textiles sits with the first", () => {
   const studio = read("content/studio.ts");
-  assert.match(studio, /name: "Graduate School"/);
+  assert.match(read("content/site.ts"), /graduateSchoolLocation = "Graduate School, 2nd floor"/);
+  assert.match(studio, /id: "studio",\s+name: graduateSchoolLocation/);
   assert.doesNotMatch(studio, /name: "Design Studio"/);
   const textiles = studio.slice(studio.indexOf('id: "textiles"'));
   assert.match(textiles.slice(0, 200), /space: "studio"/);

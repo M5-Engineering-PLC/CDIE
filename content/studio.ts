@@ -3,7 +3,7 @@
 // Services are selections inside one page, not child routes. The selection is
 // held in ?space= and ?service= so a shared link opens the same state.
 
-import { contact, graduateSchoolLocation } from "./site";
+import { contact, graduateSchoolLocation } from "./site.ts";
 import type { Capability, Faq, Space } from "./types";
 
 /*

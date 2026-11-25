@@ -28,7 +28,7 @@
     named person confirms the wording and the date is recorded.
 */
 
-import { graduateSchoolLocation } from "./site";
+import { graduateSchoolLocation } from "./site.ts";
 import type {
   CalendarEvent,
   Cohort,
