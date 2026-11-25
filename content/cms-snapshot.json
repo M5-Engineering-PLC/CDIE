@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-11T15:13:51.572Z",
+  "syncedAt": "2026-11-25T07:24:26.711Z",
   "items": {
     "posts": [
       {
@@ -84,7 +84,14 @@
       "at": "2026-10-11T15:13:38.160Z"
     }
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "collection": "staff",
+      "key": "salome-njoroge",
+      "fields": "{\"image\":\"/api/uploads/e1698dfe-1c48-4014-bbfd-91ce535100e5.jpg\"}",
+      "at": "2026-11-25T07:24:14.458Z"
+    }
+  ],
   "subscriptions": [],
   "enquiries": []
 }
