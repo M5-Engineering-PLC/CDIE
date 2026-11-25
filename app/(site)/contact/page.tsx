@@ -104,7 +104,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
           </div>
           <MapEmbed
             src="https://www.openstreetmap.org/export/embed.html?bbox=36.9234%2C-1.1867%2C36.9314%2C-1.1808&layer=mapnik&marker=-1.183719%2C36.927427"
-            title="OpenStreetMap showing CDIE at the Graduate School Building, Kenyatta University"
+            title={`OpenStreetMap showing CDIE at ${contact.location}, Kenyatta University`}
             href="https://www.openstreetmap.org/?mlat=-1.183719&mlon=36.927427#map=18/-1.183719/36.927427"
           />
         </div>

@@ -40,6 +40,7 @@ export type StudioStageProps = {
   space?: "studio" | "atc";
   name: string;
   spaceName: string;
+  graduateSchoolLocation: string;
   headline: string;
   step: number;
   of: number;
@@ -54,12 +55,12 @@ export type StudioStageProps = {
 };
 
 export function StudioStage({
-  active, open, tour, viewOnly, atc, space, name, spaceName, headline,
+  active, open, tour, viewOnly, atc, space, name, spaceName, graduateSchoolLocation, headline,
   step, of, image, imageAlt, imageSize, onSelect, onClose, onOpen, onSwitchSpace,
 }: StudioStageProps) {
   const isAtc = space === "atc" || atc;
 
-  const toggleBar = onSwitchSpace ? <StudioSpaceToggle isAtc={isAtc} onSwitch={onSwitchSpace} /> : null;
+  const toggleBar = onSwitchSpace ? <StudioSpaceToggle isAtc={isAtc} onSwitch={onSwitchSpace} graduateSchoolLocation={graduateSchoolLocation} /> : null;
 
   const viewPill = <StudioViewPill open={open} onOpen={onOpen} onClose={onClose} />;
 

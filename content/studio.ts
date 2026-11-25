@@ -3,6 +3,7 @@
 // Services are selections inside one page, not child routes. The selection is
 // held in ?space= and ?service= so a shared link opens the same state.
 
+import { contact, graduateSchoolLocation } from "./site";
 import type { Capability, Faq, Space } from "./types";
 
 /*
@@ -46,8 +47,8 @@ export const studioIntro = {
 export const spaces: Space[] = [
   {
     id: "studio",
-    name: "Graduate School",
-    shortName: "Grad school",
+    name: graduateSchoolLocation,
+    shortName: graduateSchoolLocation,
     summary:
       "Design and CAD, electronics, 3D printing, co-working, and textiles and upholstery.",
     hasModel: true,
@@ -371,7 +372,7 @@ export const studioFaqs: Faq[] = [
     id: "where",
     question: "Where is the studio, and how do I get there?",
     answer:
-      "The Design Studio is on the 2nd floor of the Kenyatta University Graduate School, off Thika Superhighway at Exit 11. Please contact the team before travelling so we can confirm where to meet you.",
+      `The Design Studio is at ${contact.campus} ${contact.beforeYouTravel}`,
     confirmed: { by: "CDIE team, FAQ vetting review", on: "2026-09-23", source: "FAQ vetting page, 23 September 2026" },
   },
 ];

@@ -20,6 +20,7 @@ export type { ExplorerCapability, ExplorerComponent, UnifiedServiceId } from "./
 export type StudioExplorerProps = {
   capabilities: ExplorerCapability[];
   initialId: string;
+  graduateSchoolLocation: string;
   /** Actual Copy, DESIGN STUDIO > Virtual tour */
   intro: { headline: string; standfirst: string };
   /** Start with the 3D model open and keep direct camera controls enabled. */
@@ -33,6 +34,7 @@ const STEP_MS = 7000;
 export function StudioExplorer({
   capabilities,
   initialId,
+  graduateSchoolLocation,
   intro,
   interactiveMode = false,
   showIntro = true,
@@ -112,7 +114,7 @@ export function StudioExplorer({
           <div className="flex items-center justify-between px-5 pb-3">
             <p className="kicker">Explore the studio</p>
             <span className="font-mono text-[0.625rem] uppercase tracking-wider text-ink-3">
-              {activeSpace === "atc" ? "ATC Hub" : "Grad School"}
+              {activeSpace === "atc" ? "ATC Hub" : graduateSchoolLocation}
             </span>
           </div>
           <StudioCapabilityList items={capabilities} selectedId={selected.id} onSelect={setSelectedId} />
@@ -129,7 +131,7 @@ export function StudioExplorer({
               image={photo?.src ?? selected.image} imageAlt={photo?.alt ?? `${selected.name} at the CDIE Design Studio`} imageSize={photo}
               onSelect={selectByModelGroup}
               onClose={() => { setRoomOpen(false); setTour(false); }} onOpen={openRoom}
-              onSwitchSpace={handleSwitchSpace}
+              onSwitchSpace={handleSwitchSpace} graduateSchoolLocation={graduateSchoolLocation}
             />
             <StudioPhotoStrip photos={selected.media} capabilityName={selected.name} current={photoIndex}
               onPick={(next) => { pickPhoto(next); setRoomOpen(false); setTour(false); }} />

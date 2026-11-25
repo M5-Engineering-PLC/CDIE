@@ -28,6 +28,7 @@
     named person confirms the wording and the date is recorded.
 */
 
+import { graduateSchoolLocation } from "./site";
 import type {
   CalendarEvent,
   Cohort,
@@ -508,7 +509,7 @@ export const designChallengeEditions = [
       { label: "Dates", value: "14–18 September 2026" },
       { label: "Pitch presentation", value: "18 September 2026" },
       { label: "Time", value: "10:00am–5:00pm" },
-      { label: "Venue", value: "Centre for Design, Innovation & Engineering, Graduate School, Kenyatta University" },
+      { label: "Venue", value: `Centre for Design, Innovation & Engineering, ${graduateSchoolLocation}, Kenyatta University` },
     ],
     call: {
       src: "/images/cdie-design-challenge-2026-call.webp",
@@ -550,7 +551,7 @@ export const designChallengeEditions = [
     facts: [
       { label: "Dates", value: "23–27 March 2026" },
       { label: "Format", value: "One-week challenge for MDI participants, ending in a pitch presentation" },
-      { label: "Venue", value: "Centre for Design, Innovation & Engineering, Graduate School, Kenyatta University" },
+      { label: "Venue", value: `Centre for Design, Innovation & Engineering, ${graduateSchoolLocation}, Kenyatta University` },
     ],
     /* 2026-09-25, from the Drive folder the client shared: the call poster and
        four photographs of the week, named for the page they belong to. */
