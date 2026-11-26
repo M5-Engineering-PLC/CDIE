@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-25T09:31:20.490Z",
+  "syncedAt": "2026-11-26T08:19:57.503Z",
   "items": {
     "posts": [
       {
@@ -126,6 +126,12 @@
       "key": "james-wambugu",
       "fields": "{\"image\":\"/api/uploads/653948cd-c2b4-4654-966f-a5d0f4543951.png\"}",
       "at": "2026-11-25T09:31:08.324Z"
+    },
+    {
+      "collection": "staff",
+      "key": "antonius-waka",
+      "fields": "{\"image\":\"/api/uploads/e1ca3b7e-1cb7-4328-95f3-103de41c4221.png\"}",
+      "at": "2026-11-26T08:19:42.939Z"
     }
   ],
   "subscriptions": [],
