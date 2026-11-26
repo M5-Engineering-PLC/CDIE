@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-26T08:19:57.503Z",
+  "syncedAt": "2026-11-26T08:28:58.075Z",
   "items": {
     "posts": [
       {
@@ -132,6 +132,12 @@
       "key": "antonius-waka",
       "fields": "{\"image\":\"/api/uploads/e1ca3b7e-1cb7-4328-95f3-103de41c4221.png\"}",
       "at": "2026-11-26T08:19:42.939Z"
+    },
+    {
+      "collection": "staff",
+      "key": "antonius-waka",
+      "fields": "{\"image\":\"/api/uploads/dcf132e4-c364-42c3-91e0-5a2475a4b5a5.png\"}",
+      "at": "2026-11-26T08:28:46.068Z"
     }
   ],
   "subscriptions": [],
